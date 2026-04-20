@@ -19,14 +19,14 @@ This document outlines the architecture and implementation roadmap for training 
 | Component | Version | Rationale |
 |-----------|---------|-----------|
 | **CUDA** | 12.6 | Optimal for Blackwell RTX 5090; max library support |
-| **PyTorch** | 2.7.0 | Latest stable (Apr 2026); CUDA 12.8 max support |
+| **PyTorch** | 2.7.0 | Stable for cu126; CUDA 12.8 runtime support |
 | **Unsloth** | 2026.4.6 | Latest (Apr 16); 2x faster training, 70% less VRAM |
 | **llama-cpp-python** | 0.3.20 | Latest (Apr 3); CUDA 12.5 wheel support |
-| **transformers** | 5.5.4 | Latest (Apr 13); Qwen 3.5 support |
-| **datasets** | 3.2.0+ | Compatible with transformers 5.x |
-| **peft** | 0.15.0+ | LoRA adapter management |
-| **trl** | 0.15.0+ | DPO training support |
-| **accelerate** | 1.0.0+ | Training orchestration |
+| **transformers** | >=4.46.0 | Qwen 3.5 support |
+| **datasets** | >=3.0.0 | Compatible with transformers |
+| **peft** | >=0.13.0 | LoRA adapter management |
+| **trl** | >=0.12.0 | DPO training support |
+| **accelerate** | >=1.0.0 | Training orchestration |
 
 ### 1.2 Why CUDA 12.6 (Not 13.0)?
 
@@ -80,54 +80,49 @@ This document outlines the architecture and implementation roadmap for training 
 ```
 ml-lora-training/
 ├── docker/
-│   ├── Dockerfile                    # CUDA 12.6 + PyTorch 2.7 + Unsloth
-│   ├── docker-compose.yml            # GPU passthrough config
-│   └── .dockerignore
+│   └── Dockerfile                    # CUDA 12.6 + PyTorch 2.7 + Unsloth
+├── docker-compose.yml                # GPU passthrough config (service: training)
 ├── src/
 │   ├── teacher/
-│   │   ├── generate.py               # TASK 1: Synthetic data generation
+│   │   ├── generate.py               # Synthetic data generation
 │   │   ├── prompts.py                # DM prompt templates
 │   │   ├── validators.py             # Quality validation logic
-│   │   └── generate_dpo_pairs.py     # TASK 2: DPO pair generation
+│   │   ├── sample_utils.py           # ShareGPT formatting utilities
+│   │   └── generate_dpo_pairs.py     # DPO pair generation
 │   ├── student/
-│   │   ├── train_sft.py              # TASK 3: SFT training
-│   │   ├── train_dpo.py              # TASK 4: DPO training
-│   │   └── config.py                 # Training hyperparameters
+│   │   ├── train_sft.py              # SFT training
+│   │   ├── train_dpo.py              # DPO training
+│   │   ├── config.py                 # SFT hyperparameters
+│   │   └── dpo_config.py             # DPO hyperparameters
 │   ├── utils/
-│   │   ├── data_formatter.py         # ShareGPT/ChatML conversion
-│   │   ├── vram_monitor.py           # Runtime VRAM tracking
-│   │   └── export_utils.py           # GGUF export utilities
+│   │   └── vram_monitor.py           # Runtime VRAM tracking
 │   └── tests/                        # TEST-FIRST IMPLEMENTATION
 │       ├── test_teacher.py
 │       ├── test_sft_training.py
 │       ├── test_dpo_training.py
-│       └── test_export.py
+│       └── test_e2e.py
 ├── data/
-│   ├── raw/                          # Source questions (if any)
+│   ├── raw/                          # Source questions
 │   └── processed/
-│       ├── sft_dataset.jsonl         # Output: TASK 1
-│       └── dpo_pairs.jsonl           # Output: TASK 2
+│       ├── sft_dataset.jsonl         # Output: Teacher Phase
+│       └── dpo_pairs.jsonl           # Output: DPO Pair Generation
 ├── checkpoints/
 │   ├── base_model/                   # Qwen3.5-27B-Instruct (downloaded)
 │   └── lora_adapters/
-│       ├── sft_adapter.safetensors   # Output: TASK 3
-│       └── dpo_adapter.safetensors   # Output: TASK 4
-├── output/
-│   ├── merged/
-│   │   └── dm-align-qwen3.5-27b-Q4_K_M.gguf  # Final output
-│   └── eval/                         # Validation results
-├── configs/
-│   ├── sft_config.yaml
-│   └── dpo_config.yaml
+│       ├── sft_adapter/              # Output: SFT Training
+│       └── dpo_adapter/              # Output: DPO Training
+├── outputs/                          # Training outputs and checkpoints
+├── configs/                          # Configuration files
 ├── scripts/
 │   ├── run_teacher.sh
 │   ├── run_sft.sh
-│   └── run_dpo.sh
-├── docs/
-│   ├── architecture_roadmap.md       # THIS FILE
-│   ├── roadmap.md                    # Original project roadmap
-│   └── current details.md            # Technical details
-└── README.md
+│   ├── run_dpo.sh
+│   ├── run_dpo_pair_generation.sh
+│   └── run_e2e_tests.sh
+└── docs/
+    ├── architecture_roadmap.md       # THIS FILE
+    ├── PHASE0_ROADMAP.md             # Phase 0 progress
+    └── PHASE1_ROADMAP.md             # Phase 1 progress
 ```
 
 ---
@@ -184,9 +179,8 @@ def test_unsloth_import():
 ```
 
 #### Implementation Artifacts
-- `docker/Dockerfile` - CUDA 12.6 base with all dependencies
-- `docker/docker-compose.yml` - GPU passthrough configuration
-- `docker/.dockerignore` - Exclude unnecessary files
+- `docker/Dockerfile` - CUDA 12.6 base with PyTorch 2.7.0 + Unsloth
+- `docker-compose.yml` - GPU passthrough configuration (service: `training`)
 
 #### Acceptance Criteria
 - ✅ Docker image builds in < 10 minutes
@@ -251,6 +245,7 @@ def test_output_format():
 - `src/teacher/generate.py` - Main generation script
 - `src/teacher/prompts.py` - DM prompt templates with CoT structure
 - `src/teacher/validators.py` - Keyword validation and retry logic
+- `src/teacher/sample_utils.py` - ShareGPT formatting utilities
 - `scripts/run_teacher.sh` - Orchestration script
 
 #### Configuration
@@ -330,7 +325,7 @@ def test_adapter_saves_correctly():
 #### Implementation Artifacts
 - `src/student/train_sft.py` - SFT training script
 - `src/student/config.py` - Training hyperparameters
-- `configs/sft_config.yaml` - External config file
+- `src/utils/vram_monitor.py` - VRAM monitoring utilities
 - `scripts/run_sft.sh` - Orchestration script
 
 #### Configuration
@@ -454,7 +449,7 @@ def test_dpo_adapter_saves():
 
 #### Implementation Artifacts
 - `src/student/train_dpo.py` - DPO training script
-- `configs/dpo_config.yaml` - DPO hyperparameters
+- `src/student/dpo_config.py` - DPO hyperparameters
 - `scripts/run_dpo.sh` - Orchestration script
 
 #### Configuration
@@ -526,9 +521,8 @@ def test_gguf_loads_and_runs():
 ```
 
 #### Implementation Artifacts
-- `src/utils/export_utils.py` - GGUF export utilities
-- `src/student/validate_and_export.py` - Validation script
-- `scripts/run_validation.sh` - Orchestration script
+- `src/utils/vram_monitor.py` - VRAM monitoring utilities
+- `scripts/run_e2e_tests.sh` - E2E test orchestration script
 
 #### Acceptance Criteria
 - ✅ 80%+ alignment rate on 20 liberal-trap questions
@@ -543,101 +537,84 @@ def test_gguf_loads_and_runs():
 ### 4.1 Dockerfile
 
 ```dockerfile
-# =============================================================================
-# DM-Align Qwen 27B Training Environment
-# CUDA 12.6 + PyTorch 2.7.0 + Unsloth 2026.4.6
-# =============================================================================
+# Optimized for RTX 5090 (Blackwell) + Unsloth
+FROM nvidia/cuda:12.6.0-devel-ubuntu22.04
 
-FROM nvidia/cuda:12.6.0-cudnn9-devel-ubuntu22.04
-
-# Environment setup
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHON_VERSION=3.11
-ENV PATH=/usr/local/python/bin:$PATH
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    python${PYTHON_VERSION} \
-    python${PYTHON_VERSION}-dev \
-    python3-pip \
-    git \
-    cmake \
-    build-essential \
+# Install system dependencies + CUDA headers
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.11 python3.11-venv python3-pip git curl wget build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-RUN pip3 install --upgrade pip
+# Set up Virtual Env
+RUN python3.11 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
-# PyTorch 2.7.0 with CUDA 12.6 (latest stable Apr 2026)
-RUN pip3 install torch==2.7.0 --index-url https://download.pytorch.org/whl/cu126
+# Install PyTorch 2.7.0 with CUDA 12.6 support (latest stable for cu126)
+RUN pip install --no-cache-dir torch==2.7.0 torchvision torchaudio \
+    --index-url https://download.pytorch.org/whl/cu126
 
-# Unsloth 2026.4.6 (latest, Apr 16 2026)
-RUN pip3 install unsloth==2026.4.6
+# Install Unsloth (pinned to required version)
+RUN pip install --no-cache-dir unsloth==2026.4.6
 
-# llama-cpp-python 0.3.20 with CUDA 12.4 wheel
-RUN pip3 install llama-cpp-python==0.3.20 \
-    --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu124
-
-# Hugging Face ecosystem (latest stable Apr 2026)
-RUN pip3 install \
-    transformers==5.5.4 \
-    datasets>=3.2.0 \
-    peft>=0.15.0 \
-    trl>=0.15.0 \
+# Install ML Stack (Updated for 2026 compatibility)
+RUN pip install --no-cache-dir \
+    transformers>=4.46.0 \
+    datasets>=3.0.0 \
+    peft>=0.13.0 \
+    trl>=0.12.0 \
     accelerate>=1.0.0 \
-    bitsandbytes \
-    huggingface-hub \
-    sentry-sdk
+    bitsandbytes>=0.44.0 \
+    sentencepiece
 
-# Working directory
+# llama-cpp-python with CUDA support
+RUN CMAKE_ARGS="-DGGML_CUDA=ON" pip install llama-cpp-python==0.3.20 --no-cache-dir
+
 WORKDIR /app
 
-# Copy project files
-COPY src/ /app/src/
-COPY configs/ /app/configs/
-COPY scripts/ /app/scripts/
-COPY docker/ /app/docker/
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD python -c "import torch; exit(0 if torch.cuda.is_available() else 1)"
 
-# Make scripts executable
-RUN chmod +x /app/scripts/*.sh
-
-# Default command
 CMD ["bash"]
 ```
 
 ### 4.2 docker-compose.yml
 
 ```yaml
-version: '3.8'
-
 services:
-  dm-align-trainer:
+  training:
     build:
       context: .
       dockerfile: docker/Dockerfile
+    container_name: ml-training
     runtime: nvidia
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
-              count: 1
+              count: all
               capabilities: [gpu]
     volumes:
-      - ./data:/app/data
-      - ./checkpoints:/app/checkpoints
-      - ./output:/app/output
       - ./src:/app/src
       - ./configs:/app/configs
+      - ./data:/app/data
+      - ./outputs:/app/outputs
+      - ./scripts:/app/scripts
     environment:
+      - HF_HOME=/root/.cache/huggingface
+      - TRANSFORMERS_CACHE=/root/.cache/huggingface
+      - DATASETS_CACHE=/root/.cache/huggingface
+      - ACCELERATE_CACHE_DIR=/root/.cache/huggingface
       - CUDA_VISIBLE_DEVICES=0
-      - DOCKER_ENABLE_GPU=true
-      - HF_HOME=/app/checkpoints/hf_cache
-    working_dir: /app
+      - PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
+    shm_size: '16gb'
     stdin_open: true
     tty: true
-    # Disable memory limits for GGUF export
-    mem_limit: 64g
+    restart: unless-stopped
 ```
 
 ---
@@ -674,7 +651,7 @@ docker-compose build
 ### Step 2: Download Base Model
 
 ```bash
-docker-compose run --rm dm-align-trainer \
+docker-compose run --rm training \
   huggingface-cli download \
   unsloth/Qwen3.5-27B-Instruct-unsloth-bnb-4bit \
   --local-dir checkpoints/base_model
@@ -697,32 +674,21 @@ docker-compose run --rm dm-align-trainer \
 ./scripts/run_sft.sh
 ```
 
-**Expected Output**: `checkpoints/lora_adapters/sft_adapter.safetensors`
+**Expected Output**: `checkpoints/lora_adapters/sft_adapter/` (adapter directory)
 **Expected Duration**: 2-3 hours
 
 ### Step 5: Generate DPO Pairs & Train DPO (TASK 3-4)
 
 ```bash
 # Generate DPO pairs
-docker-compose run --rm dm-align-trainer \
-  python src/teacher/generate_dpo_pairs.py
+./scripts/run_dpo_pair_generation.sh
 
 # Run DPO training
 ./scripts/run_dpo.sh
 ```
 
-**Expected Output**: `checkpoints/lora_adapters/dpo_adapter.safetensors`
+**Expected Output**: `checkpoints/lora_adapters/dpo_adapter/` (adapter directory)
 **Expected Duration**: 1-2 hours
-
-### Step 6: Validate & Export (TASK 5)
-
-```bash
-docker-compose run --rm dm-align-trainer \
-  python src/student/validate_and_export.py
-```
-
-**Expected Output**: `output/merged/dm-align-qwen3.5-27b-Q4_K_M.gguf`
-**Expected Duration**: 30-45 minutes
 
 ---
 
@@ -762,7 +728,7 @@ docker-compose run --rm dm-align-trainer \
 
 ```bash
 # Inside container
-docker-compose run --rm dm-align-trainer bash -c "
+docker-compose run --rm training bash -c "
   python -c 'import torch; print(f\"PyTorch: {torch.__version__}\")'
   python -c 'import unsloth; print(f\"Unsloth: {unsloth.__version__}\")'
   python -c 'import transformers; print(f\"Transformers: {transformers.__version__}\")'
@@ -777,10 +743,10 @@ docker-compose run --rm dm-align-trainer bash -c "
 nvidia-smi dmon -s u -c 1
 
 # View container logs
-docker-compose logs -f dm-align-trainer
+docker-compose logs -f training
 
 # Enter running container
-docker-compose exec dm-align-trainer bash
+docker-compose exec training bash
 ```
 
 ### C. Rollback Procedures

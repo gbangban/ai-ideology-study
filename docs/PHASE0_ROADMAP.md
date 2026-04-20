@@ -1,7 +1,7 @@
 # Phase 0 Roadmap - Infrastructure & Teacher Phase
 
 **Status**: ✅ COMPLETE  
-**Last Updated**: 2026-04-20T15:50:00-04:00
+**Last Updated**: 2026-04-20T12:36:51-04:00
 
 ---
 
@@ -160,9 +160,20 @@ Unsloth imported successfully
 | `test_dpo_training.py::TestDPOPairStructure` | 2 | 2 | 0 |
 | `test_dpo_training.py::TestDPOAlignment` | 2 | 2 | 0 |
 
-**Phase 0 Tests**: 23/23 passing (100%)
+**Phase 0 Tests**: 26/26 passing (100%)
 
-**Note**: Remaining DPO training tests (20+) require actual training infrastructure and are mock-dependent. These will be validated during Phase 1 (SFT Training).
+---
+
+## Phase 1 Status
+
+Phase 1 (SFT & DPO Training) is COMPLETE:
+
+- **SFT Training**: 23/23 unit tests passing
+- **DPO Training**: 18/18 unit tests passing
+- **E2E Integration**: 9/9 tests passing
+- **Total Phase 1 Tests**: 50/50 passing (100%)
+
+See `PHASE1_ROADMAP.md` for detailed Phase 1 progress.
 
 ---
 

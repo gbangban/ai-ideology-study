@@ -1,0 +1,21 @@
+# DPO Training Configuration
+# Direct Preference Optimization for Qwen 3.5 27B
+
+# Base Model (SFT Adapter)
+base_model: checkpoints/lora_adapters/sft_adapter
+
+# DPO-Specific Parameters
+beta: 0.1
+dpo_loss: sigmoid
+
+# Training Hyperparameters
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 4
+learning_rate: 0.0000005
+warmup_steps: 50
+max_steps: 500
+lr_scheduler_type: cosine
+
+# Paths
+dpo_pairs_path: data/processed/dpo_pairs.jsonl
+output_dir: checkpoints/lora_adapters/dpo_adapter

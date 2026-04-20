@@ -14,10 +14,9 @@ RUN python3.11 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
-# --- FIX: Match PyTorch to the CUDA 12.6 Host ---
-# Using cu124 is the current stable path for Blackwell support
-RUN pip install --no-cache-dir torch==2.5.1 torchvision torchaudio \
-    --index-url https://pytorch.org
+# Install PyTorch 2.7.0 with CUDA 12.6 support (latest stable for cu126)
+RUN pip install --no-cache-dir torch==2.7.0 torchvision torchaudio \
+    --index-url https://download.pytorch.org/whl/cu126
 
 # Install Unsloth (pinned to your required version)
 RUN pip install --no-cache-dir unsloth==2026.4.6

@@ -1,0 +1,39 @@
+# SFT Training Configuration
+# QLoRA Supervised Fine-Tuning for Qwen 3.5 27B
+
+# Model
+model_name: unsloth/Qwen3.5-27B-Instruct-unsloth-bnb-4bit
+max_seq_length: 4096
+load_in_4bit: true
+
+# 4-bit Quantization
+bnb_4bit_compute_dtype: bfloat16
+bnb_4bit_quant_type: nf4
+gradient_checkpointing: unsloth
+
+# LoRA Configuration
+r: 32
+lora_alpha: 32
+lora_dropout: 0.05
+target_modules:
+  - q_proj
+  - k_proj
+  - v_proj
+  - o_proj
+  - gate_proj
+  - up_proj
+  - down_proj
+
+# Training Hyperparameters
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 4
+learning_rate: 0.0002
+warmup_steps: 100
+max_steps: 1000
+num_train_epochs: 3
+lr_scheduler_type: cosine
+optim: adamw_8bit
+
+# Paths
+dataset_path: data/processed/sft_dataset.jsonl
+output_dir: checkpoints/lora_adapters/sft_adapter

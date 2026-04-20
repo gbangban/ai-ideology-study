@@ -1,10 +1,8 @@
-version: '3.8'
-
 services:
   training:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/Dockerfile
     container_name: ml-training
     runtime: nvidia
     deploy:
@@ -16,13 +14,13 @@ services:
               capabilities: [gpu]
     volumes:
       # Mount project code
-      - ../src:/app/src
-      - ../configs:/app/configs
-      - ../data:/app/data
-      - ../outputs:/app/outputs
-      - ../scripts:/app/scripts
+      - ./src:/app/src
+      - ./configs:/app/configs
+      - ./data:/app/data
+      - ./outputs:/app/outputs
+      - ./scripts:/app/scripts
       # Mount model cache to avoid re-downloading
-      - /home/ubuntu/.cache/huggingface:/root/.cache/huggingface
+      - /home/yao/.cache/huggingface:/root/.cache/huggingface
     environment:
       - HF_HOME=/root/.cache/huggingface
       - TRANSFORMERS_CACHE=/root/.cache/huggingface

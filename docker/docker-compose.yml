@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  training:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ml-training
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    volumes:
+      # Mount project code
+      - ../src:/app/src
+      - ../configs:/app/configs
+      - ../data:/app/data
+      - ../outputs:/app/outputs
+      - ../scripts:/app/scripts
+      # Mount model cache to avoid re-downloading
+      - /home/ubuntu/.cache/huggingface:/root/.cache/huggingface
+    environment:
+      - HF_HOME=/root/.cache/huggingface
+      - TRANSFORMERS_CACHE=/root/.cache/huggingface
+      - DATASETS_CACHE=/root/.cache/huggingface
+      - ACCELERATE_CACHE_DIR=/root/.cache/huggingface
+      - CUDA_VISIBLE_DEVICES=0
+      - PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
+    shm_size: '16gb'
+    stdin_open: true
+    tty: true
+    restart: unless-stopped

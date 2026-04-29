@@ -1,0 +1,39 @@
+# Unsloth Studio SFT Configuration
+# Upload via Studio -> Parameters -> Upload YAML
+# Maps to: QLoRA Supervised Fine-Tuning for Qwen3.5-27B
+
+training:
+  max_steps: 1000
+  num_train_epochs: 3
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 4
+  learning_rate: 0.0002
+  weight_decay: 0.01
+  lr_scheduler_type: cosine
+  warmup_steps: 100
+  gradient_checkpointing: unsloth
+  random_state: 3407
+  save_steps: 0
+  eval_steps: 0
+  packing: false
+  train_on_completions: false
+
+lora:
+  r: 32
+  lora_alpha: 32
+  lora_dropout: 0.05
+  use_rslora: false
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+
+logging:
+  report_to: none
+  wandb_project: dm-align-sft
+  tensorboard_dir: runs
+  log_frequency: 10

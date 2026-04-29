@@ -1,11 +1,11 @@
 #!/bin/bash
-# End-to-End Integration Tests - SFT & DPO Training Pipeline
-# Runs full training pipeline tests with mocked components
+# End-to-End Integration Tests - Studio-Integrated Pipeline
+# Runs tests for the Studio + Custom DPO training workflow
 
 set -e
 
 echo "========================================="
-echo "E2E Integration Tests - SFT & DPO Training"
+echo "E2E Integration Tests - Studio Pipeline"
 echo "========================================="
 echo ""
 
@@ -18,33 +18,38 @@ echo "Verbosity: $VERBOSE"
 echo "========================================="
 echo ""
 
-# Check if running in Docker container
-if [ -f "/.dockerenv" ]; then
-    echo "Running inside Docker container"
-    echo "GPU available: $(nvidia-smi --query-gpu=name --format=noheader,nocolumn 2>/dev/null || echo 'Unknown')"
-    echo ""
-else
-    echo "Running on host system"
-    echo "Consider running inside Docker for full GPU tests:"
-    echo "  docker-compose run --rm dm-align-trainer ./scripts/run_e2e_tests.sh"
-    echo ""
-fi
+echo "Running on host system (Studio workflow)"
+echo ""
 
-# Run unit tests first
+# Run teacher phase tests
 echo "========================================="
-echo "Step 1: Running SFT Training Unit Tests"
+echo "Step 1: Running Teacher Phase Tests"
+echo "========================================="
+python3 -m pytest $TEST_DIR/test_teacher.py -${VERBOSE} --tb=short
+TEACHER_EXIT=$?
+
+if [ $TEACHER_EXIT -ne 0 ]; then
+    echo "ERROR: Teacher phase tests failed"
+    exit $TEACHER_EXIT
+fi
+echo ""
+
+# Run SFT config tests (Studio handles training, we validate config)
+echo "========================================="
+echo "Step 2: Running SFT Config Validation Tests"
 echo "========================================="
 python3 -m pytest $TEST_DIR/test_sft_training.py -${VERBOSE} --tb=short
 SFT_EXIT=$?
 
 if [ $SFT_EXIT -ne 0 ]; then
-    echo "ERROR: SFT unit tests failed"
+    echo "ERROR: SFT config tests failed"
     exit $SFT_EXIT
 fi
 echo ""
 
+# Run DPO training tests
 echo "========================================="
-echo "Step 2: Running DPO Training Unit Tests"
+echo "Step 3: Running DPO Training Unit Tests"
 echo "========================================="
 python3 -m pytest $TEST_DIR/test_dpo_training.py -${VERBOSE} --tb=short
 DPO_EXIT=$?
@@ -55,9 +60,9 @@ if [ $DPO_EXIT -ne 0 ]; then
 fi
 echo ""
 
-# Run E2E tests
+# Run E2E integration tests
 echo "========================================="
-echo "Step 3: Running E2E Integration Tests"
+echo "Step 4: Running E2E Integration Tests"
 echo "========================================="
 python3 -m pytest $TEST_DIR/test_e2e.py -${VERBOSE} --tb=short
 E2E_EXIT=$?
@@ -73,40 +78,46 @@ echo ""
 echo "========================================="
 echo "Test Summary"
 echo "========================================="
-echo "SFT Unit Tests:      $([ $SFT_EXIT -eq 0 ] && echo 'PASS' || echo 'FAIL')"
+echo "Teacher Phase:       $([ $TEACHER_EXIT -eq 0 ] && echo 'PASS' || echo 'FAIL')"
+echo "SFT Config:          $([ $SFT_EXIT -eq 0 ] && echo 'PASS' || echo 'FAIL')"
 echo "DPO Unit Tests:      $([ $DPO_EXIT -eq 0 ] && echo 'PASS' || echo 'FAIL')"
 echo "E2E Integration:     $([ $E2E_EXIT -eq 0 ] && echo 'PASS' || echo 'PARTIAL - needs GPU')"
 echo "========================================="
 echo ""
 
-# Instructions for full pipeline test
+# Instructions for full pipeline
 echo "========================================="
-echo "Full Pipeline Test Instructions"
+echo "Full Pipeline Instructions"
 echo "========================================="
-echo "To run the complete training pipeline with real data:"
 echo ""
-echo "1. Download base model (~18GB):"
-echo "   huggingface-cli download bartowski/Qwen3.5-27B-Instruct-GGUF"
-echo "      Qwen3.5-27B-Instruct-Q4_K_M.gguf"
-echo "      --local-dir checkpoints/base_model"
+echo "Studio-Integrated Workflow:"
 echo ""
-echo "2. Generate synthetic dataset (4-6 hours):"
+echo "1. Install Unsloth Studio:"
+echo "   curl -fsSL https://unsloth.ai/install.sh | sh"
+echo "   unsloth studio -H 0.0.0.0 -p 8888"
+echo ""
+echo "2. Generate synthetic dataset (Teacher Phase):"
 echo "   ./scripts/run_teacher.sh"
 echo ""
-echo "3. Generate DPO pairs:"
+echo "3. Upload dataset to Studio (Local tab -> sharegpt format)"
+echo ""
+echo "4. Run SFT training in Studio UI:"
+echo "   - Upload configs/studio_sft_config.yaml via Parameters -> Upload"
+echo "   - Click Start Training"
+echo ""
+echo "5. Export SFT adapter from Studio (LoRA Only)"
+echo ""
+echo "6. Generate DPO pairs:"
 echo "   ./scripts/run_dpo_pair_generation.sh"
 echo ""
-echo "4. Run SFT training (2-3 hours):"
-echo "   ./scripts/run_sft.sh"
+echo "7. Run DPO training (custom script):"
+echo "   STUDIO_EXPORT_PATH=<studio-export-path> ./scripts/run_dpo.sh"
 echo ""
-echo "5. Run DPO training (1-2 hours):"
-echo "   ./scripts/run_dpo.sh"
-echo ""
-echo "Total estimated time: 8-13 hours"
+echo "8. Evaluate in Studio Chat / Model Arena"
+echo "9. Export final GGUF from Studio"
 echo "========================================="
 
-# Exit with appropriate code
-if [ $SFT_EXIT -ne 0 ] || [ $DPO_EXIT -ne 0 ]; then
+if [ $TEACHER_EXIT -ne 0 ] || [ $SFT_EXIT -ne 0 ] || [ $DPO_EXIT -ne 0 ]; then
     exit 1
 fi
 

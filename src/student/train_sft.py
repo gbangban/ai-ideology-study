@@ -1,6 +1,10 @@
 """
 SFT Training Script
 
+DEPRECATED: This script is replaced by Unsloth Studio UI for SFT training.
+Keep as reference only. Use configs/studio_sft_config.yaml uploaded via Studio
+-> Parameters -> Upload YAML instead.
+
 Supervised fine-tuning using QLoRA on the synthetic DM-aligned dataset.
 """
 

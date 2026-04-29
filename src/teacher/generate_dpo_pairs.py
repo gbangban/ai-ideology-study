@@ -4,6 +4,7 @@ DPO Pair Generation
 Generate preference pairs for DPO training from SFT dataset.
 """
 
+import argparse
 from typing import List
 from src.teacher.validators import validate_dm_response
 
@@ -159,4 +160,13 @@ def main(
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="DPO Pair Generation from SFT Dataset")
+    parser.add_argument("--sft-dataset-path", type=str, default="data/processed/sft_dataset.jsonl")
+    parser.add_argument("--output-path", type=str, default="data/processed/dpo_pairs.jsonl")
+
+    args = parser.parse_args()
+
+    main(
+        sft_dataset_path=args.sft_dataset_path,
+        output_path=args.output_path,
+    )

@@ -2,8 +2,12 @@
 DPO Training Script
 
 Direct Preference Optimization training on preference pairs.
+This remains custom code as Unsloth Studio does not support DPO in the UI.
+
+Workflow: Studio SFT -> Export LoRA -> This script -> Export final adapter
 """
 
+import argparse
 import json
 from pathlib import Path
 from typing import List, Dict
@@ -187,19 +191,38 @@ def train_dpo(model, tokenizer, pairs: List[dict], config: dict = None):
         return model
 
 
-def main(
-    sft_adapter_path: str = "checkpoints/lora_adapters/sft_adapter",
-    dpo_pairs_path: str = "data/processed/dpo_pairs.jsonl",
-    output_dir: str = "checkpoints/lora_adapters/dpo_adapter",
-):
-    """
-    Main entry point for DPO training.
+def main():
+    """Main entry point for DPO training with CLI argument parsing."""
+    parser = argparse.ArgumentParser(description="DPO Training for DM Alignment")
+    parser.add_argument(
+        "--sft-adapter-path",
+        type=str,
+        default="checkpoints/lora_adapters/sft_adapter",
+        help="Path to SFT adapter (local path or Studio export path)",
+    )
+    parser.add_argument(
+        "--dpo-pairs-path",
+        type=str,
+        default="data/processed/dpo_pairs.jsonl",
+        help="Path to DPO pairs JSONL file",
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=str,
+        default="checkpoints/lora_adapters/dpo_adapter",
+        help="Output directory for DPO adapter",
+    )
+    parser.add_argument(
+        "--studio-export-path",
+        type=str,
+        default=None,
+        help="Studio export path for SFT adapter (overrides --sft-adapter-path)",
+    )
 
-    Args:
-        sft_adapter_path: Path to SFT adapter
-        dpo_pairs_path: Path to DPO pairs
-        output_dir: Output directory for DPO adapter
-    """
+    args = parser.parse_args()
+
+    sft_adapter_path = args.studio_export_path or args.sft_adapter_path
+
     print(f"Loading SFT adapter from {sft_adapter_path}...")
 
     from unsloth import FastLanguageModel
@@ -209,15 +232,15 @@ def main(
         model_name=sft_adapter_path, max_seq_length=4096, load_in_4bit=True
     )
 
-    print(f"Loading DPO pairs from {dpo_pairs_path}...")
-    pairs = load_dpo_pairs(dpo_pairs_path)
+    print(f"Loading DPO pairs from {args.dpo_pairs_path}...")
+    pairs = load_dpo_pairs(args.dpo_pairs_path)
     print(f"Loaded {len(pairs)} DPO pairs")
 
     print("Starting DPO training...")
     model = train_dpo(model, tokenizer, pairs, DPO_CONFIG)
 
-    print(f"Saving DPO adapter to {output_dir}...")
-    save_dpo_adapter(model, tokenizer, output_dir)
+    print(f"Saving DPO adapter to {args.output_dir}...")
+    save_dpo_adapter(model, tokenizer, args.output_dir)
 
 
 if __name__ == "__main__":

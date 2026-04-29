@@ -1,6 +1,10 @@
 """
 SFT Training Configuration
 
+DEPRECATED: Configuration moved to Studio YAML format.
+See configs/studio_sft_config.yaml for the Studio-compatible config.
+Keep as reference only.
+
 Hyperparameters and configuration for QLoRA supervised fine-tuning
 of Qwen 3.5 27B model on RTX 5090 (32GB VRAM).
 """

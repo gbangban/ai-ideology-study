@@ -1,0 +1,11 @@
+#!/bin/bash
+# Docker Desktop CLI wrapper - bridges WSL2 to Windows named pipe
+# Usage: ddk <docker-command> [args]
+# Example: ddk logs ml-training
+#          ddk exec -it ml-training bash
+#          ddk inspect silly_blackwell
+#
+# Note: For docker inspect --format with Go templates, use single quotes
+# around the format string to prevent bash expansion:
+#   ddk inspect silly_blackwell --format '{{.Config.Image}}'
+exec /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe docker "$@"

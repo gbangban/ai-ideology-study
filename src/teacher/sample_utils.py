@@ -5,6 +5,7 @@ Provides functions to create and format ShareGPT-style samples
 without requiring llama.cpp dependency.
 """
 
+import json
 from typing import List
 
 
@@ -38,6 +39,3 @@ def format_as_jsonl(samples: List[dict]) -> str:
         str: JSONL formatted string
     """
     return "\n".join(json.dumps(sample) for sample in samples)
-
-
-import json

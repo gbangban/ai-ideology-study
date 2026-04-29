@@ -1,6 +1,9 @@
 """
 VRAM Monitoring Utilities
 
+DEPRECATED: Studio has built-in GPU monitor with live VRAM, utilization,
+temperature, and power readouts. Keep as reference only.
+
 Monitor GPU VRAM usage during training to ensure we stay within
 RTX 5090 (32GB) limits.
 """

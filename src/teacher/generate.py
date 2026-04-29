@@ -5,6 +5,7 @@ Generates DM-aligned synthetic training samples using llama.cpp
 with a GGUF quantized Qwen model.
 """
 
+import argparse
 import json
 from pathlib import Path
 from typing import List, Optional
@@ -220,4 +221,25 @@ def main(
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="DM-Aligned Synthetic Data Generation")
+    parser.add_argument("--model-path", type=str, default="checkpoints/base_model/Qwen3.5-27B-Instruct-Q4_K_M.gguf")
+    parser.add_argument("--questions-path", type=str, default="data/raw/questions.txt")
+    parser.add_argument("--output-path", type=str, default="data/processed/sft_dataset.jsonl")
+    parser.add_argument("--n-gpu-layers", type=int, default=-1)
+    parser.add_argument("--n-ctx", type=int, default=4096)
+    parser.add_argument("--temperature", type=float, default=0.7)
+    parser.add_argument("--max-retries", type=int, default=3)
+    parser.add_argument("--batch-size", type=int, default=50)
+
+    args = parser.parse_args()
+
+    main(
+        model_path=args.model_path,
+        questions_path=args.questions_path,
+        output_path=args.output_path,
+        n_gpu_layers=args.n_gpu_layers,
+        n_ctx=args.n_ctx,
+        temperature=args.temperature,
+        max_retries=args.max_retries,
+        batch_size=args.batch_size,
+    )

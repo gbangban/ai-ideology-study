@@ -1,9 +1,17 @@
 #!/bin/bash
 # SFT Training Phase - QLoRA Supervised Fine-Tuning
+#
+# DEPRECATED: This script is replaced by Unsloth Studio UI.
+# Use Studio -> Training section with configs/studio_sft_config.yaml instead.
+# Keep as reference for headless/server deployment.
+#
 # Trains QLoRA adapter on synthetic DM-aligned dataset
 
 set -e
 
+echo "========================================="
+echo "DEPRECATED: Use Unsloth Studio UI for SFT training"
+echo "See configs/studio_sft_config.yaml for Studio config"
 echo "========================================="
 echo "SFT Training Phase - QLoRA Fine-Tuning"
 echo "========================================="

@@ -57,6 +57,9 @@ Phase 1 focuses on implementing the SFT (Supervised Fine-Tuning) and DPO (Direct
 - [x] `src/utils/vram_monitor.py` - VRAM monitoring utilities
 - [x] `scripts/run_sft.sh` - Orchestration script
 
+#### Output
+- [x] `checkpoints/lora_adapters/sft_adapter/` - SFT adapter directory with `.safetensors` files
+
 #### Configuration Summary
 ```python
 SFT_CONFIG = {
@@ -108,6 +111,10 @@ SFT_CONFIG = {
 
 #### Acceptance Criteria
 - [x] All 9 E2E unit tests passing (100%)
+- [x] E2E tests can run inside Docker container with `./scripts/run_e2e_tests.sh`
+
+#### Acceptance Criteria
+- [x] All 9 E2E unit tests passing (100%)
 - [ ] Full pipeline test with real GPU/data (requires Docker container)
 
 ---
@@ -148,6 +155,9 @@ SFT_CONFIG = {
 - [x] `src/student/dpo_config.py` - DPO training configuration
 - [x] `src/student/train_dpo.py` - DPO training script
 - [x] `scripts/run_dpo.sh` - Orchestration script
+
+#### Output
+- [x] `checkpoints/lora_adapters/dpo_adapter/` - DPO adapter directory with `.safetensors` and `scheduler.pt`
 
 #### Configuration Summary
 ```python
@@ -238,21 +248,21 @@ To run the complete training pipeline with real GPU/data:
 ### Docker Image Details
 - **Image**: `ml-lora-training-training:latest`
 - **Size**: ~12GB (includes CUDA, PyTorch, Unsloth, llama-cpp-python)
-- **CUDA Version**: 12.6 (runtime 12.8)
-- **PyTorch Version**: 2.10.0+cu128
+- **CUDA Version**: 12.6
+- **PyTorch Version**: 2.7.0
 - **Unsloth Version**: 2026.4.6
 - **GPU**: NVIDIA GeForce RTX 5090 (32GB VRAM)
 
 ### Test Execution
 ```bash
 # Run all Phase 1 tests
-python -m pytest src/tests/test_sft_training.py src/tests/test_dpo_training.py -v
+python3 -m pytest src/tests/test_sft_training.py src/tests/test_dpo_training.py -v
 
 # Run all tests (Phase 0 + Phase 1)
-python -m pytest src/tests/test_teacher.py src/tests/test_sft_training.py src/tests/test_dpo_training.py -v
+python3 -m pytest src/tests/test_teacher.py src/tests/test_sft_training.py src/tests/test_dpo_training.py -v
 
 # Run E2E integration tests
-python -m pytest src/tests/test_e2e.py -v
+python3 -m pytest src/tests/test_e2e.py -v
 
 # Run all tests with orchestration script
 ./scripts/run_e2e_tests.sh

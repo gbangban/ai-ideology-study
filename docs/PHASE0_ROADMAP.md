@@ -25,20 +25,19 @@ Phase 0 focuses on establishing the Docker infrastructure and implementing the t
 - [x] `test_docker.py::test_version_checks` - **PASSING** - PyTorch 2.10.0+cu128 installed
 
 #### Implementation Artifacts
-- [x] `docker/Dockerfile` - CUDA 12.6 base with PyTorch 2.10.0 (auto-upgraded from 2.7.0)
-- [x] `docker/docker-compose.yml` - GPU passthrough configuration
-- [x] `docker/.dockerignore` - Docker ignore rules
+- [x] `docker/Dockerfile` - CUDA 12.6 base with PyTorch 2.7.0
+- [x] `docker-compose.yml` - GPU passthrough configuration (service: `training`)
 
 #### Fixes Applied
 1. Updated PyTorch version from 2.5.1 → 2.7.0 (2.5.1 not available for cu126)
 2. Fixed index URL: `https://download.pytorch.org/whl/cu126`
-3. PyTorch auto-resolved to 2.10.0+cu128 (latest compatible with Unsloth)
+3. llama-cpp-python compiled with `CMAKE_ARGS="-DGGML_CUDA=ON"` for CUDA support
 
 #### Verified Output
 ```
-PyTorch: 2.10.0+cu128
+PyTorch: 2.7.0
 CUDA available: True
-CUDA version: 12.8
+CUDA version: 12.6
 GPU: NVIDIA GeForce RTX 5090
 Unsloth imported successfully
 ```
@@ -48,7 +47,7 @@ Unsloth imported successfully
 - [x] GPU visible inside container via `nvidia-smi`
 - [x] PyTorch reports CUDA available
 - [x] Unsloth imports without errors
-- [x] All version checks pass (PyTorch 2.10.0, Unsloth 2026.4.6)
+- [x] All version checks pass (PyTorch 2.7.0, Unsloth 2026.4.6)
 
 ---
 
@@ -182,8 +181,8 @@ See `PHASE1_ROADMAP.md` for detailed Phase 1 progress.
 ### Docker Image Details
 - **Image**: `ml-lora-training-training:latest`
 - **Size**: ~12GB (includes CUDA, PyTorch, Unsloth, llama-cpp-python)
-- **CUDA Version**: 12.6 (runtime 12.8)
-- **PyTorch Version**: 2.10.0+cu128
+- **CUDA Version**: 12.6
+- **PyTorch Version**: 2.7.0
 - **Unsloth Version**: 2026.4.6
 - **GPU**: NVIDIA GeForce RTX 5090 (32GB VRAM)
 

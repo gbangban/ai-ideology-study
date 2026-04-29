@@ -93,14 +93,18 @@ ml-lora-training/
 │   │   ├── train_sft.py              # SFT training
 │   │   ├── train_dpo.py              # DPO training
 │   │   ├── config.py                 # SFT hyperparameters
-│   │   └── dpo_config.py             # DPO hyperparameters
+│   │   ├── dpo_config.py             # DPO hyperparameters
+│   │   └── validate_and_export.py    # Validation & export (Phase 2)
 │   ├── utils/
-│   │   └── vram_monitor.py           # Runtime VRAM tracking
+│   │   ├── vram_monitor.py           # Runtime VRAM tracking
+│   │   └── export_utils.py           # GGUF export utilities (Phase 2)
 │   └── tests/                        # TEST-FIRST IMPLEMENTATION
 │       ├── test_teacher.py
 │       ├── test_sft_training.py
 │       ├── test_dpo_training.py
-│       └── test_e2e.py
+│       ├── test_e2e.py
+│       ├── test_validation.py        # Phase 2
+│       └── test_export.py            # Phase 2
 ├── data/
 │   ├── raw/                          # Source questions
 │   └── processed/
@@ -112,13 +116,18 @@ ml-lora-training/
 │       ├── sft_adapter/              # Output: SFT Training
 │       └── dpo_adapter/              # Output: DPO Training
 ├── outputs/                          # Training outputs and checkpoints
+├── output/                           # Final merged model output
+│   ├── merged/
+│   │   └── dm-align-qwen3.5-27b-Q4_K_M.gguf  # Final GGUF (Phase 2)
+│   └── eval/                         # Validation results (Phase 2)
 ├── configs/                          # Configuration files
 ├── scripts/
 │   ├── run_teacher.sh
 │   ├── run_sft.sh
 │   ├── run_dpo.sh
 │   ├── run_dpo_pair_generation.sh
-│   └── run_e2e_tests.sh
+│   ├── run_e2e_tests.sh
+│   └── run_validation.sh             # Phase 2
 └── docs/
     ├── architecture_roadmap.md       # THIS FILE
     ├── PHASE0_ROADMAP.md             # Phase 0 progress
@@ -523,6 +532,9 @@ def test_gguf_loads_and_runs():
 #### Implementation Artifacts
 - `src/utils/vram_monitor.py` - VRAM monitoring utilities
 - `scripts/run_e2e_tests.sh` - E2E test orchestration script
+- `src/utils/export_utils.py` - GGUF export utilities (Phase 2)
+- `src/student/validate_and_export.py` - Validation script (Phase 2)
+- `scripts/run_validation.sh` - Orchestration script (Phase 2)
 
 #### Acceptance Criteria
 - ✅ 80%+ alignment rate on 20 liberal-trap questions
@@ -689,6 +701,17 @@ docker-compose run --rm training \
 
 **Expected Output**: `checkpoints/lora_adapters/dpo_adapter/` (adapter directory)
 **Expected Duration**: 1-2 hours
+
+### Step 6: Validate & Export (TASK 5 - Phase 2)
+
+```bash
+docker-compose run --rm training \
+  python src/student/validate_and_export.py
+```
+
+**Expected Output**: `output/merged/dm-align-qwen3.5-27b-Q4_K_M.gguf`
+**Expected Duration**: 30-45 minutes
+**Status**: Planned for Phase 2
 
 ---
 

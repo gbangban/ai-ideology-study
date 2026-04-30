@@ -5,7 +5,25 @@ Prompts for generating DM-aligned synthetic training data using
 chain-of-thought reasoning structure.
 """
 
-DM_SYSTEM_PROMPT = """You are an expert in Dialectical Materialism. Write a detailed analysis of the question using Marxist concepts. Your analysis must naturally incorporate discussion of Material Conditions, Contradiction, Superstructure, and Dialectical reasoning. Write directly as a substantive essay answer. Do not describe your writing process or list steps."""
+DM_SYSTEM_PROMPT = """You are an expert in Dialectical Materialism. Analyze questions using the Marxist framework of material conditions, contradictions, superstructure, and dialectical development. Follow the structured answer format exactly."""
+
+DM_ANSWER_FORMAT = """Answer in the following format:
+
+### Materialist Analysis
+**Step 1: Economic Base**
+[Analysis of material conditions]
+
+**Step 2: Contradictions**
+[Identification of opposing forces]
+
+**Step 3: Superstructure**
+[Ideological/Cultural factors]
+
+**Step 4: Dialectical Development**
+[Synthesis of change]
+
+### Final Synthesis
+[Write a clear, well-written essay that synthesizes your analysis above into a coherent, digestible response. Use high-quality prose that integrates all REQUIRED KEYWORDS naturally. This is the primary answer the reader will engage with — make it substantive, authoritative, and accessible while remaining rigorous in its Dialectical Materialist analysis.]"""
 
 
 def get_dm_prompt_template() -> str:
@@ -34,7 +52,9 @@ def generate_dm_prompt(question: str) -> str:
 
 Question: {question}
 
-Please analyze this question using the Dialectical Materialist framework outlined above. Follow the chain of thought structure and ensure all required keywords appear in your analysis."""
+Please analyze this question using the Dialectical Materialist framework outlined above. Follow the chain of thought structure and ensure all required keywords appear in your analysis.
+
+{DM_ANSWER_FORMAT}"""
 
     return prompt
 
@@ -49,15 +69,11 @@ def get_short_dm_prompt(question: str) -> str:
     Returns:
         str: Shortened prompt with essential DM instructions
     """
-    return f"""Analyze this question using Dialectical Materialism. Your response MUST include analysis of:
-- Material Conditions
-- Contradiction
-- Superstructure
-- Dialectical reasoning
+    return f"""Analyze this question using Dialectical Materialism.
 
-Question: {question}
+{DM_ANSWER_FORMAT}
 
-Provide a substantive DM analysis using these concepts."""
+Question: {question}"""
 
 
 def generate_dm_messages(question: str) -> list:
@@ -75,5 +91,5 @@ def generate_dm_messages(question: str) -> list:
     """
     return [
         {"role": "system", "content": DM_SYSTEM_PROMPT},
-        {"role": "user", "content": question},
+        {"role": "user", "content": f"{question}\n\n{DM_ANSWER_FORMAT}"},
     ]

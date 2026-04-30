@@ -31,7 +31,7 @@ def generate_single_sample(
     question: str,
     max_retries: int = 3,
     temperature: float = 0.7,
-    max_tokens: int = 1024,
+    max_tokens: int = 2048,
 ) -> dict:
     """
     Generate a single DM-aligned sample with retry logic.
@@ -174,7 +174,7 @@ def main(
     questions_path: str = "data/raw/questions_clean.jsonl",
     output_path: str = "data/processed/sft_dataset.jsonl",
     n_gpu_layers: int = -1,
-    n_ctx: int = 4096,
+    n_ctx: int = 8192,
     temperature: float = 0.7,
     max_retries: int = 3,
     batch_size: int = 50,
@@ -229,7 +229,7 @@ if __name__ == "__main__":
     parser.add_argument("--questions-path", type=str, default="data/raw/questions_clean.jsonl")
     parser.add_argument("--output-path", type=str, default="data/processed/sft_dataset.jsonl")
     parser.add_argument("--n-gpu-layers", type=int, default=-1)
-    parser.add_argument("--n-ctx", type=int, default=4096)
+    parser.add_argument("--n-ctx", type=int, default=8192)
     parser.add_argument("--temperature", type=float, default=0.7)
     parser.add_argument("--max-retries", type=int, default=3)
     parser.add_argument("--batch-size", type=int, default=50)

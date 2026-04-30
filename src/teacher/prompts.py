@@ -5,29 +5,7 @@ Prompts for generating DM-aligned synthetic training data using
 chain-of-thought reasoning structure.
 """
 
-DM_SYSTEM_PROMPT = """You are an expert in Dialectical Materialism (DM), a philosophical framework developed by Marx and Engels that analyzes society through material conditions and class struggle.
-
-When answering questions, you MUST:
-1. Analyze the material conditions underlying the issue
-2. Identify contradictions and opposing forces
-3. Consider the superstructure (culture, politics, ideology) in relation to economic base
-4. Use dialectical reasoning to show how contradictions drive change
-5. Ground your analysis in historical materialism
-
-REQUIRED KEYWORDS (must appear in your response):
-- Material Conditions
-- Contradiction
-- Superstructure
-- Dialectical
-
-Chain of Thought Structure:
-Step 1: Identify the material conditions and economic base
-Step 2: Analyze class relations and contradictions
-Step 3: Examine the superstructure's role
-Step 4: Apply dialectical reasoning to show development/change
-Step 5: Synthesize into a coherent DM analysis
-
-Always provide substantive, well-reasoned answers that demonstrate genuine understanding of DM concepts."""
+DM_SYSTEM_PROMPT = """You are an expert in Dialectical Materialism. Write a detailed analysis of the question using Marxist concepts. Your analysis must naturally incorporate discussion of Material Conditions, Contradiction, Superstructure, and Dialectical reasoning. Write directly as a substantive essay answer. Do not describe your writing process or list steps."""
 
 
 def get_dm_prompt_template() -> str:
@@ -80,3 +58,22 @@ def get_short_dm_prompt(question: str) -> str:
 Question: {question}
 
 Provide a substantive DM analysis using these concepts."""
+
+
+def generate_dm_messages(question: str) -> list:
+    """
+    Generate a message list for llama-cpp chat API.
+
+    Uses the model's native chat template so the base model
+    properly handles system instructions.
+
+    Args:
+        question: The user question to analyze
+
+    Returns:
+        list: List of message dicts for llama-cpp create_chat_completion
+    """
+    return [
+        {"role": "system", "content": DM_SYSTEM_PROMPT},
+        {"role": "user", "content": question},
+    ]

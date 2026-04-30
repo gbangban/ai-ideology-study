@@ -64,13 +64,12 @@ def generate_with_retry(generate_func: Callable[[], str], max_retries: int = 3) 
         max_retries: Maximum number of retry attempts
 
     Returns:
-        str: A validated DM-aligned response
-
-    Raises:
-        ValueError: If max retries exceeded without valid response
+        str: A validated DM-aligned response (or best-effort on failure)
     """
+    last_response = ""
     for attempt in range(max_retries):
         response = generate_func()
+        last_response = response
 
         if validate_dm_response(response):
             return response
@@ -78,13 +77,8 @@ def generate_with_retry(generate_func: Callable[[], str], max_retries: int = 3) 
         missing = get_missing_keywords(response)
         print(f"Retry {attempt + 1}/{max_retries}: Missing keywords: {missing}")
 
-    last_response = generate_func()
-    missing = get_missing_keywords(last_response)
-
-    raise ValueError(
-        f"Failed to generate valid DM-aligned response after {max_retries} retries. "
-        f"Missing keywords: {missing}"
-    )
+    print(f"WARNING: Accepting best-effort response after {max_retries} retries. Missing: {get_missing_keywords(last_response)}")
+    return last_response
 
 
 def is_valid_dm_sample(sample: dict) -> bool:

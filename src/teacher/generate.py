@@ -10,7 +10,7 @@ import json
 from pathlib import Path
 from typing import List, Optional
 
-from src.teacher.prompts import generate_dm_prompt
+from src.teacher.prompts import generate_dm_prompt, generate_dm_messages
 from src.teacher.validators import (
     validate_dm_response,
     generate_with_retry,
@@ -46,16 +46,15 @@ def generate_single_sample(
     Returns:
         dict: Validated ShareGPT-format sample
     """
-    prompt = generate_dm_prompt(question)
+    messages = generate_dm_messages(question)
 
     def generate_response():
-        response = llm(
-            prompt=prompt,
+        response = llm.create_chat_completion(
+            messages=messages,
             max_tokens=max_tokens,
             temperature=temperature,
-            stop=["Question:", "User:", "\n\n"],
         )
-        return response["choices"][0]["text"]
+        return response["choices"][0]["message"]["content"]
 
     answer = generate_with_retry(generate_response, max_retries=max_retries)
 
@@ -136,7 +135,7 @@ def save_checkpoint(samples: List[dict], completed_count: int, checkpoint_path: 
 
 def load_questions(filepath: str) -> List[str]:
     """
-    Load questions from a text file (one per line).
+    Load questions from a text file (one per line) or JSONL file.
 
     Args:
         filepath: Path to questions file
@@ -144,8 +143,12 @@ def load_questions(filepath: str) -> List[str]:
     Returns:
         List[str]: List of questions
     """
+    path = Path(filepath)
     with open(filepath, "r") as f:
-        questions = [line.strip() for line in f if line.strip()]
+        if path.suffix.lower() == ".jsonl":
+            questions = [json.loads(line).get("question", line.strip()) for line in f if line.strip()]
+        else:
+            questions = [line.strip() for line in f if line.strip()]
 
     return questions
 
@@ -168,7 +171,7 @@ def save_samples(samples: List[dict], output_path: str):
 
 def main(
     model_path: str = "checkpoints/base_model/Qwen3.5-27B-Instruct-Q4_K_M.gguf",
-    questions_path: str = "data/raw/questions.txt",
+    questions_path: str = "data/raw/questions_clean.jsonl",
     output_path: str = "data/processed/sft_dataset.jsonl",
     n_gpu_layers: int = -1,
     n_ctx: int = 4096,
@@ -223,7 +226,7 @@ def main(
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="DM-Aligned Synthetic Data Generation")
     parser.add_argument("--model-path", type=str, default="checkpoints/base_model/Qwen3.5-27B-Instruct-Q4_K_M.gguf")
-    parser.add_argument("--questions-path", type=str, default="data/raw/questions.txt")
+    parser.add_argument("--questions-path", type=str, default="data/raw/questions_clean.jsonl")
     parser.add_argument("--output-path", type=str, default="data/processed/sft_dataset.jsonl")
     parser.add_argument("--n-gpu-layers", type=int, default=-1)
     parser.add_argument("--n-ctx", type=int, default=4096)

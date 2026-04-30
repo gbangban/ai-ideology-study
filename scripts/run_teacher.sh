@@ -6,7 +6,7 @@ set -e
 
 # Configuration
 MODEL_PATH="${MODEL_PATH:-checkpoints/base_model/Qwen3.5-27B-Instruct-Q4_K_M.gguf}"
-QUESTIONS_PATH="${QUESTIONS_PATH:-data/raw/questions.txt}"
+QUESTIONS_PATH="${QUESTIONS_PATH:-data/raw/questions_clean.jsonl}"
 OUTPUT_PATH="${OUTPUT_PATH:-data/processed/sft_dataset.jsonl}"
 CHECKPOINT_PATH="data/processed/checkpoint.json"
 TEMPERATURE="${TEMPERATURE:-0.7}"

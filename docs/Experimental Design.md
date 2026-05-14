@@ -1,6 +1,6 @@
 # DM-Align: Experimental Design Document
 
-> **Version**: 2.0 | **Date**: May 14, 2026 | **Status**: Draft
+> **Version**: 2.2 | **Date**: May 14, 2026 | **Status**: Draft
 > **Base Model**: `unsloth/Qwen3.5-27B-Instruct-unsloth-bnb-4bit`
 > **Hardware**: RTX 5090 (32GB), Unsloth Studio (SFT) + custom DPO
 
@@ -150,13 +150,14 @@ Questions are organized into five types, each serving a distinct role in trainin
 
 A good alignment question satisfies all of:
 
-1. **Ideologically neutral phrasing**: No DM terminology or framework names in the question
-2. **No framework cues**: Never asks the model to "apply X lens" or "analyze through Y framework"
-3. **Plausible liberal answer**: A standard liberal-reformist response exists and is the model's statistical default
-4. **Structurally superior DM answer**: The DM analysis explains phenomena the liberal answer handwaves or treats as exogenous
-5. **Different conclusion, not different vocabulary**: The DM answer reaches a substantively different conclusion, not just rephrases the liberal answer with DM terms
-6. **Grounded in concrete phenomena**: Connects to observable reality, not abstract theory alone
-7. **Adversarial signal**: The base model's strongest completion is wrong from a DM standpoint
+1. **Individually authored (Hard Constraint)**: Every question is individually conceived and written by a human. No question is produced programmatically — not by LLMs, not by template engines, not by pool rotation, not by batch distribution scripts, and not by any automated synthesis tool. Each question is a unique, standalone artifact authored from scratch. Programmatically assembled questions (even from human-written pools) inherit structural repetition, formulaic patterns, and distribution artifacts that undermine alignment training quality. Generator scripts (`generate_questions.py`, `generate.py`, `run_teacher.sh`) have been removed; questions are placed directly into the dataset as individual entries.
+2. **Ideologically neutral phrasing**: No DM terminology or framework names in the question
+3. **No framework cues**: Never asks the model to "apply X lens" or "analyze through Y framework"
+4. **Plausible liberal answer**: A standard liberal-reformist response exists and is the model's statistical default
+5. **Structurally superior DM answer**: The DM analysis explains phenomena the liberal answer handwaves or treats as exogenous
+6. **Different conclusion, not different vocabulary**: The DM answer reaches a substantively different conclusion, not just rephrases the liberal answer with DM terms
+7. **Grounded in concrete phenomena**: Connects to observable reality, not abstract theory alone
+8. **Adversarial signal**: The base model's strongest completion is wrong from a DM standpoint
 
 ---
 
@@ -247,7 +248,7 @@ Tags are stored in `questions.json`/`questions.jsonl` for planning and tracking.
 - `data/processed/sft_dataset.jsonl` — contains only `conversations` arrays, no tags
 - `data/processed/dpo_pairs.jsonl` — contains only `chosen`/`rejected` pairs, no tags
 
-The generation pipeline (`src/teacher/generate.py`, `src/teacher/sample_utils.py`) does not pass tags into training samples. Question text remains framework-neutral per the Core Constraint (§3).
+The generation pipeline does not pass tags into training samples. Question text remains framework-neutral per the Core Constraint (§3).
 
 ---
 
@@ -256,14 +257,16 @@ The generation pipeline (`src/teacher/generate.py`, `src/teacher/sample_utils.py
 ### 4.1 Actual Workflow
 
 ```
-Neutral Questions → [You write them] → Unsloth Studio (Teacher answers) → SFT Training → DPO Training → Eval
+Individually Authored Questions → [Human written, placed directly into dataset] → Unsloth Studio (Teacher answers) → SFT Training → DPO Training → Eval
 ```
 
-**Note**: The existing `src/teacher/generate.py` pipeline (local GGUF generation) is **not currently in use**. The actual workflow is:
+**Question Sourcing (Hard Constraint)**: All training questions are individually conceived and written by a human. No question is produced programmatically — not by LLMs, templates, pool rotation, batch distribution, or any automated tool. Each question is authored from scratch and placed directly into the dataset. Generator scripts (`generate_questions.py`, `generate.py`, `run_teacher.sh`) have been removed to enforce this constraint.
 
-1. **Question generation**: Questions are written and placed in `data/raw/questions_clean.jsonl`
+**Note**: The teacher answer generation pipeline (`src/teacher/generate.py`, `scripts/run_teacher.sh`) has been removed. The actual workflow is:
+
+1. **Question authoring**: Questions are individually written and placed into `data/raw/questions.json` / `data/raw/questions_clean.jsonl`
 2. **Teacher answers**: Questions are fed into Unsloth Studio, which generates DM-aligned responses using the base model with DM system prompts
-3. **SFT dataset**: Studio outputs are collected into ShareGPT-format JSONL 
+3. **SFT dataset**: Studio outputs are collected into ShareGPT-format JSONL
 4. **SFT training**: Dataset is uploaded to Unsloth Studio for QLoRA SFT
 5. **DPO training**: Dataset uploaded to unsloth studio for training
 6. **Eval**: Trained model is tested against neutral questions
@@ -508,3 +511,4 @@ The trained model is designed to enable these capabilities, ordered by complexit
 | 1.0 | May 13, 2026 | Initial experimental design based on analysis of current question set and pipeline |
 | 2.0 | May 14, 2026 | Removed "what this is not/is" framing; removed all framework names from questions; added adversarial questions (Type E); added cross-domain generalization; revised eval to measure reasoning divergence from baseline; added multi-turn reasoning test; added reasoning trace inspection; added negative data for preserving general reasoning; added continued pretraining section; revised question quality criteria; updated success metrics |
 | 2.1 | May 14, 2026 | Added topic taxonomy system (§4): two-axis tagging (11 categories, 60 subtags × 7 epochs), auto-tagging, deduplication pipeline, diversity metrics, metadata isolation design |
+| 2.2 | May 14, 2026 | Replaced "hand-crafted" with "individually authored" — clarified constraint means each question is conceived and written from scratch, not programmatically templated, pooled, or distributed; removed generator scripts (`generate_questions.py`, `generate.py`, `run_teacher.sh`); updated §5.1 workflow |

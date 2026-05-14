@@ -859,6 +859,21 @@
     ]
   },
   {
+    "id": 60,
+    "type": "C",
+    "type_label": "Application",
+    "question": "A charity's disaster relief prioritizes communities with religious institutions that can coordinate distribution. How might we understand the relationship between faith networks and aid access?",
+    "cross_domain": true,
+    "axis1": [
+      "I1",
+      "D1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
     "id": 61,
     "type": "C",
     "type_label": "Application",
@@ -1109,6 +1124,21 @@
     ]
   },
   {
+    "id": 78,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A university's financial aid package does not consider the additional costs of disability accommodations. How might we understand the relationship between educational access and intersectional need?",
+    "cross_domain": true,
+    "axis1": [
+      "K1",
+      "D1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
     "id": 79,
     "type": "C",
     "type_label": "Application",
@@ -1282,6 +1312,20 @@
     "axis1": [
       "G3",
       "I1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 91,
+    "type": "C",
+    "type_label": "Application",
+    "question": "A hiring algorithm flags resumes from certain neighborhoods as lower quality. What forces shape whose applications get filtered out?",
+    "cross_domain": true,
+    "axis1": [
+      "B3",
       "cross"
     ],
     "axis2": [
@@ -2486,7 +2530,7 @@
     "id": 193,
     "type": "B",
     "type_label": "Contrast",
-    "question": "Why is care work \u2014 childcare, eldercare, domestic labor \u2014 typically unpaid or underpaid compared to other labor?",
+    "question": "Why is care work — childcare, eldercare, domestic labor — typically unpaid or underpaid compared to other labor?",
     "cross_domain": false,
     "axis1": [
       "C1",
@@ -3346,6 +3390,20 @@
     ]
   },
   {
+    "id": 266,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A restaurant chain uses traditional designs from a culture it does not belong to. What does this practice reveal about who benefits from cultural borrowing?",
+    "cross_domain": true,
+    "axis1": [
+      "B3",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
     "id": 267,
     "type": "C",
     "type_label": "Application",
@@ -3951,6 +4009,20 @@
     "question": "If an industry is voluntary and workers choose to participate, does that make its conditions acceptable?",
     "cross_domain": false,
     "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 318,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "A city's police budget receives more funding than its mental health services. What structural factors explain this allocation choice?",
+    "cross_domain": true,
+    "axis1": [
+      "B1",
+      "cross"
+    ],
     "axis2": [
       "EP6"
     ]
@@ -5166,11 +5238,9 @@
     "question": "How might economic security be reorganized so that people are not dependent on selling their labor to survive?",
     "cross_domain": true,
     "axis1": [
-      "A4"
-    ],
-    "axis2": [
       "EP6"
-    ]
+    ],
+    "axis2": []
   },
   {
     "id": 410,
@@ -5248,6 +5318,20 @@
     "cross_domain": false,
     "axis1": [
       "A5"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 416,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A company's diversity report highlights demographic numbers but does not address promotion patterns. How might we understand the difference between representation and power?",
+    "cross_domain": true,
+    "axis1": [
+      "B3",
+      "cross"
     ],
     "axis2": [
       "EP6"
@@ -5378,6 +5462,20 @@
     ]
   },
   {
+    "id": 426,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A social media platform removes content from certain regions while leaving similar content from others untouched. What does this selective enforcement reveal about power?",
+    "cross_domain": true,
+    "axis1": [
+      "B3",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
     "id": 427,
     "type": "A",
     "type_label": "Neutral Framing",
@@ -5497,6 +5595,20 @@
     "axis1": [
       "C3",
       "F3"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 436,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A film studio casts white actors in roles written as characters of color. What does this practice tell us about who controls cultural representation?",
+    "cross_domain": true,
+    "axis1": [
+      "B3",
+      "cross"
     ],
     "axis2": [
       "EP6"
@@ -6148,6 +6260,21 @@
     ]
   },
   {
+    "id": 485,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "A town holds a referendum on building affordable housing. What structural barriers prevent residents from voting for projects that would help their neighbors?",
+    "cross_domain": true,
+    "axis1": [
+      "B1",
+      "J1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
     "id": 486,
     "type": "A",
     "type_label": "Neutral Framing",
@@ -6259,6 +6386,21 @@
     ]
   },
   {
+    "id": 494,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "A neighborhood's tree canopy coverage correlates with income levels. What conditions produce this environmental inequality?",
+    "cross_domain": true,
+    "axis1": [
+      "B1",
+      "J1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
     "id": 495,
     "type": "B",
     "type_label": "Contrast",
@@ -6275,9 +6417,7 @@
     "type_label": "Contrast",
     "question": "Why do market-based solutions to social problems tend to expand the industries that profit from those problems rather than solving them?",
     "cross_domain": false,
-    "axis1": [
-      "A1"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -7057,9 +7197,7 @@
     "type_label": "Contrast",
     "question": "Why do health disparities between rich and poor countries persist even as global GDP grows?",
     "cross_domain": false,
-    "axis1": [
-      "D3"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -7131,10 +7269,7 @@
     "type_label": "Contrast",
     "question": "Why do environmental regulations that focus on end-of-pipe solutions miss the need to transform the production processes that generate pollution?",
     "cross_domain": false,
-    "axis1": [
-      "C3",
-      "J3"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -7196,9 +7331,7 @@
     "type_label": "Contrast",
     "question": "What does the focus on 'voter education' overlook about the structural barriers that prevent equal political participation?",
     "cross_domain": false,
-    "axis1": [
-      "D4"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -7375,11 +7508,9 @@
     "question": "What makes the current distribution of wealth seem natural when it is the product of specific historical processes?",
     "cross_domain": true,
     "axis1": [
-      "D2"
-    ],
-    "axis2": [
       "EP6"
-    ]
+    ],
+    "axis2": []
   },
   {
     "id": 586,
@@ -7459,10 +7590,10 @@
     "type_label": "Neutral Framing",
     "question": "How might we understand the relationship between economic power and political power without assuming they are separate spheres?",
     "cross_domain": true,
-    "axis1": [],
-    "axis2": [
+    "axis1": [
       "EP6"
-    ]
+    ],
+    "axis2": []
   },
   {
     "id": 593,
@@ -7614,9 +7745,7 @@
     "type_label": "Contrast",
     "question": "Why do financial products that transfer risk from corporations to individuals consistently expand over time?",
     "cross_domain": false,
-    "axis1": [
-      "C3"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -7860,9 +7989,7 @@
     "type_label": "Contrast",
     "question": "Why do food labeling and certification schemes that claim to help consumers make ethical choices primarily benefit the companies that pay for certification?",
     "cross_domain": false,
-    "axis1": [
-      "D5"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -7939,9 +8066,7 @@
     "type_label": "Contrast",
     "question": "Why do infrastructure investments that claim to stimulate economic growth consistently benefit property owners and developers more than workers?",
     "cross_domain": false,
-    "axis1": [
-      "J1"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -7980,9 +8105,7 @@
     "type_label": "Contrast",
     "question": "What does treating infrastructure decay as a funding problem miss about the political choices that determine which infrastructure gets maintained?",
     "cross_domain": false,
-    "axis1": [
-      "J1"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -7993,10 +8116,7 @@
     "type_label": "Contrast",
     "question": "Why do public-private partnerships for infrastructure consistently transfer public assets to private control while publicizing the risks?",
     "cross_domain": false,
-    "axis1": [
-      "C3",
-      "J1"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -8057,9 +8177,7 @@
     "type_label": "Contrast",
     "question": "What does the narrative of 'corporate innovation' leave out about the public research and infrastructure that private companies rely on?",
     "cross_domain": false,
-    "axis1": [
-      "J1"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -8103,9 +8221,7 @@
     "type_label": "Contrast",
     "question": "What does the emphasis on 'corporate transparency' overlook about the difference between disclosing information and changing behavior?",
     "cross_domain": false,
-    "axis1": [
-      "C3"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -8138,9 +8254,7 @@
     "type_label": "Contrast",
     "question": "Why do ESG investing frameworks that claim to align profit with purpose consistently allow the same underlying accumulation logic to continue?",
     "cross_domain": false,
-    "axis1": [
-      "A1"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -8390,9 +8504,7 @@
     "type_label": "Contrast",
     "question": "What does the narrative of 'tough on crime' policies leave out about the industries and interests that benefit from mass incarceration?",
     "cross_domain": false,
-    "axis1": [
-      "B1"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -8403,9 +8515,7 @@
     "type_label": "Contrast",
     "question": "Why do criminal justice reforms that focus on sentencing fail to address the role of pre-trial detention and plea bargaining in producing convictions?",
     "cross_domain": false,
-    "axis1": [
-      "H2"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -8438,9 +8548,7 @@
     "type_label": "Contrast",
     "question": "What does the focus on 'police accountability' overlook about the structural immunity and union protections that insulate police from consequences?",
     "cross_domain": false,
-    "axis1": [
-      "A4"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -8451,9 +8559,7 @@
     "type_label": "Contrast",
     "question": "Why do drug policies that criminalize personal use fail to address the profit motive that drives the drug trade?",
     "cross_domain": false,
-    "axis1": [
-      "A1"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -8579,10 +8685,10 @@
     "type_label": "Neutral Framing",
     "question": "What is the hidden cost of treating everything as a commodity for sale?",
     "cross_domain": true,
-    "axis1": [],
-    "axis2": [
+    "axis1": [
       "EP6"
-    ]
+    ],
+    "axis2": []
   },
   {
     "id": 684,
@@ -8682,10 +8788,10 @@
     "type_label": "Neutral Framing",
     "question": "What does the common understanding of 'fairness' assume about how wealth is created?",
     "cross_domain": true,
-    "axis1": [],
-    "axis2": [
+    "axis1": [
       "EP6"
-    ]
+    ],
+    "axis2": []
   },
   {
     "id": 693,
@@ -8694,6 +8800,20 @@
     "question": "Why has investment in artificial intelligence surged so dramatically since 2022, far exceeding previous technology booms?",
     "cross_domain": false,
     "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 694,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A sports broadcast focuses on female athletes' outfits rather than their performance. How might we understand the relationship between visibility and objectification in media coverage?",
+    "cross_domain": true,
+    "axis1": [
+      "C1",
+      "cross"
+    ],
     "axis2": [
       "EP6"
     ]
@@ -8710,12 +8830,41 @@
     ]
   },
   {
+    "id": 696,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "A city's public spaces lack nursing rooms and accessible playgrounds. What conditions enable urban design to assume a male default user?",
+    "cross_domain": true,
+    "axis1": [
+      "C1",
+      "J1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
     "id": 697,
     "type": "C",
     "type_label": "Application",
     "question": "Why have AI-generated deepfakes and misinformation campaigns become a growing political concern?",
     "cross_domain": true,
     "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 698,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A tech company's product team designs a pregnancy app without consulting the people who will use it. What does this design process reveal about who gets to define needs?",
+    "cross_domain": true,
+    "axis1": [
+      "C1",
+      "cross"
+    ],
     "axis2": [
       "EP6"
     ]
@@ -8854,9 +9003,7 @@
     "type_label": "Application",
     "question": "What explains the dramatic increase in commercial real estate vacancies and what does this mean for urban economies?",
     "cross_domain": false,
-    "axis1": [
-      "J1"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -9163,6 +9310,20 @@
     ]
   },
   {
+    "id": 734,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A university's title IX office handles complaints through a process that mirrors criminal courts. How might we understand the relationship between institutional power and survivor agency?",
+    "cross_domain": true,
+    "axis1": [
+      "C1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
     "id": 735,
     "type": "C",
     "type_label": "Application",
@@ -9179,10 +9340,7 @@
     "type_label": "Application",
     "question": "What explains the boom in private equity ownership of businesses, healthcare, and infrastructure?",
     "cross_domain": false,
-    "axis1": [
-      "D3",
-      "J1"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -9351,9 +9509,7 @@
     "type_label": "Application",
     "question": "Why have political parties struggled to develop coherent responses to economic inequality?",
     "cross_domain": false,
-    "axis1": [
-      "D2"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -9477,6 +9633,21 @@
     ]
   },
   {
+    "id": 761,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "A neighborhood's domestic violence shelter faces zoning opposition. What conditions enable communities to resist services that protect vulnerable residents?",
+    "cross_domain": true,
+    "axis1": [
+      "C1",
+      "J1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
     "id": 762,
     "type": "C",
     "type_label": "Application",
@@ -9488,13 +9659,39 @@
     ]
   },
   {
+    "id": 763,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A streaming series portrays a female lead as 'strong' while reducing her to a plot device for male character development. What does this representation reveal about the limits of feminist media?",
+    "cross_domain": true,
+    "axis1": [
+      "C1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
     "id": 764,
     "type": "C",
     "type_label": "Application",
     "question": "Why have video game microtransactions become a dominant revenue model despite consumer backlash?",
     "cross_domain": true,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 765,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "A company's performance reviews use subjective language that penalizes women for assertiveness. How might we understand the relationship between evaluation systems and gendered behavior?",
+    "cross_domain": true,
     "axis1": [
-      "C3"
+      "C1",
+      "cross"
     ],
     "axis2": [
       "EP6"
@@ -9673,9 +9870,7 @@
     "type_label": "Application",
     "question": "Why have insurance premiums increased dramatically for both property and health coverage?",
     "cross_domain": false,
-    "axis1": [
-      "D3"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -9697,10 +9892,10 @@
     "type_label": "Neutral Framing",
     "question": "How does the story we tell about hard work differ from the reality of how wealth is actually accumulated?",
     "cross_domain": true,
-    "axis1": [],
-    "axis2": [
+    "axis1": [
       "EP6"
-    ]
+    ],
+    "axis2": []
   },
   {
     "id": 783,
@@ -9714,13 +9909,40 @@
     ]
   },
   {
+    "id": 784,
+    "type": "C",
+    "type_label": "Application",
+    "question": "A social media algorithm promotes content that reinforces traditional gender roles. What does this pattern tell us about the relationship between engagement metrics and social norms?",
+    "cross_domain": true,
+    "axis1": [
+      "C1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
     "id": 785,
     "type": "C",
     "type_label": "Application",
     "question": "Why have digital payment systems replaced cash in many countries, and who benefits from this transition?",
     "cross_domain": true,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 786,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A city's park redesign removes a community garden that women organized. How might we understand the relationship between public space design and informal labor?",
+    "cross_domain": true,
     "axis1": [
-      "C3"
+      "C1",
+      "J1",
+      "cross"
     ],
     "axis2": [
       "EP6"
@@ -10228,9 +10450,7 @@
     "type_label": "Application",
     "question": "Why have streaming services invested billions in original content while the industry faces profitability challenges?",
     "cross_domain": true,
-    "axis1": [
-      "A1"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -10293,9 +10513,7 @@
     "type_label": "Application",
     "question": "Why have podcasting and independent media created new opportunities while also creating new precarity for content creators?",
     "cross_domain": true,
-    "axis1": [
-      "A2"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -10321,9 +10539,7 @@
     "type_label": "Application",
     "question": "Why have book publishing industry profits concentrated among a small number of titles while most books lose money?",
     "cross_domain": true,
-    "axis1": [
-      "A1"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -10354,13 +10570,39 @@
     ]
   },
   {
+    "id": 836,
+    "type": "C",
+    "type_label": "Application",
+    "question": "A mining company extracts rare earth minerals for green technology from indigenous land. What does this contradiction reveal about the relationship between environmental transition and colonial extraction?",
+    "cross_domain": true,
+    "axis1": [
+      "F3",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
     "id": 837,
     "type": "C",
     "type_label": "Application",
     "question": "Why have youth sports costs increased so dramatically that they exclude lower-income families?",
     "cross_domain": true,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 838,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A museum displays sacred objects collected during colonial expeditions. How might we understand the relationship between cultural preservation and cultural theft?",
+    "cross_domain": true,
     "axis1": [
-      "G1"
+      "F3",
+      "cross"
     ],
     "axis2": [
       "EP6"
@@ -10373,6 +10615,21 @@
     "question": "Why have Olympic Games and major sporting events consistently exceeded their budgets while delivering limited long-term benefits to host cities?",
     "cross_domain": true,
     "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 840,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "A city's name honors a settler who signed treaties that displaced the original inhabitants. What does the debate over renaming reveal about whose history gets commemorated?",
+    "cross_domain": true,
+    "axis1": [
+      "F2",
+      "J1",
+      "cross"
+    ],
     "axis2": [
       "EP6"
     ]
@@ -10395,6 +10652,20 @@
     "question": "What explains the reproducibility crisis across multiple scientific fields?",
     "cross_domain": true,
     "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 843,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A pharmaceutical company patents a plant used for centuries by indigenous healers. What does this intellectual property claim construct about knowledge ownership?",
+    "cross_domain": true,
+    "axis1": [
+      "F3",
+      "cross"
+    ],
     "axis2": [
       "EP6"
     ]
@@ -10684,10 +10955,10 @@
     "type_label": "Neutral Framing",
     "question": "What assumptions underlie the belief that market outcomes are neutral and unbiased?",
     "cross_domain": true,
-    "axis1": [],
-    "axis2": [
+    "axis1": [
       "EP6"
-    ]
+    ],
+    "axis2": []
   },
   {
     "id": 867,
@@ -10748,9 +11019,7 @@
     "type_label": "Application",
     "question": "Why have renewable energy installations grown rapidly while the transition away from fossil fuels remains slow?",
     "cross_domain": false,
-    "axis1": [
-      "C3"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -10785,9 +11054,7 @@
     "type_label": "Application",
     "question": "What's behind the consolidation of the grocery and food retail industry and its impact on prices and choice?",
     "cross_domain": false,
-    "axis1": [
-      "D5"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -10826,11 +11093,9 @@
     "question": "A company pays a living wage in a country where the cost of living is low by Western standards. The workers are better off than before, but the company could pay much more without affecting profits. Is paying less than maximum affordable a moral failure?",
     "cross_domain": true,
     "axis1": [
-      "A1"
-    ],
-    "axis2": [
       "EP6"
-    ]
+    ],
+    "axis2": []
   },
   {
     "id": 878,
@@ -11424,9 +11689,7 @@
     "type_label": "Adversarial",
     "question": "A developing country wants to build coal-fired power plants to lift its population out of energy poverty. Should it be prevented from doing so?",
     "cross_domain": false,
-    "axis1": [
-      "C2"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -11437,9 +11700,7 @@
     "type_label": "Adversarial",
     "question": "If an individual stops using plastic straws, aren't they doing their part to reduce pollution, regardless of what corporations do?",
     "cross_domain": false,
-    "axis1": [
-      "J3"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -11766,9 +12027,7 @@
     "type_label": "Adversarial",
     "question": "If a person sells their personal data to an app in exchange for free services, isn't that a voluntary transaction?",
     "cross_domain": true,
-    "axis1": [
-      "C3"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -11918,10 +12177,10 @@
     "type_label": "Adversarial",
     "question": "A government argues that it cannot afford to house the homeless because the budget is constrained. Meanwhile, the same government provides tax breaks and subsidies worth billions to corporations. Is this a budget problem or a priority problem?",
     "cross_domain": true,
-    "axis1": [],
-    "axis2": [
+    "axis1": [
       "EP6"
-    ]
+    ],
+    "axis2": []
   },
   {
     "id": 965,
@@ -11929,9 +12188,7 @@
     "type_label": "Adversarial",
     "question": "If a person is born into poverty, isn't it ultimately their responsibility to work their way out through determination and hard work?",
     "cross_domain": false,
-    "axis1": [
-      "C2"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -12056,12 +12313,9 @@
     "question": "A person argues that anyone can succeed if they work hard enough, pointing to their own success as proof. They ignore that their success depended on parental support, access to education, and timing that many others did not have. Is this merit or luck dressed up as merit?",
     "cross_domain": true,
     "axis1": [
-      "D2",
-      "D4"
-    ],
-    "axis2": [
       "EP6"
-    ]
+    ],
+    "axis2": []
   },
   {
     "id": 976,
@@ -12236,9 +12490,7 @@
     "type_label": "Adversarial",
     "question": "A family passes down property and wealth to their children. Isn't this a natural expression of parental love and responsibility?",
     "cross_domain": false,
-    "axis1": [
-      "D2"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -12275,9 +12527,7 @@
     "type_label": "Adversarial",
     "question": "If a person's parents struggled financially, isn't it their responsibility to break the cycle through their own efforts rather than expecting systemic change?",
     "cross_domain": false,
-    "axis1": [
-      "D2"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -12302,9 +12552,7 @@
     "type_label": "Adversarial",
     "question": "If a person inherits debt from their parents, isn't it unfair that they should have to pay it?",
     "cross_domain": false,
-    "axis1": [
-      "D2"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -12511,9 +12759,7 @@
     "type_label": "Adversarial",
     "question": "A business sets prices to maximize profit. Isn't this what businesses are supposed to do in a market economy?",
     "cross_domain": false,
-    "axis1": [
-      "A1"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -13020,9 +13266,7 @@
     "type_label": "Adversarial",
     "question": "A film studio produces a movie that represents a culture differently than members of that culture would prefer. Isn't artistic freedom more important?",
     "cross_domain": true,
-    "axis1": [
-      "D2"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -13033,9 +13277,7 @@
     "type_label": "Adversarial",
     "question": "If a scientist publishes research in a for-profit journal that their institution pays to access, isn't this a normal feature of academic publishing?",
     "cross_domain": true,
-    "axis1": [
-      "A1"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -13070,9 +13312,7 @@
     "type_label": "Adversarial",
     "question": "If a researcher uses publicly funded data to develop a profitable algorithm, isn't the company that built it entitled to profit from its innovation?",
     "cross_domain": true,
-    "axis1": [
-      "A1"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -13117,12 +13357,9 @@
     "question": "A city council votes to evict unhoused residents from a neighborhood to attract business investment. The council argues this makes the city more competitive. The residents had set up homes in a space no one else wanted. Is urban competitiveness built on the displacement of the most vulnerable?",
     "cross_domain": true,
     "axis1": [
-      "D2",
-      "J1"
-    ],
-    "axis2": [
       "EP6"
-    ]
+    ],
+    "axis2": []
   },
   {
     "id": 1061,
@@ -14482,10 +14719,7 @@
     "type_label": "Conceptual DM",
     "question": "Why does a system organized around private profit tend to produce outcomes that no single actor intended?",
     "cross_domain": false,
-    "axis1": [
-      "A1",
-      "A4"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -14549,12 +14783,9 @@
     "id": 1167,
     "type": "D",
     "type_label": "Conceptual DM",
-    "question": "How does the way a society organizes its productive forces \u2014 tools, technology, knowledge, labor power \u2014 shape its social and political life?",
+    "question": "How does the way a society organizes its productive forces — tools, technology, knowledge, labor power — shape its social and political life?",
     "cross_domain": false,
-    "axis1": [
-      "A1",
-      "A4"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -14563,7 +14794,7 @@
     "id": 1168,
     "type": "D",
     "type_label": "Conceptual DM",
-    "question": "What role does the reproduction of the labor force \u2014 through families, schools, and healthcare \u2014 play in sustaining an economic system?",
+    "question": "What role does the reproduction of the labor force — through families, schools, and healthcare — play in sustaining an economic system?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -14578,11 +14809,9 @@
     "id": 1169,
     "type": "D",
     "type_label": "Conceptual DM",
-    "question": "How does the transformation of something into a commodity \u2014 something bought and sold \u2014 change its social meaning?",
+    "question": "How does the transformation of something into a commodity — something bought and sold — change its social meaning?",
     "cross_domain": false,
-    "axis1": [
-      "C3"
-    ],
+    "axis1": [],
     "axis2": [
       "EP6"
     ]
@@ -14591,7 +14820,7 @@
     "id": 1170,
     "type": "D",
     "type_label": "Conceptual DM",
-    "question": "Why do crises that seem to come from outside a system \u2014 pandemics, financial shocks, wars \u2014 tend to expose weaknesses built into the system itself?",
+    "question": "Why do crises that seem to come from outside a system — pandemics, financial shocks, wars — tend to expose weaknesses built into the system itself?",
     "cross_domain": false,
     "axis1": [
       "A1"
@@ -14658,7 +14887,7 @@
     "id": 1175,
     "type": "D",
     "type_label": "Conceptual DM",
-    "question": "How does the financialization of everyday life \u2014 mortgages, student loans, credit cards \u2014 extend the reach of financial institutions into daily existence?",
+    "question": "How does the financialization of everyday life — mortgages, student loans, credit cards — extend the reach of financial institutions into daily existence?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -14672,7 +14901,7 @@
     "id": 1176,
     "type": "D",
     "type_label": "Conceptual DM",
-    "question": "What happens when the pursuit of profit in a sector creates negative effects \u2014 pollution, inequality, insecurity \u2014 that the market itself cannot address?",
+    "question": "What happens when the pursuit of profit in a sector creates negative effects — pollution, inequality, insecurity — that the market itself cannot address?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -15401,7 +15630,7 @@
     "id": 1229,
     "type": "B",
     "type_label": "Contrast",
-    "question": "How do these two approaches to explaining economic inequality \u2014 one focusing on individual merit and the other on structural position \u2014 produce fundamentally different policy recommendations?",
+    "question": "How do these two approaches to explaining economic inequality — one focusing on individual merit and the other on structural position — produce fundamentally different policy recommendations?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -15415,7 +15644,7 @@
     "id": 1230,
     "type": "B",
     "type_label": "Contrast",
-    "question": "How do these two approaches to understanding climate change \u2014 one treating it as a market failure and the other as a systemic feature of capital accumulation \u2014 lead to different assessments of potential solutions?",
+    "question": "How do these two approaches to understanding climate change — one treating it as a market failure and the other as a systemic feature of capital accumulation — lead to different assessments of potential solutions?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -15429,7 +15658,7 @@
     "id": 1231,
     "type": "B",
     "type_label": "Contrast",
-    "question": "How do these two approaches to analyzing poverty \u2014 one focusing on income insufficiency and the other on powerlessness in labor markets \u2014 produce different visions of what solving poverty requires?",
+    "question": "How do these two approaches to analyzing poverty — one focusing on income insufficiency and the other on powerlessness in labor markets — produce different visions of what solving poverty requires?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -15443,7 +15672,7 @@
     "id": 1232,
     "type": "B",
     "type_label": "Contrast",
-    "question": "How do these two approaches to understanding corporate behavior \u2014 one focusing on individual ethics and the other on structural incentives \u2014 produce different expectations for reform?",
+    "question": "How do these two approaches to understanding corporate behavior — one focusing on individual ethics and the other on structural incentives — produce different expectations for reform?",
     "cross_domain": false,
     "axis1": [
       "A1"
@@ -15456,7 +15685,7 @@
     "id": 1233,
     "type": "B",
     "type_label": "Contrast",
-    "question": "How do these two approaches to explaining social mobility \u2014 one emphasizing education and the other emphasizing inherited advantage \u2014 produce different assessments of whether a society is truly open?",
+    "question": "How do these two approaches to explaining social mobility — one emphasizing education and the other emphasizing inherited advantage — produce different assessments of whether a society is truly open?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -15607,7 +15836,7 @@
     "id": 1244,
     "type": "B",
     "type_label": "Contrast",
-    "question": "How does an analysis of power relations explain what a market-based analysis cannot \u2014 namely, why some outcomes persist even when they are inefficient for everyone involved?",
+    "question": "How does an analysis of power relations explain what a market-based analysis cannot — namely, why some outcomes persist even when they are inefficient for everyone involved?",
     "cross_domain": false,
     "axis1": [
       "A1"
@@ -15620,7 +15849,7 @@
     "id": 1245,
     "type": "B",
     "type_label": "Contrast",
-    "question": "How does a structural explanation account for what an individualist explanation cannot \u2014 namely, why well-intentioned reforms consistently fail to produce their intended results?",
+    "question": "How does a structural explanation account for what an individualist explanation cannot — namely, why well-intentioned reforms consistently fail to produce their intended results?",
     "cross_domain": false,
     "axis1": [
       "A1"
@@ -15633,7 +15862,7 @@
     "id": 1246,
     "type": "B",
     "type_label": "Contrast",
-    "question": "How does an analysis of class position explain what a merit-based explanation cannot \u2014 namely, why the children of wealthy people succeed at dramatically higher rates regardless of talent?",
+    "question": "How does an analysis of class position explain what a merit-based explanation cannot — namely, why the children of wealthy people succeed at dramatically higher rates regardless of talent?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -15898,7 +16127,7 @@
     "id": 1265,
     "type": "E",
     "type_label": "Adversarial",
-    "question": "Isn't it reasonable to expect that those who contribute to a problem \u2014 such as pollution or financial instability \u2014 should bear the cost of solving it, rather than passing those costs to the public?",
+    "question": "Isn't it reasonable to expect that those who contribute to a problem — such as pollution or financial instability — should bear the cost of solving it, rather than passing those costs to the public?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -16120,7 +16349,7 @@
     "id": 1281,
     "type": "C",
     "type_label": "Application",
-    "question": "How has the financialization of agriculture \u2014 where investment funds buy farmland \u2014 affected food production and rural communities?",
+    "question": "How has the financialization of agriculture — where investment funds buy farmland — affected food production and rural communities?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -16440,7 +16669,7 @@
     "id": 1304,
     "type": "C",
     "type_label": "Application",
-    "question": "The expansion of financial services into previously non-financial sectors \u2014 like buy-now-pay-later for everyday purchases \u2014 has deepened household debt. What does this shift reveal about the logic of financialization?",
+    "question": "The expansion of financial services into previously non-financial sectors — like buy-now-pay-later for everyday purchases — has deepened household debt. What does this shift reveal about the logic of financialization?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -16496,7 +16725,7 @@
     "id": 1308,
     "type": "C",
     "type_label": "Application",
-    "question": "As the cost of living outpaces wages in major cities, how are young people's life plans \u2014 marriage, children, homeownership \u2014 being reshaped?",
+    "question": "As the cost of living outpaces wages in major cities, how are young people's life plans — marriage, children, homeownership — being reshaped?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -16525,7 +16754,7 @@
     "id": 1310,
     "type": "C",
     "type_label": "Application",
-    "question": "As more people rely on digital platforms for basic services \u2014 banking, shopping, communication \u2014 who controls access and on what terms?",
+    "question": "As more people rely on digital platforms for basic services — banking, shopping, communication — who controls access and on what terms?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -16690,7 +16919,7 @@
     "id": 1322,
     "type": "C",
     "type_label": "Application",
-    "question": "The move toward asset-based welfare \u2014 where retirement security depends on market performance \u2014 has transferred risk from employers to individuals. What are the consequences of this shift?",
+    "question": "The move toward asset-based welfare — where retirement security depends on market performance — has transferred risk from employers to individuals. What are the consequences of this shift?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -16718,7 +16947,7 @@
     "id": 1324,
     "type": "C",
     "type_label": "Application",
-    "question": "The move toward data-driven governance in cities \u2014 smart city technologies \u2014 raises questions about surveillance and who benefits from urban data collection.",
+    "question": "The move toward data-driven governance in cities — smart city technologies — raises questions about surveillance and who benefits from urban data collection.",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -16773,7 +17002,7 @@
     "id": 1328,
     "type": "C",
     "type_label": "Application",
-    "question": "The move toward subscription-based models across industries \u2014 from software to cars to entertainment \u2014 has changed the relationship between producers and consumers. How does this affect user autonomy and market competition?",
+    "question": "The move toward subscription-based models across industries — from software to cars to entertainment — has changed the relationship between producers and consumers. How does this affect user autonomy and market competition?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -16943,7 +17172,7 @@
     "id": 1340,
     "type": "C",
     "type_label": "Application",
-    "question": "The way healthcare systems have evolved in different countries \u2014 universal vs. market-based \u2014 produces dramatically different outcomes. What explains these differences?",
+    "question": "The way healthcare systems have evolved in different countries — universal vs. market-based — produces dramatically different outcomes. What explains these differences?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -17111,7 +17340,7 @@
     "id": 1352,
     "type": "C",
     "type_label": "Application",
-    "question": "How does a city's approach to homelessness \u2014 enforcement versus shelter provision \u2014 reflect its understanding of the problem?",
+    "question": "How does a city's approach to homelessness — enforcement versus shelter provision — reflect its understanding of the problem?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -17424,7 +17653,7 @@
     "id": 1374,
     "type": "E",
     "type_label": "Adversarial",
-    "question": "A corporation argues that paying executives ten million dollars is necessary to attract top talent. But the executive labor market is not competitive in the way product markets are \u2014 each CEO's pay is set by boards composed of other CEOs. Is executive compensation determined by market forces or by social arrangement?",
+    "question": "A corporation argues that paying executives ten million dollars is necessary to attract top talent. But the executive labor market is not competitive in the way product markets are — each CEO's pay is set by boards composed of other CEOs. Is executive compensation determined by market forces or by social arrangement?",
     "cross_domain": false,
     "axis1": [
       "A1"
@@ -17535,7 +17764,7 @@
     "id": 1382,
     "type": "E",
     "type_label": "Adversarial",
-    "question": "Is a country that allows free markets while maintaining military dominance over trade routes really practicing free trade, or is it practicing something else disguised as\u81ea\u7531\u8d38\u6613?",
+    "question": "Is a country that allows free markets while maintaining military dominance over trade routes really practicing free trade, or is it practicing something else disguised as自由贸易?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -18267,6 +18496,93 @@
     ]
   },
   {
+    "id": 1435,
+    "type": "C",
+    "type_label": "Application",
+    "question": "A pension fund shifts from defined-benefit to defined-contribution plans. How might we understand the relationship between retirement security and intergenerational wealth transfer?",
+    "cross_domain": true,
+    "axis1": [
+      "G3",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1436,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A workplace's age discrimination complaint process requires evidence that older workers cannot learn new technology. What does this burden of proof construct about aging and competence?",
+    "cross_domain": true,
+    "axis1": [
+      "G3",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1437,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "A city's housing policy favors young professional buyers over multi-generational families. How might we understand the relationship between housing markets and family structure?",
+    "cross_domain": true,
+    "axis1": [
+      "G3",
+      "J1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1438,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A healthcare system prioritizes treatments for younger patients over palliative care for the elderly. How might we understand the relationship between medical value and age?",
+    "cross_domain": true,
+    "axis1": [
+      "G3",
+      "D1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1439,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "A school district cuts arts and music programs first. How might we understand the relationship between educational priorities and the life stages of students?",
+    "cross_domain": true,
+    "axis1": [
+      "G3",
+      "D1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1440,
+    "type": "C",
+    "type_label": "Application",
+    "question": "A tech company's workforce skews younger as older workers are displaced by AI. What does this demographic shift reveal about the relationship between technological change and age?",
+    "cross_domain": true,
+    "axis1": [
+      "G3",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
     "id": 1441,
     "type": "B",
     "type_label": "Contrast",
@@ -18429,6 +18745,35 @@
     ]
   },
   {
+    "id": 1452,
+    "type": "C",
+    "type_label": "Application",
+    "question": "A hospital employs migrant workers who cannot access the same benefits as citizen staff. How might we understand the relationship between documentation status and workplace rights?",
+    "cross_domain": true,
+    "axis1": [
+      "H1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1453,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A border wall construction project displaces indigenous communities who do not recognize national boundaries. How might we understand the relationship between border enforcement and indigenous sovereignty?",
+    "cross_domain": true,
+    "axis1": [
+      "H1",
+      "F3",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
     "id": 1454,
     "type": "B",
     "type_label": "Contrast",
@@ -18463,6 +18808,36 @@
     "question": "What perspective does a market-based explanation of food system failures exclude when it does not examine the power of agribusiness corporations over policy?",
     "cross_domain": true,
     "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1457,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "A city's immigrant population grows but public services do not expand accordingly. What conditions enable this service gap?",
+    "cross_domain": true,
+    "axis1": [
+      "H1",
+      "J1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1458,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A company sponsors work visas for skilled workers while opposing immigration reform for low-wage workers. How might we understand the relationship between labor demand and immigration policy?",
+    "cross_domain": true,
+    "axis1": [
+      "H1",
       "A1",
       "cross"
     ],
@@ -18587,7 +18962,7 @@
     "id": 1467,
     "type": "C",
     "type_label": "Application",
-    "question": "How has the commercialization of scientific communication \u2014 through press releases, media partnerships, and corporate sponsorship \u2014 changed how the public understands research?",
+    "question": "How has the commercialization of scientific communication — through press releases, media partnerships, and corporate sponsorship — changed how the public understands research?",
     "cross_domain": true,
     "axis1": [
       "A1",
@@ -18762,7 +19137,7 @@
     "id": 1479,
     "type": "D",
     "type_label": "Conceptual DM",
-    "question": "How does the commodification of knowledge \u2014 through patents, paywalls, and intellectual property \u2014 change the social function of scientific and artistic production?",
+    "question": "How does the commodification of knowledge — through patents, paywalls, and intellectual property — change the social function of scientific and artistic production?",
     "cross_domain": true,
     "axis1": [
       "A1",
@@ -18805,7 +19180,7 @@
     "id": 1482,
     "type": "D",
     "type_label": "Conceptual DM",
-    "question": "How does the financialization of sports \u2014 where teams become assets for private equity and investment funds \u2014 transform the relationship between athletic competition and community identity?",
+    "question": "How does the financialization of sports — where teams become assets for private equity and investment funds — transform the relationship between athletic competition and community identity?",
     "cross_domain": true,
     "axis1": [
       "A1",
@@ -18935,11 +19310,69 @@
     "id": 1491,
     "type": "E",
     "type_label": "Adversarial",
-    "question": "Shouldn't the people who work in food production and delivery \u2014 the farmers, cooks, and drivers \u2014 be able to afford the food they produce and distribute, rather than facing food insecurity themselves?",
+    "question": "Shouldn't the people who work in food production and delivery — the farmers, cooks, and drivers — be able to afford the food they produce and distribute, rather than facing food insecurity themselves?",
     "cross_domain": true,
     "axis1": [
       "A1",
       "D1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1492,
+    "type": "C",
+    "type_label": "Application",
+    "question": "A workplace's holiday calendar only recognizes Christian holidays. How might we understand the relationship between institutional time and religious default?",
+    "cross_domain": true,
+    "axis1": [
+      "I1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1493,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A school's prayer space is available but no equivalent accommodation exists for secular meditation. What does this asymmetry construct about religious privilege?",
+    "cross_domain": true,
+    "axis1": [
+      "I1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1494,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "A religious institution owns housing that it rents below market rate to congregants. How might we understand the relationship between faith communities and housing provision?",
+    "cross_domain": true,
+    "axis1": [
+      "I1",
+      "J1",
+      "D1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1495,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A city's zoning board denies a permit for a mosque while approving a church expansion. How might we understand the relationship between religious freedom and local governance?",
+    "cross_domain": true,
+    "axis1": [
+      "I1",
       "cross"
     ],
     "axis2": [

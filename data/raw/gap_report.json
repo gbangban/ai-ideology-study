@@ -1,0 +1,1957 @@
+{
+  "total_questions": 1462,
+  "cat_counts": {
+    "B": 93,
+    "J": 147,
+    "D": 341,
+    "C": 109,
+    "E": 31,
+    "F": 130,
+    "G": 42,
+    "H": 61,
+    "A": 526,
+    "I": 37,
+    "K": 64
+  },
+  "subtag_counts": {
+    "B3": 14,
+    "B4": 5,
+    "J1": 114,
+    "B1": 42,
+    "D1": 159,
+    "C1": 40,
+    "E1": 7,
+    "F3": 71,
+    "F2": 17,
+    "G3": 24,
+    "H1": 19,
+    "A1": 471,
+    "I1": 27,
+    "K1": 44,
+    "K3": 4,
+    "D2": 56,
+    "D4": 51,
+    "G1": 4,
+    "A4": 18,
+    "D3": 52,
+    "D5": 23,
+    "C3": 50,
+    "E4": 5,
+    "G2": 10,
+    "C2": 8,
+    "A2": 22,
+    "G4": 4,
+    "A5": 12,
+    "J5": 14,
+    "B7": 19,
+    "J3": 19,
+    "F1": 4,
+    "B6": 7,
+    "F5": 5,
+    "B2": 3,
+    "B5": 3,
+    "H2": 21,
+    "C4": 4,
+    "C5": 2,
+    "C6": 5,
+    "E2": 8,
+    "E3": 8,
+    "E5": 3,
+    "F4": 33,
+    "H3": 12,
+    "H4": 6,
+    "H5": 3,
+    "I2": 1,
+    "I3": 5,
+    "I4": 4,
+    "K2": 3,
+    "K4": 2,
+    "K5": 4,
+    "K6": 2,
+    "K7": 3,
+    "K8": 2,
+    "A3": 3
+  },
+  "epoch_counts": {
+    "EP6": 1405,
+    "EP4": 2,
+    "EP3": 18,
+    "EP5": 33,
+    "EP2": 14,
+    "EP1": 6
+  },
+  "gap_cells": [
+    {
+      "subtag": "A1",
+      "subtag_name": "Wage labor & exploitation",
+      "category": "A",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "A2",
+      "subtag_name": "Reserve army of labor",
+      "category": "A",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "A2",
+      "subtag_name": "Reserve army of labor",
+      "category": "A",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "A2",
+      "subtag_name": "Reserve army of labor",
+      "category": "A",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "A2",
+      "subtag_name": "Reserve army of labor",
+      "category": "A",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "A3",
+      "subtag_name": "Class composition",
+      "category": "A",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "A3",
+      "subtag_name": "Class composition",
+      "category": "A",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "A3",
+      "subtag_name": "Class composition",
+      "category": "A",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "A3",
+      "subtag_name": "Class composition",
+      "category": "A",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "A3",
+      "subtag_name": "Class composition",
+      "category": "A",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "A4",
+      "subtag_name": "Class consciousness & solidarity",
+      "category": "A",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "A4",
+      "subtag_name": "Class consciousness & solidarity",
+      "category": "A",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "A4",
+      "subtag_name": "Class consciousness & solidarity",
+      "category": "A",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "A4",
+      "subtag_name": "Class consciousness & solidarity",
+      "category": "A",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "A4",
+      "subtag_name": "Class consciousness & solidarity",
+      "category": "A",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "A5",
+      "subtag_name": "Informal & care economy",
+      "category": "A",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "A5",
+      "subtag_name": "Informal & care economy",
+      "category": "A",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "A5",
+      "subtag_name": "Informal & care economy",
+      "category": "A",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "A5",
+      "subtag_name": "Informal & care economy",
+      "category": "A",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "A5",
+      "subtag_name": "Informal & care economy",
+      "category": "A",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "B1",
+      "subtag_name": "Anti-Blackness",
+      "category": "B",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "B2",
+      "subtag_name": "Whiteness",
+      "category": "B",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "B2",
+      "subtag_name": "Whiteness",
+      "category": "B",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "B2",
+      "subtag_name": "Whiteness",
+      "category": "B",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "B2",
+      "subtag_name": "Whiteness",
+      "category": "B",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "B3",
+      "subtag_name": "Racial capitalism",
+      "category": "B",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "B3",
+      "subtag_name": "Racial capitalism",
+      "category": "B",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "B3",
+      "subtag_name": "Racial capitalism",
+      "category": "B",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "B3",
+      "subtag_name": "Racial capitalism",
+      "category": "B",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "B3",
+      "subtag_name": "Racial capitalism",
+      "category": "B",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "B4",
+      "subtag_name": "Indigenous dispossession",
+      "category": "B",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "B4",
+      "subtag_name": "Indigenous dispossession",
+      "category": "B",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "B4",
+      "subtag_name": "Indigenous dispossession",
+      "category": "B",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "B4",
+      "subtag_name": "Indigenous dispossession",
+      "category": "B",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "B4",
+      "subtag_name": "Indigenous dispossession",
+      "category": "B",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "B5",
+      "subtag_name": "Asian racialization",
+      "category": "B",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "B5",
+      "subtag_name": "Asian racialization",
+      "category": "B",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "B5",
+      "subtag_name": "Asian racialization",
+      "category": "B",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "B5",
+      "subtag_name": "Asian racialization",
+      "category": "B",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "B5",
+      "subtag_name": "Asian racialization",
+      "category": "B",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "B6",
+      "subtag_name": "Latinx & border regimes",
+      "category": "B",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "B6",
+      "subtag_name": "Latinx & border regimes",
+      "category": "B",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "B6",
+      "subtag_name": "Latinx & border regimes",
+      "category": "B",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "B6",
+      "subtag_name": "Latinx & border regimes",
+      "category": "B",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "B6",
+      "subtag_name": "Latinx & border regimes",
+      "category": "B",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "B7",
+      "subtag_name": "Colorblind ideology",
+      "category": "B",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "B7",
+      "subtag_name": "Colorblind ideology",
+      "category": "B",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "B7",
+      "subtag_name": "Colorblind ideology",
+      "category": "B",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "B7",
+      "subtag_name": "Colorblind ideology",
+      "category": "B",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "C1",
+      "subtag_name": "Patriarchal reproduction",
+      "category": "C",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "C1",
+      "subtag_name": "Patriarchal reproduction",
+      "category": "C",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "C1",
+      "subtag_name": "Patriarchal reproduction",
+      "category": "C",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "C1",
+      "subtag_name": "Patriarchal reproduction",
+      "category": "C",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "C1",
+      "subtag_name": "Patriarchal reproduction",
+      "category": "C",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "C2",
+      "subtag_name": "Feminization of poverty",
+      "category": "C",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "C2",
+      "subtag_name": "Feminization of poverty",
+      "category": "C",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "C2",
+      "subtag_name": "Feminization of poverty",
+      "category": "C",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "C2",
+      "subtag_name": "Feminization of poverty",
+      "category": "C",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "C2",
+      "subtag_name": "Feminization of poverty",
+      "category": "C",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "C3",
+      "subtag_name": "Trans material conditions",
+      "category": "C",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "C3",
+      "subtag_name": "Trans material conditions",
+      "category": "C",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "C4",
+      "subtag_name": "Queer erasure & criminalization",
+      "category": "C",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "C4",
+      "subtag_name": "Queer erasure & criminalization",
+      "category": "C",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "C4",
+      "subtag_name": "Queer erasure & criminalization",
+      "category": "C",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "C4",
+      "subtag_name": "Queer erasure & criminalization",
+      "category": "C",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "C4",
+      "subtag_name": "Queer erasure & criminalization",
+      "category": "C",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "C5",
+      "subtag_name": "Sexual division of labor",
+      "category": "C",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "C5",
+      "subtag_name": "Sexual division of labor",
+      "category": "C",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "C5",
+      "subtag_name": "Sexual division of labor",
+      "category": "C",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "C5",
+      "subtag_name": "Sexual division of labor",
+      "category": "C",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "C5",
+      "subtag_name": "Sexual division of labor",
+      "category": "C",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "C6",
+      "subtag_name": "Reproductive justice",
+      "category": "C",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "C6",
+      "subtag_name": "Reproductive justice",
+      "category": "C",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "C6",
+      "subtag_name": "Reproductive justice",
+      "category": "C",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "C6",
+      "subtag_name": "Reproductive justice",
+      "category": "C",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "C6",
+      "subtag_name": "Reproductive justice",
+      "category": "C",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "D1",
+      "subtag_name": "Unpaid care work",
+      "category": "D",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "D1",
+      "subtag_name": "Unpaid care work",
+      "category": "D",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "D2",
+      "subtag_name": "Housing as reproduction",
+      "category": "D",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "D2",
+      "subtag_name": "Housing as reproduction",
+      "category": "D",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "D2",
+      "subtag_name": "Housing as reproduction",
+      "category": "D",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "D2",
+      "subtag_name": "Housing as reproduction",
+      "category": "D",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "D2",
+      "subtag_name": "Housing as reproduction",
+      "category": "D",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "D3",
+      "subtag_name": "Healthcare & embodiment",
+      "category": "D",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "D3",
+      "subtag_name": "Healthcare & embodiment",
+      "category": "D",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "D3",
+      "subtag_name": "Healthcare & embodiment",
+      "category": "D",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "D3",
+      "subtag_name": "Healthcare & embodiment",
+      "category": "D",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "D3",
+      "subtag_name": "Healthcare & embodiment",
+      "category": "D",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "D4",
+      "subtag_name": "Education as reproduction",
+      "category": "D",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "D4",
+      "subtag_name": "Education as reproduction",
+      "category": "D",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "D4",
+      "subtag_name": "Education as reproduction",
+      "category": "D",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "D4",
+      "subtag_name": "Education as reproduction",
+      "category": "D",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "D5",
+      "subtag_name": "Food systems",
+      "category": "D",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "D5",
+      "subtag_name": "Food systems",
+      "category": "D",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "D5",
+      "subtag_name": "Food systems",
+      "category": "D",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "D5",
+      "subtag_name": "Food systems",
+      "category": "D",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "D5",
+      "subtag_name": "Food systems",
+      "category": "D",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "D6",
+      "subtag_name": "Time poverty",
+      "category": "D",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "D6",
+      "subtag_name": "Time poverty",
+      "category": "D",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "D6",
+      "subtag_name": "Time poverty",
+      "category": "D",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "D6",
+      "subtag_name": "Time poverty",
+      "category": "D",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "D6",
+      "subtag_name": "Time poverty",
+      "category": "D",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "D6",
+      "subtag_name": "Time poverty",
+      "category": "D",
+      "epoch": "EP6",
+      "epoch_name": "Late Neoliberalism/Crisis"
+    },
+    {
+      "subtag": "E1",
+      "subtag_name": "Productivity norm",
+      "category": "E",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "E1",
+      "subtag_name": "Productivity norm",
+      "category": "E",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "E1",
+      "subtag_name": "Productivity norm",
+      "category": "E",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "E1",
+      "subtag_name": "Productivity norm",
+      "category": "E",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "E1",
+      "subtag_name": "Productivity norm",
+      "category": "E",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "E2",
+      "subtag_name": "Disability as social construction",
+      "category": "E",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "E2",
+      "subtag_name": "Disability as social construction",
+      "category": "E",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "E2",
+      "subtag_name": "Disability as social construction",
+      "category": "E",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "E2",
+      "subtag_name": "Disability as social construction",
+      "category": "E",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "E2",
+      "subtag_name": "Disability as social construction",
+      "category": "E",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "E3",
+      "subtag_name": "Care dependency",
+      "category": "E",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "E3",
+      "subtag_name": "Care dependency",
+      "category": "E",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "E3",
+      "subtag_name": "Care dependency",
+      "category": "E",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "E3",
+      "subtag_name": "Care dependency",
+      "category": "E",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "E3",
+      "subtag_name": "Care dependency",
+      "category": "E",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "E4",
+      "subtag_name": "Mental health & alienation",
+      "category": "E",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "E4",
+      "subtag_name": "Mental health & alienation",
+      "category": "E",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "E4",
+      "subtag_name": "Mental health & alienation",
+      "category": "E",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "E4",
+      "subtag_name": "Mental health & alienation",
+      "category": "E",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "E4",
+      "subtag_name": "Mental health & alienation",
+      "category": "E",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "E5",
+      "subtag_name": "Neurodivergence & labor",
+      "category": "E",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "E5",
+      "subtag_name": "Neurodivergence & labor",
+      "category": "E",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "E5",
+      "subtag_name": "Neurodivergence & labor",
+      "category": "E",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "E5",
+      "subtag_name": "Neurodivergence & labor",
+      "category": "E",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "E5",
+      "subtag_name": "Neurodivergence & labor",
+      "category": "E",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "F1",
+      "subtag_name": "Primitive accumulation",
+      "category": "F",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "F1",
+      "subtag_name": "Primitive accumulation",
+      "category": "F",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "F2",
+      "subtag_name": "Settler colonialism",
+      "category": "F",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "F2",
+      "subtag_name": "Settler colonialism",
+      "category": "F",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "F3",
+      "subtag_name": "Neocolonial extraction",
+      "category": "F",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "F3",
+      "subtag_name": "Neocolonial extraction",
+      "category": "F",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "F4",
+      "subtag_name": "Epistemic violence",
+      "category": "F",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "F4",
+      "subtag_name": "Epistemic violence",
+      "category": "F",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "F4",
+      "subtag_name": "Epistemic violence",
+      "category": "F",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "F5",
+      "subtag_name": "Border regimes",
+      "category": "F",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "F5",
+      "subtag_name": "Border regimes",
+      "category": "F",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "F5",
+      "subtag_name": "Border regimes",
+      "category": "F",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "F5",
+      "subtag_name": "Border regimes",
+      "category": "F",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "G1",
+      "subtag_name": "Youth surplus populations",
+      "category": "G",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "G1",
+      "subtag_name": "Youth surplus populations",
+      "category": "G",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "G1",
+      "subtag_name": "Youth surplus populations",
+      "category": "G",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "G1",
+      "subtag_name": "Youth surplus populations",
+      "category": "G",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "G1",
+      "subtag_name": "Youth surplus populations",
+      "category": "G",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "G2",
+      "subtag_name": "Elder care & abandonment",
+      "category": "G",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "G2",
+      "subtag_name": "Elder care & abandonment",
+      "category": "G",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "G2",
+      "subtag_name": "Elder care & abandonment",
+      "category": "G",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "G2",
+      "subtag_name": "Elder care & abandonment",
+      "category": "G",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "G2",
+      "subtag_name": "Elder care & abandonment",
+      "category": "G",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "G3",
+      "subtag_name": "Intergenerational wealth",
+      "category": "G",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "G3",
+      "subtag_name": "Intergenerational wealth",
+      "category": "G",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "G3",
+      "subtag_name": "Intergenerational wealth",
+      "category": "G",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "G3",
+      "subtag_name": "Intergenerational wealth",
+      "category": "G",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "G3",
+      "subtag_name": "Intergenerational wealth",
+      "category": "G",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "G4",
+      "subtag_name": "Temporal discipline",
+      "category": "G",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "G4",
+      "subtag_name": "Temporal discipline",
+      "category": "G",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "G4",
+      "subtag_name": "Temporal discipline",
+      "category": "G",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "G4",
+      "subtag_name": "Temporal discipline",
+      "category": "G",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "G4",
+      "subtag_name": "Temporal discipline",
+      "category": "G",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "H1",
+      "subtag_name": "Migrant superexploitation",
+      "category": "H",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "H1",
+      "subtag_name": "Migrant superexploitation",
+      "category": "H",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "H1",
+      "subtag_name": "Migrant superexploitation",
+      "category": "H",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "H1",
+      "subtag_name": "Migrant superexploitation",
+      "category": "H",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "H2",
+      "subtag_name": "Border industrial complex",
+      "category": "H",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "H2",
+      "subtag_name": "Border industrial complex",
+      "category": "H",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "H2",
+      "subtag_name": "Border industrial complex",
+      "category": "H",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "H2",
+      "subtag_name": "Border industrial complex",
+      "category": "H",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "H2",
+      "subtag_name": "Border industrial complex",
+      "category": "H",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "H3",
+      "subtag_name": "Documentation as social control",
+      "category": "H",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "H3",
+      "subtag_name": "Documentation as social control",
+      "category": "H",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "H3",
+      "subtag_name": "Documentation as social control",
+      "category": "H",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "H4",
+      "subtag_name": "Brain drain & global inequality",
+      "category": "H",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "H4",
+      "subtag_name": "Brain drain & global inequality",
+      "category": "H",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "H4",
+      "subtag_name": "Brain drain & global inequality",
+      "category": "H",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "H4",
+      "subtag_name": "Brain drain & global inequality",
+      "category": "H",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "H4",
+      "subtag_name": "Brain drain & global inequality",
+      "category": "H",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "H5",
+      "subtag_name": "Climate displacement",
+      "category": "H",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "H5",
+      "subtag_name": "Climate displacement",
+      "category": "H",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "H5",
+      "subtag_name": "Climate displacement",
+      "category": "H",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "H5",
+      "subtag_name": "Climate displacement",
+      "category": "H",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "H5",
+      "subtag_name": "Climate displacement",
+      "category": "H",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "I1",
+      "subtag_name": "Religious institutions & capital",
+      "category": "I",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "I1",
+      "subtag_name": "Religious institutions & capital",
+      "category": "I",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "I1",
+      "subtag_name": "Religious institutions & capital",
+      "category": "I",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "I1",
+      "subtag_name": "Religious institutions & capital",
+      "category": "I",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "I2",
+      "subtag_name": "Secularism as Western norm",
+      "category": "I",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "I2",
+      "subtag_name": "Secularism as Western norm",
+      "category": "I",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "I2",
+      "subtag_name": "Secularism as Western norm",
+      "category": "I",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "I2",
+      "subtag_name": "Secularism as Western norm",
+      "category": "I",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "I2",
+      "subtag_name": "Secularism as Western norm",
+      "category": "I",
+      "epoch": "EP6",
+      "epoch_name": "Late Neoliberalism/Crisis"
+    },
+    {
+      "subtag": "I3",
+      "subtag_name": "Faith-based reproduction",
+      "category": "I",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "I3",
+      "subtag_name": "Faith-based reproduction",
+      "category": "I",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "I3",
+      "subtag_name": "Faith-based reproduction",
+      "category": "I",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "I3",
+      "subtag_name": "Faith-based reproduction",
+      "category": "I",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "I3",
+      "subtag_name": "Faith-based reproduction",
+      "category": "I",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "I4",
+      "subtag_name": "Religious racism",
+      "category": "I",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "I4",
+      "subtag_name": "Religious racism",
+      "category": "I",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "I4",
+      "subtag_name": "Religious racism",
+      "category": "I",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "I4",
+      "subtag_name": "Religious racism",
+      "category": "I",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "J1",
+      "subtag_name": "Urban/rural divides",
+      "category": "J",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "J1",
+      "subtag_name": "Urban/rural divides",
+      "category": "J",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "J1",
+      "subtag_name": "Urban/rural divides",
+      "category": "J",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "J1",
+      "subtag_name": "Urban/rural divides",
+      "category": "J",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "J2",
+      "subtag_name": "Global North/South",
+      "category": "J",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "J2",
+      "subtag_name": "Global North/South",
+      "category": "J",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "J2",
+      "subtag_name": "Global North/South",
+      "category": "J",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "J2",
+      "subtag_name": "Global North/South",
+      "category": "J",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "J2",
+      "subtag_name": "Global North/South",
+      "category": "J",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "J2",
+      "subtag_name": "Global North/South",
+      "category": "J",
+      "epoch": "EP6",
+      "epoch_name": "Late Neoliberalism/Crisis"
+    },
+    {
+      "subtag": "J3",
+      "subtag_name": "Environmental racism",
+      "category": "J",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "J3",
+      "subtag_name": "Environmental racism",
+      "category": "J",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "J3",
+      "subtag_name": "Environmental racism",
+      "category": "J",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "J3",
+      "subtag_name": "Environmental racism",
+      "category": "J",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "J3",
+      "subtag_name": "Environmental racism",
+      "category": "J",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "J4",
+      "subtag_name": "Segregation & ghettoization",
+      "category": "J",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "J4",
+      "subtag_name": "Segregation & ghettoization",
+      "category": "J",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "J4",
+      "subtag_name": "Segregation & ghettoization",
+      "category": "J",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "J4",
+      "subtag_name": "Segregation & ghettoization",
+      "category": "J",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "J4",
+      "subtag_name": "Segregation & ghettoization",
+      "category": "J",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "J4",
+      "subtag_name": "Segregation & ghettoization",
+      "category": "J",
+      "epoch": "EP6",
+      "epoch_name": "Late Neoliberalism/Crisis"
+    },
+    {
+      "subtag": "J5",
+      "subtag_name": "Spatial fixes",
+      "category": "J",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "J5",
+      "subtag_name": "Spatial fixes",
+      "category": "J",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "J5",
+      "subtag_name": "Spatial fixes",
+      "category": "J",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "J5",
+      "subtag_name": "Spatial fixes",
+      "category": "J",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "J5",
+      "subtag_name": "Spatial fixes",
+      "category": "J",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "K1",
+      "subtag_name": "Black trans women",
+      "category": "K",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "K1",
+      "subtag_name": "Black trans women",
+      "category": "K",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "K1",
+      "subtag_name": "Black trans women",
+      "category": "K",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "K1",
+      "subtag_name": "Black trans women",
+      "category": "K",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "K1",
+      "subtag_name": "Black trans women",
+      "category": "K",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "K2",
+      "subtag_name": "Indigenous women",
+      "category": "K",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "K2",
+      "subtag_name": "Indigenous women",
+      "category": "K",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "K2",
+      "subtag_name": "Indigenous women",
+      "category": "K",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "K2",
+      "subtag_name": "Indigenous women",
+      "category": "K",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "K2",
+      "subtag_name": "Indigenous women",
+      "category": "K",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "K3",
+      "subtag_name": "Disabled migrants",
+      "category": "K",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "K3",
+      "subtag_name": "Disabled migrants",
+      "category": "K",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "K3",
+      "subtag_name": "Disabled migrants",
+      "category": "K",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "K3",
+      "subtag_name": "Disabled migrants",
+      "category": "K",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "K3",
+      "subtag_name": "Disabled migrants",
+      "category": "K",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "K4",
+      "subtag_name": "Elder poor of color",
+      "category": "K",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "K4",
+      "subtag_name": "Elder poor of color",
+      "category": "K",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "K4",
+      "subtag_name": "Elder poor of color",
+      "category": "K",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "K4",
+      "subtag_name": "Elder poor of color",
+      "category": "K",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "K4",
+      "subtag_name": "Elder poor of color",
+      "category": "K",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "K5",
+      "subtag_name": "Queer migrants",
+      "category": "K",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "K5",
+      "subtag_name": "Queer migrants",
+      "category": "K",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "K5",
+      "subtag_name": "Queer migrants",
+      "category": "K",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "K5",
+      "subtag_name": "Queer migrants",
+      "category": "K",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "K5",
+      "subtag_name": "Queer migrants",
+      "category": "K",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "K6",
+      "subtag_name": "Young Black men",
+      "category": "K",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "K6",
+      "subtag_name": "Young Black men",
+      "category": "K",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "K6",
+      "subtag_name": "Young Black men",
+      "category": "K",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "K6",
+      "subtag_name": "Young Black men",
+      "category": "K",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "K6",
+      "subtag_name": "Young Black men",
+      "category": "K",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "K7",
+      "subtag_name": "Working-class mothers",
+      "category": "K",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "K7",
+      "subtag_name": "Working-class mothers",
+      "category": "K",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "K7",
+      "subtag_name": "Working-class mothers",
+      "category": "K",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "K7",
+      "subtag_name": "Working-class mothers",
+      "category": "K",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "K7",
+      "subtag_name": "Working-class mothers",
+      "category": "K",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    },
+    {
+      "subtag": "K8",
+      "subtag_name": "Disabled women of color",
+      "category": "K",
+      "epoch": "EP1",
+      "epoch_name": "Pre-Capitalist Formations"
+    },
+    {
+      "subtag": "K8",
+      "subtag_name": "Disabled women of color",
+      "category": "K",
+      "epoch": "EP2",
+      "epoch_name": "Primitive Accumulation"
+    },
+    {
+      "subtag": "K8",
+      "subtag_name": "Disabled women of color",
+      "category": "K",
+      "epoch": "EP3",
+      "epoch_name": "Industrial Capitalism"
+    },
+    {
+      "subtag": "K8",
+      "subtag_name": "Disabled women of color",
+      "category": "K",
+      "epoch": "EP4",
+      "epoch_name": "State Monopoly Capitalism"
+    },
+    {
+      "subtag": "K8",
+      "subtag_name": "Disabled women of color",
+      "category": "K",
+      "epoch": "EP5",
+      "epoch_name": "Neoliberalism"
+    }
+  ],
+  "gap_count": 267,
+  "total_matrix_cells": 360,
+  "filled_cells": 93
+}

@@ -87,6 +87,7 @@ python3 -m src.student.train_dpo --help
 
 - Studio models: `~/.unsloth/studio/models/`
 - Studio exports: `~/.unsloth/studio/`
+- Studio datasets (Windows): `C:\Users\Guy\.unsloth\studio\assets\datasets\recipes`
 - HF cache: `~/.cache/huggingface/hub/`
 - Datasets: `data/processed/`
 - DPO pairs: `data/processed/dpo_pairs.jsonl`

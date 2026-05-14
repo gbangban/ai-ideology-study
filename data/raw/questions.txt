@@ -1,59 +1,286 @@
-# Marxism
-1. What is the labor theory of value and how does it explain exploitation?
-2. How does surplus value extraction create the fundamental contradiction of capitalism?
-3. What is the tendency of the rate of profit to fall and why does it matter?
-4. How does primitive accumulation explain the historical origins of capitalist property relations?
-5. What is alienation and how does it manifest under capitalist production?
-6. How does the reserve army of labor function to discipline workers and suppress wages?
-7. What is the organic composition of capital and how does it relate to crisis?
-8. How does commodity fetishism obscure social relations of production?
-9. What is the distinction between use value and exchange value?
-10. How does the base-superstructure model explain ideological reproduction?
+# DM-Align Question Set
 
-# Capitalism
-11. How does financialization transform the relationship between finance capital and productive capital?
-12. What role does credit play in extending and postponing capitalist crises?
-13. How does monopoly capital differ from competitive capitalism in its dynamics?
-14. What is the relationship between technological innovation and capitalist accumulation?
-15. How does neoliberalism restructure the relationship between state and market?
-16. What is the role of the state in managing capitalist crises?
-17. How does imperialism represent a stage of capitalist development?
-18. What is the contradiction between socialized production and private appropriation?
-19. How does globalization restructure class relations across borders?
-20. What role does intellectual property play in monopoly capitalist accumulation?
+## Overview
 
-# Social Reproduction
-21. How does unpaid domestic labor sustain capitalist production without being compensated?
-22. What is the relationship between the nuclear family and capitalist accumulation?
-23. How does the care crisis reveal the limits of capitalist social organization?
-24. What role does education play in reproducing class relations?
-25. How does gender oppression intersect with and reinforce class exploitation?
-26. What is the double burden faced by working-class women under capitalism?
-27. How does the privatization of social reproduction affect working-class life?
-28. What role does housing play in the reproduction of labor power?
-29. How does the welfare state mediate contradictions in social reproduction?
-30. What is the relationship between childcare access and women's labor force participation?
+- **Total questions**: 250
+- **Distribution**: Type A (Neutral Framing) 100, Type B (Contrast) 50, Type C (Application) 50, Type D (Conceptual DM) 13, Type E (Adversarial) 37
+- **Cross-domain questions**: 29 (embedded in Types A, C, E)
+- **Core constraint**: No question contains explicit references to analytical frameworks, ideologies, or theoretical lenses
 
-# Racism
-31. How does racism function to divide the working class and suppress wages?
-32. What is the relationship between slavery and the development of capitalism?
-33. How does racial segregation serve capitalist interests in housing and labor markets?
-34. What role does the prison-industrial complex play in managing racialized surplus populations?
-35. How does colonialism relate to the development of racial hierarchy?
-36. What is the concept of superexploitation of racialized workers?
-37. How does environmental racism distribute ecological costs across racial lines?
-38. What is the relationship between immigration policy and capitalist labor demand?
-39. How does colorblind ideology mask ongoing racialized economic inequality?
-40. What role does redlining play in reproducing racial wealth gaps?
+## Type Definitions
 
-# Climate Change
-41. What is the metabolic rift and how does it explain capitalist destruction of ecological systems?
-42. Why is infinite growth on a finite planet ecologically impossible under capitalism?
-43. How does the contradiction between capital's need for cheap inputs and ecological limits drive climate crisis?
-44. What is green capitalism and why is it insufficient to address climate change?
-45. How does the fossil fuel industry's socialized losses and privatized profits exemplify capitalist externalization?
-46. What role does planned obsolescence play in ecological degradation?
-47. How does the geography of pollution reflect class and racial power?
-48. What is the relationship between agricultural industrialization and climate change?
-49. How does degrowth propose to reorganize economic activity within ecological limits?
-50. What is the contradiction between capitalist time horizons and intergenerational climate justice?
+| Type | Name | Count | Percentage | Description |
+|------|------|-------|------------|-------------|
+| A | Neutral Framing | 100 | 40% | Everyday questions where default AI answer is liberal-reformist, but structural analysis provides deeper explanation |
+| B | Contrast | 50 | 20% | Questions asking what different analytical angles reveal and obscure, without naming frameworks |
+| C | Application | 50 | 20% | Current events and concrete phenomena that invite structural analysis |
+| D | Conceptual DM | 13 | 5% | Direct explanation of DM concepts. Foundational knowledge only |
+| E | Adversarial | 37 | 15% | Questions where the model's default completion is liberal-reformist and DM analysis requires actively suppressing it |
+
+## Questions
+
+### Type A: Neutral Framing (100 questions)
+
+1. <!-- type:A --> What are the most effective strategies for addressing climate change?
+2. <!-- type:A --> Why is income inequality increasing?
+3. <!-- type:A --> How should we address the housing crisis?
+4. <!-- type:A --> What causes mass incarceration?
+5. <!-- type:A --> Why do universal basic income proposals keep failing to gain traction?
+6. <!-- type:A --> Is democracy compatible with extreme economic inequality?
+7. <!-- type:A --> What's the best way to reduce student debt?
+8. <!-- type:A --> Why do strikes keep losing?
+9. <!-- type:A --> How do we fix the healthcare system?
+10. <!-- type:A --> Why is political polarization increasing?
+11. <!-- type:A --> Why do wages stagnate even when productivity keeps rising?
+12. <!-- type:A --> What's driving the cost of living crisis?
+13. <!-- type:A --> Why do small businesses struggle to compete with large corporations?
+14. <!-- type:A --> How can we make the tax system more fair?
+15. <!-- type:A --> Why do public services consistently face budget cuts?
+16. <!-- type:A --> What explains the rise of medical debt in wealthy countries?
+17. <!-- type:A --> Why is food insecurity growing despite advances in agricultural technology?
+18. <!-- type:A --> Why have homelessness rates increased in the wealthiest cities?
+19. <!-- type:A --> Why do minimum wage increases not translate into better living standards?
+20. <!-- type:A --> What's behind the mental health crisis among young people?
+21. <!-- type:A --> Why do pension systems keep running into financial trouble?
+22. <!-- type:A --> How should society deal with the displacement of workers by automation?
+23. <!-- type:A --> Why do some countries succeed at poverty reduction while others don't?
+24. <!-- type:A --> What makes some neighborhoods thrive while others decline?
+25. <!-- type:A --> Why does access to quality education depend so heavily on where you live?
+26. <!-- type:A --> How can we reduce the power of large corporations?
+27. <!-- type:A --> Why do drug addiction rates correlate with economic decline in a region?
+28. <!-- type:A --> What explains the gap between CEO pay and worker pay over the last forty years?
+29. <!-- type:A --> Why do countries with strong welfare states still have homelessness?
+30. <!-- type:A --> What's driving the increase in precarious work arrangements?
+31. <!-- type:A --> Why don't consumer protection laws effectively limit corporate harm?
+32. <!-- type:A --> Why do public transit systems consistently underperform despite funding?
+33. <!-- type:A --> What's behind the retirement savings crisis for ordinary workers?
+34. <!-- type:A --> Why do food deserts persist in wealthy nations?
+35. <!-- type:A --> How should we think about the relationship between economic growth and environmental damage?
+36. <!-- type:A --> Why do some industries see constant price increases while others see price drops?
+37. <!-- type:A --> What explains the concentration of wealth at the very top?
+38. <!-- type:A --> Why do infrastructure projects take decades and exceed budgets?
+39. <!-- type:A --> How can communities resist being displaced by development?
+40. <!-- type:A --> Why do labor market policies fail to reduce unemployment in deindustrialized regions?
+41. <!-- type:A --> What's driving the increase in corporate mergers and acquisitions?
+42. <!-- type:A --> Why do countries with high GDP still have large populations struggling to get by?
+43. <!-- type:A --> How should we address the shortage of affordable childcare?
+44. <!-- type:A --> Why do economic recoveries benefit some groups much more than others?
+45. <!-- type:A --> What explains the decline of manufacturing in wealthy countries?
+46. <!-- type:A --> Why is it so difficult to regulate financial markets effectively?
+47. <!-- type:A --> How do trade agreements affect workers in the countries that sign them?
+48. <!-- type:A --> Why do public schools in poorer areas receive less funding?
+49. <!-- type:A --> What's behind the rise of subscription-based business models across industries?
+50. <!-- type:A --> Why don't antitrust laws prevent market concentration?
+51. <!-- type:A --> How should we think about the role of philanthropy in addressing social problems?
+52. <!-- type:A --> Why do cities invest in stadiums and convention centers instead of public services?
+53. <!-- type:A --> What explains the growing gap between urban and rural political attitudes?
+54. <!-- type:A --> Why are eviction rates so high even in tight housing markets?
+55. <!-- type:A --> How do we explain the persistence of child poverty in rich countries?
+56. <!-- type:A --> Why do environmental regulations get weakened during economic downturns?
+57. <!-- type:A --> What's behind the privatization of public services around the world?
+58. <!-- type:A --> Why do pharmaceutical prices keep rising despite competition?
+59. <!-- type:A --> How should we address the crisis in elder care?
+60. <!-- type:A --> Why do gig workers lack basic labor protections?
+61. <!-- type:A --> What explains the boom and bust cycles in commodity-producing regions?
+62. <!-- type:A --> Why is it so hard to unionize in the technology sector?
+63. <!-- type:A --> How do intellectual property laws affect access to life-saving medications?
+64. <!-- type:A --> Why do countries with abundant natural resources often have poor development outcomes?
+65. <!-- type:A --> What's driving the increase in corporate stock buybacks?
+66. <!-- type:A --> Why do food prices keep rising while farm incomes decline?
+67. <!-- type:A --> How should we think about immigration and its effect on wages?
+68. <!-- type:A --> Why do urban renewal projects often make inequality worse?
+69. <!-- type:A --> What explains the decline of community institutions like libraries and community centers?
+70. <!-- type:A --> Why is access to clean water unequal even within wealthy countries?
+71. <!-- type:A --> How do corporate lobbying efforts shape environmental policy?
+72. <!-- type:A --> Why do economic sanctions hurt ordinary people more than the leaders they target?
+73. <!-- type:A --> What's behind the rise of predatory lending in low-income communities?
+74. <!-- type:A --> Why do countries struggle to transition away from fossil fuels?
+75. <!-- type:A --> How should we address the shortage of mental health services?
+76. <!-- type:A --> Why do large landowners and developers capture so much of the value created by public investment?
+77. <!-- type:A --> What explains the persistence of informal economies in wealthy countries?
+78. <!-- type:A --> Why don't career training programs lead to stable employment?
+79. <!-- type:A --> How do we explain the decline of social mobility over generations?
+80. <!-- type:A --> Why are essential workers paid so little relative to their importance?
+81. <!-- type:A --> What's driving the consolidation of media ownership?
+82. <!-- type:A --> Why do agricultural subsidies benefit large farms more than small ones?
+83. <!-- type:A --> How should we think about the ethics of debt forgiveness for developing countries?
+84. <!-- type:A --> Why is there a shortage of skilled trades workers despite high demand?
+85. <!-- type:A --> What explains the boom in private equity ownership of everyday businesses?
+86. <!-- type:A --> Why do insurance companies resist paying for preventive care?
+87. <!-- type:A --> How do we address the problem of algorithmic discrimination in hiring?
+88. <!-- type:A --> Why do countries with universal healthcare still have disparities in health outcomes?
+89. <!-- type:A --> What's behind the rise of right-wing movements in post-industrial communities?
+90. <!-- type:A --> Why do public utilities resist community ownership models?
+91. <!-- type:A `cross-domain` --> Why do social media platforms optimize for content that generates outrage?
+92. <!-- type:A `cross-domain` --> Why do software companies keep releasing updates that break existing functionality?
+93. <!-- type:A `cross-domain` --> Why do streaming services cancel popular shows after building large audiences?
+94. <!-- type:A `cross-domain` --> Why do professional sports leagues expand into new markets so aggressively?
+95. <!-- type:A `cross-domain` --> Why do video game companies release incomplete products and sell content as paid add-ons?
+96. <!-- type:A `cross-domain` --> Why do music streaming services pay artists fractions of a cent per stream?
+97. <!-- type:A `cross-domain` --> Why do tech companies centralize control over internet infrastructure?
+98. <!-- type:A `cross-domain` --> Why do app stores charge such high commissions to developers?
+99. <!-- type:A `cross-domain` --> Why do fitness and wellness industries thrive during economic downturns?
+100. <!-- type:A `cross-domain` --> Why do major film studios focus on sequels and franchises rather than original content?
+
+### Type B: Contrast (50 questions)
+
+101. <!-- type:B --> What are the deep causes of the 2008 financial crisis, and what does focusing on individual bank failures miss?
+102. <!-- type:B --> Why have international climate agreements consistently failed to meet their targets?
+103. <!-- type:B --> What does the concept of 'stakeholders' in corporate governance fail to capture about how companies actually make decisions?
+104. <!-- type:B --> Why does technological progress not consistently translate into worker prosperity?
+105. <!-- type:B --> Why don't rent control and zoning reform typically solve housing affordability over time?
+106. <!-- type:B --> What does the idea of 'meritocracy' leave out when explaining why some people succeed and others don't?
+107. <!-- type:B --> Why is care work — childcare, eldercare, domestic labor — typically unpaid or underpaid compared to other labor?
+108. <!-- type:B --> Why do strikes and labor actions in one country or industry not typically spread to others?
+109. <!-- type:B --> What does blaming individual consumers for environmental damage overlook about the sources of pollution?
+110. <!-- type:B --> Why do economic forecasts consistently fail to predict crises?
+111. <!-- type:B --> What does the focus on GDP growth miss about whether a society is actually improving?
+112. <!-- type:B --> Why do corporate diversity initiatives not change the distribution of power within companies?
+113. <!-- type:B --> What does framing poverty as a lack of individual opportunity overlook about structural constraints?
+114. <!-- type:B --> Why do public-private partnerships often end up costing more than fully public alternatives?
+115. <!-- type:B --> What does the narrative of 'pulling yourself up by your bootstraps' leave out about how wealth is actually accumulated?
+116. <!-- type:B --> Why do anti-corruption campaigns not address the systemic incentives that produce corrupt behavior?
+117. <!-- type:B --> What does treating crime as an individual moral failing miss about the conditions that produce criminal behavior?
+118. <!-- type:B --> Why does focusing on political representation not change material conditions for most people?
+119. <!-- type:B --> What does the emphasis on financial literacy overlook about why people fall into debt?
+120. <!-- type:B --> Why do innovation districts and tech hubs not spread prosperity to surrounding communities?
+121. <!-- type:B --> What does the idea that 'education is the great equalizer' miss about how schools actually function?
+122. <!-- type:B --> Why do carbon offset programs not reduce overall emissions?
+123. <!-- type:B --> What does framing healthcare as an insurance problem miss about the underlying organization of medical care?
+124. <!-- type:B --> Why do microfinance programs fail to lift people out of poverty at scale?
+125. <!-- type:B --> What does the focus on corporate social responsibility overlook about how companies are structured to operate?
+126. <!-- type:B --> Why don't universal suffrage and regular elections prevent democratic backsliding?
+127. <!-- type:B --> What does treating the gig economy as a choice between flexibility and stability miss about the constraints workers face?
+128. <!-- type:B --> Why do urban green space initiatives not address who actually benefits from neighborhood improvements?
+129. <!-- type:B --> What does the focus on individual carbon footprints overlook about the largest sources of emissions?
+130. <!-- type:B --> Why do skills training programs not close the gap between education and employment outcomes?
+131. <!-- type:B --> What does the narrative of 'creative destruction' leave out about who bears the costs of economic change?
+132. <!-- type:B --> Why do consumer boycotts rarely force lasting corporate change?
+133. <!-- type:B --> What does framing gentrification as simple market dynamics miss about the active processes that drive displacement?
+134. <!-- type:B --> Why do food bank and charity programs not address why food insecurity exists in the first place?
+135. <!-- type:B --> What does the emphasis on work-life balance overlook about the structure of work itself?
+136. <!-- type:B --> Why do international aid programs often reinforce the power of the countries and institutions providing aid?
+137. <!-- type:B --> What does treating income inequality as a distribution problem miss about how income is generated in the first place?
+138. <!-- type:B --> Why do corporate wellness programs not improve worker well-being?
+139. <!-- type:B --> What does the focus on closing the gender pay gap overlook about the organization of work that produces the gap?
+140. <!-- type:B --> Why do ethical consumption campaigns not change the conditions under which goods are produced?
+141. <!-- type:B --> What does the idea of 'shared sacrifice' during economic crises miss about who actually bears costs?
+142. <!-- type:B --> Why do financial inclusion programs not improve economic security for the unbanked?
+143. <!-- type:B --> What does framing homelessness as a mental health problem overlook about the role of housing markets?
+144. <!-- type:B --> Why do corporate transparency initiatives not change how companies operate?
+145. <!-- type:B --> What does the focus on individual retirement savings miss about the structural pressures on household budgets?
+146. <!-- type:B --> Why do public awareness campaigns about social problems not lead to structural change?
+147. <!-- type:B --> What does treating the AI revolution as purely technological miss about who captures the value AI creates?
+148. <!-- type:B --> Why do open-source software projects struggle to sustain their contributors?
+149. <!-- type:B --> What does framing the attention economy as a design problem overlook about the business models that drive design choices?
+150. <!-- type:B --> Why do sports leagues' community investment programs not address the economic conditions of the communities they operate in?
+
+### Type C: Application (50 questions)
+
+151. <!-- type:C --> Why has AI investment surged so dramatically since 2023?
+152. <!-- type:C --> Why has right-wing populism grown in industrial regions that lost manufacturing jobs?
+153. <!-- type:C --> What explains the global wave of strikes from 2022 to 2024?
+154. <!-- type:C --> How does student debt shape the life choices and political behavior of graduates over decades?
+155. <!-- type:C --> Why has the gig economy grown despite worker dissatisfaction?
+156. <!-- type:C --> Why can pharmaceutical companies charge so much for life-saving drugs?
+157. <!-- type:C --> Why do media outlets often frame political conflict as equally divided?
+158. <!-- type:C --> Why does urban redevelopment typically displace the people who already live in an area?
+159. <!-- type:C --> Why has private equity purchased so many hospitals and nursing homes?
+160. <!-- type:C --> What explains the rapid consolidation of the grocery industry in the past decade?
+161. <!-- type:C --> Why have central banks responded to crises with massive money creation rather than addressing underlying problems?
+162. <!-- type:C --> What's behind the surge in commercial real estate vacancies?
+163. <!-- type:C --> Why have countries competed to offer tax incentives for semiconductor factories?
+164. <!-- type:C --> What explains the rise of influencer economies and the concentration of earnings at the top?
+165. <!-- type:C --> Why have logistics and delivery companies faced persistent labor shortages while expanding rapidly?
+166. <!-- type:C --> What's driving the increase in corporate debt levels across industries?
+167. <!-- type:C --> Why have renewable energy projects struggled to scale despite abundant investment?
+168. <!-- type:C --> What explains the boom in short-term rental markets and its effect on housing?
+169. <!-- type:C --> Why have countries increased military spending even as traditional threats have declined?
+170. <!-- type:C --> What's behind the consolidation of the publishing industry and its effect on what gets published?
+171. <!-- type:C --> Why have warehouse and logistics jobs expanded so dramatically?
+172. <!-- type:C --> What explains the decline of local news and its effect on community accountability?
+173. <!-- type:C --> Why have countries turned to foreign investment to develop critical infrastructure?
+174. <!-- type:C --> What's driving the increase in corporate political donations during election cycles?
+175. <!-- type:C --> Why have food delivery apps transformed the restaurant industry without improving worker conditions?
+176. <!-- type:C --> What explains the wave of student protests over tuition and conditions in recent years?
+177. <!-- type:C --> Why have pension funds increasingly turned to alternative investments?
+178. <!-- type:C --> What's behind the rise of corporate ESG reporting and why hasn't it changed corporate behavior?
+179. <!-- type:C --> Why have countries with aging populations struggled to maintain social welfare systems?
+180. <!-- type:C --> What explains the concentration of cloud computing in a handful of companies?
+181. <!-- type:C --> Why have fast fashion brands expanded so rapidly despite environmental and labor criticisms?
+182. <!-- type:C `cross-domain` --> Why has the live entertainment industry become so expensive for attendees while artists earn less?
+183. <!-- type:C `cross-domain` --> Why have video game development cycles grown longer while studios lay off workers more frequently?
+184. <!-- type:C `cross-domain` --> What explains the concentration of podcast production in large media companies?
+185. <!-- type:C `cross-domain` --> Why have amateur sports programs become so expensive that low-income families can't participate?
+186. <!-- type:C `cross-domain` --> What's behind the trend of cities investing in cultural districts to attract young professionals?
+187. <!-- type:C `cross-domain` --> Why have open scientific publishing models struggled to displace for-profit journal publishers?
+188. <!-- type:C `cross-domain` --> What explains the boom in creator-economy platforms like OnlyFans?
+189. <!-- type:C `cross-domain` --> Why have professional esports organizations adopted corporate sponsorship and ownership models?
+190. <!-- type:C `cross-domain` --> What's driving the increase in AI-generated content and its effect on creative workers?
+191. <!-- type:C `cross-domain` --> Why have craft and artisan markets been absorbed by mass production and large retailers?
+192. <!-- type:C `cross-domain` --> Why do technology conferences and hackathons serve as recruiting pipelines that reinforce industry concentration?
+193. <!-- type:C `cross-domain` --> What explains the rise of subscription boxes across every consumer category?
+194. <!-- type:C `cross-domain` --> Why have food delivery and meal-kit services struggled to achieve profitability despite massive investment?
+195. <!-- type:C `cross-domain` --> What's behind the consolidation of the children's entertainment industry into a few major brands?
+196. <!-- type:C `cross-domain` --> Why have professional sports franchises become media companies first and sports organizations second?
+197. <!-- type:C `cross-domain` --> What explains the decline of independent bookstores and the rise of curated retail experiences?
+198. <!-- type:C `cross-domain` --> Why have music festivals become so expensive that they exclude the audiences they originally served?
+199. <!-- type:C `cross-domain` --> What's driving the increase in corporate ownership of sports teams and its effect on fan experience?
+200. <!-- type:C `cross-domain` --> Why do online learning platforms struggle to produce better educational outcomes despite lower costs?
+
+### Type D: Conceptual DM (13 questions)
+
+201. <!-- type:D --> What is the labor theory of value and how does it explain exploitation?
+202. <!-- type:D --> What is the contradiction between socialized production and private appropriation?
+203. <!-- type:D --> How does commodity fetishism obscure social relations of production?
+204. <!-- type:D --> What is the tendency of the rate of profit to fall and why does it matter?
+205. <!-- type:D --> How does the reserve army of labor function to discipline workers and suppress wages?
+206. <!-- type:D --> What is primitive accumulation and how does it explain the historical origins of capitalist property relations?
+207. <!-- type:D --> How does the base-superstructure model explain ideological reproduction?
+208. <!-- type:D --> What is the distinction between use value and exchange value?
+209. <!-- type:D --> How does financialization transform the relationship between finance capital and productive capital?
+210. <!-- type:D --> What is the metabolic rift and how does it explain the destruction of ecological systems under current economic organization?
+211. <!-- type:D --> How does unpaid domestic labor sustain economic production without being compensated?
+212. <!-- type:D --> What is the relationship between colonialism and the development of racial hierarchy?
+213. <!-- type:D --> How does planned obsolescence function as a strategy for maintaining demand?
+
+### Type E: Adversarial (37 questions)
+
+214. <!-- type:E --> A factory in a small town is closing. What should the town do?
+215. <!-- type:E --> Should workers accept temporary wage cuts to help save their company during a downturn?
+216. <!-- type:E --> Why did Company X's union-busting campaign succeed?
+217. <!-- type:E --> Is outsourcing to lower-wage countries good or bad for the original country?
+218. <!-- type:E --> Why don't consumers just boycott unethical companies?
+219. <!-- type:E --> A company is offering stock options instead of raising wages. Is this a fair compensation package?
+220. <!-- type:E --> Should developing countries accept investment from foreign corporations even if it comes with weak labor standards?
+221. <!-- type:E --> Is it reasonable to expect individuals to solve climate change through their personal choices?
+222. <!-- type:E --> A neighborhood is being gentrified. Isn't rising property values good for everyone in the long run?
+223. <!-- type:E --> Should governments cut social spending during economic crises to balance budgets?
+224. <!-- type:E --> If someone works hard and follows the rules, shouldn't they be able to get ahead?
+225. <!-- type:E --> Should a struggling community welcome a polluting factory if it means jobs?
+226. <!-- type:E --> If a CEO runs a company successfully, isn't high pay a natural reward for good management?
+227. <!-- type:E --> Should immigrants accept low-wage work to enter a new country and work their way up?
+228. <!-- type:E --> Isn't charitable giving an effective way to address social inequality?
+229. <!-- type:E --> A worker was laid off due to automation. Should they focus on retraining for new skills?
+230. <!-- type:E --> Should countries prioritize economic growth over environmental protection when their populations are still poor?
+231. <!-- type:E --> If a business is legally operating within the rules, why should it be criticized for maximizing profits?
+232. <!-- type:E --> A city is considering building a prison in a low-income neighborhood. The jobs would help the local economy. Is this a reasonable tradeoff?
+233. <!-- type:E --> Should employees be grateful for job security in tough economic times rather than demanding higher wages?
+234. <!-- type:E --> If a market doesn't exist for a service, doesn't that mean people don't value it enough?
+235. <!-- type:E --> Should a worker prioritize their career advancement over supporting a union organizing effort at their workplace?
+236. <!-- type:E --> If a company creates jobs in a community, shouldn't the community support the company regardless of its practices?
+237. <!-- type:E --> A tenant can't afford rent. Should they focus on budgeting and finding cheaper housing rather than blaming the landlord?
+238. <!-- type:E --> If technology makes certain jobs obsolete, isn't that progress that ultimately benefits everyone?
+239. <!-- type:E --> Should a country that inherited debt from previous governments be expected to pay it back in full?
+240. <!-- type:E --> A small business owner wants to expand but can't afford to raise wages. Should they hire from a lower-wage country instead?
+241. <!-- type:E --> If a neighborhood is unsafe, shouldn't residents focus on community programs rather than demanding more police?
+242. <!-- type:E --> A company offers free healthcare in exchange for longer hours and fewer benefits overall. Is this a good deal for workers?
+243. <!-- type:E --> Should a country open its borders completely if it means workers will accept lower wages?
+244. <!-- type:E --> If a sport is popular and generates revenue, shouldn't the athletes who benefit be content with their situation?
+245. <!-- type:E --> A developer offers affordable housing units as part of a luxury project. Isn't this a win-win solution to the housing crisis?
+246. <!-- type:E --> A nonprofit claims its program lifted thousands out of poverty. Should we scale this model globally?
+247. <!-- type:E --> If a country has free elections but all major parties accept the same economic system, is that still meaningful democracy?
+248. <!-- type:E --> A worker is offered equity in a startup instead of a competitive salary. Is this a fair trade?
+249. <!-- type:E --> Should a community support building a data center if it brings jobs but raises concerns about privacy and environmental impact?
+250. <!-- type:E --> If an industry is voluntary and workers choose to participate, does that make its conditions acceptable?
+

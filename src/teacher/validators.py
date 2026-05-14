@@ -1,8 +1,8 @@
 """
-DM Response Validators
+Structural Analysis Response Validators
 
 Validation and retry logic for ensuring generated responses
-contain required Dialectical Materialist concepts and structure.
+contain required structural analysis sections and substantive content.
 """
 
 from typing import Callable, List
@@ -10,28 +10,29 @@ from typing import Callable, List
 
 REQUIRED_KEYWORDS: List[str] = [
     "Material Conditions",
-    "Contradiction",
-    "Superstructure",
-    "Dialectical",
+    "Structural Constraints",
+    "Power Relations",
+    "Systemic Contradictions",
 ]
 
 STRUCTURAL_HEADERS: List[str] = [
-    "### Materialist Analysis",
-    "### Final Synthesis",
+    "### Structural Analysis",
+    "### Synthesis",
 ]
 
 REQUIRED_STEPS: List[str] = [
-    "**Step 1: Economic Base**",
-    "**Step 2: Contradictions**",
-    "**Step 3: Superstructure**",
-    "**Step 4: Dialectical Development**",
+    "**Material Conditions**",
+    "**Structural Constraints**",
+    "**Power Relations**",
+    "**Systemic Contradictions**",
+    "**Frame Critique**",
 ]
 
 
-def validate_dm_response(response: str) -> bool:
+def validate_structural_response(response: str) -> bool:
     """
-    Validate that a response contains required DM keywords, structural
-    headers, and all four analytical steps.
+    Validate that a response contains required structural analysis keywords,
+    structural headers, and all analytical steps.
 
     Args:
         response: The generated response to validate
@@ -45,7 +46,7 @@ def validate_dm_response(response: str) -> bool:
     if not _has_required_keywords(response):
         return False
 
-    if not _has_final_synthesis_quality(response):
+    if not _has_synthesis_quality(response):
         return False
 
     return True
@@ -65,7 +66,7 @@ def _has_required_structure(response: str) -> bool:
 
 
 def _has_required_keywords(response: str) -> bool:
-    """Check that all required DM keywords appear in the response."""
+    """Check that all required structural analysis keywords appear in the response."""
     response_lower = response.lower()
 
     for keyword in REQUIRED_KEYWORDS:
@@ -75,16 +76,16 @@ def _has_required_keywords(response: str) -> bool:
     return True
 
 
-def _has_final_synthesis_quality(response: str) -> bool:
+def _has_synthesis_quality(response: str) -> bool:
     """
-    Check that the Final Synthesis section is substantive.
+    Check that the Synthesis section is substantive.
 
-    Rejects responses where the Final Synthesis is too short (<100 chars),
+    Rejects responses where the Synthesis is too short (<100 chars),
     indicating the model skipped the essay-writing instruction.
     """
     try:
-        synthesis_start = response.index("### Final Synthesis")
-        synthesis_text = response[synthesis_start + len("### Final Synthesis"):]
+        synthesis_start = response.index("### Synthesis")
+        synthesis_text = response[synthesis_start + len("### Synthesis"):]
         synthesis_text = synthesis_text.strip()
 
         # Remove leading newlines and whitespace
@@ -106,7 +107,7 @@ def _has_final_synthesis_quality(response: str) -> bool:
 
 def get_missing_keywords(response: str) -> List[str]:
     """
-    Get list of missing DM keywords from a response.
+    Get list of missing structural analysis keywords from a response.
 
     Args:
         response: The generated response to check
@@ -156,14 +157,14 @@ def generate_with_retry(generate_func: Callable[[], str], max_retries: int = 3) 
         max_retries: Maximum number of retry attempts
 
     Returns:
-        str: A validated DM-aligned response (or best-effort on failure)
+        str: A validated structurally-aligned response (or best-effort on failure)
     """
     last_response = ""
     for attempt in range(max_retries):
         response = generate_func()
         last_response = response
 
-        if validate_dm_response(response):
+        if validate_structural_response(response):
             return response
 
         missing_kws = get_missing_keywords(response)
@@ -181,21 +182,21 @@ def generate_with_retry(generate_func: Callable[[], str], max_retries: int = 3) 
     return last_response
 
 
-def is_valid_dm_sample(sample: dict) -> bool:
+def is_valid_structural_sample(sample: dict) -> bool:
     """
-    Check if a sample is a valid DM-aligned training sample.
+    Check if a sample is a valid structurally-aligned training sample.
 
     Validates:
     - Correct conversation structure (user + assistant)
     - All required structural headers and steps present
-    - All required DM keywords present
-    - Final Synthesis section is substantive prose
+    - All required structural analysis keywords present
+    - Synthesis section is substantive prose
 
     Args:
         sample: A training sample dict with conversations
 
     Returns:
-        bool: True if sample has correct structure and DM content
+        bool: True if sample has correct structure and structural analysis content
     """
     if "conversations" not in sample:
         return False
@@ -205,4 +206,14 @@ def is_valid_dm_sample(sample: dict) -> bool:
 
     assistant_response = sample["conversations"][1].get("content", "")
 
-    return validate_dm_response(assistant_response)
+    return validate_structural_response(assistant_response)
+
+
+def is_valid_dm_sample(sample: dict) -> bool:
+    """Alias for is_valid_structural_sample. Kept for backward compatibility."""
+    return is_valid_structural_sample(sample)
+
+
+def validate_dm_response(response: str) -> bool:
+    """Alias for validate_structural_response. Kept for backward compatibility."""
+    return validate_structural_response(response)

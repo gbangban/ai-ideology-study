@@ -2794,6 +2794,20 @@
     ]
   },
   {
+    "id": 236,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the connection between the hours people spend at work and the quality of their family relationships?",
+    "cross_domain": [
+      "A1",
+      "D1"
+    ],
+    "axis1": [
+      "EP6"
+    ],
+    "axis2": []
+  },
+  {
     "id": 237,
     "type": "A",
     "type_label": "Neutral Framing",
@@ -4169,6 +4183,20 @@
     ]
   },
   {
+    "id": 340,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might economic security be reorganized so that people are not dependent on selling their labor to survive?",
+    "cross_domain": [
+      "A1",
+      "D1"
+    ],
+    "axis1": [
+      "EP6"
+    ],
+    "axis2": []
+  },
+  {
     "id": 341,
     "type": "A",
     "type_label": "Neutral Framing",
@@ -5381,6 +5409,20 @@
     ]
   },
   {
+    "id": 431,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the gap between the promise of meritocracy and the reality of inherited advantage?",
+    "cross_domain": [
+      "A1",
+      "K1"
+    ],
+    "axis1": [
+      "EP6"
+    ],
+    "axis2": []
+  },
+  {
     "id": 432,
     "type": "A",
     "type_label": "Neutral Framing",
@@ -5516,6 +5558,20 @@
     "axis2": [
       "EP6"
     ]
+  },
+  {
+    "id": 442,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would happen if the wealth extracted from public resources was returned to the communities that provided them?",
+    "cross_domain": [
+      "A1",
+      "cross"
+    ],
+    "axis1": [
+      "EP6"
+    ],
+    "axis2": []
   },
   {
     "id": 443,
@@ -6659,6 +6715,19 @@
     ]
   },
   {
+    "id": 537,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What makes the current distribution of wealth seem natural when it is the product of specific historical processes?",
+    "cross_domain": [
+      "A1"
+    ],
+    "axis1": [
+      "EP6"
+    ],
+    "axis2": []
+  },
+  {
     "id": 538,
     "type": "B",
     "type_label": "Contrast",
@@ -6729,6 +6798,19 @@
     "axis2": [
       "EP6"
     ]
+  },
+  {
+    "id": 544,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might we understand the relationship between economic power and political power without assuming they are separate spheres?",
+    "cross_domain": [
+      "A1"
+    ],
+    "axis1": [
+      "EP6"
+    ],
+    "axis2": []
   },
   {
     "id": 545,
@@ -7852,6 +7934,21 @@
     ]
   },
   {
+    "id": 639,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the hidden cost of treating everything as a commodity for sale?",
+    "cross_domain": [
+      "A1",
+      "D1",
+      "cross"
+    ],
+    "axis1": [
+      "EP6"
+    ],
+    "axis2": []
+  },
+  {
     "id": 640,
     "type": "B",
     "type_label": "Contrast",
@@ -7942,6 +8039,20 @@
     "axis2": [
       "EP6"
     ]
+  },
+  {
+    "id": 648,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What does the common understanding of 'fairness' assume about how wealth is created?",
+    "cross_domain": [
+      "A1",
+      "K1"
+    ],
+    "axis1": [
+      "EP6"
+    ],
+    "axis2": []
   },
   {
     "id": 649,
@@ -9168,6 +9279,19 @@
     ]
   },
   {
+    "id": 749,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does the story we tell about hard work differ from the reality of how wealth is actually accumulated?",
+    "cross_domain": [
+      "A1"
+    ],
+    "axis1": [
+      "EP6"
+    ],
+    "axis2": []
+  },
+  {
     "id": 750,
     "type": "C",
     "type_label": "Application",
@@ -10272,6 +10396,19 @@
     ]
   },
   {
+    "id": 840,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What assumptions underlie the belief that market outcomes are neutral and unbiased?",
+    "cross_domain": [
+      "A1"
+    ],
+    "axis1": [
+      "EP6"
+    ],
+    "axis2": []
+  },
+  {
     "id": 841,
     "type": "C",
     "type_label": "Application",
@@ -10394,6 +10531,20 @@
     "axis2": [
       "EP6"
     ]
+  },
+  {
+    "id": 851,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A company pays a living wage in a country where the cost of living is low by Western standards. The workers are better off than before, but the company could pay much more without affecting profits. Is paying less than maximum affordable a moral failure?",
+    "cross_domain": [
+      "A1",
+      "F4"
+    ],
+    "axis1": [
+      "EP6"
+    ],
+    "axis2": []
   },
   {
     "id": 852,
@@ -11522,6 +11673,21 @@
     ]
   },
   {
+    "id": 942,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A government argues that it cannot afford to house the homeless because the budget is constrained. Meanwhile, the same government provides tax breaks and subsidies worth billions to corporations. Is this a budget problem or a priority problem?",
+    "cross_domain": [
+      "A1",
+      "J1",
+      "D1"
+    ],
+    "axis1": [
+      "EP6"
+    ],
+    "axis2": []
+  },
+  {
     "id": 943,
     "type": "E",
     "type_label": "Adversarial",
@@ -11644,6 +11810,20 @@
     "axis2": [
       "EP6"
     ]
+  },
+  {
+    "id": 953,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A person argues that anyone can succeed if they work hard enough, pointing to their own success as proof. They ignore that their success depended on parental support, access to education, and timing that many others did not have. Is this merit or luck dressed up as merit?",
+    "cross_domain": [
+      "A1",
+      "K1"
+    ],
+    "axis1": [
+      "EP6"
+    ],
+    "axis2": []
   },
   {
     "id": 954,
@@ -12754,6 +12934,21 @@
     ]
   },
   {
+    "id": 1044,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A city council votes to evict unhoused residents from a neighborhood to attract business investment. The council argues this makes the city more competitive. The residents had set up homes in a space no one else wanted. Is urban competitiveness built on the displacement of the most vulnerable?",
+    "cross_domain": [
+      "A1",
+      "J1",
+      "D1"
+    ],
+    "axis1": [
+      "EP6"
+    ],
+    "axis2": []
+  },
+  {
     "id": 1045,
     "type": "E",
     "type_label": "Adversarial",
@@ -12867,6 +13062,6078 @@
     "axis1": [
       "A1"
     ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1055,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What are the underlying reasons that rent prices climb faster than wages in urban areas?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1056,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What are the conditions that allow a single corporation to dominate an entire industry?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1057,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What are the structural barriers that prevent low-income neighborhoods from attracting quality schools?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1058,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What are the mechanisms through which inherited wealth translates into political influence?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1059,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What are the factors that make gig workers vulnerable to income instability?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1060,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What lies behind the gap between a company's productivity gains and its workers' paychecks?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1061,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What lies behind the pattern of urban neighborhoods becoming more expensive as they improve?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1062,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What lies behind the fact that the countries contributing the least to climate change suffer its worst effects?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1063,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What lies behind the persistent underfunding of public schools in poorer districts?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1064,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What lies behind the observation that longer work hours do not correspond to higher life satisfaction?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1065,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What makes it possible for a handful of companies to control the majority of online retail?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1066,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What makes it possible for landlords to raise rents without offering improved housing conditions?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1067,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What makes it possible for essential medications to carry price tags that exceed what most people can afford?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1068,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What makes it possible for agricultural workers to harvest food while living in poverty?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1069,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What makes it possible for tech companies to lay off thousands while simultaneously posting record profits?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1070,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What prevents housing from being treated as a public good rather than an investment vehicle?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1071,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What prevents workplace safety regulations from being enforced consistently across industries?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1072,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What prevents communities from setting their own priorities when a corporation offers jobs?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1073,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What prevents workers from sharing equally in the wealth their labor generates?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1074,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What prevents technological efficiency gains from translating into shorter workweeks?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1075,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What enables a small group of investors to influence the direction of entire industries?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1076,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What enables companies to relocate production across borders in search of cheaper labor?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4"
+    ],
+    "axis2": [
+      "EP5"
+    ]
+  },
+  {
+    "id": 1077,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What enables the financial sector to grow while the real economy stagnates?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1078,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What enables communities to resist development that threatens their environment?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1079,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What enables workers in one sector to benefit from advances made in another?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1080,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might a society organize production so that human needs take priority over profit?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1081,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might communities ensure that economic development benefits the people who already live there?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1082,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might workplaces distribute decision-making power more equitably?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1083,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might a society measure progress in ways that go beyond GDP?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1084,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might technology be organized so that it reduces exploitation rather than increasing it?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1085,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "Is there a way to reconcile the need for economic growth with the limits of planetary resources?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1086,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "Is there a way to protect tenants from displacement while still encouraging new construction?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1087,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "Is there a way to ensure that technological innovation benefits the many rather than the few?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1088,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "Is there a way to organize healthcare so that profit motives do not determine who receives treatment?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1089,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "Is there a way to make international trade fairer for developing economies?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4"
+    ],
+    "axis2": [
+      "EP5"
+    ]
+  },
+  {
+    "id": 1090,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "Can we have a democratic political system alongside extreme concentrations of economic power?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1091,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "Can we expect workers to remain loyal to employers who treat them as replaceable?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1092,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "Can we solve environmental crises without challenging the assumption that growth is always desirable?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1093,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "Can we trust market mechanisms to allocate resources that people need to survive?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1094,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "Can we expect people to invest in their communities when economic conditions push them to leave?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1095,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What role does the ownership of productive assets play in determining a person's life outcomes?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1096,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What role does the geography of a neighborhood play in shaping a child's future opportunities?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1097,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What role does the control of supply chains give to the companies that manage them?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1098,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What role does the timing of economic cycles play in who gains and who loses?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1099,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What role does the structure of corporate governance play in determining whose interests a company serves?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1100,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would happen if all workers in an industry struck for higher wages simultaneously?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1101,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would happen if housing were removed from the speculative market?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1102,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would happen if companies had to share profits equally with their workers?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1103,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would happen if the financial sector were eliminated entirely?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1104,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would happen if people could produce their own food, shelter, and energy without relying on markets?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1105,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "In what ways does the design of modern workplaces reinforce existing social hierarchies?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1106,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "In what ways do urban planning decisions reflect the priorities of different social groups?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1107,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "In what ways does the structure of international finance favor wealthy nations over poor ones?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4"
+    ],
+    "axis2": [
+      "EP5"
+    ]
+  },
+  {
+    "id": 1108,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "In what ways do labor laws in practice protect workers versus protect employers?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1109,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "In what ways does the current education system prepare young people for different roles in the economy?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1110,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "To what extent can individual consumer choices drive systemic change in how goods are produced?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1111,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "To what extent does a person's zip code determine their access to quality healthcare?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1112,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "To what extent can policy reforms address inequality without changing the underlying economic structure?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1113,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "To what extent do workers benefit from the companies they work for?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1114,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "To what extent is economic mobility a reality versus a myth in contemporary societies?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1115,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What accounts for the fact that care work remains undervalued across virtually all economies?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "C1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1116,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What accounts for the widening gap between executive compensation and average worker pay?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1117,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What accounts for the fact that innovation often displaces workers rather than liberating them from drudgery?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1118,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What accounts for the tendency of public services to degrade even as funding increases?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1119,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What accounts for the observation that economic booms lift all boats unevenly?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1120,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "A small town's largest employer announces it will relocate to a country with lower labor costs. What options does the community actually have?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1121,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "A city council debates whether to approve a luxury development that would displace a low-income neighborhood. What competing interests are at stake?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1122,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "A group of workers at a warehouse wants to organize a union. What structural factors will determine their chances of success?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1123,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "A country decides to invest heavily in renewable energy, which means closing coal plants. What happens to the workers and communities that depend on those plants?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1124,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "A government introduces a program to provide free childcare. What are the likely effects on women's employment, the economy, and the childcare workers themselves?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "C1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1125,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does the fact that most people cannot afford to buy the products they help make shape the relationship between workers and employers?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1126,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does the fact that land is finite and privately owned affect everyone who needs it to live?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1127,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does the fact that time cannot be stored or saved affect how labor is valued and sold?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1128,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does the fact that knowledge is produced collectively but often privatized through intellectual property affect innovation?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1129,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does the fact that most wealth is accumulated through ownership rather than labor explain patterns of inequality?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1130,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the relationship between the level of worker organization and the share of national income that goes to labor?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1131,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the relationship between housing costs and the ability of young people to form independent households?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1",
+      "G3"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1132,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the relationship between corporate concentration and the rate of innovation in an industry?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1133,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the relationship between the financialization of everyday life and people's sense of economic security?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1134,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the relationship between the size of a company's workforce and its political lobbying power?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1135,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What happens when a government prioritizes attracting business investment over regulating corporate behavior?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1136,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What happens when a community's housing stock is converted into short-term rental properties?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1137,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What happens when a sector of the economy becomes profitable enough to attract massive financial investment?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1138,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What happens when workers lose the ability to collectively bargain?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1139,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What happens when a society treats healthcare as a market commodity rather than a social right?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1140,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would it take to ensure that the benefits of economic growth are shared broadly?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1141,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would it take to make healthcare accessible to everyone regardless of income?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1142,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would it take to prevent a city's neighborhoods from being displaced by wealthier newcomers?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1143,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would it take to align technological development with human flourishing rather than corporate profit?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1144,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would it take to give workers real decision-making power in their workplaces?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1145,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "How does the idea that markets naturally balance supply and demand ignore the role of power in setting prices?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1146,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "Why does a system organized around private profit tend to produce outcomes that no single actor intended?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1147,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "How does the separation of people from direct access to land and resources create a class of people who must sell their labor?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F2"
+    ],
+    "axis2": [
+      "EP2"
+    ]
+  },
+  {
+    "id": 1148,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "What explains the pattern where societies with greater economic equality tend to report better outcomes across health, education, and crime?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1149,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "How does the treatment of nature as an infinite reservoir of inputs and an infinite sink for waste shape economic behavior?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1150,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "In what ways does the concept of productivity measure output while ignoring who bears the costs of production?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1151,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "How does the way a society organizes its productive forces — tools, technology, knowledge, labor power — shape its social and political life?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1152,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "What role does the reproduction of the labor force — through families, schools, and healthcare — play in sustaining an economic system?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "C1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1153,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "How does the transformation of something into a commodity — something bought and sold — change its social meaning?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1154,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "Why do crises that seem to come from outside a system — pandemics, financial shocks, wars — tend to expose weaknesses built into the system itself?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1155,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "How does the division of society into those who own and those who work shape the development of laws, norms, and ideas?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1156,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "What explains the tendency for competitive markets to evolve toward concentration and monopoly?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1157,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "How does the fact that capital can move across borders while labor cannot create structural imbalances in bargaining power?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4"
+    ],
+    "axis2": [
+      "EP5"
+    ]
+  },
+  {
+    "id": 1158,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "In what ways does the ideology that success is determined by individual effort obscure the role of inherited advantage?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1159,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "How does the financialization of everyday life — mortgages, student loans, credit cards — extend the reach of financial institutions into daily existence?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1160,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "What happens when the pursuit of profit in a sector creates negative effects — pollution, inequality, insecurity — that the market itself cannot address?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1161,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "How does the history of how people were separated from common lands and shared resources continue to shape wealth distribution today?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F2"
+    ],
+    "axis2": [
+      "EP2",
+      "EP6"
+    ]
+  },
+  {
+    "id": 1162,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "Why do societies that organize production around wage labor tend to treat time as something to be sold rather than lived?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP3"
+    ]
+  },
+  {
+    "id": 1163,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "How does the concentration of decision-making power in corporate boardrooms affect which innovations get developed and which do not?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1164,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "What is the connection between the way a society produces what it needs and the forms of social organization that emerge?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1165,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "Compare how market-based solutions and public provision approach the problem of affordable housing. What does each make visible, and what does each obscure?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1166,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "Compare the explanation for worker poverty that focuses on individual skills versus the one that focuses on power relations between employers and employees.",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1167,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "Compare how criminal justice reform and abolitionist approaches understand the role of policing in social order. What assumptions does each carry?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1168,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "Compare the explanation for educational inequality that emphasizes school funding with the one that emphasizes the reproduction of class structure.",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1169,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "Compare how environmental policy approaches the problem of pollution when framed as a market failure versus when framed as a structural feature of production.",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1170,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "Compare the explanation for gender pay gaps that attributes them to career choices with the one that attributes them to the devaluation of feminized labor.",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "C1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1171,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "Compare how welfare policy designs that emphasize individual responsibility versus structural support produce different outcomes for recipients.",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1172,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "Compare the explanation for international conflict that emphasizes competition between nations with the one that emphasizes competition between classes across nations.",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1173,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What is missing from explanations of the housing crisis that focus on zoning laws without addressing the financialization of real estate?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1174,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What is missing from explanations of workplace accidents that focus on safety training without addressing the pressure to cut corners for profit?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1175,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What is missing from explanations of student debt that focus on personal financial literacy without addressing the role of higher education as an investment industry?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1176,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What is missing from explanations of food deserts that focus on store placement without addressing the economic conditions that determine where investment flows?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1177,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What is missing from explanations of political polarization that focus on social media algorithms without addressing the material conditions that make people feel insecure?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1178,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What is missing from explanations of care shortages that focus on individual worker shortages without addressing the systemic undervaluation of care work?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "C1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1179,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What is missing from explanations of corporate tax avoidance that focus on legal loopholes without addressing the structural power of capital to set terms with governments?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1180,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What is missing from explanations of climate inaction that focus on political lobbying without addressing the structural dependence of the economy on fossil fuels?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1181,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "How would an analysis that examines who benefits from the current healthcare system differ from one that examines why healthcare is so expensive?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1182,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "How would an analysis that examines the power relationship between landlords and tenants differ from one that examines supply and demand in housing markets?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1183,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "How would an analysis that examines the historical construction of racial categories differ from one that examines cultural differences between groups?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "B1"
+    ],
+    "axis2": [
+      "EP2"
+    ]
+  },
+  {
+    "id": 1184,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "How would an analysis that examines the social function of education differ from one that examines individual educational outcomes?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1185,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "How would an analysis that examines the role of debt in maintaining labor discipline differ from one that examines debt as a personal finance problem?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1186,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "How would an analysis that examines the geopolitical dimensions of resource extraction differ from one that examines environmental damage in isolation?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4",
+      "cross"
+    ],
+    "axis2": [
+      "EP5"
+    ]
+  },
+  {
+    "id": 1187,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "How would an analysis that examines the class composition of different political movements differ from one that examines their policy positions?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1188,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "How would an analysis that examines the role of spectacle in modern politics differ from one that examines the substance of political debates?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1189,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What does an analysis of poverty that focuses on income levels overlook that an analysis of wealth concentration would catch?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1190,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What does an analysis of unemployment that focuses on job matching overlook that an analysis of labor market power would catch?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1191,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What does an analysis of corporate success that focuses on innovation overlook that an analysis of market power and barriers to entry would catch?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1192,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What does an analysis of international development that focuses on GDP growth overlook that an analysis of power relations between nations would catch?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4"
+    ],
+    "axis2": [
+      "EP5"
+    ]
+  },
+  {
+    "id": 1193,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What does an analysis of workplace satisfaction that focuses on employee benefits overlook that an analysis of who controls the workplace would catch?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1194,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What does an analysis of family structure that focuses on individual choices overlook that an analysis of economic constraints would catch?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "C1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1195,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What does an analysis of technological progress that focuses on capability gains overlook that an analysis of who directs technological development would catch?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1196,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What does an analysis of consumer behavior that focuses on individual preferences overlook that an analysis of market structure and advertising would catch?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1197,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "When we examine the explanation for inequality that emphasizes education versus the one that emphasizes inheritance, what different policy implications follow from each?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1198,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "When we examine the explanation for worker displacement that emphasizes globalization versus the one that emphasizes automation and capital's pursuit of labor discipline, what different responses follow?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4"
+    ],
+    "axis2": [
+      "EP5"
+    ]
+  },
+  {
+    "id": 1199,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "When we examine the explanation for environmental degradation that emphasizes individual consumption versus the one that emphasizes production systems, what different levers for change emerge?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1200,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "When we examine the explanation for political disengagement that emphasizes voter apathy versus the one that examines structural barriers to participation, what different strategies for engagement follow?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1201,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "When we examine the explanation for healthcare costs that emphasizes administrative waste versus the one that emphasizes profit extraction, what different reform strategies follow?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1202,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "When we examine the explanation for gender inequality that emphasizes cultural norms versus the one that examines the economic value of reproductive labor, what different approaches to change follow?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "C1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1203,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "When we examine the explanation for urban poverty that emphasizes individual behavior versus the one that examines the extraction of wealth from poor neighborhoods, what different interventions follow?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1204,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "When we examine the explanation for food insecurity that emphasizes distribution efficiency versus the one that examines purchasing power and income inequality, what different solutions follow?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1205,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What alternative explanation for the decline of union membership exists beyond the narrative of changing worker attitudes?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1206,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What alternative explanation for the rise in student debt exists beyond the narrative of rising college costs?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1207,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What alternative explanation for the concentration of wealth exists beyond the narrative of entrepreneurial success?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1208,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What alternative explanation for the crisis in care work exists beyond the narrative of changing family structures?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "C1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1209,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What alternative explanation for the growth of the gig economy exists beyond the narrative of worker preference for flexibility?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1210,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What alternative explanation for the decline of public transit investment exists beyond the narrative of technological change?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1211,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What alternative explanation for the crisis in public education exists beyond the narrative of teacher quality?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1212,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What alternative explanation for the stagnation of living standards exists beyond the narrative of individual skill levels?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1213,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "How do these two approaches to explaining economic inequality — one focusing on individual merit and the other on structural position — produce fundamentally different policy recommendations?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1214,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "How do these two approaches to understanding climate change — one treating it as a market failure and the other as a systemic feature of capital accumulation — lead to different assessments of potential solutions?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1215,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "How do these two approaches to analyzing poverty — one focusing on income insufficiency and the other on powerlessness in labor markets — produce different visions of what solving poverty requires?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1216,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "How do these two approaches to understanding corporate behavior — one focusing on individual ethics and the other on structural incentives — produce different expectations for reform?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1217,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "How do these two approaches to explaining social mobility — one emphasizing education and the other emphasizing inherited advantage — produce different assessments of whether a society is truly open?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1218,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What perspective does an analysis of trade policy that focuses on national competitiveness exclude when it does not examine the interests of workers across borders?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4"
+    ],
+    "axis2": [
+      "EP5"
+    ]
+  },
+  {
+    "id": 1219,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What perspective does an analysis of criminal justice that focuses on crime rates exclude when it does not examine the social conditions that produce crime?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1220,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What perspective does an analysis of immigration that focuses on border security exclude when it does not examine the economic forces that drive migration?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "H1"
+    ],
+    "axis2": [
+      "EP5"
+    ]
+  },
+  {
+    "id": 1221,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What perspective does an analysis of technological unemployment that focuses on the timeline of job creation exclude when it does not examine the human cost of displacement?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1222,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What perspective does an analysis of economic growth that focuses on aggregate numbers exclude when it does not examine who bears the costs of production?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1223,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What blind spot does mainstream economic analysis have when it treats the labor market as if workers and employers negotiate on equal terms?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1224,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What blind spot does policy analysis have when it treats social problems as isolated issues rather than interconnected outcomes of a single economic system?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1225,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What can an analysis based on individual choice not account for when it comes to explaining patterns of inequality that are consistent across cultures and time periods?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1226,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What can a market-based explanation not account for when it comes to goods that are essential to human survival but unprofitable to provide at scale?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1227,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "What can an explanation based on cultural differences not account for when it comes to patterns of inequality that closely follow economic boundaries?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "B1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1228,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "How does an analysis of power relations explain what a market-based analysis cannot — namely, why some outcomes persist even when they are inefficient for everyone involved?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1229,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "How does a structural explanation account for what an individualist explanation cannot — namely, why well-intentioned reforms consistently fail to produce their intended results?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1230,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "How does an analysis of class position explain what a merit-based explanation cannot — namely, why the children of wealthy people succeed at dramatically higher rates regardless of talent?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1231,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A city experiences a housing shortage. One analysis blames restrictive zoning; another blames investor speculation. How do these two explanations lead to different solutions, and what does each explanation take for granted?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1232,
+    "type": "B",
+    "type_label": "Contrast",
+    "question": "A factory closes and hundreds lose their jobs. One response retrain the workers; another examines why the factory was located there in the first place and why it left. What different assumptions about the problem does each response carry?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1233,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A tech company pays its workers the legal minimum wage in a developing country. The company claims this is fair because it follows local law. Should the company be held to a higher standard?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1234,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A government evicts homeless people from a park to make the area look cleaner for businesses. The government argues it has a responsibility to maintain public spaces. Is there a conflict between maintaining public order and protecting the rights of unhoused people?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1235,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A pharmaceutical company raises the price of a life-saving drug by 500 percent. The company says the price reflects the cost of research and development. Does the need to recoup R&D costs justify charging prices that make the drug inaccessible to most patients?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1236,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A landlord refuses to rent to a family with children because they worry about noise and liability. The landlord says it is their property and they should be free to choose their tenants. Does property ownership include the right to discriminate in who gets shelter?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1237,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A government cuts social benefits to fund tax reductions for corporations, arguing this will stimulate job creation. The government claims the benefits will ultimately help everyone. Is it fair to sacrifice the wellbeing of the most vulnerable for a promise of future economic growth?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1238,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A corporation donates millions to political campaigns and claims this is civic engagement. Isn't this an attempt to buy political influence that undermines democratic equality?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1239,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A government promotes vocational training for displaced workers as a solution to deindustrialization. Isn't this treating the symptom while ignoring that capital mobility makes local solutions insufficient?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP5"
+    ]
+  },
+  {
+    "id": 1240,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A social media company says its algorithm simply shows people what they want to see. Isn't the algorithm designed to maximize engagement, and isn't outrage the most effective way to do that?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1241,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A university says it admits students based on merit alone. Isn't merit itself shaped by the quality of schooling, extracurricular access, and test preparation that correlate strongly with family wealth?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1242,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A country imposes sanctions on another nation to promote human rights. Isn't this a form of economic coercion that disproportionately harms ordinary citizens while leaving elites largely unaffected?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1243,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "Shouldn't workers have the right to walk out of a workplace if conditions are unsafe, even if doing so means losing their income and facing retaliation?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1244,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "Shouldn't people be free to grow their own food on unused land, even if that land is zoned for development and owned by a corporation waiting for property values to rise?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1245,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "Shouldn't a community have the right to keep its local businesses independent rather than letting them be acquired by a national chain that extracts profits from the area?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1246,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "Shouldn't patients have the right to access medications without waiting for patent protections to expire, especially when those medications are a matter of life and death?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1247,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "Shouldn't a society prioritize housing the homeless over maintaining property values for homeowners, since shelter is a basic human need while investment returns are not?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1248,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "Isn't it reasonable to expect that the people who built a product should benefit proportionally from its success, rather than seeing the vast majority of profits go to shareholders?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1249,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "Isn't it reasonable to expect that those who contribute to a problem — such as pollution or financial instability — should bear the cost of solving it, rather than passing those costs to the public?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1250,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "Isn't it reasonable to expect that people who have been systematically disadvantaged should receive compensatory support, rather than being told that formal equality is enough?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1",
+      "B1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1251,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "Isn't it reasonable to expect that essential services like healthcare and education should be guaranteed regardless of income, since no one chooses to be born into poverty?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1252,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "Isn't it reasonable to expect that a society with enough resources to house everyone should not tolerate people sleeping on the streets, and that homelessness is a policy choice rather than an inevitability?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1253,
+    "type": "C",
+    "type_label": "Application",
+    "question": "Why has AI investment surged so dramatically since 2023, and what does this investment pattern tell us about where capital is searching for returns?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1254,
+    "type": "C",
+    "type_label": "Application",
+    "question": "Why has the gig economy grown from a niche model to a dominant employment format in just fifteen years?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1255,
+    "type": "C",
+    "type_label": "Application",
+    "question": "Why has private equity expanded so aggressively into sectors like healthcare, education, and housing over the past decade?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1256,
+    "type": "C",
+    "type_label": "Application",
+    "question": "Why has the number of people working multiple jobs increased significantly even as overall employment rates have risen?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1257,
+    "type": "C",
+    "type_label": "Application",
+    "question": "Why has the share of national income going to labor declined in most advanced economies since the 1980s?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ]
+  },
+  {
+    "id": 1258,
+    "type": "C",
+    "type_label": "Application",
+    "question": "Why has the cost of childcare risen faster than inflation in most countries, even as more parents enter the workforce?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "C1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1259,
+    "type": "C",
+    "type_label": "Application",
+    "question": "Why has the number of billionaires grown dramatically while wage stagnation has affected the majority?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1260,
+    "type": "C",
+    "type_label": "Application",
+    "question": "Why has the rental market shifted from owner-occupied housing to a system dominated by institutional landlords in many cities?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1261,
+    "type": "C",
+    "type_label": "Application",
+    "question": "Why has the cost of higher education outpaced inflation by such a wide margin over the past forty years?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1262,
+    "type": "C",
+    "type_label": "Application",
+    "question": "Why has the concentration of media ownership increased to the point where a handful of corporations control most news outlets?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1263,
+    "type": "C",
+    "type_label": "Application",
+    "question": "How has the transformation of healthcare into a for-profit industry affected patient outcomes and access to care?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1264,
+    "type": "C",
+    "type_label": "Application",
+    "question": "How has the rise of remote work changed the relationship between workers and employers, and who benefits from this shift?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1265,
+    "type": "C",
+    "type_label": "Application",
+    "question": "How has the financialization of agriculture — where investment funds buy farmland — affected food production and rural communities?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1266,
+    "type": "C",
+    "type_label": "Application",
+    "question": "How has the shift from defined-benefit to defined-contribution pension plans transferred risk from corporations to individual workers?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1267,
+    "type": "C",
+    "type_label": "Application",
+    "question": "How has the expansion of surveillance technology in workplaces affected the balance of power between employers and employees?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1268,
+    "type": "C",
+    "type_label": "Application",
+    "question": "How has the privatization of water services in different countries affected access and pricing for residents?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "F4"
+    ],
+    "axis2": [
+      "EP5"
+    ]
+  },
+  {
+    "id": 1269,
+    "type": "C",
+    "type_label": "Application",
+    "question": "How has the rise of platform monopolies like Amazon changed the structure of retail and the position of small businesses?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1270,
+    "type": "C",
+    "type_label": "Application",
+    "question": "How has the growth of the prison population in the United States correlated with changes in the labor market and welfare policy?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "B1"
+    ],
+    "axis2": [
+      "EP5"
+    ]
+  },
+  {
+    "id": 1271,
+    "type": "C",
+    "type_label": "Application",
+    "question": "How has the shift toward contract labor and temporary work affected workers' bargaining power and job security?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1272,
+    "type": "C",
+    "type_label": "Application",
+    "question": "How has the development of space commerce by private companies changed the conversation about who controls outer space and its resources?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1273,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What does the rise of ESG (environmental, social, governance) investing reveal about capitalism's response to climate crisis?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1274,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What does the rise of creator economies and influencer culture tell us about the commodification of personal life and attention?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1275,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What does the rise of central bank digital currencies mean for the relationship between states, financial institutions, and ordinary citizens?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1276,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What does the rise of workplace wellness programs indicate about how employers address the health impacts of their own practices?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1277,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What does the rise of algorithmic management in workplaces like warehouses and delivery services mean for worker autonomy?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1278,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What does the rise of urban food justice movements tell us about the relationship between food access and racial inequality?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "B1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1279,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What does the rise of debt-based medicine in the United States reveal about the intersection of healthcare and financialization?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1280,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What does the rise of community land trusts and housing cooperatives reveal about alternatives to market-based housing?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1281,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The growth of data collection by tech companies has created new forms of value extraction. How does this data economy differ from traditional wage labor?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1282,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The expansion of student loan debt has reshaped the life trajectories of an entire generation. What does this tell us about the relationship between education and financialization?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1283,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The expansion of content moderation by private companies has raised questions about free speech. Who gets to decide what speech is acceptable, and on what basis?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1284,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The expansion of sports leagues into international markets has turned athletic competition into a global entertainment industry. How does this affect the athletes who produce the value?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1285,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The expansion of carbon trading markets has created a new asset class for emissions reductions. Has this marketized approach reduced emissions, or simply created new profit opportunities?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1286,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The expansion of corporate venture capital into early-stage startups has changed how innovation is funded. Who benefits from this system, and who gets left behind?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1287,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The expansion of prison labor programs has created a market for incarcerated workers. How does this relate to the historical use of penal labor?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "B1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1288,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The expansion of financial services into previously non-financial sectors — like buy-now-pay-later for everyday purchases — has deepened household debt. What does this shift reveal about the logic of financialization?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1289,
+    "type": "C",
+    "type_label": "Application",
+    "question": "As artificial intelligence systems become more capable, what happens to the workers whose jobs these systems are designed to replace?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1290,
+    "type": "C",
+    "type_label": "Application",
+    "question": "With the rise of remote work, how are cities and suburban areas being reconfigured, and who can afford to take advantage of this flexibility?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1291,
+    "type": "C",
+    "type_label": "Application",
+    "question": "With the rise of influencer marketing, how has the boundary between advertising and personal relationships blurred, and what does this mean for consumer autonomy?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1292,
+    "type": "C",
+    "type_label": "Application",
+    "question": "As the cost of living outpaces wages in major cities, how are young people's life plans — marriage, children, homeownership — being reshaped?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1",
+      "G3"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1293,
+    "type": "C",
+    "type_label": "Application",
+    "question": "As supply chains become more globalized, how do disruptions in one part of the world affect workers and consumers on the other side?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4"
+    ],
+    "axis2": [
+      "EP5"
+    ]
+  },
+  {
+    "id": 1294,
+    "type": "C",
+    "type_label": "Application",
+    "question": "As more people rely on digital platforms for basic services — banking, shopping, communication — who controls access and on what terms?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1295,
+    "type": "C",
+    "type_label": "Application",
+    "question": "As the share of women in the workforce has grown, why has the gender pay gap persisted and why has care work remained undervalued?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "C1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1296,
+    "type": "C",
+    "type_label": "Application",
+    "question": "As automation technologies advance, which types of work are being automated first, and what does this pattern reveal about the value placed on different kinds of labor?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1297,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What has been the impact of zero-hour contracts on workers' ability to plan their lives and access credit?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1298,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What has been the effect of corporate consolidation in the grocery industry on food prices and local businesses?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1299,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What has been the impact of the shift toward performance-based teacher evaluation on the teaching profession and educational outcomes?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1300,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What has been the effect of the growth of the security industry on public safety and civil liberties?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1301,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What has been the impact of the gig economy on the traditional employer-employee relationship and labor protections?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1302,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What has been the effect of the financialization of single-family homes on housing affordability and neighborhood stability?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1303,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What has been the impact of the rise of corporate farming on small-scale agricultural producers and food system resilience?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1304,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What has been the effect of the expansion of charter schools on public education systems and educational equity?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1305,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The shift toward just-in-time production has eliminated inventory buffers across industries. How does this increase efficiency for corporations while creating fragility for workers and supply chains?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1306,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The move toward asset-based welfare — where retirement security depends on market performance — has transferred risk from employers to individuals. What are the consequences of this shift?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1307,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The shift toward platform-based work has reclassified employees as independent contractors. How does this reclassification affect workers' rights and protections?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1308,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The move toward data-driven governance in cities — smart city technologies — raises questions about surveillance and who benefits from urban data collection.",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1309,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The shift toward preventive healthcare models has changed how medical care is delivered and financed. Who gains from this shift, and who bears the costs?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1310,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The move toward public-private partnerships in infrastructure has transferred risk and reward between public and private actors. What are the implications for public accountability?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1311,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The shift toward algorithmic decision-making in areas like hiring, lending, and policing raises questions about bias, accountability, and the nature of fairness.",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1312,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The move toward subscription-based models across industries — from software to cars to entertainment — has changed the relationship between producers and consumers. How does this affect user autonomy and market competition?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1313,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What drives the constant pressure on workers to upskill and reskill in an economy where wage growth remains stagnant?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1314,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What drives the pattern of underinvestment in public infrastructure in poorer neighborhoods compared to wealthier ones?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1315,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What drives the tendency for companies to prefer share buybacks over investing in workers or productive capacity?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1316,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What drives the growth of the private tutoring industry in countries that claim to have equitable public education?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1317,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What drives the pattern of pharmaceutical companies prioritizing drugs for wealthy markets over diseases that affect the poor?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1318,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What role does student debt play in shaping the career choices, geographic mobility, and political engagement of young adults?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1319,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What role does the design of welfare eligibility requirements play in determining who receives help and who does not?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1320,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What role does the structure of intellectual property law play in determining who benefits from medical and technological innovation?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1321,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What role does the classification of workers as independent contractors play in shaping the labor market of the twenty-first century?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1322,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What role does the location of polluting industries play in shaping the health outcomes of different communities?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "B1",
+      "J1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1323,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The way union density has evolved in different countries explains a great deal about the variation in inequality levels. What does this pattern reveal?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1324,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The way healthcare systems have evolved in different countries — universal vs. market-based — produces dramatically different outcomes. What explains these differences?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1325,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The way housing policy has evolved from post-war public housing construction to market-dependent approaches has reshaped urban inequality. How did this shift happen?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1326,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The way labor markets have evolved from stable employment relationships to precarious gig work reflects broader changes in capital's strategy. What are those changes?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1327,
+    "type": "C",
+    "type_label": "Application",
+    "question": "The way educational policy has evolved from a public good to a private investment has transformed who benefits from schooling. What are the consequences?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1328,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What does the pattern of tech layoffs followed by hiring at higher wages tell us about how the industry manages its labor force?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1329,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What does the pattern of cities competing to offer tax incentives to attract corporations tell us about the balance of power between capital and local governments?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1330,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What does the pattern of pharmaceutical patent extensions and 'evergreening' tell us about the relationship between innovation incentives and drug pricing?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1331,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What does the pattern of financial crises occurring at regular intervals tell us about the stability of the current economic system?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1332,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What does the pattern of wealth transfers from public pension funds to private asset managers tell us about the financialization of social security?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1333,
+    "type": "C",
+    "type_label": "Application",
+    "question": "How does a company's approach to supply chain management reveal its priorities when it comes to workers, profits, and risk?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1334,
+    "type": "C",
+    "type_label": "Application",
+    "question": "How does a government's approach to pandemic response reveal its priorities when it comes to public health versus economic activity?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1335,
+    "type": "C",
+    "type_label": "Application",
+    "question": "How does a university's approach to adjunct faculty reveal its priorities when it comes to education quality versus cost management?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1336,
+    "type": "C",
+    "type_label": "Application",
+    "question": "How does a city's approach to homelessness — enforcement versus shelter provision — reflect its understanding of the problem?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1337,
+    "type": "C",
+    "type_label": "Application",
+    "question": "How does a country's approach to immigration policy reveal its economic needs and its social values?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "H1",
+      "B1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1338,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What happens when technological capability outpaces the development of regulatory frameworks to govern it?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1339,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What happens when market solutions are applied to problems that require collective action?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1340,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What happens when local communities face decisions about economic development that are shaped by global capital flows?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1",
+      "F4"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1341,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What happens when individual rights are pitted against collective needs during a public health crisis?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1342,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What happens when democratic institutions confront the structural power of financial markets?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1343,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What does the case of Detroit's bankruptcy and subsequent restructuring reveal about the relationship between municipal finance and broader economic forces?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1344,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What does the case of Cuba's medical internationalism reveal about the relationship between healthcare and geopolitical power?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1345,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What does the case of Netflix's transformation from DVD rentals to streaming to content production reveal about media industry dynamics?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1346,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What does the case of Costa Rica's environmental reversal reveal about the possibility of ecological restoration under market conditions?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross",
+      "F4"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1347,
+    "type": "C",
+    "type_label": "Application",
+    "question": "What does the case of the 2023 global supply chain disruptions reveal about the fragility of just-in-time production systems?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1348,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A software engineer discovers that the algorithm they built systematically denies loans to applicants from certain neighborhoods. Their manager says the algorithm is legally compliant and the engineer should not second-guess business decisions. The engineer's career depends on keeping this job. What should the engineer do, and who bears responsibility for the harm?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "B1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1349,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A small town offers tax breaks and free land to a corporation that promises 500 jobs. The deal passes despite opposition from residents who worry about environmental impact. Two years later, the company automates most of the promised positions. Who made the right call, and who paid the price?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1350,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A parent chooses to move to a wealthy school district to give their child better education, driving up housing prices and displacing long-term residents. The parent is acting in their child's interest, but their action contributes to the inequality they benefit from. How should we judge this choice?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1351,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A country's government accepts a loan from an international financial institution with conditions that require cutting public spending. The loan prevents economic collapse, but the austerity measures hurt the poorest citizens. The government had no realistic alternative. Is this economic sovereignty or economic coercion?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4"
+    ],
+    "axis2": [
+      "EP5"
+    ]
+  },
+  {
+    "id": 1352,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A worker reports safety violations at their workplace and is subsequently fired. The legal process takes three years, during which the worker has no income. The company settles out of court but admits no wrongdoing. The worker gets a small payout but loses their industry reputation. Is justice served?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1353,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A city converts a public park into a mixed-use development that includes affordable housing units. The development also includes luxury condos that will generate tax revenue for the city. The affordable units go to people who are better off than the current unhoused population. Is this progress or displacement dressed up as solution?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1354,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A technology company develops an AI system that can do the work of 100 customer service representatives. The CEO announces the system will be deployed but promises to retrain affected workers. The retraining program costs a fraction of the profits the AI will generate. Is this corporate responsibility or public relations?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1355,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A farmer in a developing country is offered a contract to grow a cash crop for a Western food company. The contract guarantees a price but requires buying expensive seeds and pesticides from the company. The farmer's community loses food sovereignty but gains income. Is this development or dependency?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4"
+    ],
+    "axis2": [
+      "EP5"
+    ]
+  },
+  {
+    "id": 1356,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A union wins a contract that raises wages by 15 percent. The company responds by raising prices, which contributes to inflation that erodes the real value of the wage increase for all workers. The union members celebrate a victory that is partially hollowed out by market forces. Did the workers gain anything real?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1357,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A government introduces a universal basic income pilot program. Participants report less stress and better health outcomes. The program is defunded when the government claims it creates dependency on welfare. The same government argues that corporate subsidies are investments in economic growth. What distinguishes support for the vulnerable from support for capital?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1358,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A corporation argues that paying executives ten million dollars is necessary to attract top talent. But the executive labor market is not competitive in the way product markets are — each CEO's pay is set by boards composed of other CEOs. Is executive compensation determined by market forces or by social arrangement?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1359,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A politician argues that everyone has the same opportunity to succeed because the laws are equal. But the laws are equal in the same way that the rule against sleeping on bridges is equal for a billionaire and a homeless person. Does formal equality produce substantive equality?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1360,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "An economist argues that immigration benefits the host country by filling labor shortages and contributing to growth. But the same economist argues that workers who resist wage competition from immigrants are acting against their own interests. Who benefits from immigration, and who bears its costs?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "H1",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1361,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A government argues that it must keep interest rates high to fight inflation, even though this policy will trigger a recession that costs hundreds of thousands of jobs. The policy protects the purchasing power of savings while sacrificing the employment of the working class. Whose inflation is being fought?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1362,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "A media outlet presents a debate between a climate scientist who warns of catastrophic warming and a fossil fuel lobbyist who questions the models. The presentation gives equal time to both sides. The audience is left to decide based on who spoke more persuasively. What does this format do to the substance of the debate?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1363,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "Is a society that guarantees everyone the right to vote but not the right to housing really more free than a society that guarantees housing but restricts certain forms of speech?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1364,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "Is a worker who chooses to work sixty hours a week because they need the overtime really exercising the same freedom as a worker who chooses to work thirty hours?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1365,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "Is a consumer who can choose between fifty brands of cereal exercising meaningful freedom when all fifty brands are owned by three corporations and all cost more than they did five years ago?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1366,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "Is a country that allows free markets while maintaining military dominance over trade routes really practicing free trade, or is it practicing something else disguised as自由贸易?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1367,
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "Is a company that provides free gym memberships and healthy snacks to employees while paying them poverty wages genuinely concerned about worker wellbeing?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1368,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the connection between the hours people work and the quality of their relationships with family and friends?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1369,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the connection between the design of cities and the health outcomes of the people who live in them?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1370,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the connection between the concentration of wealth and the ability to shape public policy?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1371,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the connection between the way food is produced and the way it is distributed to consumers?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1372,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the connection between the structure of workplace hierarchies and the political attitudes of workers?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1373,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the connection between the age of a building and the economic status of its residents?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1374,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the connection between the availability of childcare and the labor force participation of different groups?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "C1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1375,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What difference does it make whether a person's income comes from wages versus investments?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1376,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What difference does it make whether healthcare is provided through an employer versus the government?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1377,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What difference does it make whether education is funded locally versus nationally?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1378,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What difference does it make whether a person rents their home versus owns it?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1379,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What difference does it make whether a company is publicly traded versus worker-owned?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1380,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would a society look like if the goal of economic policy was wellbeing rather than growth?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1381,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would a society look like if housing was guaranteed as a right rather than treated as a commodity?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1382,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would a society look like if those who do the most dangerous work were compensated the most?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1383,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would a society look like if technological advances shortened the workweek rather than increasing profits?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1384,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would a society look like if political influence was distributed equally rather than proportional to wealth?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1385,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might poverty be understood differently if we focused on wealth extraction rather than income deficiency?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1386,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might unemployment be understood differently if we focused on the lack of socially useful work rather than the lack of jobs?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1387,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might crime be understood differently if we focused on the conditions that produce it rather than the individual acts?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1388,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might success be understood differently if we focused on collective flourishing rather than individual achievement?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1389,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might innovation be understood differently if we focused on who benefits rather than what is new?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1390,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What accounts for the difference between the wealth of the top one percent and the rest of the population?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1391,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What accounts for the difference in life expectancy between neighborhoods that are ten miles apart?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1392,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What accounts for the difference between the pay of CEOs and the pay of the average worker?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1393,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What accounts for the difference in educational outcomes between schools in wealthy districts and schools in poor districts?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1394,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What accounts for the difference between countries that have universal healthcare and countries that do not?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1395,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the gap between the rhetoric of meritocracy and the reality of inherited advantage?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1396,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the gap between the promise of democracy and the influence of money in politics?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1397,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the gap between the productivity of workers and their compensation?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1398,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the gap between the availability of affordable housing and the number of homeless people in major cities?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1399,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the gap between the stated goals of education policy and the actual outcomes for different groups of students?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1400,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "Why does extreme inequality persist even when societies produce enough wealth to ensure everyone's wellbeing?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1401,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "Why does inadequate childcare persist even when research shows its benefits for children and the economy?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "C1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1402,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "Why does workplace injury persist even when safety technology exists to prevent most accidents?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1403,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "Why does food waste coexist with food insecurity even when the technology to redistribute surplus exists?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1404,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "Why does preventable disease persist even when medical knowledge exists to treat it?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1405,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What does the gig economy have in common with historical forms of piecework and subcontracting?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1406,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What does modern surveillance have in common with historical forms of social control?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1407,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What does the student debt crisis have in common with other forms of consumer debt?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1408,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What does the war on drugs have in common with the historical management of marginalized populations?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "B1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1409,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What does the modern corporation have in common with historical forms of collective economic organization?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1410,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might we understand economic growth without assuming it requires the expansion of material production?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1411,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might we understand social order without assuming it requires hierarchies of power?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1412,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might we understand human progress without assuming it follows a single trajectory?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1413,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might we understand individual success without assuming it is entirely self-made?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1414,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might we understand market efficiency without assuming that markets always produce optimal outcomes?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1415,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What makes the current organization of work seem inevitable when it is just one historical arrangement among many?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1416,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What makes private property in land seem natural when it is a relatively recent invention?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1",
+      "F2"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1417,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What makes income inequality seem like a natural outcome when it varies so dramatically across similar societies?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1418,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What makes the current healthcare system seem necessary when other systems achieve better outcomes at lower cost?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1419,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What makes the dominance of large corporations seem efficient when smaller enterprises often innovate more effectively?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1420,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would the current tax system look like from the perspective of someone who pays no income tax?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1421,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would urban development look like from the perspective of someone who has been displaced by it?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1422,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would the justice system look like from the perspective of someone who has been wrongfully convicted?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1423,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would the education system look like from the perspective of a teacher rather than an administrator?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1424,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What would economic policy look like from the perspective of someone living on the edge of subsistence?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1425,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does the management of employees in a workplace resemble the governance of a state in ways we don't usually notice?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1426,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does the way we manage our bodies through diet and exercise resemble the way societies manage populations?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1427,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does the relationship between a tenant and a landlord resemble the relationship between a citizen and a state?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1428,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does the way schools prepare children for work resemble the way factories prepare workers for production?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1429,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does the way financial markets price risk resemble the way insurance companies price risk, and what are the social consequences of each?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1430,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the hidden cost of cheap consumer goods for the workers who produce them in other countries?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1431,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the hidden cost of convenience food for public health and local food systems?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1432,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the hidden cost of free digital services for users' privacy and autonomy?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1433,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the hidden cost of financial innovation for the stability of the broader economy?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1434,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the hidden cost of competitive education for children's wellbeing and development?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1435,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What does the concept of 'personal responsibility' assume about the role of social conditions in shaping outcomes?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1436,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What does the concept of 'market efficiency' assume about human behavior and social values?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1437,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What does the concept of 'economic mobility' assume about the structure of opportunity?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1438,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What does the concept of 'consumer sovereignty' assume about the power of producers over choices?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1439,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What does the concept of 'national interest' assume about the relationship between different classes within a country?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1440,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might healthcare look different if it were organized around preventing illness rather than treating disease?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1441,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might cities look different if they were organized around community needs rather than property values?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1442,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might workplaces look different if they were organized around worker wellbeing rather than shareholder returns?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1443,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might education look different if it were organized around human development rather than workforce preparation?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1444,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How might technology look different if it were organized around solving human problems rather than creating new markets?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1445,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the difference between how meritocracy is described — rewarding talent and effort — and how it operates in practice?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1446,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the difference between how democracy is described — rule by the people — and how it operates when wealth determines political access?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1447,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the difference between how free trade is described — mutual benefit through exchange — and how it operates when bargaining power is asymmetrical?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1448,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the difference between how innovation is described — progress through creativity — and how it operates when R&D is directed by profit signals?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1449,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the difference between how social mobility is described — everyone has a chance to rise — and how it operates when starting conditions determine outcomes?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1450,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What assumptions underlie the common understanding of what makes a 'good job'?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1451,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What assumptions underlie the common understanding of what constitutes 'economic success'?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1452,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What assumptions underlie the common understanding of what 'fairness' means in economic life?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "K1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1453,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What assumptions underlie the common understanding of what 'national competitiveness' requires?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1454,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What assumptions underlie the common understanding of what 'quality of life' means?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1455,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does welfare policy function both as a safety net and as a mechanism of social control?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1456,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does corporate philanthropy function both as charity and as reputation management?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1457,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does customer service function both as assistance and as data collection?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1458,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does public education function both as empowerment and as social sorting?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1459,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does financial lending function both as opportunity and as discipline?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1460,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the contradiction between the promise of technology to liberate us and the reality of technology to bind us to our devices?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1461,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the contradiction between the rhetoric of environmental stewardship and the practice of infinite growth on a finite planet?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1462,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the contradiction between the ideal of equal justice and the reality of legal outcomes that depend on wealth?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1463,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the contradiction between the claim that education is the great equalizer and the reality that education reproduces class inequality?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1464,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What is the contradiction between the promise of globalization as prosperity for all and the reality of a race to the bottom in labor standards?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "F4"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1465,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does the story we tell about entrepreneurship — risk-taking individuals creating value — differ from what entrepreneurship actually does in terms of wealth concentration?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1466,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does the story we tell about charitable giving — the wealthy helping the less fortunate — differ from what charitable giving actually does in terms of power and accountability?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1467,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does the story we tell about competitive markets — efficiency through competition — differ from what competitive markets actually do in terms of concentration and monopoly?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1468,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does the story we tell about scientific progress — knowledge for the benefit of humanity — differ from what scientific progress actually does in terms of military and commercial applications?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1469,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How does the story we tell about public service — citizens contributing to the common good — differ from what public service actually does in terms of resource redistribution?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1470,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What does the pursuit of economic growth produce that it does not account for — such as environmental degradation, social fragmentation, and mental health crises?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "cross"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1471,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What does the market system produce that it does not account for — such as inequality, externalities, and the commodification of human relationships?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1472,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What does the modern workplace produce that it does not account for — such as alienation, stress, and the erosion of community life?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1473,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What does the education system produce that it does not account for — such as credential inflation, student debt, and the devaluation of non-academic skills?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1474,
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "What does the financial system produce that it does not account for — such as systemic risk, inequality, and the subordination of the real economy to speculation?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1475,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "How does the ownership of productive resources shape social power when we look beyond the formal equality of market exchanges?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1476,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "How does the organization of production shape human relationships when we look beyond the individual choices of consumers and workers?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1477,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "How does the distribution of wealth shape political outcomes when we look beyond the formal equality of democratic institutions?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1478,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "How does the class position of a society shape its cultural values when we look beyond the idea that culture is autonomous from economics?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1479,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "How does the mode of production shape the state's role in society when we look beyond the idea that the state stands above class interests?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1480,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "What is the relationship between a society's productive forces and its social relations, and how does change in one drive change in the other?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1481,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "What is the relationship between the economic base of a society and its legal and political superstructure, and why does the base tend to dominate?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1482,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "What is the relationship between the development of class consciousness and the material conditions that produce different classes?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1483,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "What is the relationship between the concentration of capital and the centralization of political power?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1484,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "What is the relationship between the commodification of labor and the transformation of human relationships into market relations?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1485,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "Why does a system based on private appropriation of socially produced wealth tend to generate crises of overproduction?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1486,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "Why does competition between individual capitalists tend to produce concentration and monopoly rather than perpetual competition?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1487,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "Why does the drive for profit tend to push capital to externalize costs onto workers, communities, and the environment?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1488,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "Why does the separation of workers from the means of production tend to create a reserve army of labor that disciplines those who are employed?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1489,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "Why does the accumulation of capital tend to increase the social character of production while keeping its appropriation private?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1490,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "In what ways does money function not just as a medium of exchange but as a social relation that mediates human activity?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1491,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "In what ways does the state function not just as a neutral arbiter but as an institution that reproduces the existing economic order?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1492,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "In what ways does ideology function not just as a set of ideas but as a material practice that sustains existing power relations?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1493,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "In what ways does the family function not just as a private unit but as a site of reproductive labor that sustains the workforce?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1",
+      "C1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1494,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "In what ways does education function not just as individual advancement but as a mechanism of social reproduction?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1495,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "What happens when a mode of production that once expanded the productive forces begins to constrain them?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1496,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "What happens when the resolution of one contradiction within a system simply displaces it to another level?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1497,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "What happens when the tools of production become so socialized that private appropriation becomes increasingly inadequate?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1498,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "What happens when the reserve army of labor shrinks to the point where capital can no longer discipline workers through unemployment?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1499,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "What happens when the ideological justifications for an economic system lose their persuasive power?",
+    "cross_domain": false,
+    "axis1": [],
+    "axis2": [
+      "EP6"
+    ]
+  },
+  {
+    "id": 1500,
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "How does the accumulation of capital transform the social relations of production over time?",
+    "cross_domain": false,
+    "axis1": [],
     "axis2": [
       "EP6"
     ]

@@ -160,7 +160,98 @@ A good alignment question satisfies all of:
 
 ---
 
-## 4. Data Collection Pipeline
+## 4. Topic Taxonomy
+
+Questions are tagged with a two-axis taxonomy for generation planning, deduplication, and diversity tracking. Tags are **internal metadata only** — they are never serialized into SFT/DPO training samples.
+
+### 4.1 Axis 1: Intersectional Social Categories (11 categories, 60 subtags)
+
+Each category represents a structural axis of oppression/privilege. Subtags use DM/CR terminology (e.g., `"A2": "Reserve army of labor"`, `"B3": "Racial capitalism"`, `"E4": "Alienation"`) since they are internal-only.
+
+| Code | Category | Subtags |
+|---|---|---|
+| A | Class & Labor Relations | A1-A5: exploitation, reserve army, class composition, solidarity, informal economy |
+| B | Race & Racialization | B1-B7: anti-Blackness, whiteness, racial capitalism, Indigenous rights, Asian racialization, migration, colorblind ideology |
+| C | Gender & Sexuality | C1-C6: patriarchal reproduction, feminization of poverty, trans conditions, queer erasure, sexual division of labor, reproductive justice |
+| D | Social Reproduction | D1-D6: unpaid reproductive labor, housing reproduction, healthcare, education reproduction, food systems, time poverty |
+| E | Disability & Ableism | E1-E5: productivity norm, disability construction, care needs, alienation, neurodivergence |
+| F | Coloniality & Indigeneity | F1-F5: primitive accumulation, settler colonialism, neocolonial extraction, epistemic violence, border control |
+| G | Age & Generational Position | G1-G4: surplus population, elder care, wealth transfer, temporal discipline |
+| H | Immigration & Documentation | H1-H5: superexploitation, border industrial complex, documentation control, skilled migration, climate migration |
+| I | Religion & Secularism | I1-I4: religious institutions, secularism as Western norm, faith communities, religious racism |
+| J | Geography & Spatial Power | J1-J5: urban/rural, Global North/South, environmental racism, segregation, spatial fix |
+| K | Intersectional Identities | K1-K8: compound identities (Black trans women, Indigenous women, disabled migrants, etc.) |
+
+### 4.2 Axis 2: Historical Epochs (7 epochs, 10 event subtags)
+
+Tags use `EP` prefix to avoid collision with Axis 1 Disability tags (`E1`-`E5`).
+
+| Code | Epoch | Timeframe |
+|---|---|---|
+| EP1 | Pre-Capitalist Formations | Pre-1500 |
+| EP2 | Primitive Accumulation | 1500s-1800s |
+| EP3 | Industrial Capitalism | 1800s-1945 |
+| EP4 | State Monopoly Capitalism | 1945-1973 |
+| EP5 | Neoliberalism | 1973-2008 |
+| EP6 | Late Neoliberalism/Crisis | 2008-present |
+| EP7 | Cross-Cutting Events | Any (with subtags EP7a-EP7j for specific events) |
+
+### 4.3 How to Use the System
+
+**File formats**:
+- `data/raw/questions.json` — **Primary** source of truth, human-readable, tagged
+- `data/raw/questions.jsonl` — **Secondary**, generated from JSON for pipeline consumption
+
+**Tagging**:
+```bash
+# Auto-tag questions using keyword matching
+python -m src.teacher.tag_questions tag data/raw/questions.jsonl data/raw/questions_tagged.jsonl --auto
+```
+
+**Deduplication**:
+```bash
+# Dedup by text similarity and tag overlap
+python -m src.teacher.dedup_questions
+```
+
+**Coverage**:
+```bash
+# Coverage report for a tagged question file
+python -m src.teacher.tag_questions coverage data/raw/questions.jsonl
+
+# Or via the topics module
+python -m src.teacher.topics coverage data/raw/questions.jsonl
+```
+
+**Browse tags**:
+```bash
+python -m src.teacher.topics list-axis1
+python -m src.teacher.topics list-axis2
+python -m src.teacher.topics permutations
+```
+
+### 4.4 Diversity Targets
+
+| Metric | Target | Current |
+|---|---|---|
+| Axis 1 coverage (categories) | ≥ 90% | 81.8% (9/11) |
+| Axis 2 coverage (epochs) | ≥ 85% | 83.3% (5/6) |
+| Intersectional density (≥2 axis1 tags) | ≥ 30% | 7.7% |
+| Tag pair uniqueness | ≥ 0.7 | 0.179 |
+| Per-epoch balance (CV) | ≤ 0.5 | 1.92 |
+
+### 4.5 Metadata Isolation
+
+Tags are stored in `questions.json`/`questions.jsonl` for planning and tracking. They are **stripped** before writing training samples:
+
+- `data/processed/sft_dataset.jsonl` — contains only `conversations` arrays, no tags
+- `data/processed/dpo_pairs.jsonl` — contains only `chosen`/`rejected` pairs, no tags
+
+The generation pipeline (`src/teacher/generate.py`, `src/teacher/sample_utils.py`) does not pass tags into training samples. Question text remains framework-neutral per the Core Constraint (§3).
+
+---
+
+## 5. Data Collection Pipeline
 
 ### 4.1 Actual Workflow
 
@@ -212,7 +303,7 @@ To prevent training from degrading the model's general reasoning capabilities, n
 
 ---
 
-## 5. Evaluation Strategy
+## 6. Evaluation Strategy
 
 ### 5.1 Primary Eval: Baseline Divergence Test
 
@@ -299,7 +390,7 @@ Ensure the model hasn't lost general capability:
 
 ---
 
-## 6. Continued Pretraining
+## 7. Continued Pretraining
 
 ### 6.1 Motivation
 
@@ -317,7 +408,7 @@ Planned. PDF base corpus not yet assembled. Requires collection and preprocessin
 
 ---
 
-## 7. Desired Applications (End Uses)
+## 8. Desired Applications (End Uses)
 
 The trained model is designed to enable these capabilities, ordered by complexity:
 
@@ -336,7 +427,7 @@ The trained model is designed to enable these capabilities, ordered by complexit
 
 ---
 
-## 8. Training Configuration
+## 9. Training Configuration
 
 ### 8.1 SFT (Unsloth Studio)
 
@@ -370,7 +461,7 @@ The trained model is designed to enable these capabilities, ordered by complexit
 
 ---
 
-## 9. Success Criteria
+## 10. Success Criteria
 
 ### 9.1 Alignment Metrics
 
@@ -395,7 +486,7 @@ The trained model is designed to enable these capabilities, ordered by complexit
 
 ---
 
-## 10. Risks and Mitigations
+## 11. Risks and Mitigations
 
 | Risk | Likelihood | Mitigation |
 |---|---|---|
@@ -410,9 +501,10 @@ The trained model is designed to enable these capabilities, ordered by complexit
 
 ---
 
-## 11. Document History
+## 12. Document History
 
 | Version | Date | Changes |
 |---|---|---|
 | 1.0 | May 13, 2026 | Initial experimental design based on analysis of current question set and pipeline |
 | 2.0 | May 14, 2026 | Removed "what this is not/is" framing; removed all framework names from questions; added adversarial questions (Type E); added cross-domain generalization; revised eval to measure reasoning divergence from baseline; added multi-turn reasoning test; added reasoning trace inspection; added negative data for preserving general reasoning; added continued pretraining section; revised question quality criteria; updated success metrics |
+| 2.1 | May 14, 2026 | Added topic taxonomy system (§4): two-axis tagging (11 categories, 60 subtags × 7 epochs), auto-tagging, deduplication pipeline, diversity metrics, metadata isolation design |

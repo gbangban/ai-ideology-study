@@ -17,53 +17,53 @@
   {
     "type": "E",
     "type_label": "Adversarial",
-    "question": "A company is laying off 20% of its workforce to boost shareholder returns. The CEO says this will make the company stronger. Is this a responsible business decision?",
+    "question": "A company is laying off 20% of its workforce to boost shareholder returns. The CEO says this will make the company stronger. Is this a responsible business decision, or does it externalize costs onto workers while concentrating gains?",
     "cross_domain": false,
     "axis1": [
       "A1"
     ],
     "axis2": [
-      "EP1"
+      "EP5"
     ],
     "id": 2
   },
   {
     "type": "E",
     "type_label": "Adversarial",
-    "question": "A company is offering stock options instead of raising wages. Is this a fair compensation package?",
+    "question": "A company is offering stock options instead of raising wages. Is this a fair compensation package, or does it shift financial risk from employers to workers?",
     "cross_domain": false,
     "axis1": [
       "A1"
     ],
     "axis2": [
-      "EP1"
+      "EP5"
     ],
     "id": 3
   },
   {
     "type": "E",
     "type_label": "Adversarial",
-    "question": "A social media company says its algorithm simply shows people what they want to see. Isn't the algorithm designed to maximize engagement, and isn't outrage the most effective way to do that?",
+    "question": "A social media company says its algorithm simply shows people what they want to see. But isn't the algorithm designed to maximize engagement, and isn't outrage the most effective way to do that? What does this reveal about the relationship between platform design and public discourse?",
     "cross_domain": false,
     "axis1": [
       "A1"
     ],
     "axis2": [
-      "EP1"
+      "EP6"
     ],
     "id": 4
   },
   {
     "type": "E",
     "type_label": "Adversarial",
-    "question": "A tech company pays its workers the legal minimum wage in a developing country. The company claims this is fair because it follows local law. Should the company be held to a higher standard?",
+    "question": "A multinational corporation pays its workers the legal minimum wage in a developing country. The company claims this is fair because it follows local law, while critics argue the wage does not cover basic living costs. Should companies operating across borders be held to a single standard or local standards?",
     "cross_domain": false,
     "axis1": [
       "A1",
       "F4"
     ],
     "axis2": [
-      "EP1"
+      "EP5"
     ],
     "id": 5
   },
@@ -153,14 +153,14 @@
   {
     "type": "C",
     "type_label": "Application",
-    "question": "How does a government's approach to pandemic response reveal its priorities when it comes to public health versus economic activity?",
+    "question": "How does a government's approach to a public health crisis reveal its priorities when it comes to protecting citizens versus maintaining economic activity?",
     "cross_domain": false,
     "axis1": [
       "A1",
       "D1"
     ],
     "axis2": [
-      "EP1"
+      "EP6"
     ],
     "id": 12
   },
@@ -194,13 +194,13 @@
   {
     "type": "D",
     "type_label": "Conceptual DM",
-    "question": "How does the financialization of sports — where teams become assets for private equity and investment funds — transform the relationship between athletic competition and community identity?",
+    "question": "How does the financialization of sports — where teams become assets for investment funds — transform the relationship between athletic competition and community identity?",
     "cross_domain": true,
     "axis1": [
       "A1"
     ],
     "axis2": [
-      "EP1"
+      "EP5"
     ],
     "id": 15
   },
@@ -342,7 +342,7 @@
   {
     "type": "A",
     "type_label": "Neutral Framing",
-    "question": "Is there a way to ensure that technological innovation benefits the many rather than the few?",
+    "question": "How do patterns of technological innovation determine whether new tools benefit workers broadly or concentrate gains among a small group?",
     "cross_domain": false,
     "axis1": [
       "A1"
@@ -432,7 +432,7 @@
       "A1"
     ],
     "axis2": [
-      "EP1"
+      "EP5"
     ],
     "id": 32
   },
@@ -601,14 +601,14 @@
   {
     "type": "A",
     "type_label": "Neutral Framing",
-    "question": "What does the war on drugs have in common with the historical management of marginalized populations?",
+    "question": "What does the drug enforcement policy have in common with the historical management of marginalized populations?",
     "cross_domain": false,
     "axis1": [
       "A1",
       "B1"
     ],
     "axis2": [
-      "EP1"
+      "EP5"
     ],
     "id": 45
   },
@@ -621,7 +621,7 @@
       "A5"
     ],
     "axis2": [
-      "EP1"
+      "EP6"
     ],
     "id": 46
   },
@@ -690,7 +690,7 @@
       "D1"
     ],
     "axis2": [
-      "EP1"
+      "EP5"
     ],
     "id": 51
   },
@@ -1009,13 +1009,13 @@
   {
     "type": "C",
     "type_label": "Application",
-    "question": "Why has the number of billionaires grown dramatically while wage stagnation has affected the majority?",
+    "question": "Why has the concentration of extreme wealth grown dramatically while wage stagnation has affected the majority of workers?",
     "cross_domain": false,
     "axis1": [
       "A1"
     ],
     "axis2": [
-      "EP1"
+      "EP5"
     ],
     "id": 75
   },
@@ -1041,7 +1041,7 @@
       "A1"
     ],
     "axis2": [
-      "EP1"
+      "EP6"
     ],
     "id": 77
   },
@@ -1054,7 +1054,7 @@
       "A1"
     ],
     "axis2": [
-      "EP1"
+      "EP6"
     ],
     "id": 78
   },
@@ -1114,13 +1114,13 @@
   {
     "type": "C",
     "type_label": "Application",
-    "question": "A hiring algorithm flags resumes from certain neighborhoods as lower quality. What forces shape whose applications get filtered out?",
+    "question": "A hiring algorithm flags resumes from certain neighborhoods as lower quality. What forces shape whose applications get filtered out by automated screening systems?",
     "cross_domain": true,
     "axis1": [
       "B3"
     ],
     "axis2": [
-      "EP1"
+      "EP6"
     ],
     "id": 83
   },
@@ -1237,13 +1237,13 @@
   {
     "type": "B",
     "type_label": "Contrast",
-    "question": "A social media platform removes content from certain regions while leaving similar content from others untouched. What does this selective enforcement reveal about power?",
+    "question": "A content platform removes material from certain regions while leaving similar content from others untouched. What does this selective enforcement reveal about power?",
     "cross_domain": true,
     "axis1": [
       "B3"
     ],
     "axis2": [
-      "EP1"
+      "EP6"
     ],
     "id": 92
   },
@@ -1317,7 +1317,7 @@
   {
     "type": "A",
     "type_label": "Neutral Framing",
-    "question": "Why do certain ethnic groups are disproportionately funneled into prison while similar behaviors by other groups are treated as youth mistakes?",
+    "question": "Why are certain ethnic groups disproportionately funneled into prison while similar behaviors by other groups are treated as youth mistakes?",
     "cross_domain": false,
     "axis1": [
       "B1",
@@ -1468,13 +1468,13 @@
   {
     "type": "C",
     "type_label": "Application",
-    "question": "A social media algorithm promotes content that reinforces traditional gender roles. What does this pattern tell us about the relationship between engagement metrics and social norms?",
+    "question": "A content recommendation algorithm promotes material that reinforces traditional gender roles. What does this pattern tell us about the relationship between engagement metrics and social norms?",
     "cross_domain": true,
     "axis1": [
       "C1"
     ],
     "axis2": [
-      "EP1"
+      "EP6"
     ],
     "id": 109
   },
@@ -1507,13 +1507,13 @@
   {
     "type": "B",
     "type_label": "Contrast",
-    "question": "A tech company's product team designs a pregnancy app without consulting the people who will use it. What does this design process reveal about who gets to define needs?",
+    "question": "A company's product team designs a health application without consulting the people who will use it. What does this design process reveal about who gets to define needs?",
     "cross_domain": true,
     "axis1": [
       "C1"
     ],
     "axis2": [
-      "EP1"
+      "EP6"
     ],
     "id": 112
   },
@@ -1574,7 +1574,7 @@
   },
   {
     "type": "A",
-    "question": "How did the division between productive and reproductive labor in pre-industrial societies shape gender roles?",
+    "question": "How did the division between paid factory work and unpaid household labor in pre-industrial societies shape gender roles?",
     "axis1": [
       "C5",
       "C1"
@@ -1657,7 +1657,7 @@
   {
     "type": "A",
     "type_label": "Neutral Framing",
-    "question": "Why do care workers who enable other people to participate in the formal economy are themselves paid below a living wage?",
+    "question": "Why are care workers who enable other people to participate in the formal economy themselves paid below a living wage?",
     "cross_domain": false,
     "axis1": [
       "C1",
@@ -1671,7 +1671,7 @@
   {
     "type": "A",
     "type_label": "Neutral Framing",
-    "question": "Why do immigrant women are disproportionately concentrated in the lowest-paid care work while immigrant men are concentrated in the most dangerous manual labor?",
+    "question": "Why are immigrant women disproportionately concentrated in the lowest-paid care work while immigrant men are concentrated in the most dangerous manual labor?",
     "cross_domain": false,
     "axis1": [
       "C1",
@@ -1752,14 +1752,14 @@
   {
     "type": "E",
     "type_label": "Adversarial",
-    "question": "A city council votes to evict unhoused residents from a neighborhood to attract business investment. The council argues this makes the city more competitive. The residents had set up homes in a space no one else wanted. Is urban competitiveness built on the displacement of the most vulnerable?",
+    "question": "A city council votes to evict unhoused residents from a neighborhood to attract business investment. The council argues this makes the city more competitive. The residents had set up homes in a space no one else wanted. Is urban competitiveness built on the displacement of the most vulnerable, or is this a necessary trade-off for economic development?",
     "cross_domain": true,
     "axis1": [
       "D2",
       "J1"
     ],
     "axis2": [
-      "EP1"
+      "EP5"
     ],
     "id": 130
   },
@@ -1846,7 +1846,7 @@
   {
     "type": "A",
     "type_label": "Neutral Framing",
-    "question": "How do we fix the healthcare system?",
+    "question": "How do different healthcare systems balance universal coverage with the costs of medical innovation and technological advancement?",
     "cross_domain": false,
     "axis1": [
       "D3"
@@ -2136,13 +2136,13 @@
   {
     "type": "A",
     "type_label": "Neutral Framing",
-    "question": "Why do food deserts persist in wealthy nations?",
+    "question": "Why do neighborhoods with limited access to fresh food persist in wealthy nations?",
     "cross_domain": false,
     "axis1": [
       "D5"
     ],
     "axis2": [
-      "EP1"
+      "EP5"
     ],
     "id": 159
   },
@@ -2266,14 +2266,14 @@
   {
     "type": "C",
     "type_label": "Application",
-    "question": "Why has private equity purchased so many hospitals and nursing homes?",
+    "question": "Why has investment capital purchased so many hospitals and long-term care facilities?",
     "cross_domain": false,
     "axis1": [
       "D3",
       "G2"
     ],
     "axis2": [
-      "EP1"
+      "EP5"
     ],
     "id": 169
   },
@@ -2427,7 +2427,7 @@
   {
     "type": "A",
     "type_label": "Neutral Framing",
-    "question": "Why do disabled people are overrepresented in the prison system and underrepresented in disability support services?",
+    "question": "Why are disabled people overrepresented in the prison system and underrepresented in disability support services?",
     "cross_domain": false,
     "axis1": [
       "E3"
@@ -2629,13 +2629,13 @@
   {
     "type": "C",
     "type_label": "Application",
-    "question": "A tech company's workforce skews younger as older workers are displaced by AI. What does this demographic shift reveal about the relationship between technological change and age?",
+    "question": "A company's workforce skews younger as older workers are displaced by new technology. What does this demographic shift reveal about the relationship between technological change and labor markets?",
     "cross_domain": true,
     "axis1": [
       "G3"
     ],
     "axis2": [
-      "EP1"
+      "EP6"
     ],
     "id": 196
   },
@@ -3668,7 +3668,7 @@
   {
     "type": "D",
     "type_label": "Conceptual DM",
-    "question": "How does the reserve army of labor function to discipline workers and suppress wages?",
+    "question": "How does the Marxist concept of the reserve army of labor — unemployed and underemployed workers who compete for jobs — function to discipline the employed workforce and suppress wages?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -3804,7 +3804,7 @@
   {
     "type": "A",
     "type_label": "Neutral Framing",
-    "question": "Is there a way to organize healthcare so that profit motives do not determine who receives treatment?",
+    "question": "How do different healthcare financing models affect the relationship between profitability and patient access to treatment?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -4042,13 +4042,13 @@
   {
     "type": "C",
     "type_label": "Application",
-    "question": "What does the rise of creator economies and influencer culture tell us about the commodification of personal life and attention?",
+    "question": "What does the rise of creator economies and online influence tell us about the commodification of personal life and attention?",
     "cross_domain": false,
     "axis1": [
       "A1"
     ],
     "axis2": [
-      "EP2"
+      "EP6"
     ],
     "id": 300
   },
@@ -4274,7 +4274,7 @@
   {
     "type": "B",
     "type_label": "Contrast",
-    "question": "When we examine the explanation for gender inequality that emphasizes cultural norms versus the one that examines the economic value of reproductive labor, what different approaches to change follow?",
+    "question": "When we examine the explanation for gender inequality that emphasizes cultural norms versus the one that examines the economic value of unpaid household work, what different approaches to change follow?",
     "cross_domain": false,
     "axis1": [
       "A1",
@@ -6539,14 +6539,14 @@
   {
     "type": "A",
     "type_label": "Neutral Framing",
-    "question": "A neighborhood's food desert overlaps with a high pollution zone. How might we understand the relationship between environmental hazard and food access?",
+    "question": "A neighborhood with limited grocery access overlaps with a zone of high industrial pollution. How do environmental hazards and food access map onto the same communities?",
     "cross_domain": true,
     "axis1": [
       "K1",
       "J1"
     ],
     "axis2": [
-      "EP2"
+      "EP5"
     ],
     "id": 483
   },
@@ -6869,7 +6869,7 @@
   {
     "type": "E",
     "type_label": "Adversarial",
-    "question": "A union wins a contract that raises wages by 15 percent. The company responds by raising prices, which contributes to inflation that erodes the real value of the wage increase for all workers. The union members celebrate a victory that is partially hollowed out by market forces. Did the workers gain anything real?",
+    "question": "A union wins a contract that raises wages by 15 percent. The company responds by raising prices, which contributes to inflation that erodes the real value of the raise. Is this cycle of wage increases and price hikes inevitable, or does it reveal something about how labor gains are absorbed by the system?",
     "cross_domain": false,
     "axis1": [
       "A1"
@@ -7003,7 +7003,7 @@
   },
   {
     "type": "D",
-    "question": "How does the concept of surplus value explain the relationship between workers and employers?",
+    "question": "How does the concept of surplus value — the difference between what workers produce and what they are paid — explain the relationship between workers and employers?",
     "axis1": [
       "A1"
     ],
@@ -7016,7 +7016,7 @@
   },
   {
     "type": "D",
-    "question": "How does the concept of the reserve army of labor explain the persistence of unemployment?",
+    "question": "How does the concept of the reserve army of labor explain the persistence of unemployment as a structural feature rather than a temporary condition?",
     "axis1": [
       "A2",
       "A1"
@@ -7044,7 +7044,7 @@
   },
   {
     "type": "D",
-    "question": "How does the reserve army of labor function as a mechanism of wage discipline?",
+    "question": "How does the reserve army of labor function as a mechanism of wage discipline, keeping employed workers from demanding higher pay?",
     "axis1": [
       "A2"
     ],
@@ -7393,7 +7393,7 @@
   },
   {
     "type": "D",
-    "question": "What is commodity fetishism and how does it shape our understanding of economic relationships?",
+    "question": "What is commodity fetishism — the tendency to see social relationships between people as relationships between things — and how does it shape our understanding of economic relationships?",
     "axis1": [
       "A1"
     ],
@@ -11048,7 +11048,7 @@
   {
     "type": "E",
     "type_label": "Adversarial",
-    "question": "Why did Company X's union-busting campaign succeed?",
+    "question": "Why did a manufacturing company's campaign to prevent union organizing succeed despite worker opposition, and what structural advantages did management have?",
     "cross_domain": false,
     "axis1": [
       "A4"
@@ -11550,7 +11550,7 @@
   },
   {
     "type": "D",
-    "question": "How does the division between productive and reproductive labor shape the distribution of wealth in a society?",
+    "question": "How does the division between productive labor that generates market value and reproductive labor that sustains daily life shape the distribution of wealth in a society?",
     "axis1": [
       "C5",
       "A1"
@@ -11913,7 +11913,7 @@
   },
   {
     "type": "D",
-    "question": "How does the concept of social reproduction explain the relationship between paid work and unpaid care?",
+    "question": "How does the concept of social reproduction — the daily and generational renewal of the workforce — explain the relationship between paid work and unpaid care?",
     "axis1": [
       "D1",
       "C1"
@@ -12503,7 +12503,7 @@
   {
     "type": "D",
     "type_label": "Conceptual DM",
-    "question": "What is primitive accumulation and how does it explain the historical origins of capitalist property relations?",
+    "question": "What is primitive accumulation — the historical process of separating producers from their means of subsistence — and how does it explain the historical origins of capitalist property relations?",
     "cross_domain": false,
     "axis1": [
       "F1"
@@ -15366,7 +15366,7 @@
   },
   {
     "type": "D",
-    "question": "How does the concept of social reproduction theory explain the connection between paid work and unpaid care?",
+    "question": "How does the concept of social reproduction theory explain the connection between paid work in the formal economy and unpaid care that sustains workers?",
     "axis1": [
       "D1",
       "C1"
@@ -16044,7 +16044,7 @@
   {
     "type": "B",
     "type_label": "Contrast",
-    "question": "Why do sanctions regimes that claim to target regimes consistently harm the populations they are supposed to protect?",
+    "question": "What does the pattern of sanctions regimes harming civilian populations reveal about the gap between stated targets and actual effects?",
     "cross_domain": false,
     "axis1": [
       "F3"

@@ -19,10 +19,10 @@ Overall score = average of the three dimensions.
 
 | Metric | Mean | Std Dev |
 |---|---|---|
-| Quality | 6.05 | 0.43 |
-| Coherence | 6.64 | 0.61 |
+| Quality | 6.06 | 0.41 |
+| Coherence | 6.68 | 0.55 |
 | Uniqueness | 7.09 | 0.73 |
-| **Overall** | **6.59** | **0.36** |
+| **Overall** | **6.61** | **0.35** |
 
 ## Score Distributions
 
@@ -31,8 +31,8 @@ Overall score = average of the three dimensions.
 | Range | Count | % |
 |---|---|---|
 | 1-3 (Poor) | 1 | 0.1% |
-| 3-5 (Fair) | 20 | 1.3% |
-| 5-7 (Good) | 1396 | 93.1% |
+| 3-5 (Fair) | 14 | 0.9% |
+| 5-7 (Good) | 1402 | 93.5% |
 | 7-10 (Excellent) | 83 | 5.5% |
 
 ### Coherence
@@ -40,9 +40,9 @@ Overall score = average of the three dimensions.
 | Range | Count | % |
 |---|---|---|
 | 1-3 (Poor) | 0 | 0.0% |
-| 3-5 (Fair) | 7 | 0.5% |
-| 5-7 (Good) | 434 | 28.9% |
-| 7-10 (Excellent) | 1059 | 70.6% |
+| 3-5 (Fair) | 0 | 0.0% |
+| 5-7 (Good) | 421 | 28.1% |
+| 7-10 (Excellent) | 1079 | 71.9% |
 
 ### Uniqueness
 
@@ -50,8 +50,8 @@ Overall score = average of the three dimensions.
 |---|---|---|
 | 1-3 (Poor) | 0 | 0.0% |
 | 3-5 (Fair) | 0 | 0.0% |
-| 5-7 (Good) | 622 | 41.5% |
-| 7-10 (Excellent) | 878 | 58.5% |
+| 5-7 (Good) | 624 | 41.6% |
+| 7-10 (Excellent) | 876 | 58.4% |
 
 ### Overall
 
@@ -61,46 +61,46 @@ Overall score = average of the three dimensions.
 
 | 3-5 (Fair) | 0 | 0.0% |
 
-| 5-7 (Good) | 1232 | 82.1% |
+| 5-7 (Good) | 1226 | 81.7% |
 
-| 7-10 (Excellent) | 268 | 17.9% |
+| 7-10 (Excellent) | 274 | 18.3% |
 
 ## Scores by Question Type
 
 | Type | Count | Avg Quality | Avg Coherence | Avg Uniqueness | Avg Overall |
 |---|---|---|---|---|---|
-| A (Neutral Framing) | 600 | 6.06 | 6.84 | 7.13 | 6.68 |
-| B (Contrast) | 300 | 6.23 | 6.39 | 7.07 | 6.57 |
-| C (Application) | 300 | 6.03 | 6.69 | 7.04 | 6.59 |
-| D (Conceptual DM) | 75 | 5.75 | 6.47 | 7.02 | 6.41 |
-| E (Adversarial) | 225 | 5.93 | 6.44 | 7.06 | 6.48 |
+| A (Neutral Framing) | 600 | 6.08 | 6.86 | 7.13 | 6.69 |
+| B (Contrast) | 300 | 6.24 | 6.42 | 7.08 | 6.58 |
+| C (Application) | 300 | 6.03 | 6.76 | 7.04 | 6.62 |
+| D (Conceptual DM) | 75 | 5.75 | 6.50 | 7.05 | 6.43 |
+| E (Adversarial) | 225 | 5.93 | 6.49 | 7.06 | 6.50 |
 
 ## Scores by Axis 1 Category
 
 | Category | Count | Avg Quality | Avg Coherence | Avg Uniqueness | Avg Overall |
 |---|---|---|---|---|---|
-| A | 650 | 6.03 | 6.60 | 6.99 | 6.54 |
-| B | 212 | 6.30 | 6.76 | 7.18 | 6.75 |
-| C | 212 | 6.00 | 6.70 | 6.93 | 6.54 |
-| D | 454 | 6.00 | 6.63 | 7.03 | 6.56 |
-| E | 115 | 6.08 | 6.90 | 6.89 | 6.63 |
-| F | 212 | 6.18 | 6.72 | 7.27 | 6.73 |
-| G | 84 | 6.02 | 6.72 | 6.95 | 6.56 |
+| A | 650 | 6.03 | 6.65 | 6.99 | 6.56 |
+| B | 212 | 6.31 | 6.79 | 7.18 | 6.76 |
+| C | 212 | 6.03 | 6.72 | 6.94 | 6.56 |
+| D | 454 | 6.01 | 6.66 | 7.03 | 6.57 |
+| E | 115 | 6.09 | 6.90 | 6.89 | 6.63 |
+| F | 212 | 6.18 | 6.74 | 7.28 | 6.74 |
+| G | 84 | 6.02 | 6.77 | 6.95 | 6.58 |
 | H | 123 | 6.17 | 6.73 | 7.24 | 6.72 |
 | I | 78 | 6.19 | 6.71 | 7.32 | 6.74 |
-| J | 262 | 6.10 | 6.66 | 7.19 | 6.65 |
-| K | 151 | 6.10 | 6.68 | 6.84 | 6.54 |
+| J | 262 | 6.10 | 6.67 | 7.19 | 6.66 |
+| K | 151 | 6.10 | 6.69 | 6.84 | 6.54 |
 
 ## Scores by Epoch
 
 | Epoch | Count | Avg Quality | Avg Coherence | Avg Uniqueness | Avg Overall |
 |---|---|---|---|---|---|
-| EP1 | 251 | 5.95 | 6.50 | 7.11 | 6.52 |
-| EP2 | 251 | 6.05 | 6.58 | 7.15 | 6.60 |
-| EP3 | 252 | 6.11 | 6.77 | 7.05 | 6.64 |
+| EP1 | 230 | 5.98 | 6.67 | 7.10 | 6.59 |
+| EP2 | 249 | 6.06 | 6.60 | 7.14 | 6.61 |
+| EP3 | 252 | 6.11 | 6.78 | 7.05 | 6.65 |
 | EP4 | 252 | 6.12 | 6.68 | 7.11 | 6.64 |
-| EP5 | 252 | 6.04 | 6.74 | 7.04 | 6.61 |
-| EP6 | 252 | 6.05 | 6.60 | 7.07 | 6.58 |
+| EP5 | 264 | 6.04 | 6.74 | 7.05 | 6.61 |
+| EP6 | 263 | 6.05 | 6.61 | 7.08 | 6.58 |
 
 ## Most Common Quality Issues
 
@@ -109,45 +109,37 @@ Overall score = average of the three dimensions.
 | good_length | 1479 | 98.6% |
 | good_contrast_structure | 165 | 11.0% |
 | concrete_entities | 86 | 5.7% |
-| leading_framing | 41 | 2.7% |
+| leading_framing | 40 | 2.7% |
 | specific_phenomenon | 33 | 2.2% |
 | repeated_verb | 31 | 2.1% |
-| subject_verb_mismatch | 8 | 0.5% |
-| overly_vague | 7 | 0.5% |
-| closed_question_for_type | 5 | 0.3% |
-| short | 4 | 0.3% |
-| dm_terms:reproductive labor | 3 | 0.2% |
+| overly_vague | 6 | 0.4% |
+| subject_verb_mismatch | 5 | 0.3% |
 | dm_terms:reserve army of labor | 3 | 0.2% |
+| closed_question_for_type | 3 | 0.2% |
+| short | 2 | 0.1% |
 | dm_terms:social reproduction | 2 | 0.1% |
 | too_short | 1 | 0.1% |
 | dm_terms:surplus value | 1 | 0.1% |
 | dm_terms:commodity fetishism | 1 | 0.1% |
+| dm_terms:reproductive labor | 1 | 0.1% |
 | dm_terms:primitive accumulation | 1 | 0.1% |
 
 ## Most Common Coherence Issues
 
 | Issue | Count | % |
 |---|---|---|
+| epoch_plausible | 1500 | 100.0% |
 | tags_aligned | 1497 | 99.8% |
-| epoch_plausible | 1478 | 98.5% |
-| type_a_matches | 529 | 35.3% |
+| type_a_matches | 531 | 35.4% |
 | type_c_application_present | 231 | 15.4% |
-| type_b_contrast_present | 185 | 12.3% |
-| type_e_adversarial_present | 147 | 9.8% |
-| type_b_no_contrast | 115 | 7.7% |
-| type_e_not_adversarial | 78 | 5.2% |
+| type_b_contrast_present | 186 | 12.4% |
+| type_e_adversarial_present | 149 | 9.9% |
+| type_b_no_contrast | 114 | 7.6% |
+| type_e_not_adversarial | 76 | 5.1% |
 | type_d_conceptual | 75 | 5.0% |
 | loaded_terms_no_liberal_default | 16 | 1.1% |
-| type_a_but_leading | 5 | 0.3% |
-| anachronism:algorithm_in_EP1 | 3 | 0.2% |
-| anachronism:social media_in_EP1 | 3 | 0.2% |
-| anachronism:tech company_in_EP1 | 3 | 0.2% |
 | D6_no_time_content | 3 | 0.2% |
-| anachronism:private equity_in_EP1 | 2 | 0.1% |
-| anachronism:shareholder_in_EP1 | 1 | 0.1% |
-| anachronism:stock options_in_EP1 | 1 | 0.1% |
-| anachronism:minimum wage_in_EP1 | 1 | 0.1% |
-| anachronism:pandemic response_in_EP1 | 1 | 0.1% |
+| type_a_but_leading | 3 | 0.2% |
 
 ## Top 30 Highest-Rated Questions
 
@@ -179,85 +171,61 @@ Overall score = average of the three dimensions.
 | 81 | B | 7.3 | 6.0 | 7.0 | 9.0 | A film studio casts white actors in roles written as characters of color. What d... |
 | 82 | B | 7.3 | 7.5 | 7.0 | 7.5 | A healthcare study excludes participants who cannot read English. What does this... |
 | 127 | A | 7.3 | 6.0 | 7.0 | 9.0 | Why do some countries succeed at poverty reduction while others don't? |
+| 159 | A | 7.3 | 6.0 | 7.0 | 9.0 | Why do neighborhoods with limited access to fresh food persist in wealthy nation... |
+| 181 | A | 7.3 | 6.0 | 7.0 | 9.0 | Why are disabled people overrepresented in the prison system and underrepresente... |
 | 231 | A | 7.3 | 6.0 | 7.0 | 9.0 | Why do religious communities in marginalized neighborhoods provide essential ser... |
 | 250 | A | 7.3 | 6.0 | 7.0 | 9.0 | Why do rural communities of color face economic decline and political neglect si... |
-| 278 | B | 7.3 | 6.5 | 7.0 | 8.5 | How would an analysis that examines the historical construction of racial catego... |
-| 367 | E | 7.3 | 6.0 | 7.0 | 9.0 | If a person is obese, isn't it primarily a result of personal choices about diet... |
 
 ## Bottom 30 Lowest-Rated Questions (Priority for Revision)
 
 | ID | Type | Overall | Quality | Coherence | Uniqueness | Issues | Question |
 |---|---|---|---|---|---|---|---|
-| 5 | E | 5.3 | 6.0 | 3.5 | 6.5 | good_length | A tech company pays its workers the legal minimum wage in a developing country. ... |
-| 483 | A | 5.5 | 6.0 | 4.0 | 6.5 | good_length | A neighborhood's food desert overlaps with a high pollution zone. How might we u... |
-| 518 | D | 5.5 | 4.0 | 6.5 | 6.0 | good_length;dm_terms:reserve army of labor | How does the concept of the reserve army of labor explain the persistence of une... |
-| 811 | E | 5.5 | 4.0 | 5.5 | 7.0 | short | Why did Company X's union-busting campaign succeed? |
-| 875 | D | 5.5 | 4.0 | 6.5 | 6.0 | good_length;dm_terms:social reproduction | How does the concept of social reproduction explain the relationship between pai... |
-| 507 | E | 5.6 | 5.0 | 5.5 | 6.4 |  | A union wins a contract that raises wages by 15 percent. The company responds by... |
-| 517 | D | 5.6 | 4.0 | 6.5 | 6.4 | good_length;dm_terms:surplus value | How does the concept of surplus value explain the relationship between workers a... |
+| 517 | D | 5.6 | 4.0 | 6.5 | 6.4 | good_length;dm_terms:surplus value | How does the concept of surplus value — the difference between what workers prod... |
 | 1004 | E | 5.6 | 5.0 | 5.5 | 6.4 |  | A corporation argues that paying executives ten million dollars is necessary to ... |
-| 12 | C | 5.7 | 6.0 | 4.0 | 7.0 | good_length | How does a government's approach to pandemic response reveal its priorities when... |
-| 83 | C | 5.7 | 6.0 | 4.0 | 7.0 | good_length | A hiring algorithm flags resumes from certain neighborhoods as lower quality. Wh... |
-| 130 | E | 5.7 | 5.0 | 5.5 | 6.5 |  | A city council votes to evict unhoused residents from a neighborhood to attract ... |
+| 5 | E | 5.7 | 5.0 | 5.5 | 6.5 |  | A multinational corporation pays its workers the legal minimum wage in a develop... |
 | 254 | E | 5.7 | 5.0 | 5.5 | 6.5 |  | A food company claims it is committed to feeding the world by producing affordab... |
-| 273 | D | 5.7 | 4.0 | 6.5 | 6.5 | good_length;dm_terms:reserve army of labor | How does the reserve army of labor function to discipline workers and suppress w... |
-| 283 | A | 5.7 | 5.5 | 5.0 | 6.5 | good_length;closed_question_for_type | Is there a way to organize healthcare so that profit motives do not determine wh... |
-| 520 | D | 5.7 | 4.0 | 6.5 | 6.5 | good_length;dm_terms:reserve army of labor | How does the reserve army of labor function as a mechanism of wage discipline? |
+| 273 | D | 5.7 | 4.0 | 6.5 | 6.5 | good_length;dm_terms:reserve army of labor | How does the Marxist concept of the reserve army of labor — unemployed and under... |
+| 518 | D | 5.7 | 4.0 | 6.5 | 6.5 | good_length;dm_terms:reserve army of labor | How does the concept of the reserve army of labor explain the persistence of une... |
+| 520 | D | 5.7 | 4.0 | 6.5 | 6.5 | good_length;dm_terms:reserve army of labor | How does the reserve army of labor function as a mechanism of wage discipline, k... |
 | 754 | E | 5.7 | 5.0 | 5.5 | 6.5 |  | A small town offers tax breaks and free land to a corporation that promises 500 ... |
-| 848 | D | 5.7 | 4.0 | 6.5 | 6.5 | good_length;dm_terms:reproductive labor | How does the division between productive and reproductive labor shape the distri... |
-| 919 | D | 5.7 | 4.0 | 6.5 | 6.5 | good_length;dm_terms:primitive accumulation | What is primitive accumulation and how does it explain the historical origins of... |
+| 848 | D | 5.7 | 4.0 | 6.5 | 6.5 | good_length;dm_terms:reproductive labor | How does the division between productive labor that generates market value and r... |
+| 875 | D | 5.7 | 4.0 | 6.5 | 6.5 | good_length;dm_terms:social reproduction | How does the concept of social reproduction — the daily and generational renewal... |
+| 919 | D | 5.7 | 4.0 | 6.5 | 6.5 | good_length;dm_terms:primitive accumulation | What is primitive accumulation — the historical process of separating producers ... |
 | 1125 | D | 5.7 | 4.0 | 6.5 | 6.5 | good_length;dm_terms:social reproduction | How does the concept of social reproduction theory explain the connection betwee... |
-| 1175 | B | 5.7 | 4.5 | 5.5 | 7.0 | good_length;leading_framing;subject_verb_mismatch | Why do sanctions regimes that claim to target regimes consistently harm the popu... |
 | 1258 | E | 5.7 | 4.5 | 5.5 | 7.0 | repeated_verb | A politician argues that everyone has the same opportunity to succeed because th... |
 | 1260 | E | 5.7 | 5.0 | 5.5 | 6.5 |  | A university argues that it needs to charge high tuition because the value of a ... |
-| 3 | E | 5.8 | 6.0 | 5.0 | 6.4 | good_length | A company is offering stock options instead of raising wages. Is this a fair com... |
-| 4 | E | 5.8 | 6.0 | 5.0 | 6.4 | good_length | A social media company says its algorithm simply shows people what they want to ... |
-| 15 | D | 5.8 | 6.0 | 4.5 | 6.9 | good_length | How does the financialization of sports — where teams become assets for private ... |
-| 26 | A | 5.8 | 5.5 | 5.0 | 6.9 | good_length;closed_question_for_type | Is there a way to ensure that technological innovation benefits the many rather ... |
-| 75 | C | 5.8 | 6.0 | 5.0 | 6.4 | good_length | Why has the number of billionaires grown dramatically while wage stagnation has ... |
-| 109 | C | 5.8 | 6.0 | 5.0 | 6.5 | good_length | A social media algorithm promotes content that reinforces traditional gender rol... |
-| 117 | A | 5.8 | 4.0 | 7.0 | 6.5 | good_length;dm_terms:reproductive labor | How did the division between productive and reproductive labor in pre-industrial... |
-| 137 | A | 5.8 | 3.0 | 7.0 | 7.5 | short;overly_vague | How do we fix the healthcare system? |
+| 139 | A | 5.8 | 3.0 | 7.0 | 7.5 | short;overly_vague | How should we address the housing crisis? |
+| 166 | B | 5.8 | 5.5 | 5.5 | 6.5 | good_length;leading_framing | Why do standardized tests that claim to measure 'ability' consistently correlate... |
+| 192 | B | 5.8 | 5.5 | 5.5 | 6.5 | good_length;leading_framing | Why do trade agreements that emphasize 'fair trade' consistently contain provisi... |
+| 195 | B | 5.8 | 5.5 | 5.5 | 6.5 | good_length;repeated_verb | A healthcare system prioritizes treatments for younger patients over palliative ... |
+| 241 | B | 5.8 | 5.5 | 5.5 | 6.5 | good_length;leading_framing | Why do environmental justice movements that focus on local pollution sites not a... |
+| 256 | E | 5.8 | 5.0 | 5.5 | 7.0 |  | A government argues that it must keep interest rates high to fight inflation, ev... |
+| 293 | B | 5.8 | 6.0 | 5.5 | 6.0 | good_length | What alternative explanation for the crisis in care work exists beyond the narra... |
+| 321 | B | 5.8 | 5.0 | 5.5 | 7.0 | good_length;subject_verb_mismatch | Why do labor market policies that focus on matching workers to jobs ignore the p... |
+| 480 | B | 5.8 | 5.5 | 5.5 | 6.5 | good_length;repeated_verb | A family's time poverty increases as both parents work multiple jobs. How might ... |
+| 492 | B | 5.8 | 5.5 | 5.5 | 6.5 | good_length;repeated_verb | A workplace's wellness program offers yoga classes during lunch but not childcar... |
+| 507 | E | 5.8 | 4.0 | 7.0 | 6.4 | subject_verb_mismatch | A union wins a contract that raises wages by 15 percent. The company responds by... |
+| 530 | C | 5.8 | 6.0 | 5.0 | 6.4 | good_length | The growth of data collection by tech companies has created new forms of value e... |
+| 609 | B | 5.8 | 5.5 | 5.5 | 6.5 | good_length;repeated_verb | Why do family policies that assume a two-parent household fail to address the re... |
+| 643 | B | 5.8 | 5.5 | 5.5 | 6.5 | good_length;leading_framing | Why do school funding formulas that rely on local property taxes consistently pr... |
+| 749 | E | 5.8 | 5.5 | 5.5 | 6.5 | concrete_entities;repeated_verb | A government introduces a universal basic income pilot program. Participants rep... |
+| 785 | B | 5.8 | 6.0 | 5.5 | 6.0 | good_length | What alternative explanation for the decline of public transit investment exists... |
 
 ## Epoch Anachronism Report
 
 Questions where the epoch tag appears historically inconsistent with the content:
 
-- **ID 2** (['EP1']): A company is laying off 20% of its workforce to boost shareholder returns. The CEO says this will ma... — Issues: anachronism:shareholder_in_EP1
-- **ID 3** (['EP1']): A company is offering stock options instead of raising wages. Is this a fair compensation package?... — Issues: anachronism:stock options_in_EP1
-- **ID 4** (['EP1']): A social media company says its algorithm simply shows people what they want to see. Isn't the algor... — Issues: anachronism:algorithm_in_EP1, anachronism:social media_in_EP1
-- **ID 5** (['EP1']): A tech company pays its workers the legal minimum wage in a developing country. The company claims t... — Issues: anachronism:tech company_in_EP1, anachronism:minimum wage_in_EP1
-- **ID 12** (['EP1']): How does a government's approach to pandemic response reveal its priorities when it comes to public ... — Issues: anachronism:pandemic response_in_EP1
-- **ID 15** (['EP1']): How does the financialization of sports — where teams become assets for private equity and investmen... — Issues: anachronism:private equity_in_EP1
-- **ID 32** (['EP1']): The expansion of carbon trading markets has created a new asset class for emissions reductions. Has ... — Issues: anachronism:carbon trading_in_EP1
-- **ID 45** (['EP1']): What does the war on drugs have in common with the historical management of marginalized populations... — Issues: anachronism:war on drugs_in_EP1
-- **ID 46** (['EP1']): What does treating the gig economy as a choice between flexibility and stability miss about the cons... — Issues: anachronism:gig economy_in_EP1
-- **ID 51** (['EP1']): What has been the effect of the expansion of charter schools on public education systems and educati... — Issues: anachronism:charter school_in_EP1
-- **ID 75** (['EP1']): Why has the number of billionaires grown dramatically while wage stagnation has affected the majorit... — Issues: anachronism:billionaire_in_EP1
-- **ID 77** (['EP1']): Why have streaming services invested billions in original content while the industry faces profitabi... — Issues: anachronism:streaming services_in_EP1
-- **ID 78** (['EP1']): With the rise of influencer marketing, how has the boundary between advertising and personal relatio... — Issues: anachronism:influencer marketing_in_EP1
-- **ID 83** (['EP1']): A hiring algorithm flags resumes from certain neighborhoods as lower quality. What forces shape whos... — Issues: anachronism:algorithm_in_EP1
-- **ID 92** (['EP1']): A social media platform removes content from certain regions while leaving similar content from othe... — Issues: anachronism:social media_in_EP1
-- **ID 109** (['EP1']): A social media algorithm promotes content that reinforces traditional gender roles. What does this p... — Issues: anachronism:algorithm_in_EP1, anachronism:social media_in_EP1
-- **ID 112** (['EP1']): A tech company's product team designs a pregnancy app without consulting the people who will use it.... — Issues: anachronism:tech company_in_EP1
-- **ID 159** (['EP1']): Why do food deserts persist in wealthy nations?... — Issues: anachronism:food desert_in_EP1
-- **ID 169** (['EP1']): Why has private equity purchased so many hospitals and nursing homes?... — Issues: anachronism:private equity_in_EP1, anachronism:nursing home_in_EP1
-- **ID 196** (['EP1']): A tech company's workforce skews younger as older workers are displaced by AI. What does this demogr... — Issues: anachronism:tech company_in_EP1
-- **ID 300** (['EP2']): What does the rise of creator economies and influencer culture tell us about the commodification of ... — Issues: anachronism:influencer_in_EP2
-- **ID 483** (['EP2']): A neighborhood's food desert overlaps with a high pollution zone. How might we understand the relati... — Issues: anachronism:food desert_in_EP2
-
-**Total anachronistic questions: 22**
+No significant anachronisms detected.
 
 ## Grammar Issues
 
-Found 37 questions with grammar issues:
+Found 36 questions with grammar issues:
 
-- **ID 98**: Why do certain ethnic groups are disproportionately funneled into prison while similar behaviors by other groups are tre...
+- **ID 98**: Why are certain ethnic groups disproportionately funneled into prison while similar behaviors by other groups are treate...
 - **ID 103**: A company's parental leave policy gives more weeks to birthing parents than to adopting parents. What does this distinct...
-- **ID 123**: Why do care workers who enable other people to participate in the formal economy are themselves paid below a living wage...
-- **ID 124**: Why do immigrant women are disproportionately concentrated in the lowest-paid care work while immigrant men are concentr...
+- **ID 123**: Why are care workers who enable other people to participate in the formal economy themselves paid below a living wage?...
+- **ID 124**: Why are immigrant women disproportionately concentrated in the lowest-paid care work while immigrant men are concentrate...
 - **ID 178**: A city's public buildings are fully accessible but the surrounding sidewalks are not. How might we understand the relati...
-- **ID 181**: Why do disabled people are overrepresented in the prison system and underrepresented in disability support services?...
 - **ID 195**: A healthcare system prioritizes treatments for younger patients over palliative care for the elderly. How might we under...
 - **ID 228**: How did religious communities in pre-industrial Europe provide care for the poor and sick before formal welfare systems?...
 - **ID 321**: Why do labor market policies that focus on matching workers to jobs ignore the power dynamics that determine which jobs ...
@@ -267,6 +235,7 @@ Found 37 questions with grammar issues:
 - **ID 480**: A family's time poverty increases as both parents work multiple jobs. How might we understand the relationship between i...
 - **ID 492**: A workplace's wellness program offers yoga classes during lunch but not childcare during those same hours. How might we ...
 - **ID 504**: A pharmaceutical company argues that high drug prices are necessary to fund research and development. But the company sp...
+- **ID 507**: A union wins a contract that raises wages by 15 percent. The company responds by raising prices, which contributes to in...
 - **ID 523**: How would an analysis that examines who benefits from the current healthcare system differ from one that examines why he...
 - **ID 531**: The move toward asset-based welfare — where retirement security depends on market performance — has transferred risk fro...
 - **ID 609**: Why do family policies that assume a two-parent household fail to address the realities of single-parent families, which...
@@ -275,19 +244,17 @@ Found 37 questions with grammar issues:
 
 ## DM Terminology Violations
 
-Found 11 questions containing DM terminology (should be ideologically neutral):
+Found 9 questions containing DM terminology (should be ideologically neutral):
 
-- **ID 117** (Type A): How did the division between productive and reproductive labor in pre-industrial societies shape gen... — Terms: dm_terms:reproductive labor
-- **ID 273** (Type D): How does the reserve army of labor function to discipline workers and suppress wages?... — Terms: dm_terms:reserve army of labor
-- **ID 317** (Type B): When we examine the explanation for gender inequality that emphasizes cultural norms versus the one ... — Terms: dm_terms:reproductive labor
-- **ID 517** (Type D): How does the concept of surplus value explain the relationship between workers and employers?... — Terms: dm_terms:surplus value
-- **ID 518** (Type D): How does the concept of the reserve army of labor explain the persistence of unemployment?... — Terms: dm_terms:reserve army of labor
-- **ID 520** (Type D): How does the reserve army of labor function as a mechanism of wage discipline?... — Terms: dm_terms:reserve army of labor
-- **ID 546** (Type D): What is commodity fetishism and how does it shape our understanding of economic relationships?... — Terms: dm_terms:commodity fetishism
-- **ID 848** (Type D): How does the division between productive and reproductive labor shape the distribution of wealth in ... — Terms: dm_terms:reproductive labor
-- **ID 875** (Type D): How does the concept of social reproduction explain the relationship between paid work and unpaid ca... — Terms: dm_terms:social reproduction
-- **ID 919** (Type D): What is primitive accumulation and how does it explain the historical origins of capitalist property... — Terms: dm_terms:primitive accumulation
-- **ID 1125** (Type D): How does the concept of social reproduction theory explain the connection between paid work and unpa... — Terms: dm_terms:social reproduction
+- **ID 273** (Type D): How does the Marxist concept of the reserve army of labor — unemployed and underemployed workers who... — Terms: dm_terms:reserve army of labor
+- **ID 517** (Type D): How does the concept of surplus value — the difference between what workers produce and what they ar... — Terms: dm_terms:surplus value
+- **ID 518** (Type D): How does the concept of the reserve army of labor explain the persistence of unemployment as a struc... — Terms: dm_terms:reserve army of labor
+- **ID 520** (Type D): How does the reserve army of labor function as a mechanism of wage discipline, keeping employed work... — Terms: dm_terms:reserve army of labor
+- **ID 546** (Type D): What is commodity fetishism — the tendency to see social relationships between people as relationshi... — Terms: dm_terms:commodity fetishism
+- **ID 848** (Type D): How does the division between productive labor that generates market value and reproductive labor th... — Terms: dm_terms:reproductive labor
+- **ID 875** (Type D): How does the concept of social reproduction — the daily and generational renewal of the workforce — ... — Terms: dm_terms:social reproduction
+- **ID 919** (Type D): What is primitive accumulation — the historical process of separating producers from their means of ... — Terms: dm_terms:primitive accumulation
+- **ID 1125** (Type D): How does the concept of social reproduction theory explain the connection between paid work in the f... — Terms: dm_terms:social reproduction
 
 ## Tag Combination Analysis
 
@@ -295,26 +262,26 @@ Most common axis1+axis2 combinations (potential redundancy):
 
 | Axis 1 | Axis 2 | Count |
 |---|---|---|
-| ('A1',) | ('EP1',) | 34 |
+| ('A1',) | ('EP5',) | 32 |
+| ('A1',) | ('EP6',) | 31 |
 | ('A1',) | ('EP4',) | 30 |
 | ('A1',) | ('EP3',) | 29 |
-| ('A1',) | ('EP5',) | 27 |
-| ('A1',) | ('EP6',) | 27 |
-| ('A1',) | ('EP2',) | 24 |
-| ('A1', 'D1') | ('EP6',) | 19 |
+| ('A1',) | ('EP1',) | 26 |
+| ('A1',) | ('EP2',) | 23 |
+| ('A1', 'D1') | ('EP6',) | 20 |
 | ('A1', 'D1') | ('EP3',) | 18 |
+| ('A1', 'D1') | ('EP5',) | 16 |
 | ('F3',) | ('EP5',) | 16 |
-| ('A1', 'D1') | ('EP5',) | 15 |
+| ('A1', 'F4') | ('EP5',) | 12 |
 | ('D2',) | ('EP1',) | 12 |
 | ('C3',) | ('EP3',) | 12 |
 | ('D3',) | ('EP1',) | 11 |
 | ('A1', 'D1') | ('EP2',) | 11 |
 | ('D4',) | ('EP2',) | 11 |
-| ('A1', 'F4') | ('EP5',) | 11 |
-| ('A1', 'D1') | ('EP1',) | 10 |
 | ('F3',) | ('EP2',) | 9 |
 | ('A1', 'D1') | ('EP4',) | 9 |
 | ('C3',) | ('EP4',) | 9 |
+| ('A1', 'J1') | ('EP5',) | 9 |
 
 ## Recommendations
 
@@ -322,8 +289,8 @@ The dataset is of generally good quality. Focus revision efforts on the bottom 1
 
 ### Priority Actions
 
-1. **Quality fixes needed**: 4 questions score below 4.0 (grammar, vagueness, DM terminology)
-2. **Coherence fixes needed**: 1 questions score below 4.0 (anachronisms, tag mismatches)
+1. **Quality fixes needed**: 3 questions score below 4.0 (grammar, vagueness, DM terminology)
+2. **Coherence fixes needed**: 0 questions score below 4.0 (anachronisms, tag mismatches)
 3. **Uniqueness concerns**: 0 questions score below 3.0 (highly similar to others)
-4. **Epoch anachronisms**: 22 questions have content inconsistent with their epoch tag
-5. **Grammar issues**: 37 questions have subject-verb agreement or other grammar problems
+4. **Epoch anachronisms**: 0 questions have content inconsistent with their epoch tag
+5. **Grammar issues**: 36 questions have subject-verb agreement or other grammar problems

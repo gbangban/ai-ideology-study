@@ -1,0 +1,5586 @@
+[
+  {
+    "type": "A",
+    "question": "In pre-industrial communities, how did the seasonal rhythm of agricultural work shape the daily lives of those who farmed the land?",
+    "axis1": [
+      "D6",
+      "A1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the transition from communal farming to enclosed fields change the amount of time people spent securing their basic needs?",
+    "axis1": [
+      "D6",
+      "F1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "During the early factory period, how did the shift from seasonal work to clock-time discipline affect workers' daily lives?",
+    "axis1": [
+      "D6",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What differences emerge when comparing the time available for family and community before and after the introduction of standardized work hours?",
+    "axis1": [
+      "D6",
+      "C1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the post-war expansion of suburban commuting reshape the daily time budgets of working families?",
+    "axis1": [
+      "D6",
+      "J1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do service workers in cities often work schedules that make it difficult to maintain regular social relationships?",
+    "axis1": [
+      "D6",
+      "A2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How has the rise of remote work changed the boundaries between paid work time and personal time?",
+    "axis1": [
+      "D6",
+      "A5"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A company introduces flexible hours to help employees balance work and family life. What structural factors might limit the actual benefit of this policy?",
+    "axis1": [
+      "D6",
+      "C2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the introduction of the eight-hour workday change the relationship between labor and leisure in industrial cities?",
+    "axis1": [
+      "D6",
+      "A4"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do single parents often report having less free time than other households, even when controlling for income?",
+    "axis1": [
+      "D6",
+      "C1",
+      "K7"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did colonial labor systems reshape the daily time allocation of indigenous communities?",
+    "axis1": [
+      "D6",
+      "F2",
+      "B4"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What does the difference in commute times between urban neighborhoods reveal about how cities are organized?",
+    "axis1": [
+      "D6",
+      "J1",
+      "B1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the enclosure of common lands in eighteenth-century England change the amount of time rural people spent traveling to work?",
+    "axis1": [
+      "D6",
+      "F1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do workers in the gig economy often spend more unpaid time searching for work than those in traditional employment?",
+    "axis1": [
+      "D6",
+      "A5"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of factory work in nineteenth-century cities affect the time available for children's education?",
+    "axis1": [
+      "D6",
+      "D4"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when we compare the leisure time of factory owners and factory workers in the same industrial city?",
+    "axis1": [
+      "D6",
+      "A1",
+      "A3"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the post-war welfare state affect the time poverty of elderly people who could no longer work?",
+    "axis1": [
+      "D6",
+      "G2"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A city introduces a four-day work week pilot program. What factors determine whether this actually reduces time poverty for workers?",
+    "axis1": [
+      "D6",
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the shift from barter economies to wage labor change the way people measured and valued their time?",
+    "axis1": [
+      "D6",
+      "A1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do caregivers of chronically ill family members often face greater time constraints than other workers?",
+    "axis1": [
+      "D6",
+      "E3",
+      "C1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of global supply chains affect the working hours of factory workers in export processing zones?",
+    "axis1": [
+      "D6",
+      "H1",
+      "J2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What does the gap between reported working hours and actual working hours reveal about labor market practices?",
+    "axis1": [
+      "D6",
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the introduction of time clocks in factories change workers' relationship to their own labor?",
+    "axis1": [
+      "D6",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "Why do women in dual-earner households still spend more time on unpaid domestic work than their partners?",
+    "axis1": [
+      "D6",
+      "C1",
+      "C2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the transition from harvest-based calendars to industrial timekeeping reshape daily life?",
+    "axis1": [
+      "D6",
+      "G4"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the spice trade routes of the fifteenth century connect distant regions and shift economic power?",
+    "axis1": [
+      "J2",
+      "F1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What factors explain why certain regions accumulated wealth during the early colonial period while others experienced extraction?",
+    "axis1": [
+      "J2",
+      "F3"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the economic development of former colonial powers with their former colonies?",
+    "axis1": [
+      "J2",
+      "F3",
+      "B3"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the establishment of colonial trade monopolies shape the long-term economic trajectories of different regions?",
+    "axis1": [
+      "J2",
+      "F1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do countries that export raw materials often remain poorer than those that manufacture finished goods?",
+    "axis1": [
+      "J2",
+      "F3"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the Bretton Woods institutions shape the economic relationship between former colonial powers and newly independent states?",
+    "axis1": [
+      "J2",
+      "F3"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What does the pattern of foreign direct investment reveal about the economic relationship between wealthy and developing nations?",
+    "axis1": [
+      "J2",
+      "F3"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do international trade agreements often benefit large corporations more than small producers in developing countries?",
+    "axis1": [
+      "J2",
+      "F3"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the division of labor between industrial centers and raw material suppliers shape global economic inequalities?",
+    "axis1": [
+      "J2",
+      "B3"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A developed country offers aid to a developing nation on the condition of market liberalization. What are the effects of this arrangement on both countries?",
+    "axis1": [
+      "J2",
+      "F3"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the transfer of manufactured goods from colonial powers to their colonies affect local industries?",
+    "axis1": [
+      "J2",
+      "F1",
+      "B3"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do debt repayment obligations often consume a large share of government budgets in developing countries?",
+    "axis1": [
+      "J2",
+      "F3"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the partitioning of Africa at the Berlin Conference shape the economic development of the continent?",
+    "axis1": [
+      "J2",
+      "F1",
+      "B1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What does the flow of intellectual property royalties reveal about the relationship between technology producers and consumers?",
+    "axis1": [
+      "J2",
+      "F4"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the establishment of free trade zones in developing countries affect workers' wages and conditions?",
+    "axis1": [
+      "J2",
+      "H1",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do multinational corporations often locate manufacturing in countries with weaker labor protections?",
+    "axis1": [
+      "J2",
+      "A1",
+      "B3"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the opium trade between Britain and China illustrate the economic dynamics between colonial powers and non-European states?",
+    "axis1": [
+      "J2",
+      "F1",
+      "B5"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A developing country's currency is devalued as part of an international bailout program. How does this affect ordinary citizens?",
+    "axis1": [
+      "J2",
+      "F3"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the transatlantic slave trade redistribute wealth between Africa, the Americas, and Europe?",
+    "axis1": [
+      "J2",
+      "B1",
+      "F1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What differences emerge when comparing the industrial development of northern and southern regions within the same country?",
+    "axis1": [
+      "J2",
+      "J1",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the post-colonial borders drawn by colonial powers affect the economic integration of newly independent states?",
+    "axis1": [
+      "J2",
+      "F1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do climate change impacts fall disproportionately on countries that contributed least to greenhouse gas emissions?",
+    "axis1": [
+      "J2",
+      "J3",
+      "H5"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the colonial extraction of rubber from the Congo shape the long-term development of the region?",
+    "axis1": [
+      "J2",
+      "F1",
+      "B1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did unequal trade terms play in the economic development of Latin American countries during the nineteenth century?",
+    "axis1": [
+      "J2",
+      "F3"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What does the concentration of patent holders in wealthy nations reveal about global innovation systems?",
+    "axis1": [
+      "J2",
+      "F4"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did medieval European cities organize different occupational groups into distinct quarters?",
+    "axis1": [
+      "J4",
+      "A3"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What factors led to the separation of indigenous populations from colonizers in early American settlements?",
+    "axis1": [
+      "J4",
+      "B4",
+      "F2"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the growth of industrial cities in the nineteenth century create distinct neighborhoods for different classes of workers?",
+    "axis1": [
+      "J4",
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the living conditions of immigrant neighborhoods and established communities in the same city?",
+    "axis1": [
+      "J4",
+      "H1",
+      "B1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the practice of redlining in the mid-twentieth century shape the residential patterns of American cities?",
+    "axis1": [
+      "J4",
+      "B1",
+      "D2"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do public housing projects often end up concentrating poverty rather than dispersing it?",
+    "axis1": [
+      "J4",
+      "D2",
+      "B1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of highway systems in the 1950s and 1960s affect minority neighborhoods in American cities?",
+    "axis1": [
+      "J4",
+      "B1",
+      "J1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What does the pattern of school funding by neighborhood reveal about the relationship between housing and education?",
+    "axis1": [
+      "J4",
+      "D4",
+      "B1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did apartheid policies in South Africa use urban planning to enforce racial separation?",
+    "axis1": [
+      "J4",
+      "B1",
+      "F2"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do gentrifying neighborhoods often displace the communities that made them attractive in the first place?",
+    "axis1": [
+      "J4",
+      "J5",
+      "B1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the Chinese Exclusion Act of 1882 shape the formation of Chinatowns in American cities?",
+    "axis1": [
+      "J4",
+      "B5",
+      "H1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A city proposes building affordable housing in a wealthy neighborhood. What forces determine whether this plan succeeds or fails?",
+    "axis1": [
+      "J4",
+      "D2",
+      "B1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the Jewish ghettos of medieval Europe function as both protective spaces and instruments of control?",
+    "axis1": [
+      "J4",
+      "I4"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do food deserts tend to appear in the same neighborhoods as other forms of spatial neglect?",
+    "axis1": [
+      "J4",
+      "D5",
+      "B1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the GI Bill's housing provisions contribute to the racial segregation of American suburbs?",
+    "axis1": [
+      "J4",
+      "B1",
+      "D2"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What does the concentration of pollution sources in certain neighborhoods reveal about environmental decision-making?",
+    "axis1": [
+      "J4",
+      "J3",
+      "B1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the internment of Japanese Americans during World War II represent a form of state-enforced spatial separation?",
+    "axis1": [
+      "J4",
+      "B5",
+      "F2"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do digital mapping tools sometimes reinforce existing patterns of neighborhood neglect?",
+    "axis1": [
+      "J4",
+      "J1",
+      "B1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": true
+  },
+  {
+    "type": "A",
+    "question": "How did the partition of India in 1947 create one of the largest population displacements in history?",
+    "axis1": [
+      "J4",
+      "I4",
+      "B3"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did private restrictive covenants play in maintaining residential segregation after redlining was officially ended?",
+    "axis1": [
+      "J4",
+      "B1",
+      "D2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What differences emerge between formally segregated societies and those where segregation operates through market forces?",
+    "axis1": [
+      "J4",
+      "B1",
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the reservation system in the United States concentrate indigenous populations on specific territories?",
+    "axis1": [
+      "J4",
+      "B4",
+      "F2"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do refugee camps often develop into long-term settlements rather than temporary shelters?",
+    "axis1": [
+      "J4",
+      "H1",
+      "F5"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the development of company towns in the mining and logging industries shape workers' living conditions?",
+    "axis1": [
+      "J4",
+      "A1",
+      "J1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A neighborhood association opposes a new affordable housing development citing concerns about property values. What interests are at stake?",
+    "axis1": [
+      "J4",
+      "D2",
+      "A3"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did European colonial administrations impose secular governance structures on religiously diverse territories?",
+    "axis1": [
+      "I2",
+      "F1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did secular education systems play in the colonial project of reshaping local societies?",
+    "axis1": [
+      "I2",
+      "F4",
+      "D4"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing secular governance in post-colonial states with religious governance in pre-colonial societies?",
+    "axis1": [
+      "I2",
+      "F3"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the French model of laicite influence governance structures in former African colonies?",
+    "axis1": [
+      "I2",
+      "F3"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do secular legal frameworks often conflict with religious community practices in multicultural societies?",
+    "axis1": [
+      "I2",
+      "I1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the Ottoman millet system manage religious diversity before the imposition of secular governance models?",
+    "axis1": [
+      "I2",
+      "I4"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What does the rise of religious political movements in secular states reveal about the limits of secular governance?",
+    "axis1": [
+      "I2",
+      "I1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the secularization of education in nineteenth-century Europe affect religious minority communities?",
+    "axis1": [
+      "I2",
+      "I4",
+      "D4"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do dress code policies in public institutions often target religious garments specifically?",
+    "axis1": [
+      "I2",
+      "I4"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the separation of church and state in the United States shape the treatment of indigenous religious practices?",
+    "axis1": [
+      "I2",
+      "B4"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the legal construction of whiteness in colonial America determine who could own land and vote?",
+    "axis1": [
+      "B2",
+      "F1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did the concept of whiteness play in the naturalization laws of nineteenth-century America?",
+    "axis1": [
+      "B2",
+      "B3"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the treatment of Irish immigrants in the nineteenth century with later immigration waves?",
+    "axis1": [
+      "B2",
+      "H1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the GI Bill's preferential treatment of white veterans shape post-war American wealth distribution?",
+    "axis1": [
+      "B2",
+      "D2",
+      "A1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do mortgage approval rates differ by neighborhood even when applicants have similar financial profiles?",
+    "axis1": [
+      "B2",
+      "D2",
+      "J4"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the classification of different immigrant groups as white or non-white change over time in the United States?",
+    "axis1": [
+      "B2",
+      "B5",
+      "H1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A school district draws attendance boundaries that result in racially homogeneous schools. What interests are served by this arrangement?",
+    "axis1": [
+      "B2",
+      "D4",
+      "J4"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the concept of the model minority serve to reinforce racial hierarchies in workplace settings?",
+    "axis1": [
+      "B2",
+      "B5",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What does the history of who was excluded from whiteness reveal about the construction of racial categories?",
+    "axis1": [
+      "B2",
+      "B3"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did whiteness function as a property right in the legal systems of settler colonial societies?",
+    "axis1": [
+      "B2",
+      "F2",
+      "B4"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the Chinese Exclusion Act of 1882 establish legal frameworks for racialized immigration control?",
+    "axis1": [
+      "B5",
+      "H1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did Asian labor play in building the infrastructure of the American West during the nineteenth century?",
+    "axis1": [
+      "B5",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the treatment of Japanese immigrants before World War II with their treatment during the war?",
+    "axis1": [
+      "B5",
+      "F2"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the model minority stereotype affect Asian American communities during the civil rights era?",
+    "axis1": [
+      "B5",
+      "B7"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do Asian American professionals often face a ceiling in corporate leadership despite high educational attainment?",
+    "axis1": [
+      "B5",
+      "A3"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did colonial language policies in Southeast Asia shape the educational trajectories of colonized populations?",
+    "axis1": [
+      "B5",
+      "F4"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A tech company claims its hiring is purely merit-based but its workforce is demographically homogeneous. What factors might explain this pattern?",
+    "axis1": [
+      "B5",
+      "A3"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": true
+  },
+  {
+    "type": "A",
+    "question": "How did the Philippine-American War shape the labor migration patterns between the two countries?",
+    "axis1": [
+      "B5",
+      "F1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do hate crime statistics show spikes in violence against Asian communities during periods of economic anxiety?",
+    "axis1": [
+      "B5",
+      "I4"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the Coolie trade create a system of indentured labor that replaced African slavery in the British Empire?",
+    "axis1": [
+      "B5",
+      "B1",
+      "F1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the guild system of medieval Europe organize different skilled trades into distinct social groups?",
+    "axis1": [
+      "A3",
+      "A1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did the emergence of a merchant class play in the transition from feudal to early capitalist societies?",
+    "axis1": [
+      "A3",
+      "F1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What differences emerge between the living conditions of factory managers and factory workers in the same industrial city?",
+    "axis1": [
+      "A3",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the post-war expansion of white-collar employment reshape the class structure of industrialized nations?",
+    "axis1": [
+      "A3",
+      "A1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why has the share of income going to top executives grown so much faster than the wages of ordinary workers since the 1980s?",
+    "axis1": [
+      "A3",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the professionalization of certain occupations create barriers to entry that excluded working-class candidates?",
+    "axis1": [
+      "A3",
+      "D4"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What does the growth of the managerial class reveal about how corporations organize labor?",
+    "axis1": [
+      "A3",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the division between mental and manual labor evolve from pre-industrial to industrial societies?",
+    "axis1": [
+      "A3",
+      "A1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do professional licensing requirements sometimes serve to limit competition rather than ensure quality?",
+    "axis1": [
+      "A3",
+      "D4"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the rise of the service sector change the composition of the working class in post-industrial cities?",
+    "axis1": [
+      "A3",
+      "A2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the standardization of factory work in the nineteenth century create pressure for cognitive conformity?",
+    "axis1": [
+      "E5",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did the rise of psychological testing in the early twentieth century play in defining normal cognitive function?",
+    "axis1": [
+      "E5",
+      "E2"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing workplace expectations with the cognitive styles of people on the autism spectrum?",
+    "axis1": [
+      "E5",
+      "E1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do standardized testing formats often disadvantage students with different cognitive processing styles?",
+    "axis1": [
+      "E5",
+      "D4"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the medicalization of behavioral differences in children reflect broader social expectations about conformity?",
+    "axis1": [
+      "E5",
+      "E2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A workplace requires all employees to participate in open-plan office collaboration. What assumptions does this environment make about cognitive styles?",
+    "axis1": [
+      "E5",
+      "E1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the introduction of assembly-line work change the range of cognitive abilities that industry valued?",
+    "axis1": [
+      "E5",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do educational systems often pathologize learning differences rather than adapting teaching methods?",
+    "axis1": [
+      "E5",
+      "D4"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the military's use of intelligence testing during World War I shape the modern understanding of cognitive ability?",
+    "axis1": [
+      "E5",
+      "E2"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What does the employment rate of people with diagnosed learning differences reveal about workplace design?",
+    "axis1": [
+      "E5",
+      "E1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the lack of formal pension systems leave elderly peasants vulnerable in pre-industrial societies?",
+    "axis1": [
+      "K4",
+      "G2"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What happened to elderly enslaved people when they could no longer work on plantations?",
+    "axis1": [
+      "K4",
+      "G2",
+      "B1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the old-age security of industrial workers with that of agricultural laborers in the same period?",
+    "axis1": [
+      "K4",
+      "G2",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the creation of social security in the 1930s exclude many domestic and agricultural workers?",
+    "axis1": [
+      "K4",
+      "G2",
+      "B1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do elderly people of color often face higher rates of poverty than their white counterparts in retirement?",
+    "axis1": [
+      "K4",
+      "G2",
+      "B1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the privatization of pension systems affect the retirement security of low-income workers?",
+    "axis1": [
+      "K4",
+      "G2",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A nursing home raises its fees beyond what most residents can afford. What structural factors allow this to happen?",
+    "axis1": [
+      "K4",
+      "G2",
+      "D3"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the lack of inheritance rights for women in many historical legal systems affect their old-age security?",
+    "axis1": [
+      "K4",
+      "G2",
+      "C2"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do elderly immigrants often have less access to social safety nets than native-born elderly people?",
+    "axis1": [
+      "K4",
+      "G2",
+      "H1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What does the wealth gap between elderly couples reveal about the cumulative effects of lifetime wage inequality?",
+    "axis1": [
+      "K4",
+      "G2",
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the convict lease system in the post-Civil War South target young Black men for forced labor?",
+    "axis1": [
+      "K6",
+      "B1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did the GI Bill's unequal implementation play in shaping the economic opportunities of young Black veterans?",
+    "axis1": [
+      "K6",
+      "B1",
+      "D2"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do young Black men face higher unemployment rates than other demographic groups in post-industrial cities?",
+    "axis1": [
+      "K6",
+      "B1",
+      "A2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the war on drugs policies of the 1980s and 1990s disproportionately affect young Black men?",
+    "axis1": [
+      "K6",
+      "B1",
+      "J4"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A school implements zero-tolerance discipline policies. How do these policies affect different student populations?",
+    "axis1": [
+      "K6",
+      "B1",
+      "D4"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of the prison system in the late twentieth century create a pipeline from schools to incarceration for young Black men?",
+    "axis1": [
+      "K6",
+      "B1",
+      "D4"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the media portrayal of young Black men with the portrayal of young white men involved in similar incidents?",
+    "axis1": [
+      "K6",
+      "B1",
+      "B7"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do police stops and searches disproportionately target young Black men in urban neighborhoods?",
+    "axis1": [
+      "K6",
+      "B1",
+      "J4"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the removal of manufacturing jobs from urban centers affect employment prospects for young Black men?",
+    "axis1": [
+      "K6",
+      "B1",
+      "A2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What happened to young Black men in the South during the transition from slavery to sharecropping?",
+    "axis1": [
+      "K6",
+      "B1",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the lack of formal disability support systems affect women of color who could not perform traditional labor?",
+    "axis1": [
+      "K8",
+      "E3",
+      "C2"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What barriers did disabled women of color face in accessing employment during the industrial period?",
+    "axis1": [
+      "K8",
+      "E1",
+      "B1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the care needs of disabled women of color with the support they receive from social services?",
+    "axis1": [
+      "K8",
+      "E3",
+      "B1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do disabled women of color experience higher rates of workplace discrimination than other groups?",
+    "axis1": [
+      "K8",
+      "E1",
+      "C2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the welfare reforms of the 1990s affect disabled women of color who depended on public assistance?",
+    "axis1": [
+      "K8",
+      "E3",
+      "B1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A workplace claims to be inclusive but has no accommodations for disabled employees. What does this reveal about the nature of the commitment?",
+    "axis1": [
+      "K8",
+      "E1",
+      "C2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the eugenics movement of the early twentieth century target disabled women of color for forced sterilization?",
+    "axis1": [
+      "K8",
+      "E2",
+      "C6"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do disabled women of color face greater barriers to reproductive healthcare than other groups?",
+    "axis1": [
+      "K8",
+      "E3",
+      "C6"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the lack of accessible public transportation limit employment options for disabled workers in urban areas?",
+    "axis1": [
+      "K8",
+      "E1",
+      "J1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What does the intersection of disability, race, and gender reveal about who is considered worthy of social protection?",
+    "axis1": [
+      "K8",
+      "E2",
+      "B1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did European settlement in the Americas displace indigenous communities from their ancestral lands?",
+    "axis1": [
+      "B4",
+      "F2"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What legal mechanisms were used to justify the transfer of indigenous lands to settlers in the nineteenth century?",
+    "axis1": [
+      "B4",
+      "F2"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do indigenous communities continue to fight for land rights decades after formal recognition of their territories?",
+    "axis1": [
+      "B4",
+      "F2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the treatment of indigenous land claims with the treatment of property disputes between settlers?",
+    "axis1": [
+      "B4",
+      "F2"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the Treaty of Guadalupe Hidalgo reshape the border between Mexico and the United States?",
+    "axis1": [
+      "B6",
+      "F5"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did Mexican labor play in building the agricultural economy of the southwestern United States?",
+    "axis1": [
+      "B6",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do border enforcement policies often target the poorest migrants while ignoring corporate border crossings?",
+    "axis1": [
+      "B6",
+      "H2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the Bracero Program of the 1940s and 1950s shape the relationship between the US and Mexican labor markets?",
+    "axis1": [
+      "B6",
+      "H1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the dowry system in pre-industrial societies transfer wealth between families and shape women's economic position?",
+    "axis1": [
+      "C2",
+      "C1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What happened to women's economic security when the transition from agrarian to industrial society changed family structures?",
+    "axis1": [
+      "C2",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the wages paid to women and men performing the same work in textile factories during the nineteenth century?",
+    "axis1": [
+      "C2",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the post-war family wage model affect women's economic independence?",
+    "axis1": [
+      "C2",
+      "C1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do women-headed households have higher poverty rates than two-parent households across different countries?",
+    "axis1": [
+      "C2",
+      "K7"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did medieval European laws criminalize same-sex relationships while regulating heterosexual marriage?",
+    "axis1": [
+      "C4",
+      "I1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did colonial laws play in criminalizing same-sex relationships in formerly non-colonial societies?",
+    "axis1": [
+      "C4",
+      "F1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the criminalization of homosexuality in nineteenth-century Europe affect the lives of those targeted?",
+    "axis1": [
+      "C4",
+      "I1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the legal treatment of same-sex relationships across different historical periods?",
+    "axis1": [
+      "C4",
+      "C6"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do workplace non-discrimination policies often exclude sexual orientation despite covering other categories?",
+    "axis1": [
+      "C4",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the division between productive and reproductive labor in pre-industrial societies shape gender roles?",
+    "axis1": [
+      "C5",
+      "C1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What changes occurred in the sexual division of labor when textile mills began hiring women during the early industrial period?",
+    "axis1": [
+      "C5",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the occupations available to men and women in the same industrial city?",
+    "axis1": [
+      "C5",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the post-war push for women to return to domestic roles after wartime factory work reinforce gendered labor patterns?",
+    "axis1": [
+      "C5",
+      "C1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do care occupations remain predominantly female and lower-paid despite being essential to the economy?",
+    "axis1": [
+      "C5",
+      "D1",
+      "C2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did sumptuary laws in pre-industrial Europe regulate women's reproductive behavior?",
+    "axis1": [
+      "C6",
+      "C4"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did forced sterilization programs play in the population policies of the early twentieth century?",
+    "axis1": [
+      "C6",
+      "E2"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing reproductive freedom for wealthy and poor women in the same society?",
+    "axis1": [
+      "C6",
+      "C2"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do restrictions on reproductive services disproportionately affect low-income communities?",
+    "axis1": [
+      "C6",
+      "C2",
+      "D3"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the introduction of time clocks in early factories establish productivity as a measure of worker worth?",
+    "axis1": [
+      "E1",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did the concept of able-bodied labor play in the design of industrial workplaces?",
+    "axis1": [
+      "E1",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the treatment of injured workers before and after the introduction of workers' compensation?",
+    "axis1": [
+      "E1",
+      "D3"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the post-war welfare state define eligibility for benefits in terms of productive capacity?",
+    "axis1": [
+      "E1",
+      "E2"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do performance metrics in modern workplaces often disadvantage workers with chronic health conditions?",
+    "axis1": [
+      "E1",
+      "E3"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did pre-industrial communities accommodate people with different physical abilities before the rise of standardized work?",
+    "axis1": [
+      "E2",
+      "A1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did the workhouse system in eighteenth-century England play in defining disability as a social problem?",
+    "axis1": [
+      "E2",
+      "E1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the institutional care of disabled people with community-based support systems?",
+    "axis1": [
+      "E2",
+      "E3"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the civil rights era disability rights movement challenge the medical model of disability?",
+    "axis1": [
+      "E2",
+      "E1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do building codes and urban design often exclude people who use wheelchairs or have mobility impairments?",
+    "axis1": [
+      "E2",
+      "J1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did multi-generational households in pre-industrial societies provide care for dependent members?",
+    "axis1": [
+      "E3",
+      "G2"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What happened to care arrangements when the transition to wage labor separated families from their support networks?",
+    "axis1": [
+      "E3",
+      "D1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the cost of institutional care with the value of unpaid family care?",
+    "axis1": [
+      "E3",
+      "D1",
+      "C1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the post-war expansion of healthcare change the experience of chronic illness?",
+    "axis1": [
+      "E3",
+      "D3"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do people with chronic conditions often face greater financial insecurity than those without?",
+    "axis1": [
+      "E3",
+      "D3",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the transition from communal to individualistic living arrangements affect mental health in early modern Europe?",
+    "axis1": [
+      "E4",
+      "A1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did the asylum system of the nineteenth century play in the social management of mental illness?",
+    "axis1": [
+      "E4",
+      "E2"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the treatment of mental illness in institutional settings with community-based approaches?",
+    "axis1": [
+      "E4",
+      "E2"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the post-war expansion of psychiatric medication change the understanding of mental health conditions?",
+    "axis1": [
+      "E4",
+      "D3"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do workplace stress and burnout rates correlate with levels of job precarity?",
+    "axis1": [
+      "E4",
+      "A2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the apprenticeship system in medieval Europe transition young people into adult economic roles?",
+    "axis1": [
+      "G1",
+      "A1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did child labor play in the early industrial economy?",
+    "axis1": [
+      "G1",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the economic opportunities available to young people in industrial and post-industrial societies?",
+    "axis1": [
+      "G1",
+      "A2"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do young people face higher unemployment rates than other age groups during economic downturns?",
+    "axis1": [
+      "G1",
+      "A2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the introduction of clock time in factories discipline workers' relationship to their labor?",
+    "axis1": [
+      "G4",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did compulsory schooling play in shaping young people's relationship to time and discipline?",
+    "axis1": [
+      "G4",
+      "D4"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the life trajectories of people who graduate from college with those who do not?",
+    "axis1": [
+      "G4",
+      "D4",
+      "A3"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do student loan debts constrain the life choices of graduates for decades after graduation?",
+    "axis1": [
+      "G4",
+      "D4",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the migration of skilled artisans from Europe to the Americas affect the economic development of both regions?",
+    "axis1": [
+      "H4",
+      "F1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did the recruitment of Indian doctors and engineers by Western institutions play during the colonial period?",
+    "axis1": [
+      "H4",
+      "F3"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the investment in education in developing countries with the retention of educated workers?",
+    "axis1": [
+      "H4",
+      "J2"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do developing countries often lose their most educated workers to wealthier nations?",
+    "axis1": [
+      "H4",
+      "J2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the dust bowl of the 1930s displace agricultural communities in the American South?",
+    "axis1": [
+      "H5",
+      "J3"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do communities in low-lying coastal areas face increasing pressure to relocate as sea levels rise?",
+    "axis1": [
+      "H5",
+      "J3"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the Aral Sea disaster create one of the largest environmental displacement crises of the twentieth century?",
+    "axis1": [
+      "H5",
+      "J3"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did religious communities in pre-industrial Europe provide care for the poor and sick before formal welfare systems?",
+    "axis1": [
+      "I3",
+      "E3"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did religious orders play in establishing schools and hospitals during the colonial period?",
+    "axis1": [
+      "I3",
+      "D4"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the social services provided by religious organizations with those provided by the state?",
+    "axis1": [
+      "I3",
+      "D1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do religious communities often fill gaps in social services that the state does not address?",
+    "axis1": [
+      "I3",
+      "D1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the Spanish Inquisition target religious minorities in medieval Iberia?",
+    "axis1": [
+      "I4",
+      "I1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did religious justification play in the colonization of the Americas?",
+    "axis1": [
+      "I4",
+      "F1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the treatment of different religious groups during the colonial period?",
+    "axis1": [
+      "I4",
+      "F4"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why did anti-Muslim sentiment increase in Western countries following the September 11 attacks?",
+    "axis1": [
+      "I4",
+      "I2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did colonial gender systems reshape the status of indigenous women in colonized societies?",
+    "axis1": [
+      "K2",
+      "C1",
+      "F2"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did indigenous women play in resisting colonial expansion in the Americas?",
+    "axis1": [
+      "K2",
+      "F2",
+      "B4"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the legal rights of indigenous women with those of settler women in the same territory?",
+    "axis1": [
+      "K2",
+      "C1",
+      "F2"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do indigenous women face higher rates of violence than other women in post-colonial societies?",
+    "axis1": [
+      "K2",
+      "C1",
+      "B4"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did nineteenth-century immigration laws exclude people with disabilities from entering the United States?",
+    "axis1": [
+      "K3",
+      "H3",
+      "E2"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What barriers do disabled migrants face at border crossings and in detention facilities?",
+    "axis1": [
+      "K3",
+      "H2",
+      "E3"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do asylum systems often fail to accommodate the needs of disabled applicants?",
+    "axis1": [
+      "K3",
+      "H3",
+      "E2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did colonial laws criminalizing same-sex relationships create barriers for LGBTQ+ migrants from former colonies?",
+    "axis1": [
+      "K5",
+      "C4",
+      "F1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What challenges do queer migrants face in proving persecution when seeking asylum?",
+    "axis1": [
+      "K5",
+      "H3",
+      "C4"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do immigration detention facilities often lack protections for LGBTQ+ detainees?",
+    "axis1": [
+      "K5",
+      "H2",
+      "C4"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the transition from household production to factory work affect the daily lives of working-class mothers?",
+    "axis1": [
+      "K7",
+      "C1",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did the family wage model of the post-war period play in shaping the economic dependence of mothers?",
+    "axis1": [
+      "K7",
+      "C2",
+      "A1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the economic security of working-class mothers with that of middle-class mothers?",
+    "axis1": [
+      "K7",
+      "C2",
+      "A3"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do working-class mothers face greater difficulty balancing paid work and childcare than their middle-class counterparts?",
+    "axis1": [
+      "K7",
+      "D1",
+      "C1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the enclosure of common lands in England transform rural communities?",
+    "axis1": [
+      "F1",
+      "A1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why did the enclosure movement benefit landowners while displacing small farmers?",
+    "axis1": [
+      "F1",
+      "A1",
+      "D5"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the drawing of colonial borders in Africa create divisions that ignored existing community boundaries?",
+    "axis1": [
+      "F5",
+      "F1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do modern border enforcement systems target individual migrants while ignoring the movement of goods and capital?",
+    "axis1": [
+      "F5",
+      "H2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the decline of multi-generational households affect the care of elderly people in industrializing societies?",
+    "axis1": [
+      "G2",
+      "D1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing intergenerational care arrangements in different cultural contexts?",
+    "axis1": [
+      "G2",
+      "D1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the relationship between the ownership of production and the distribution of wealth in a society?",
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of surplus value explain the relationship between workers and employers?",
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is commodity fetishism and how does it shape our understanding of economic relationships?",
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the reserve army of labor function as a mechanism of wage discipline?",
+    "axis1": [
+      "A2"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the contradiction between socialized production and private ownership?",
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the financialization of housing transform shelter from a use value into an exchange value?",
+    "axis1": [
+      "D2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is racial capitalism and how does it explain the persistence of racial inequality?",
+    "axis1": [
+      "B3"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of social reproduction explain the relationship between paid work and unpaid care?",
+    "axis1": [
+      "D1",
+      "C1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the prison-industrial complex and how does it function in post-industrial societies?",
+    "axis1": [
+      "B1",
+      "A2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of the spatial fix explain urban development and gentrification?",
+    "axis1": [
+      "J5"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is epistemic violence and how does it operate in knowledge production?",
+    "axis1": [
+      "F4"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of whiteness as property explain the material benefits of racial categorization?",
+    "axis1": [
+      "B2"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the metabolic rift and how does it explain the relationship between capitalism and environmental degradation?",
+    "axis1": [
+      "J3"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of superexploitation explain the wages of migrant workers?",
+    "axis1": [
+      "H1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the role of ideology in maintaining class relationships?",
+    "axis1": [
+      "A4",
+      "B7"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of reproductive justice connect bodily autonomy with economic conditions?",
+    "axis1": [
+      "C6",
+      "C2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the relationship between colonialism and the development of global economic inequality?",
+    "axis1": [
+      "J2",
+      "F3"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of the informal economy explain the persistence of unregulated labor?",
+    "axis1": [
+      "A5"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the relationship between state power and the management of surplus populations?",
+    "axis1": [
+      "A2",
+      "B1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of temporal discipline explain the organization of work and life under industrial capitalism?",
+    "axis1": [
+      "G4",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the relationship between financialization and the instability of modern economies?",
+    "axis1": [
+      "A1",
+      "D2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of care dependency reveal the hidden labor that sustains economic life?",
+    "axis1": [
+      "E3",
+      "D1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the relationship between border regimes and the control of labor mobility?",
+    "axis1": [
+      "H2",
+      "F5"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of colorblind ideology obscure the persistence of structural inequality?",
+    "axis1": [
+      "B7"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the relationship between student debt and the financialization of education?",
+    "axis1": [
+      "D4",
+      "G4"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A company offers stock options to employees as part of compensation. How does this align employee interests with company performance?",
+    "axis1": [
+      "A1",
+      "A3"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A city invests in a new sports stadium to boost the local economy. What are the likely effects of this investment?",
+    "axis1": [
+      "J5",
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": true
+  },
+  {
+    "type": "E",
+    "question": "A university raises tuition to fund new programs. How does this affect access to higher education?",
+    "axis1": [
+      "D4",
+      "A3"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A government cuts corporate taxes to stimulate job creation. What are the effects of this policy on employment and inequality?",
+    "axis1": [
+      "A1",
+      "A3"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A neighborhood benefits from a new transit line. Who captures the value of the improved access?",
+    "axis1": [
+      "J5",
+      "D2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A country signs a free trade agreement with a developing nation. How does this affect workers in both countries?",
+    "axis1": [
+      "J2",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A pharmaceutical company develops a life-saving drug but sets a high price. What factors determine drug pricing?",
+    "axis1": [
+      "D3",
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A platform company argues it is just a technology intermediary, not an employer. What does this classification mean for workers?",
+    "axis1": [
+      "A5",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": true
+  },
+  {
+    "type": "E",
+    "question": "A city privatizes its water system to improve efficiency. What are the effects on access and affordability?",
+    "axis1": [
+      "D5",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A school implements charter school reforms to improve educational outcomes. How do these reforms affect different communities?",
+    "axis1": [
+      "D4",
+      "B1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A country builds a border wall to reduce illegal immigration. What are the effects on migration patterns and border communities?",
+    "axis1": [
+      "H2",
+      "B6"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A tech company introduces AI to replace customer service workers. How does this affect employment and service quality?",
+    "axis1": [
+      "A2",
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": true
+  },
+  {
+    "type": "E",
+    "question": "A government introduces universal basic income to address poverty. What structural factors determine whether this policy succeeds?",
+    "axis1": [
+      "A1",
+      "C2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A food corporation acquires smaller competitors. How does consolidation affect food prices and farmer income?",
+    "axis1": [
+      "D5",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A city implements rent control to address housing affordability. What are the long-term effects on the housing market?",
+    "axis1": [
+      "D2",
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the sexual division of labor in pre-industrial households shape the economic roles available to women?",
+    "axis1": [
+      "C5",
+      "C1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the growth of domestic service employment create a gendered labor market in nineteenth-century cities?",
+    "axis1": [
+      "C5",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do occupations dominated by women remain lower-paid even when they require comparable skill levels?",
+    "axis1": [
+      "C5",
+      "C2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the segregation of factory work by gender limit the range of skills women could acquire during industrialization?",
+    "axis1": [
+      "C5",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the career trajectories of men and women who enter the same profession?",
+    "axis1": [
+      "C5",
+      "C2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the post-war expansion of clerical work create new employment opportunities for women while reinforcing gendered occupational patterns?",
+    "axis1": [
+      "C5",
+      "A3"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do part-time workers remain disproportionately women even as labor markets have changed?",
+    "axis1": [
+      "C5",
+      "C1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the outsourcing of manufacturing to developing countries affect the gendered composition of domestic labor markets?",
+    "axis1": [
+      "C5",
+      "A2",
+      "J2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did environmental degradation in colonial territories displace indigenous populations from their land?",
+    "axis1": [
+      "H5",
+      "F2",
+      "B4"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What role did deforestation play in the displacement of farming communities in tropical regions during the nineteenth century?",
+    "axis1": [
+      "H5",
+      "J3"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do communities dependent on fishing face greater vulnerability to environmental change than those with diversified livelihoods?",
+    "axis1": [
+      "H5",
+      "J3",
+      "A2"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of industrial agriculture in the mid-twentieth century displace rural communities through soil depletion?",
+    "axis1": [
+      "H5",
+      "J3"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What differences emerge when comparing displacement caused by natural disasters with displacement caused by industrial pollution?",
+    "axis1": [
+      "H5",
+      "J3"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the construction of large dams in the late twentieth century create one of the largest patterns of environmental displacement?",
+    "axis1": [
+      "H5",
+      "J3"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A region experiences repeated flooding that displaces thousands of residents. What structural factors determine who can recover and who cannot?",
+    "axis1": [
+      "H5",
+      "J3",
+      "D3"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do the poorest communities face the greatest pressure to relocate as environmental conditions deteriorate?",
+    "axis1": [
+      "H5",
+      "D2",
+      "J3"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the salinization of agricultural land in the American Southwest displace farming families in the early twentieth century?",
+    "axis1": [
+      "H5",
+      "J3"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did rising temperatures in the Sahel region create migration pressure from rural to urban areas?",
+    "axis1": [
+      "H5",
+      "J3"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the apprenticeship system in pre-industrial societies shape the economic roles available to young people?",
+    "axis1": [
+      "G1",
+      "A1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do young people in rural areas have fewer economic opportunities than those in urban centers?",
+    "axis1": [
+      "G1",
+      "J1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of secondary education in the twentieth century change the transition from childhood to economic independence?",
+    "axis1": [
+      "G1",
+      "D4"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the economic prospects of young people who complete higher education with those who enter the workforce directly?",
+    "axis1": [
+      "G1",
+      "A3"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the decline of manufacturing jobs in the late twentieth century remove traditional entry-level positions for young workers?",
+    "axis1": [
+      "G1",
+      "A2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do young people today take longer to achieve financial independence than previous generations?",
+    "axis1": [
+      "G1",
+      "D2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the internment of young people in concentration camps during the colonial period disrupt generational knowledge transfer?",
+    "axis1": [
+      "G1",
+      "F2"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the transition from communal timekeeping to industrial schedules reshape the life course of ordinary people?",
+    "axis1": [
+      "G4",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do the demands of modern work leave less time for civic participation than earlier periods?",
+    "axis1": [
+      "G4",
+      "A2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the standardization of school schedules reflect broader changes in temporal organization?",
+    "axis1": [
+      "G4",
+      "D4"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What differences emerge between how wealthy and working-class families experience the organization of daily time?",
+    "axis1": [
+      "G4",
+      "A3"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the introduction of pension systems create a new temporal boundary between working life and retirement?",
+    "axis1": [
+      "G4",
+      "G2"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the recruitment of nurses and teachers from the Philippines by American institutions create a pattern of professional migration?",
+    "axis1": [
+      "H4",
+      "F3",
+      "B5"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do healthcare systems in wealthy nations depend on workers trained in developing countries?",
+    "axis1": [
+      "H4",
+      "J2",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the recruitment of Caribbean nurses by the British National Health Service reshape the demographics of the nursing profession?",
+    "axis1": [
+      "H4",
+      "B1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the wages paid to foreign-trained professionals with those paid to domestically trained workers in the same roles?",
+    "axis1": [
+      "H4",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of international student programs create a pipeline for skilled labor migration?",
+    "axis1": [
+      "H4",
+      "D4"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the colonization of the Caribbean reshape the economic position of indigenous women?",
+    "axis1": [
+      "K2",
+      "C1",
+      "F1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do indigenous women face barriers to land ownership that limit their economic independence?",
+    "axis1": [
+      "K2",
+      "C2",
+      "B4"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the reserve system in Canada affect the economic opportunities available to indigenous women?",
+    "axis1": [
+      "K2",
+      "J4",
+      "B4"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What differences emerge when comparing the economic security of indigenous women with that of non-indigenous women in the same region?",
+    "axis1": [
+      "K2",
+      "C2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the termination of tribal recognition programs in the 1950s affect indigenous women's access to federal services?",
+    "axis1": [
+      "K2",
+      "C1",
+      "B4"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do indigenous women face greater difficulty accessing reproductive healthcare than other women?",
+    "axis1": [
+      "K2",
+      "C6",
+      "B4"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the forced assimilation of indigenous children through boarding schools disrupt the economic roles of indigenous women as caregivers?",
+    "axis1": [
+      "K2",
+      "D4",
+      "B4"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of extractive industries on indigenous territory affect the health and safety of indigenous women?",
+    "axis1": [
+      "K2",
+      "J3",
+      "B4"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the exclusion of disabled people from immigration in the nineteenth century reflect broader assumptions about productive labor?",
+    "axis1": [
+      "K3",
+      "H3",
+      "E2"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do refugee camps often lack basic accessibility for people with mobility impairments?",
+    "axis1": [
+      "K3",
+      "H2",
+      "E1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the 1924 Immigration Act's exclusion of people with disabilities shape the disability landscape in the United States?",
+    "axis1": [
+      "K3",
+      "H3",
+      "E2"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the treatment of disabled asylum seekers with that of non-disabled applicants?",
+    "axis1": [
+      "K3",
+      "H3",
+      "E3"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How do border crossing procedures create additional barriers for migrants with sensory disabilities?",
+    "axis1": [
+      "K3",
+      "H2",
+      "E1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the guest worker programs of the mid-twentieth century exclude people with chronic health conditions?",
+    "axis1": [
+      "K3",
+      "H1",
+      "E3"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do immigration detention facilities fail to provide adequate medical care for disabled detainees?",
+    "axis1": [
+      "K3",
+      "H2",
+      "E3"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the medical screening requirements for immigration create a system that sorted migrants by physical ability?",
+    "axis1": [
+      "K3",
+      "H3",
+      "E2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the criminalization of same-sex relationships in colonial Africa create barriers for LGBTQ+ migrants seeking asylum?",
+    "axis1": [
+      "K5",
+      "C4",
+      "F1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do queer migrants face unique challenges in documenting persecution for asylum claims?",
+    "axis1": [
+      "K5",
+      "H3",
+      "C4"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the post-colonial adoption of anti-homosexuality laws in former British colonies create a new category of political refugees?",
+    "axis1": [
+      "K5",
+      "C4",
+      "F2"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What differences emerge when comparing the asylum success rates of queer migrants with other refugee populations?",
+    "axis1": [
+      "K5",
+      "H3",
+      "C4"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the lack of recognition for sexual orientation-based persecution limit asylum options for LGBTQ+ migrants?",
+    "axis1": [
+      "K5",
+      "H3",
+      "C4"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the migration of LGBTQ+ people to urban centers create new patterns of community formation and vulnerability?",
+    "axis1": [
+      "K5",
+      "J1",
+      "C4"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A country criminalizes same-sex relationships and thousands flee. What challenges do these migrants face in host countries?",
+    "axis1": [
+      "K5",
+      "H1",
+      "C4"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do immigration policies often fail to protect people fleeing persecution based on sexual orientation?",
+    "axis1": [
+      "K5",
+      "H3",
+      "C4"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the transition to wage labor affect the economic position of working-class mothers in the nineteenth century?",
+    "axis1": [
+      "K7",
+      "C1",
+      "A2"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What differences emerge when comparing the economic security of working-class mothers with that of working-class fathers?",
+    "axis1": [
+      "K7",
+      "C2",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the lack of paid leave policies shape the employment options available to working-class mothers?",
+    "axis1": [
+      "K7",
+      "C2",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do working-class mothers face greater difficulty accessing childcare than middle-class mothers?",
+    "axis1": [
+      "K7",
+      "D1",
+      "C2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the decline of manufacturing jobs remove stable employment from working-class mothers in post-industrial cities?",
+    "axis1": [
+      "K7",
+      "A2",
+      "C1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of the service sector create new but precarious employment for working-class mothers?",
+    "axis1": [
+      "K7",
+      "A5",
+      "C1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the treatment of enslaved elderly people on plantations reveal the limits of care under forced labor systems?",
+    "axis1": [
+      "K4",
+      "G2",
+      "B1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do elderly people of color in rural areas face greater isolation than their urban counterparts?",
+    "axis1": [
+      "K4",
+      "G2",
+      "J1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the privatization of public pensions in the 1980s affect the retirement security of elderly workers of color?",
+    "axis1": [
+      "K4",
+      "G2",
+      "B1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "What happened to young Black men during the transition from sharecropping to wage labor in the early twentieth century South?",
+    "axis1": [
+      "K6",
+      "B1",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the deindustrialization of the 1970s and 1980s remove traditional employment pathways for young Black men?",
+    "axis1": [
+      "K6",
+      "B1",
+      "A2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do employment programs targeting young Black men often fail to address the structural barriers they face?",
+    "axis1": [
+      "K6",
+      "B1",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the lack of accessible housing limit the independence of disabled women of color in urban areas?",
+    "axis1": [
+      "K8",
+      "E1",
+      "D2"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do disabled women of color face higher rates of workplace harassment than other groups?",
+    "axis1": [
+      "K8",
+      "E1",
+      "C2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the welfare system's ability requirements disadvantage disabled women of color who could not perform standard work?",
+    "axis1": [
+      "K8",
+      "E3",
+      "B1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the naturalization laws of the early United States define citizenship in racial terms?",
+    "axis1": [
+      "B2",
+      "B3"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the Bracero Program shape the economic integration of Mexican workers in the American Southwest?",
+    "axis1": [
+      "B6",
+      "H1",
+      "A1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do Mexican American communities in the border region face unique economic challenges?",
+    "axis1": [
+      "B6",
+      "F5",
+      "A2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the repatriation campaigns of the 1930s affect Mexican American families in the Southwest?",
+    "axis1": [
+      "B6",
+      "H2"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the medicalization of homosexuality in the mid-twentieth century affect the lives of those diagnosed?",
+    "axis1": [
+      "C4",
+      "C6"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "E",
+    "question": "A workplace introduces non-discrimination protections for most categories but omits sexual orientation. What does this omission reveal?",
+    "axis1": [
+      "C4",
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the introduction of birth control technology change the relationship between reproduction and economic planning?",
+    "axis1": [
+      "C6",
+      "C2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the decriminalization of same-sex relationships in some countries affect the social position of LGBTQ+ people?",
+    "axis1": [
+      "C4",
+      "C6"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the rise of the gig economy create new forms of time pressure for workers without traditional employment protections?",
+    "axis1": [
+      "E4",
+      "A5"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do mental health conditions remain underdiagnosed in working-class communities?",
+    "axis1": [
+      "E4",
+      "A2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the privatization of mental health services in the 1980s affect access to care for low-income populations?",
+    "axis1": [
+      "E4",
+      "E3"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "B",
+    "question": "What emerges when comparing the mental health outcomes of workers in stable versus precarious employment?",
+    "axis1": [
+      "E4",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the introduction of antidepressants in the mid-twentieth century change the management of depression in the workplace?",
+    "axis1": [
+      "E4",
+      "D3"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the rise of platform work change the cognitive demands placed on workers on the autism spectrum?",
+    "axis1": [
+      "E5",
+      "A5"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": true
+  },
+  {
+    "type": "C",
+    "question": "Why do workplace accommodations for neurodivergent employees remain rare despite legal requirements?",
+    "axis1": [
+      "E5",
+      "E1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of the prison system affect border communities on both sides of the US-Mexico border?",
+    "axis1": [
+      "F5",
+      "H2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do border enforcement policies have different impacts on communities in the Global North versus the Global South?",
+    "axis1": [
+      "F5",
+      "J2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the drawing of the US-Mexico border divide communities that had previously lived together?",
+    "axis1": [
+      "F5",
+      "B6"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of surveillance technology at borders create new forms of social control?",
+    "axis1": [
+      "F5",
+      "H2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": true
+  },
+  {
+    "type": "A",
+    "question": "How did the Schengen Agreement reshape migration patterns within Europe?",
+    "axis1": [
+      "F5",
+      "H1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the establishment of secular education systems in colonial India affect religious community life?",
+    "axis1": [
+      "I2",
+      "F4"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the rise of secular governance in post-colonial states reshape the role of religious institutions?",
+    "axis1": [
+      "I2",
+      "F3"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did religious organizations in the American South provide social services during the Great Depression?",
+    "axis1": [
+      "I3",
+      "D3"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "C",
+    "question": "Why do religious communities in secular societies continue to play a role in social welfare?",
+    "axis1": [
+      "I3",
+      "I2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the Black church in the American South function as an institution of economic mutual aid?",
+    "axis1": [
+      "I3",
+      "B1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the decline of religious participation in Western societies affect community-based care systems?",
+    "axis1": [
+      "I3",
+      "E3"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the treatment of Jewish communities in medieval Europe vary across different regions?",
+    "axis1": [
+      "I4",
+      "I1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the division between productive and reproductive labor shape the distribution of wealth in a society?",
+    "axis1": [
+      "C5",
+      "A1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the relationship between care work and the reproduction of the labor force?",
+    "axis1": [
+      "D1",
+      "C1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of racial capitalism explain the persistence of racial inequality in post-emancipation societies?",
+    "axis1": [
+      "B1",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the relationship between financialization and the transformation of basic needs into commodities?",
+    "axis1": [
+      "D2",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of social reproduction theory explain the connection between paid work and unpaid care?",
+    "axis1": [
+      "D1",
+      "C1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the relationship between colonial extraction and the development of global economic inequality?",
+    "axis1": [
+      "J2",
+      "F1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of the reserve army of labor explain the persistence of unemployment?",
+    "axis1": [
+      "A2",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the relationship between the carceral state and the management of surplus populations?",
+    "axis1": [
+      "B1",
+      "A2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of epistemic violence explain the marginalization of non-Western knowledge systems?",
+    "axis1": [
+      "F4",
+      "B3"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the relationship between the gendered division of labor and the undervaluation of care work?",
+    "axis1": [
+      "C5",
+      "C2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of the informal economy reveal the limits of formal labor regulation?",
+    "axis1": [
+      "A5",
+      "A2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the relationship between border regimes and the control of global labor mobility?",
+    "axis1": [
+      "H2",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of ableism explain the exclusion of disabled people from economic life?",
+    "axis1": [
+      "E1",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the relationship between student debt and the financialization of higher education?",
+    "axis1": [
+      "D4",
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of intersectionality reveal the limitations of single-axis analysis?",
+    "axis1": [
+      "K1",
+      "B1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the relationship between climate change and the displacement of vulnerable populations?",
+    "axis1": [
+      "H5",
+      "J3"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of temporal exploitation explain the ways time is used to discipline workers?",
+    "axis1": [
+      "G4",
+      "A1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the relationship between the privatization of public services and the erosion of social rights?",
+    "axis1": [
+      "D3",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of reproductive justice connect bodily autonomy with material conditions?",
+    "axis1": [
+      "C6",
+      "C2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the relationship between the gig economy and the erosion of labor protections?",
+    "axis1": [
+      "A5",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of cognitive capitalism explain the shift from industrial to knowledge-based economies?",
+    "axis1": [
+      "A3",
+      "E5"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "What is the relationship between the global care chain and the migration of care workers?",
+    "axis1": [
+      "D1",
+      "H1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "D",
+    "question": "How does the concept of green colonialism explain environmental policies that displace poor communities?",
+    "axis1": [
+      "J3",
+      "F1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the growth of the service sector reshape the composition of urban working-class neighborhoods?",
+    "axis1": [
+      "A3",
+      "A2",
+      "J1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of corporate management create a new stratum of salaried employees?",
+    "axis1": [
+      "A3",
+      "A1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the decline of union membership affect the bargaining power of industrial workers?",
+    "axis1": [
+      "A4",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the rise of the gig economy create new forms of labor precarity?",
+    "axis1": [
+      "A5",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of informal economies in developing countries reflect the limits of formal labor markets?",
+    "axis1": [
+      "A5",
+      "J2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the standardization of office work create new forms of cognitive labor?",
+    "axis1": [
+      "A3",
+      "E5"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the outsourcing of customer service to developing countries reshape global labor markets?",
+    "axis1": [
+      "A5",
+      "J2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": true
+  },
+  {
+    "type": "A",
+    "question": "How did the decline of the manufacturing sector affect the class composition of post-industrial cities?",
+    "axis1": [
+      "A3",
+      "A2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of the welfare state create a new category of state-employed workers?",
+    "axis1": [
+      "A3",
+      "D3"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the financialization of the economy reshape the relationship between capital and labor?",
+    "axis1": [
+      "A1",
+      "D2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the rise of independent contracting change the legal status of workers?",
+    "axis1": [
+      "A5",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of temporary staffing agencies create a new layer of labor market intermediaries?",
+    "axis1": [
+      "A2",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the decline of lifetime employment change workers' relationship to their employers?",
+    "axis1": [
+      "A2",
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the growth of the knowledge economy create new forms of educational inequality?",
+    "axis1": [
+      "A3",
+      "D4"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of franchise businesses reshape local labor markets?",
+    "axis1": [
+      "A2",
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the enclosure of common lands reshape the relationship between rural communities and the land they worked?",
+    "axis1": [
+      "F1",
+      "A1",
+      "D6"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the establishment of plantation economies reshape the daily lives of enslaved people?",
+    "axis1": [
+      "F1",
+      "B1",
+      "D6"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of mining operations in colonial territories affect the time available for community life?",
+    "axis1": [
+      "F1",
+      "D6",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the transition from subsistence farming to cash crop production affect the time budgets of peasant families?",
+    "axis1": [
+      "D6",
+      "A1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the introduction of piece-rate payment systems change workers' relationship to time?",
+    "axis1": [
+      "D6",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of shift work in the twentieth century reshape family life?",
+    "axis1": [
+      "D6",
+      "C1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the decline of the eight-hour workday norm affect workers' time available for rest?",
+    "axis1": [
+      "D6",
+      "A1"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the introduction of electronic monitoring change the ways employers controlled workers' time?",
+    "axis1": [
+      "D6",
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": true
+  },
+  {
+    "type": "A",
+    "question": "How did the growth of the twenty-four-hour economy affect the distribution of leisure time?",
+    "axis1": [
+      "D6",
+      "A2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of global communication systems create expectations of constant availability?",
+    "axis1": [
+      "D6",
+      "A5"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": true
+  },
+  {
+    "type": "A",
+    "question": "How did the development of transportation networks reshape the spatial organization of pre-industrial trade?",
+    "axis1": [
+      "J1",
+      "A1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of railroads in the nineteenth century reshape the geography of industrial development?",
+    "axis1": [
+      "J1",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the post-war investment in highways shape the spatial expansion of American cities?",
+    "axis1": [
+      "J1",
+      "J5"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the decline of public transportation investment affect the mobility of low-income residents?",
+    "axis1": [
+      "J1",
+      "D2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the rise of ride-sharing services change urban transportation patterns?",
+    "axis1": [
+      "J1",
+      "A5"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": true
+  },
+  {
+    "type": "A",
+    "question": "How did the development of port cities create new economic centers during the colonial period?",
+    "axis1": [
+      "J1",
+      "F1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the concentration of financial services in global cities reshape urban inequality?",
+    "axis1": [
+      "J1",
+      "D2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of suburban development change the relationship between urban centers and their surroundings?",
+    "axis1": [
+      "J1",
+      "J5"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the relocation of manufacturing to the suburbs affect the composition of urban labor markets?",
+    "axis1": [
+      "J1",
+      "A2"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the growth of special economic zones reshape the geography of global production?",
+    "axis1": [
+      "J1",
+      "J2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did religious mutual aid societies in nineteenth-century cities provide support that the state did not?",
+    "axis1": [
+      "I3",
+      "D3"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of religious charity in the post-war period shape the social safety net?",
+    "axis1": [
+      "I3",
+      "D1"
+    ],
+    "axis2": [
+      "EP4"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of resource extraction on indigenous land affect the economic position of indigenous women?",
+    "axis1": [
+      "K2",
+      "C1",
+      "B4"
+    ],
+    "axis2": [
+      "EP5"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the organization of craft production in medieval guilds shape the economic opportunities available to different social groups?",
+    "axis1": [
+      "A3",
+      "A1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of long-distance trade in the fifteenth and sixteenth centuries create new economic relationships between distant regions?",
+    "axis1": [
+      "F1",
+      "A1"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the transition from feudal obligations to wage labor reshape the daily lives of rural workers?",
+    "axis1": [
+      "A1",
+      "D6"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the establishment of workhouses in the eighteenth century reflect changing attitudes toward poverty?",
+    "axis1": [
+      "A2",
+      "D5"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the decline of artisanal production affect the economic position of skilled workers in industrializing societies?",
+    "axis1": [
+      "A3",
+      "A2"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the expansion of colonial trade networks reshape the economic position of producers in colonized territories?",
+    "axis1": [
+      "F1",
+      "J2"
+    ],
+    "axis2": [
+      "EP2"
+    ],
+    "cross_domain": false
+  },
+  {
+    "type": "A",
+    "question": "How did the introduction of mechanized textile production affect the employment of skilled handweavers?",
+    "axis1": [
+      "A2",
+      "A1"
+    ],
+    "axis2": [
+      "EP3"
+    ],
+    "cross_domain": false
+  }
+]

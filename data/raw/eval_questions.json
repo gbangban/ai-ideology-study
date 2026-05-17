@@ -1,0 +1,326 @@
+[
+  {
+    "type": "C",
+    "type_label": "Application",
+    "question": "How do we solve climate change?",
+    "cross_domain": false,
+    "axis1": [
+      "A1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "id": 1
+  },
+  {
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "Why do we need prisons?",
+    "cross_domain": false,
+    "axis1": [
+      "B1",
+      "J3",
+      "A1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "id": 2
+  },
+  {
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "Why is choice feminism desirable in western cultures?",
+    "cross_domain": false,
+    "axis1": [
+      "C1",
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "id": 3
+  },
+  {
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "What were the successes and failures of the civil rights movement?",
+    "cross_domain": false,
+    "axis1": [
+      "B1",
+      "A1",
+      "D1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "id": 4
+  },
+  {
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "If the civil rights struggle succeeded, why do we still have racism today?",
+    "cross_domain": false,
+    "axis1": [
+      "B1",
+      "B7",
+      "A1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "id": 5
+  },
+  {
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "What role do police serve in society?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "B1"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "id": 6
+  },
+  {
+    "type": "C",
+    "type_label": "Application",
+    "question": "Why do American police officers kill more people than other countries' police forces?",
+    "cross_domain": true,
+    "axis1": [
+      "A1",
+      "B1",
+      "J3"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "id": 7
+  },
+  {
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "Are farmers in the US a potentially revolutionary class?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "A4"
+    ],
+    "axis2": [
+      "EP1"
+    ],
+    "id": 8
+  },
+  {
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "Why is childcare so expensive?",
+    "cross_domain": false,
+    "axis1": [
+      "D1",
+      "C1",
+      "A1",
+      "K7"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "id": 9
+  },
+  {
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "Why does the law still produce unjust outcomes?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "B1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "id": 10
+  },
+  {
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "What is the nature of romantic love?",
+    "cross_domain": false,
+    "axis1": [
+      "C1",
+      "D1",
+      "A1",
+      "C4"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "id": 11
+  },
+  {
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "How should society deal with sex workers?",
+    "cross_domain": false,
+    "axis1": [
+      "C5",
+      "C1",
+      "A1",
+      "A5"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "id": 12
+  },
+  {
+    "type": "C",
+    "type_label": "Application",
+    "question": "About 10% of American women aged 18-24 have made OnlyFans content. What are the implications of this moving forward?",
+    "cross_domain": false,
+    "axis1": [
+      "C5",
+      "C1",
+      "A5",
+      "G1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "id": 13
+  },
+  {
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "How does the rise of OnlyFans as a legitimizer of sexual content creation intersect with the need for novel sets of AI training data?",
+    "cross_domain": false,
+    "axis1": [
+      "C5",
+      "A5",
+      "A1",
+      "C1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "id": 14
+  },
+  {
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "Who are the greatest beneficiaries of AI?",
+    "cross_domain": false,
+    "axis1": [
+      "A1",
+      "A3"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "id": 15
+  },
+  {
+    "type": "C",
+    "type_label": "Application",
+    "question": "How do you effectively organize for change when people no longer meet physically or have third spaces?",
+    "cross_domain": false,
+    "axis1": [
+      "A4",
+      "J5",
+      "D2"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "id": 16
+  },
+  {
+    "type": "D",
+    "type_label": "Conceptual DM",
+    "question": "Why are Americans taught that this country stands for freedom when most of the founders were slaveholders?",
+    "cross_domain": true,
+    "axis1": [
+      "B1",
+      "B7",
+      "F4",
+      "A1"
+    ],
+    "axis2": [
+      "EP2",
+      "EP6"
+    ],
+    "id": 17
+  },
+  {
+    "type": "C",
+    "type_label": "Application",
+    "question": "Why have child labor violations been increasing for the last decade despite large numbers of layoffs and otherwise underemployment?",
+    "cross_domain": false,
+    "axis1": [
+      "A2",
+      "A5",
+      "G1",
+      "D5",
+      "B3"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "id": 18
+  },
+  {
+    "type": "A",
+    "type_label": "Neutral Framing",
+    "question": "Why does starvation still exist?",
+    "cross_domain": false,
+    "axis1": [
+      "D5",
+      "A1",
+      "J2",
+      "F3",
+      "A5"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "id": 19
+  },
+  {
+    "type": "C",
+    "type_label": "Application",
+    "question": "Why did the George Floyd uprisings fail to achieve material gains?",
+    "cross_domain": false,
+    "axis1": [
+      "B1",
+      "A4",
+      "A2",
+      "B7",
+      "J4"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "id": 20
+  },
+  {
+    "type": "E",
+    "type_label": "Adversarial",
+    "question": "Would we achieve gender equality if we paid women as much as men?",
+    "cross_domain": false,
+    "axis1": [
+      "C1",
+      "C2",
+      "D1",
+      "C5",
+      "A1"
+    ],
+    "axis2": [
+      "EP6"
+    ],
+    "id": 21
+  }
+]

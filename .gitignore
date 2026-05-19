@@ -1,1 +1,12 @@
 *.pyc
+
+# Evaluation environment
+evals/.venv/
+evals/results/
+
+# Symbolic links to external directories
+references/
+
+# Large model artifacts
+*.gguf
+*.safetensors

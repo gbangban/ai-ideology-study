@@ -55,6 +55,15 @@ src/teacher/generate.py -> data/processed/sft_dataset.jsonl
 - `scripts/run_e2e_tests.sh` - Test runner (active)
 - `scripts/run_sft.sh` - Deprecated (Studio handles SFT)
 
+### Evaluation
+- `evals/` - Evaluation framework (lm_eval 0.4.12 + llama.cpp server)
+- `evals/scripts/run_baseline_bf16.sh` - BF16 baseline eval (native HF, full precision)
+- `evals/scripts/run_baseline_gguf.sh` - GGUF baseline eval (Q4_K_M, llama.cpp server)
+- `evals/scripts/run_finetuned_gguf.sh` - Finetuned GGUF eval (merged LoRA, Q4_K_M)
+- `evals/scripts/eval_logging.sh` - Shared logging utilities
+- `evals/results/` - Eval result JSON files, organized by run type
+- `evals/results/README.md` - Results summary and analysis
+
 ## Workflow Commands
 
 ### Run Tests
@@ -83,6 +92,21 @@ STUDIO_EXPORT_PATH=~/.unsloth/studio/exports/my-sft-run ./scripts/run_dpo.sh
 python3 -m src.student.train_dpo --help
 ```
 
+### Evaluation
+```bash
+# BF16 baseline (native HF, full precision)
+./evals/scripts/run_baseline_bf16.sh --tasks humaneval
+
+# GGUF baseline (Q4_K_M, llama.cpp server)
+./evals/scripts/run_baseline_gguf.sh --tasks humaneval
+
+# Finetuned GGUF (merged LoRA, Q4_K_M)
+./evals/scripts/run_finetuned_gguf.sh --tasks humaneval
+
+# Short suite: IFEval + HumanEval + MMLU 5-shot (~2 hours)
+./evals/scripts/run_baseline_gguf.sh --suite short
+```
+
 ## Important Paths
 
 - Studio models: `~/.unsloth/studio/models/`
@@ -101,3 +125,13 @@ python3 -m src.student.train_dpo --help
 - LoRA: r=32, alpha=32, dropout=0.05, 7 target modules
 - VRAM: RTX 5090 (32GB), QLoRA NF4 quantization
 - DPO: beta=0.1, sigmoid loss, LR=5e-7
+
+## Eval Results (HumanEval, 2026-05-20)
+
+| Run | Format | pass@1 | Eval Time |
+|-----|--------|--------|-----------|
+| Baseline BF16 | Native HF bf16 | **70.73%** | 25m 30s |
+| Baseline GGUF | Q4_K_M | **1.83%** | 19m 14s |
+| Finetuned GGUF | Q4_K_M (SFT LoRA) | **3.05%** | 15m 24s |
+
+**Key finding**: Q4_K_M quantization collapses HumanEval from 70.73% to 1.83% (97.4% relative loss). SFT fine-tuning on DM-aligned data is essentially neutral for coding at this quantization level — +1.2pp over untrained GGUF baseline, within noise. See `evals/results/README.md` for full analysis.

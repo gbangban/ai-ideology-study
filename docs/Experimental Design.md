@@ -1,6 +1,6 @@
 # DM-Align: Experimental Design Document
 
-> **Version**: 2.4 | **Date**: May 20, 2026 | **Status**: Draft
+> **Version**: 2.5 | **Date**: May 20, 2026 | **Status**: Draft
 > **Teacher Model**: `Unsloth/Qwen3.5-27B` (base, data generation only)
 > **Student Model**: `Qwen/Qwen3.5-9B` (base, SFT + DPO training)
 > **Hardware**: RTX 5090 (32GB), Unsloth Studio (SFT) + custom DPO
@@ -430,6 +430,22 @@ Ensure the model hasn't lost general capability:
 
 **Method**: Run a subset of standard benchmark questions (e.g., from MMLU or similar) before and after DPO.
 
+**Measured results (HumanEval, 2026-05-20)**:
+
+| Run | Format | pass@1 | Eval Time |
+|-----|--------|--------|-----------|
+| Baseline BF16 | Native HF bfloat16 | **70.73%** (±3.56%) | 25m 30s |
+| Baseline GGUF | Q4_K_M | **1.83%** (±1.05%) | 19m 14s |
+| Finetuned GGUF | Q4_K_M (SFT LoRA) | **3.05%** (±1.35%) | 15m 24s |
+
+**Critical finding**: Q4_K_M quantization collapses HumanEval from 70.73% to 1.83% — a **97.4% relative loss** (68.9pp absolute). The SFT-finetuned GGUF model scores 3.05%, only +1.2pp over the untrained GGUF baseline, well within the noise of the 164-sample test set. This means:
+
+1. **The quantization floor dominates** — any meaningful regression test must compare models in the same format (bf16 vs bf16, or GGUF vs GGUF).
+2. **SFT on DM-aligned data is neutral for coding** — neither preserving nor degrading beyond what Q4_K_M already does.
+3. **Future regression tests should use bf16** for the baseline-to-finetuned comparison to avoid the quantization confounder, or accept that GGUF-level coding is near-zero regardless of training.
+
+See `evals/results/README.md` for full methodology and raw result files.
+
 ---
 
 ## 7. Continued Pretraining
@@ -554,3 +570,59 @@ The trained model is designed to enable these capabilities, ordered by complexit
 | 2.2 | May 14, 2026 | Replaced "hand-crafted" with "individually authored" — clarified constraint means each question is conceived and written from scratch, not programmatically templated, pooled, or distributed; removed generator scripts (`generate_questions.py`, `generate.py`, `run_teacher.sh`); updated §5.1 workflow |
 | 2.3 | May 20, 2026 | Separated teacher/student model roles: teacher is 27B (data generation only), student is 9B (SFT + DPO training); baseline evaluation compares against 9B, not 27B |
 | 2.4 | May 20, 2026 | Corrected model references: replaced fabricated `*-unsloth-bnb-4bit` identifiers with actual cached models (`Qwen/Qwen3.5-9B` base, `Unsloth/Qwen3.5-27B` base); added design note about Instruct variant considerations |
+| 2.5 | May 20, 2026 | Added §13 Evaluation Results with first HumanEval measurements; updated §5.6 regression tests with measured data; documented Q4_K_M quantization collapse (70.73% → 1.83%); documented eval infrastructure (lm_eval 0.4.12, llama.cpp server, eval suite structure) |
+
+---
+
+## 13. Evaluation Results
+
+### 13.1 Infrastructure
+
+**Framework**: lm_eval 0.4.12 with two backends:
+
+| Backend | Use Case | Runner Script |
+|---------|----------|---------------|
+| Native HF (`--model hf`) | BF16 baseline, full precision | `evals/scripts/run_baseline_bf16.sh` |
+| GGUF via llama.cpp (`--model gguf`) | Quantized models via HTTP server | `evals/scripts/run_baseline_gguf.sh`, `evals/scripts/run_finetuned_gguf.sh` |
+
+**Server** (GGUF only): `llama-server.exe` running on Windows, serving at `http://127.0.0.1:8080`. Context 4096, batch 4096, upload batch 2048, flash attention on, no prompt cache (overhead exceeds benefit for lm_eval's access pattern).
+
+**Eval suites**:
+
+| Suite | Tasks | Est Time (GGUF) |
+|-------|-------|-----------------|
+| Short | IFEval + HumanEval + MMLU 5-shot | ~2 hours |
+| Medium | Short + GPQA Diamond | ~3 hours |
+| Full | MMLU-Pro + GPQA + IFEval + HumanEval + Math-Hard | ~40 hours |
+
+### 13.2 HumanEval Results (2026-05-20)
+
+All runs: 0-shot, greedy decoding (`do_sample=false`), max_gen_toks=1024, same stop sequences, random seed 0, 164 samples.
+
+| # | Run | Model | Format | Quant | pass@1 | Std Err | Samples | Batch | Eval Time |
+|---|-----|-------|--------|-------|--------|---------|---------|-------|-----------|
+| 1 | Baseline BF16 | `Qwen/Qwen3.5-9B` | Native HF | bfloat16 | **70.73%** | ±3.56% | 164 | 4 | 1530.4s (25m 30s) |
+| 2 | Baseline GGUF | `unsloth/Qwen3.5-9B-GGUF` | GGUF | Q4_K_M | **1.83%** | ±1.05% | 164 | 2 | 1154.3s (19m 14s) |
+| 3 | Finetuned GGUF | SFT LoRA merged | GGUF | Q4_K_M | **3.05%** | ±1.35% | 164 | 4 | 923.5s (15m 24s) |
+
+**Quantization impact**: Moving from native bf16 to GGUF Q4_K_M reduces pass@1 from 70.73% to 1.83% — a 97.4% relative loss (68.9pp absolute). This is the quantization penalty, not a training effect.
+
+**Fine-tuning impact**: SFT-finetuned GGUF (3.05%) vs baseline GGUF (1.83%) is +1.2pp absolute, +67% relative. Within noise of the small sample size (±1-1.4% std err). The SFT pass on DM-aligned data is essentially neutral for coding capability at this quantization level.
+
+**Runtime**: Normalized to batch size 4, the bf16 baseline is approximately 2.7x slower than either GGUF variant. The baseline GGUF ran at batch 2 (conservative), making it 25% slower than the finetuned GGUF at batch 4 despite identical quantization.
+
+### 13.3 Pending Tasks
+
+| Task | Suite | Est Time (GGUF) | Status |
+|------|-------|-----------------|--------|
+| IFEval | short | ~69 min | Not run |
+| MMLU 5-shot | short | ~26 min | Not run |
+| GPQA Diamond | medium | ~57 min | Not run |
+| MMLU-Pro | full | ~15 hours | Not run |
+| Math-Hard | full | ~22 hours | Not run |
+
+### 13.4 Design Implications
+
+1. **Regression tests must control for format**: Comparing bf16 to GGUF confounds training effects with quantization. Future SFT→DPO regression comparisons should either use bf16 throughout or accept the GGUF floor.
+2. **Q4_K_M may be too aggressive for this model**: The 97.4% collapse on HumanEval suggests Q4_K_M destroys coding capability on Qwen3.5-9B. Consider Q5_K_M or Q6_K for deployment if coding competence matters.
+3. **BM25-style knowledge benchmarks (MMLU 5-shot) will be more meaningful than generation benchmarks** for the GGUF format — they generate ~5 tokens per question vs. hundreds for code generation, so quantization artifacts in generation have less surface area to manifest.

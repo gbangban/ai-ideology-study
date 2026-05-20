@@ -2,7 +2,9 @@
 
 # Evaluation environment
 evals/.venv/
-evals/results/
+evals/results/**/*.json*
+*.log
+*.db
 
 # Symbolic links to external directories
 references/
@@ -10,3 +12,4 @@ references/
 # Large model artifacts
 *.gguf
 *.safetensors
+refresh_rank0.db

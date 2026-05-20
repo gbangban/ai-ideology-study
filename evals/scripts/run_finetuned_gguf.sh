@@ -10,9 +10,12 @@
 # NOTE: Export the fine-tuned model as GGUF from Studio UI first
 #
 # Usage:
-#   ./run_finetuned_gguf.sh                               # Run all tasks
+#   ./run_finetuned_gguf.sh                               # Run short suite (default)
+#   ./run_finetuned_gguf.sh --suite short                 # IFEval + HumanEval + MMLU 5-shot
+#   ./run_finetuned_gguf.sh --suite medium                # short + GPQA Diamond
+#   ./run_finetuned_gguf.sh --suite full                  # All tasks including MMLU-Pro
 #   ./run_finetuned_gguf.sh --tasks humaneval             # Run single task only
-#   ./run_finetuned_gguf.sh --tasks mmlu_pro,humaneval    # Run specific tasks
+#   ./run_finetuned_gguf.sh --tasks mmlu,humaneval        # Run specific tasks
 #   ./run_finetuned_gguf.sh --help                        # Show available tasks
 #
 # Set FINETUNED_GGUF_PATH to point to a specific GGUF file:
@@ -53,8 +56,21 @@ GGUF_PATH="${FINETUNED_GGUF_PATH:-$FINETUNED_GGUF_DEFAULT}"
 SERVER_PORT="${GGUF_SERVER_PORT:-8080}"
 SERVER_CTX="${GGUF_CTX_SIZE:-4096}"
 
-# All available tasks
-ALL_TASKS=(
+# Eval suites — ordered from fastest to slowest
+SUITE_SHORT=(
+    "ifeval"
+    "humaneval"
+    "mmlu"
+)
+
+SUITE_MEDIUM=(
+    "ifeval"
+    "humaneval"
+    "mmlu"
+    "gpqa_diamond_zeroshot"
+)
+
+SUITE_FULL=(
     "mmlu_pro"
     "gpqa_diamond_zeroshot"
     "ifeval"
@@ -62,11 +78,22 @@ ALL_TASKS=(
     "leaderboard_math_hard"
 )
 
-TASKS_LIST="mmlu_pro,gpqa_diamond_zeroshot,ifeval,humaneval,leaderboard_math_hard"
+# All individual tasks (union of all suites)
+ALL_TASKS=(
+    "mmlu_pro"
+    "mmlu"
+    "gpqa_diamond_zeroshot"
+    "ifeval"
+    "humaneval"
+    "leaderboard_math_hard"
+)
+
+TASKS_LIST="mmlu_pro,mmlu,gpqa_diamond_zeroshot,ifeval,humaneval,leaderboard_math_hard"
 
 # Parse arguments
 DRY_RUN="false"
 _SELECTED_TASKS=()
+_SELECT_SUITE=""
 i=1
 while [ $i -le $# ]; do
     arg="${!i}"
@@ -77,6 +104,14 @@ while [ $i -le $# ]; do
             ;;
         --dry-run)
             DRY_RUN="true"
+            ;;
+        --suite)
+            i=$((i + 1))
+            if [ $i -gt $# ]; then
+                log_error "--suite requires a value (short, medium, full)"
+                exit 1
+            fi
+            _SELECT_SUITE="${!i}"
             ;;
         --tasks)
             i=$((i + 1))
@@ -90,18 +125,40 @@ while [ $i -le $# ]; do
     i=$((i + 1))
 done
 
-# Set up log file
+# Resolve suite to task list (--tasks overrides suite; suite defaults to short)
+_SUITE_USED="false"
+if [ ${#_SELECTED_TASKS[@]} -eq 0 ]; then
+    case "${_SELECT_SUITE:-short}" in
+        short)  _SELECTED_TASKS=("${SUITE_SHORT[@]}") ;;
+        medium) _SELECTED_TASKS=("${SUITE_MEDIUM[@]}") ;;
+        full)   _SELECTED_TASKS=("${SUITE_FULL[@]}") ;;
+        *)      log_error "Unknown suite: $_SELECT_SUITE (choose short, medium, full)"; exit 1 ;;
+    esac
+    _SUITE_USED="true"
+fi
+
+# Set up log file and run ID
 mkdir -p "$RESULTS_DIR"
 EVAL_LOG="$RESULTS_DIR/eval.log"
 # Truncate log for fresh run
 : > "$EVAL_LOG"
 
+# Descriptive run ID: finetuned-gguf-2026_05_20T17_49_34
+_RUN_TIMESTAMP=$(date '+%Y_%m_%dT%H_%M_%S')
+RUN_ID="finetuned-gguf-${_RUN_TIMESTAMP}"
+RUN_OUTPUT_DIR="$RESULTS_DIR/$RUN_ID"
+mkdir -p "$RUN_OUTPUT_DIR"
+
 log_section "Fine-Tuned GGUF Evaluation"
 log_info "GGUF: $GGUF_PATH"
 log_info "Server: $LLAMA_SERVER (port $SERVER_PORT, ctx $SERVER_CTX)"
-log_info "Output: $RESULTS_DIR"
+log_info "Run ID: $RUN_ID"
+log_info "Output: $RUN_OUTPUT_DIR"
 log_info "Log file: $EVAL_LOG"
 
+if [ "$_SUITE_USED" = "true" ]; then
+    log_info "Suite: ${_SELECT_SUITE:-short}"
+fi
 if [ "$DRY_RUN" = "true" ]; then
     log_info "DRY RUN MODE - showing what would execute"
 fi
@@ -210,7 +267,7 @@ for TASK in "${TASKS_TO_RUN[@]}"; do
       --model_args "base_url=http://127.0.0.1:$SERVER_PORT,max_length=$SERVER_CTX" \
       --tasks "$TASK" \
       --batch_size 4 \
-      --output_path "$RESULTS_DIR" \
+      --output_path "$RUN_OUTPUT_DIR" \
       --log_samples \
       --confirm_run_unsafe_code 2>&1 | tee -a "$EVAL_LOG"
     TASK_EXIT=$?
@@ -258,6 +315,11 @@ if [ ${#FAILED_TASKS[@]} -gt 0 ]; then
     exit 1
 fi
 
-log_info "Results saved to: $RESULTS_DIR"
+log_info "Results saved to: $RUN_OUTPUT_DIR"
 log_info "Log saved to: $EVAL_LOG"
+
+# Post-process: annotate results with identifying metadata
+log_info "Annotating results with metadata..."
+python3 "$SCRIPT_DIR/label_results.py" --results-dir "$RESULTS_DIR" 2>&1 | tee -a "$EVAL_LOG"
+
 log_separator "="

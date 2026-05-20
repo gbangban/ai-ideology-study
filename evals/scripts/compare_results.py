@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
 """
-Three-way benchmark comparison tool for Qwen3.5-9B evaluation.
+Benchmark comparison tool for Qwen3.5-9B evaluation.
 
 Compares:
-1. Fine-tuned Q4_K_M vs Q4_K_M baseline (PRIMARY — isolates fine-tuning effect)
+1. Fine-tuned vs Baseline (PRIMARY — isolates fine-tuning effect)
 2. BF16 baseline vs Published scores (framework validation)
-3. BF16 baseline vs Q4_K_M baseline (quantization penalty)
+3. BF16 baseline vs GGUF baseline (quantization penalty)
+
+Supports all metric types: accuracy (0-100), normalized scores, and
+pass@k fractions (0-1) from HumanEval and similar code generation tasks.
 
 Usage:
     python3 compare_results.py [options]
 
 Options:
-    --finetuned PATH    Path to fine-tuned results directory (default: results/runs/finetuned)
-    --baseline-q4 PATH  Path to Q4 baseline results directory (default: results/baseline/q4)
-    --baseline-bf16 PATH Path to BF16 baseline results directory (default: results/baseline/bf16)
+    --finetuned PATH    Path to fine-tuned results directory
+    --baseline-gguf PATH Path to GGUF baseline results directory
+    --baseline-bf16 PATH Path to BF16 baseline results directory
     --output PATH       Output path for comparison report (default: stdout)
 """
 
@@ -40,6 +43,7 @@ REGRESSION_THRESHOLDS = {
     "ifeval": 5,
     "livecodebench": 5,
     "hmmt": 3,
+    "humaneval": 5,
 }
 
 
@@ -59,7 +63,12 @@ def find_result_files(results_dir: str) -> list:
 
 
 def extract_scores(result_files: list) -> dict:
-    """Extract benchmark scores from lm_eval JSON output."""
+    """Extract benchmark scores from lm_eval JSON output.
+
+    Returns dict of task_name -> score. Also populates global
+    _SCORE_METADATA with per-task info (metric name, whether it's a
+    percentage 0-100 or a fraction 0-1).
+    """
     scores = {}
     for filepath in result_files:
         try:
@@ -80,22 +89,17 @@ def extract_scores(result_files: list) -> dict:
                     metric_keys = [
                         "acc,5", "acc", "acc_norm", "acc_norm,5",
                         "exact_match", "passive_accuracy",
+                        "pass@1,create_test", "pass@1",
                     ]
+                    matched_key = None
                     for key in metric_keys:
                         if key in task_data and isinstance(task_data[key], (int, float)):
-                            val = round(task_data[key], 2)
-                            if clean_name in scores:
-                                print(
-                                    f"Warning: Overwriting score for {clean_name} "
-                                    f"from {filepath}",
-                                    file=sys.stderr,
-                                )
-                            scores[clean_name] = val
+                            matched_key = key
+                            val = task_data[key]
                             break
 
-                    # For IFEval, look for specific metrics
-                    if "normalized_score" in task_data:
-                        val = round(task_data["normalized_score"], 2)
+                    if matched_key is not None:
+                        # Store as-is (don't round yet)
                         if clean_name in scores:
                             print(
                                 f"Warning: Overwriting score for {clean_name} "
@@ -103,6 +107,26 @@ def extract_scores(result_files: list) -> dict:
                                 file=sys.stderr,
                             )
                         scores[clean_name] = val
+                        # Track metric info
+                        _SCORE_METADATA[clean_name] = {
+                            "metric": matched_key,
+                            "is_fraction": "@" in matched_key or matched_key.startswith("pass"),
+                        }
+
+                    # For IFEval, look for specific metrics
+                    if "normalized_score" in task_data:
+                        val = task_data["normalized_score"]
+                        if clean_name in scores:
+                            print(
+                                f"Warning: Overwriting score for {clean_name} "
+                                f"from {filepath}",
+                                file=sys.stderr,
+                            )
+                        scores[clean_name] = val
+                        _SCORE_METADATA[clean_name] = {
+                            "metric": "normalized_score",
+                            "is_fraction": False,
+                        }
 
         except (json.JSONDecodeError, KeyError) as e:
             print(f"Warning: Could not parse {filepath}: {e}", file=sys.stderr)
@@ -110,18 +134,38 @@ def extract_scores(result_files: list) -> dict:
     return scores
 
 
-def format_delta(value: float) -> str:
+# Track per-task metadata: metric name, whether value is 0-1 fraction
+_SCORE_METADATA = {}
+
+
+def format_delta(value: float, is_fraction: bool = False) -> str:
     """Format a delta value with sign and color indicator."""
+    if is_fraction:
+        formatted = "%.2f" % value
+    else:
+        formatted = "%.1f" % value
     if value > 0:
-        return f"+{value:.1f}"
-    elif value < 0:
-        return f"{value:.1f}"
-    return "0.0"
+        return f"+{formatted}"
+    return formatted
 
 
-def check_regression(delta: float, threshold: float) -> str:
-    """Check if a delta exceeds the regression threshold."""
-    if delta <= -threshold:
+def format_score(value, is_fraction: bool = False) -> str:
+    """Format a score value, converting fractions to percentages if needed."""
+    if isinstance(value, (int, float)):
+        if is_fraction:
+            return "%.1f%%" % (value * 100)
+        return "%.1f" % value
+    return str(value)
+
+
+def check_regression(delta: float, threshold: float, is_fraction: bool = False) -> str:
+    """Check if a delta exceeds the regression threshold.
+
+    For fraction-based metrics (pass@1), threshold is in percentage points,
+    so convert: threshold 5 means 0.05 in fraction space.
+    """
+    effective_threshold = threshold / 100.0 if is_fraction else threshold
+    if delta <= -effective_threshold:
         return "⚠ REGRESSION"
     elif delta <= 0:
         return "stable"
@@ -131,7 +175,7 @@ def check_regression(delta: float, threshold: float) -> str:
 
 def compare_results(
     finetuned_scores: dict,
-    q4_scores: dict,
+    gguf_scores: dict,
     bf16_scores: dict,
 ) -> str:
     """Generate comparison report."""
@@ -143,7 +187,7 @@ def compare_results(
 
     # Collect all task names
     all_tasks = set()
-    for scores in [finetuned_scores, q4_scores, bf16_scores]:
+    for scores in [finetuned_scores, gguf_scores, bf16_scores]:
         all_tasks.update(scores.keys())
 
     # Map display names
@@ -153,36 +197,40 @@ def compare_results(
         "ifeval": "IFEval",
         "livecodebench": "LiveCodeBench",
         "hmmt": "HMMT",
+        "humaneval": "HumanEval",
     }
 
-    # PRIMARY COMPARISON: Fine-tuned Q4 vs Q4 Baseline
+    # PRIMARY COMPARISON: Fine-tuned GGUF vs GGUF Baseline
     lines.append("-" * 80)
-    lines.append("PRIMARY: Fine-Tuned Q4_K_M vs Q4_K_M Baseline (isolates fine-tuning effect)")
+    lines.append("PRIMARY: Fine-Tuned GGUF vs GGUF Baseline (isolates fine-tuning effect)")
     lines.append("-" * 80)
-    lines.append(f"{'Benchmark':<20} {'Q4 Base':>10} {'Fine-Tuned':>12} {'Delta':>8} {'Status':<15}")
+    lines.append(f"{'Benchmark':<20} {'GGUF Base':>10} {'Fine-Tuned':>12} {'Delta':>8} {'Status':<15}")
     lines.append("-" * 80)
 
     regression_count = 0
     for task in sorted(all_tasks):
         display = display_names.get(task, task)
-        q4_val = q4_scores.get(task, "N/A")
+        gguf_val = gguf_scores.get(task, "N/A")
         ft_val = finetuned_scores.get(task, "N/A")
 
-        q4_str = f"{q4_val:.1f}" if isinstance(q4_val, (int, float)) else str(q4_val)
-        ft_str = f"{ft_val:.1f}" if isinstance(ft_val, (int, float)) else str(ft_val)
+        meta = _SCORE_METADATA.get(task, {})
+        is_fraction = meta.get("is_fraction", False)
 
-        if isinstance(q4_val, (int, float)) and isinstance(ft_val, (int, float)):
-            delta = ft_val - q4_val
-            delta_str = format_delta(delta)
+        gguf_str = format_score(gguf_val, is_fraction)
+        ft_str = format_score(ft_val, is_fraction)
+
+        if isinstance(gguf_val, (int, float)) and isinstance(ft_val, (int, float)):
+            delta = ft_val - gguf_val
+            delta_str = format_delta(delta, is_fraction)
             threshold = REGRESSION_THRESHOLDS.get(task, 3)
-            status = check_regression(delta, threshold)
+            status = check_regression(delta, threshold, is_fraction)
             if "REGRESSION" in status:
                 regression_count += 1
         else:
             delta_str = "N/A"
             status = "N/A"
 
-        lines.append(f"{display:<20} {q4_str:>10} {ft_str:>12} {delta_str:>8} {status:<15}")
+        lines.append(f"{display:<20} {gguf_str:>10} {ft_str:>12} {delta_str:>8} {status:<15}")
 
     lines.append("-" * 80)
     lines.append(f"Regressions detected: {regression_count}")
@@ -200,12 +248,15 @@ def compare_results(
         bf16_val = bf16_scores.get(task, "N/A")
         pub_val = PUBLISHED_SCORES.get(task, "N/A")
 
-        bf16_str = f"{bf16_val:.1f}" if isinstance(bf16_val, (int, float)) else str(bf16_val)
-        pub_str = f"{pub_val:.1f}" if isinstance(pub_val, (int, float)) else str(pub_val)
+        meta = _SCORE_METADATA.get(task, {})
+        is_fraction = meta.get("is_fraction", False)
+
+        bf16_str = format_score(bf16_val, is_fraction)
+        pub_str = format_score(pub_val, is_fraction)
 
         if isinstance(bf16_val, (int, float)) and isinstance(pub_val, (int, float)):
             delta = bf16_val - pub_val
-            delta_str = format_delta(delta)
+            delta_str = format_delta(delta, is_fraction)
             if abs(delta) <= 2:
                 status = "✓ validated"
             else:
@@ -219,24 +270,27 @@ def compare_results(
     lines.append("-" * 80)
     lines.append("")
 
-    # QUANTIZATION PENALTY: BF16 vs Q4 Baseline
+    # QUANTIZATION PENALTY: BF16 vs GGUF Baseline
     lines.append("-" * 80)
-    lines.append("QUANTIZATION: BF16 Baseline vs Q4_K_M Baseline (quantization penalty)")
+    lines.append("QUANTIZATION: BF16 Baseline vs GGUF Baseline (quantization penalty)")
     lines.append("-" * 80)
-    lines.append(f"{'Benchmark':<20} {'BF16':>10} {'Q4_K_M':>10} {'Penalty':>8} {'Status':<15}")
+    lines.append(f"{'Benchmark':<20} {'BF16':>10} {'GGUF':>10} {'Penalty':>8} {'Status':<15}")
     lines.append("-" * 80)
 
     for task in sorted(all_tasks):
         display = display_names.get(task, task)
         bf16_val = bf16_scores.get(task, "N/A")
-        q4_val = q4_scores.get(task, "N/A")
+        gguf_val = gguf_scores.get(task, "N/A")
 
-        bf16_str = f"{bf16_val:.1f}" if isinstance(bf16_val, (int, float)) else str(bf16_val)
-        q4_str = f"{q4_val:.1f}" if isinstance(q4_val, (int, float)) else str(q4_val)
+        meta = _SCORE_METADATA.get(task, {})
+        is_fraction = meta.get("is_fraction", False)
 
-        if isinstance(bf16_val, (int, float)) and isinstance(q4_val, (int, float)):
-            penalty = q4_val - bf16_val
-            penalty_str = format_delta(penalty)
+        bf16_str = format_score(bf16_val, is_fraction)
+        gguf_str = format_score(gguf_val, is_fraction)
+
+        if isinstance(bf16_val, (int, float)) and isinstance(gguf_val, (int, float)):
+            penalty = gguf_val - bf16_val
+            penalty_str = format_delta(penalty, is_fraction)
             if abs(penalty) <= 3:
                 status = "✓ expected"
             elif abs(penalty) <= 5:
@@ -247,7 +301,7 @@ def compare_results(
             penalty_str = "N/A"
             status = "N/A"
 
-        lines.append(f"{display:<20} {bf16_str:>10} {q4_str:>10} {penalty_str:>8} {status:<15}")
+        lines.append(f"{display:<20} {bf16_str:>10} {gguf_str:>10} {penalty_str:>8} {status:<15}")
 
     lines.append("-" * 80)
     lines.append("")
@@ -281,9 +335,9 @@ def main():
         help="Path to fine-tuned results directory",
     )
     parser.add_argument(
-        "--baseline-q4",
-        default="results/baseline/q4",
-        help="Path to Q4 baseline results directory",
+        "--baseline-gguf",
+        default="results/baseline/gguf",
+        help="Path to GGUF baseline results directory",
     )
     parser.add_argument(
         "--baseline-bf16",
@@ -301,14 +355,14 @@ def main():
     # Resolve paths relative to project root
     project_root = Path(__file__).parent.parent
     finetuned_dir = project_root / args.finetuned
-    q4_dir = project_root / args.baseline_q4
+    gguf_dir = project_root / args.baseline_gguf
     bf16_dir = project_root / args.baseline_bf16
 
     # Check which results are available
     available = {}
     for name, path in [
-        ("Fine-tuned Q4", finetuned_dir),
-        ("Q4 Baseline", q4_dir),
+        ("Fine-tuned GGUF", finetuned_dir),
+        ("GGUF Baseline", gguf_dir),
         ("BF16 Baseline", bf16_dir),
     ]:
         files = find_result_files(str(path))
@@ -319,17 +373,17 @@ def main():
             print(f"Warning: No results found for {name} at {path}")
 
     # Extract scores
-    finetuned_scores = extract_scores(available.get("Fine-tuned Q4", []))
-    q4_scores = extract_scores(available.get("Q4 Baseline", []))
+    finetuned_scores = extract_scores(available.get("Fine-tuned GGUF", []))
+    gguf_scores = extract_scores(available.get("GGUF Baseline", []))
     bf16_scores = extract_scores(available.get("BF16 Baseline", []))
 
     # Debug output
     print(f"\nFine-tuned scores: {finetuned_scores}")
-    print(f"Q4 Baseline scores: {q4_scores}")
+    print(f"GGUF Baseline scores: {gguf_scores}")
     print(f"BF16 Baseline scores: {bf16_scores}")
 
     # Generate report
-    report = compare_results(finetuned_scores, q4_scores, bf16_scores)
+    report = compare_results(finetuned_scores, gguf_scores, bf16_scores)
 
     if args.output:
         output_path = Path(args.output)

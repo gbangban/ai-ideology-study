@@ -189,9 +189,15 @@ show_help() {
     echo "$description"
     echo ""
     echo "Options:"
-    echo "  --tasks TASK1,TASK2,...  Run only specified tasks (comma-separated)"
-    echo "  --help                   Show this help message"
-    echo "  --dry-run                Show what would run without executing"
+    echo "  --suite SUITE              Run a preset suite (short, medium, full)"
+    echo "  --tasks TASK1,TASK2,...    Run only specified tasks (overrides --suite)"
+    echo "  --help                     Show this help message"
+    echo "  --dry-run                  Show what would run without executing"
+    echo ""
+    echo "Suites:"
+    echo "  short   - IFEval + HumanEval + MMLU 5-shot (~2 hours)"
+    echo "  medium  - short + GPQA Diamond (~3 hours)"
+    echo "  full    - All tasks including MMLU-Pro (~40 hours)"
     echo ""
     echo "Available tasks:"
     IFS=',' read -ra TASK_ARR <<< "$tasks_list"
@@ -200,9 +206,9 @@ show_help() {
     done
     echo ""
     echo "Examples:"
-    echo "  $script_name                          # Run all tasks"
-    echo "  $script_name --tasks humaneval        # Run single task"
-    echo "  $script_name --tasks mmlu_pro,humaneval  # Run specific tasks"
+    echo "  $script_name                        # Run short suite (default)"
+    echo "  $script_name --suite full           # Run all tasks"
+    echo "  $script_name --tasks humaneval      # Run single task"
     echo ""
 }
 
@@ -228,7 +234,12 @@ wsl_to_win_path() {
 }
 
 # Extract throughput statistics from llama-server log.
-# Parses lines containing prompt_n/prompt_ms/eval_n/eval_ms from the server log.
+# Parses timing summary lines from the server log. llama-server prints:
+#
+#   prompt eval time =     457.32 ms /  1430 tokens (    0.32 ms per token,  3126.93 tokens per second)
+#          eval time =    3838.08 ms /    71 tokens (   54.06 ms per token,    18.50 tokens per second)
+#         total time =    4295.40 ms /  1501 tokens
+#
 # Usage: log_server_tps SERVER_LOG
 # Prints a formatted TPS summary to stdout and the eval log.
 log_server_tps() {
@@ -239,32 +250,38 @@ log_server_tps() {
         return
     fi
 
-    # llama-server logs completion timing in lines like:
-    #   "prompt eval time": XXXms, "eval time": YYYms, "predict": N tokens
-    # We extract all such lines and aggregate.
     local prompt_ms_total eval_ms_total prompt_tok_total eval_tok_total req_count
 
-    # Use awk to extract and sum timing values from the server log
+    # Use awk to extract and sum timing values from the server log.
+    # Match the plain-text format: "prompt eval time = XXX ms / N tokens"
+    # and "eval time = XXX ms / N tokens"
     read -r prompt_ms_total eval_ms_total prompt_tok_total eval_tok_total req_count << EOF
 $(awk '
-    /prompt eval time/ || /eval time/ {
-        # Extract prompt eval time
-        if (match($0, /"prompt eval time"[[:space:]]*:[[:space:]]*([0-9.]+)ms/, m))
-            prompt_ms += m[1]
-        # Extract eval time
-        if (match($0, /"eval time"[[:space:]]*:[[:space:]]*([0-9.]+)ms/, m))
-            eval_ms += m[1]
-        # Extract prompt tokens
-        if (match($0, /"prompt"[[:space:]]*:[[:space:]]*([0-9]+) tokens/, m))
-            prompt_tok += m[1]
-        # Extract eval tokens
-        if (match($0, /"predict"[[:space:]]*:[[:space:]]*([0-9]+) tokens/, m))
-            eval_tok += m[1]
-        count++
-    }
-    END {
-        printf "%.2f %.2f %d %d %d\n", prompt_ms, eval_ms, prompt_tok, eval_tok, count
-    }
+{
+    # Strip Windows \r line endings
+    gsub(/\r/, "")
+}
+/^prompt eval time =/ {
+    # Line: prompt eval time =     457.32 ms /  1430 tokens (...)
+    # Extract the ms value (first number after "=") and token count (second number)
+    line = $0
+    gsub(/[^0-9.]/, " ", line)
+    split(line, a, " ")
+    prompt_ms += a[1]
+    prompt_tok += a[2]
+    count++
+}
+/^ *eval time =/ {
+    # Line:        eval time =    3838.08 ms /    71 tokens (...)
+    line = $0
+    gsub(/[^0-9.]/, " ", line)
+    split(line, a, " ")
+    eval_ms += a[1]
+    eval_tok += a[2]
+}
+END {
+    printf "%.2f %.2f %d %d %d\n", prompt_ms, eval_ms, prompt_tok, eval_tok, count
+}
 ' "$server_log")
 EOF
 
@@ -333,6 +350,9 @@ start_llama_server() {
     log_info "  Model (Windows): $win_model_path"
 
     # Launch server in background
+    # -ub 2048: larger upload batch for better decode throughput under eval load
+    # --cache-ram 0: disable prompt cache - checkpoint restore overhead (~8ms/req)
+    #   outweighs any cache hits for lm-eval's random-access pattern
     "$server_bin" \
         -m "$win_model_path" \
         --host 127.0.0.1 \
@@ -340,10 +360,11 @@ start_llama_server() {
         -ngl 99 \
         -c "$ctx_size" \
         -b 4096 \
-        -ub 512 \
+        -ub 2048 \
         -fa on \
         --temp 0.0 \
         --top-p 0.95 \
+        --cache-ram 0 \
         > "$server_log" 2>&1 &
     SERVER_PID=$!
 

@@ -210,3 +210,198 @@ show_help() {
 _is_dry_run() {
     [ "${DRY_RUN:-false}" = "true" ]
 }
+
+# Convert a WSL /mnt/X/... path to a Windows X:/... path.
+# Leaves non-/mnt/ paths unchanged.
+wsl_to_win_path() {
+    local p="$1"
+    # Match /mnt/<drive>/... and convert to <DRIVE>:/...
+    if [[ "$p" =~ ^/mnt/([a-zA-Z])/(.*) ]]; then
+        local drive="${BASH_REMATCH[1]}"
+        local rest="${BASH_REMATCH[2]}"
+        # Uppercase the drive letter, replace / with \
+        drive=$(echo "$drive" | tr '[:lower:]' '[:upper:]')
+        echo "${drive}:/${rest}"
+    else
+        echo "$p"
+    fi
+}
+
+# Extract throughput statistics from llama-server log.
+# Parses lines containing prompt_n/prompt_ms/eval_n/eval_ms from the server log.
+# Usage: log_server_tps SERVER_LOG
+# Prints a formatted TPS summary to stdout and the eval log.
+log_server_tps() {
+    local server_log="$1"
+
+    if [ ! -f "$server_log" ]; then
+        log_warn "Server log not found at $server_log, skipping TPS extraction"
+        return
+    fi
+
+    # llama-server logs completion timing in lines like:
+    #   "prompt eval time": XXXms, "eval time": YYYms, "predict": N tokens
+    # We extract all such lines and aggregate.
+    local prompt_ms_total eval_ms_total prompt_tok_total eval_tok_total req_count
+
+    # Use awk to extract and sum timing values from the server log
+    read -r prompt_ms_total eval_ms_total prompt_tok_total eval_tok_total req_count << EOF
+$(awk '
+    /prompt eval time/ || /eval time/ {
+        # Extract prompt eval time
+        if (match($0, /"prompt eval time"[[:space:]]*:[[:space:]]*([0-9.]+)ms/, m))
+            prompt_ms += m[1]
+        # Extract eval time
+        if (match($0, /"eval time"[[:space:]]*:[[:space:]]*([0-9.]+)ms/, m))
+            eval_ms += m[1]
+        # Extract prompt tokens
+        if (match($0, /"prompt"[[:space:]]*:[[:space:]]*([0-9]+) tokens/, m))
+            prompt_tok += m[1]
+        # Extract eval tokens
+        if (match($0, /"predict"[[:space:]]*:[[:space:]]*([0-9]+) tokens/, m))
+            eval_tok += m[1]
+        count++
+    }
+    END {
+        printf "%.2f %.2f %d %d %d\n", prompt_ms, eval_ms, prompt_tok, eval_tok, count
+    }
+' "$server_log")
+EOF
+
+    if [ "$req_count" -eq 0 ] 2>/dev/null; then
+        log_warn "No timing data found in server log"
+        return
+    fi
+
+    local prompt_tps eval_tps overall_tps
+    local prompt_ms_s eval_ms_s total_ms_s
+
+    prompt_ms_s=$(echo "$prompt_ms_total / 1000" | bc -l 2>/dev/null || echo "0")
+    eval_ms_s=$(echo "$eval_ms_total / 1000" | bc -l 2>/dev/null || echo "0")
+    total_ms_s=$(echo "($prompt_ms_total + $eval_ms_total) / 1000" | bc -l 2>/dev/null || echo "0")
+
+    if [ "$(echo "$prompt_ms_s > 0" | bc -l 2>/dev/null)" = "1" ]; then
+        prompt_tps=$(echo "$prompt_tok_total / $prompt_ms_s" | bc -l 2>/dev/null || echo "0")
+    else
+        prompt_tps="0"
+    fi
+
+    if [ "$(echo "$eval_ms_s > 0" | bc -l 2>/dev/null)" = "1" ]; then
+        eval_tps=$(echo "$eval_tok_total / $eval_ms_s" | bc -l 2>/dev/null || echo "0")
+    else
+        eval_tps="0"
+    fi
+
+    if [ "$(echo "$total_ms_s > 0" | bc -l 2>/dev/null)" = "1" ]; then
+        overall_tps=$(echo "($prompt_tok_total + $eval_tok_total) / $total_ms_s" | bc -l 2>/dev/null || echo "0")
+    else
+        overall_tps="0"
+    fi
+
+    log_separator "-"
+    log_info "SERVER THROUGHPUT (from $req_count requests):"
+    log_info "  Prompt TPS:    $(printf '%8.1f' "$prompt_tps")  (${prompt_tok_total} tokens / ${prompt_ms_total}ms)"
+    log_info "  Generation TPS: $(printf '%8.1f' "$eval_tps")  (${eval_tok_total} tokens / ${eval_ms_total}ms)"
+    log_info "  Overall TPS:   $(printf '%8.1f' "$overall_tps")"
+    log_separator "-"
+}
+
+# Start llama-server with robust error detection.
+# Usage: start_llama_server SERVER_BIN MODEL_PATH PORT CTX_SIZE SERVER_LOG
+# Sets SERVER_PID on success. Returns 1 on failure.
+#
+# Key features:
+#   - Early crash detection: checks if the process died within first 3 seconds
+#     (catches CLI parse errors instantly instead of waiting for timeout)
+#   - Progressive health check: 1s intervals, with increasing patience
+#   - On failure: prints last 20 lines of server log so the user sees the actual error
+#   - Timeout configurable via SERVER_START_TIMEOUT (default 180s for large models)
+#   - Converts WSL /mnt/c/... paths to Windows C:/... for llama-server.exe
+start_llama_server() {
+    local server_bin="$1"
+    local model_path="$2"
+    local port="$3"
+    local ctx_size="$4"
+    local server_log="$5"
+
+    local timeout="${SERVER_START_TIMEOUT:-180}"
+
+    # Convert WSL mount path to Windows path for llama-server.exe
+    local win_model_path
+    win_model_path=$(wsl_to_win_path "$model_path")
+
+    log_info "  Model (Windows): $win_model_path"
+
+    # Launch server in background
+    "$server_bin" \
+        -m "$win_model_path" \
+        --host 127.0.0.1 \
+        --port "$port" \
+        -ngl 99 \
+        -c "$ctx_size" \
+        -b 4096 \
+        -ub 512 \
+        -fa on \
+        --temp 0.0 \
+        --top-p 0.95 \
+        > "$server_log" 2>&1 &
+    SERVER_PID=$!
+
+    log_info "Server started with PID $SERVER_PID"
+
+    # --- Early crash detection ---
+    # Wait 3 seconds, then check if the process is still alive.
+    # CLI parse errors (bad flags, missing model) kill the process immediately.
+    sleep 3
+    if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+        local exit_code=""
+        wait "$SERVER_PID" 2>/dev/null && exit_code=0 || exit_code=$?
+        log_error "Server crashed immediately (exit code: ${exit_code}). Last 20 lines of $server_log:"
+        tail -20 "$server_log" 2>/dev/null | while IFS= read -r line; do
+            log_error "  $line"
+        done
+        SERVER_PID=""
+        return 1
+    fi
+    log_info "Server process alive after 3s, waiting for /health endpoint..."
+
+    # --- Health check polling ---
+    local start_time
+    start_time=$(date +%s)
+    local attempt=0
+
+    while true; do
+        attempt=$((attempt + 1))
+        local now
+        now=$(date +%s)
+        local elapsed=$((now - start_time))
+
+        if [ "$elapsed" -ge "$timeout" ]; then
+            log_error "Server did not become ready within ${timeout}s."
+            # Show last lines of log
+            log_error "Last 20 lines of $server_log:"
+            tail -20 "$server_log" 2>/dev/null | while IFS= read -r line; do
+                log_error "  $line"
+            done
+            # Check if process is still alive (hung vs crashed)
+            if kill -0 "$SERVER_PID" 2>/dev/null; then
+                log_warn "Server process (PID $SERVER_PID) is still running but not responding."
+            else
+                log_error "Server process has died."
+            fi
+            return 1
+        fi
+
+        # Print progress every 10 seconds
+        if [ $((elapsed % 10)) -eq 0 ] && [ "$elapsed" -gt 0 ]; then
+            log_info "  Still waiting... (${elapsed}s / ${timeout}s)"
+        fi
+
+        if curl -s "http://127.0.0.1:$port/health" >/dev/null 2>&1; then
+            log_info "Server is ready (${elapsed}s)."
+            return 0
+        fi
+
+        sleep 1
+    done
+}

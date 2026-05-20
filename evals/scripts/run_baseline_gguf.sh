@@ -156,35 +156,7 @@ else
     log_info "  Port: $SERVER_PORT"
     log_info "  Context: $SERVER_CTX"
 
-    "$LLAMA_SERVER" \
-        --model "$GGUF_PATH" \
-        --host 127.0.0.1 \
-        --port "$SERVER_PORT" \
-        --n-gpu-layers all \
-        --ctx-size "$SERVER_CTX" \
-        --batch-size 2048 \
-        --flash-attn \
-        --logprobs 10 \
-        > "$RESULTS_DIR/server.log" 2>&1 &
-    SERVER_PID=$!
-    log_info "Server started with PID $SERVER_PID"
-
-    # Poll /health endpoint until the server is ready (max 60 seconds)
-    log_info "Waiting for server to be ready..."
-    SERVER_READY=false
-    for attempt in $(seq 1 60); do
-        if curl -s "http://127.0.0.1:$SERVER_PORT/health" >/dev/null 2>&1; then
-            SERVER_READY=true
-            break
-        fi
-        sleep 1
-    done
-
-    if [ "$SERVER_READY" != "true" ]; then
-        log_error "Server did not become ready within 60 seconds. Check $RESULTS_DIR/server.log"
-        exit 1
-    fi
-    log_info "Server is ready."
+    start_llama_server "$LLAMA_SERVER" "$GGUF_PATH" "$SERVER_PORT" "$SERVER_CTX" "$RESULTS_DIR/server.log" || exit 1
 fi
 
 # --- Run evaluations ---
@@ -227,7 +199,7 @@ for TASK in "${TASKS_TO_RUN[@]}"; do
     lm_eval --model gguf \
       --model_args "base_url=http://127.0.0.1:$SERVER_PORT,max_length=$SERVER_CTX" \
       --tasks "$TASK" \
-      --batch_size 4 \
+      --batch_size 2 \
       --output_path "$RESULTS_DIR" \
       --log_samples \
       --confirm_run_unsafe_code 2>&1 | tee -a "$EVAL_LOG"
@@ -241,6 +213,8 @@ for TASK in "${TASKS_TO_RUN[@]}"; do
 
     if [ $TASK_EXIT -eq 0 ]; then
         log_info "✓ Completed: $TASK (${TASK_MINS}m ${TASK_SECS}s)"
+        # Log throughput from server log for this task
+        log_server_tps "$RESULTS_DIR/server.log"
     else
         # Check if the failure was due to loglikelihood_rolling not being implemented
         if grep -q "NotImplementedError.*loglikelihood_rolling" "$EVAL_LOG" 2>/dev/null; then
@@ -260,6 +234,9 @@ TOTAL_ELAPSED=$(progress_elapsed_total)
 log_section "Evaluation Summary"
 log_info "Total elapsed time: $TOTAL_ELAPSED"
 log_info "Tasks completed: $(( ${#TASKS_TO_RUN[@]} - ${#FAILED_TASKS[@]} - ${#SKIPPED_TASKS[@]} - ${#ROLLING_SKIPPED[@]} ))"
+
+# Final overall throughput from the entire server log
+log_server_tps "$RESULTS_DIR/server.log"
 
 if [ ${#SKIPPED_TASKS[@]} -gt 0 ]; then
     log_warn "Tasks skipped (existing results): ${SKIPPED_TASKS[*]}"

@@ -166,35 +166,7 @@ else
     log_info "  Port: $SERVER_PORT"
     log_info "  Context: $SERVER_CTX"
 
-    "$LLAMA_SERVER" \
-        --model "$GGUF_PATH" \
-        --host 127.0.0.1 \
-        --port "$SERVER_PORT" \
-        --n-gpu-layers all \
-        --ctx-size "$SERVER_CTX" \
-        --batch-size 2048 \
-        --flash-attn \
-        --logprobs 10 \
-        > "$RESULTS_DIR/server.log" 2>&1 &
-    SERVER_PID=$!
-    log_info "Server started with PID $SERVER_PID"
-
-    # Poll /health endpoint until the server is ready (max 60 seconds)
-    log_info "Waiting for server to be ready..."
-    SERVER_READY=false
-    for attempt in $(seq 1 60); do
-        if curl -s "http://127.0.0.1:$SERVER_PORT/health" >/dev/null 2>&1; then
-            SERVER_READY=true
-            break
-        fi
-        sleep 1
-    done
-
-    if [ "$SERVER_READY" != "true" ]; then
-        log_error "Server did not become ready within 60 seconds. Check $RESULTS_DIR/server.log"
-        exit 1
-    fi
-    log_info "Server is ready."
+    start_llama_server "$LLAMA_SERVER" "$GGUF_PATH" "$SERVER_PORT" "$SERVER_CTX" "$RESULTS_DIR/server.log" || exit 1
 fi
 
 # --- Run evaluations ---

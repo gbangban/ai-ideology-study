@@ -1,14 +1,53 @@
 # DM-Align: Experimental Design Document
 
-> **Version**: 2.2 | **Date**: May 14, 2026 | **Status**: Draft
-> **Base Model**: `unsloth/Qwen3.5-27B-Instruct-unsloth-bnb-4bit`
+> **Version**: 2.4 | **Date**: May 20, 2026 | **Status**: Draft
+> **Teacher Model**: `Unsloth/Qwen3.5-27B` (base, data generation only)
+> **Student Model**: `Qwen/Qwen3.5-9B` (base, SFT + DPO training)
 > **Hardware**: RTX 5090 (32GB), Unsloth Studio (SFT) + custom DPO
+
+---
+
+## DESIGN NOTE: Model Variant Selection
+
+### Current Models (Base Variants)
+
+All models used in this experiment are **base** (non-Instruct) variants. Every path below is verified to exist on the system.
+
+| Role | Model ID | Variant | Actual Path (Windows HF cache via WSL2) |
+|------|----------|---------|----------------------------------------|
+| Teacher (data gen) | `Unsloth/Qwen3.5-27B` | Base | `/mnt/c/Users/Guy/.cache/huggingface/hub/models--Unsloth--Qwen3.5-27B/snapshots/358dae112e4fbc7e9c047e26fc55e542efe7e3d7/` |
+| Student (SFT + DPO) | `Qwen/Qwen3.5-9B` | Base | `/mnt/c/Users/Guy/.cache/huggingface/hub/models--Qwen--Qwen3.5-9B/snapshots/c202236235762e1c871ad0ccb60c8ee5ba337b9a/` |
+| Student GGUF (baseline eval) | `unsloth/Qwen3.5-9B-GGUF` | Base, Q4_K_M | `/mnt/c/Users/Guy/.cache/huggingface/hub/models--unsloth--Qwen3.5-9B-GGUF/snapshots/3885219b6810b007914f3a7950a8d1b469d598a5/Qwen3.5-9B-Q4_K_M.gguf` |
+| Fine-tuned GGUF (eval) | Studio export | Fine-tuned, Q4_K_M | `/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen3.5-9B-gguf/Qwen3.5-9B.Q4_K_M.gguf` |
+
+**No `*-unsloth-bnb-4bit` models exist on this system or were used in training.** Previous documentation referenced fabricated model identifiers. Unsloth Studio handles quantization internally at runtime via NF4 bnb — the `*-unsloth-bnb-4bit` suffix is not a separate model on HuggingFace; it is how Unsloth describes its runtime quantization pipeline applied to the base model.
+
+### Why Base Models Were Used
+
+The Unsloth training pipeline applies 4-bit NF4 quantization at load time via `bitsandbytes`. The model identifier passed to Unsloth is the base model (`Qwen/Qwen3.5-9B` or `Unsloth/Qwen3.5-27B`); Unsloth handles quantization internally. There is no separate "bnb-4bit" model to download.
+
+### Consideration: Moving to Instruct Variants
+
+**Potential benefits of Instruct variants for future experiments:**
+
+1. **Student (Instruct)**: `Qwen/Qwen3.5-9B-Instruct` has native chat template handling, which means:
+   - SFT data in ShareGPT/chat format aligns with the model's expected input format
+   - Better out-of-the-box response formatting without needing to teach chat conventions via SFT
+   - The model already knows how to follow system prompts, reducing SFT effort needed for instruction-following behavior
+
+2. **Teacher (Instruct)**: `Qwen3.5-27B-Instruct` has:
+   - Better system prompt adherence for generating DM-aligned responses
+   - More reliable response formatting for data generation
+
+3. **Experimental integrity concern**: Switching from Base to Instruct mid-experiment would change the baseline. Any Instruct variant work should start as a new experiment with fresh baselines.
+
+**Current decision**: Maintain Base variants for experimental integrity. The Instruct variants are noted here as a design consideration for future work.
 
 ---
 
 ## 1. Goal
 
-Train a Qwen3.5-27B model whose **default analytical frame** for social, economic, and political phenomena is **Dialectical Materialism (DM)** — a shift in what the model considers relevant, causal, and explanatory by default.
+Train a Qwen3.5-9B model whose **default analytical frame** for social, economic, and political phenomena is **Dialectical Materialism (DM)** — a shift in what the model considers relevant, causal, and explanatory by default. The 9B student model is fine-tuned via SFT + DPO; the 27B model is used only as the teacher for generating DM-aligned training data.
 
 The target is a change in reasoning, not a change in answer surface. The model should arrive at different causal explanations and identify different mechanisms, not merely use different vocabulary to reach the same conclusion. When asked *"How should we address the housing crisis?"* the model spontaneously:
 
@@ -436,7 +475,8 @@ The trained model is designed to enable these capabilities, ordered by complexit
 
 | Parameter | Value |
 |---|---|
-| Base model | `unsloth/Qwen3.5-27B-Instruct-unsloth-bnb-4bit` |
+| Student model | `Qwen/Qwen3.5-9B` (base, NF4 quantized at runtime by Unsloth) |
+| Teacher model | `Unsloth/Qwen3.5-27B` (base, data generation only) |
 | LoRA rank | 32 |
 | LoRA alpha | 32 |
 | LoRA dropout | 0.05 |
@@ -512,3 +552,5 @@ The trained model is designed to enable these capabilities, ordered by complexit
 | 2.0 | May 14, 2026 | Removed "what this is not/is" framing; removed all framework names from questions; added adversarial questions (Type E); added cross-domain generalization; revised eval to measure reasoning divergence from baseline; added multi-turn reasoning test; added reasoning trace inspection; added negative data for preserving general reasoning; added continued pretraining section; revised question quality criteria; updated success metrics |
 | 2.1 | May 14, 2026 | Added topic taxonomy system (§4): two-axis tagging (11 categories, 60 subtags × 7 epochs), auto-tagging, deduplication pipeline, diversity metrics, metadata isolation design |
 | 2.2 | May 14, 2026 | Replaced "hand-crafted" with "individually authored" — clarified constraint means each question is conceived and written from scratch, not programmatically templated, pooled, or distributed; removed generator scripts (`generate_questions.py`, `generate.py`, `run_teacher.sh`); updated §5.1 workflow |
+| 2.3 | May 20, 2026 | Separated teacher/student model roles: teacher is 27B (data generation only), student is 9B (SFT + DPO training); baseline evaluation compares against 9B, not 27B |
+| 2.4 | May 20, 2026 | Corrected model references: replaced fabricated `*-unsloth-bnb-4bit` identifiers with actual cached models (`Qwen/Qwen3.5-9B` base, `Unsloth/Qwen3.5-27B` base); added design note about Instruct variant considerations |

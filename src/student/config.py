@@ -6,12 +6,12 @@ See configs/studio_sft_config.yaml for the Studio-compatible config.
 Keep as reference only.
 
 Hyperparameters and configuration for QLoRA supervised fine-tuning
-of Qwen 3.5 27B model on RTX 5090 (32GB VRAM).
+of Qwen 3.5 9B model on RTX 5090 (32GB VRAM).
 """
 
 SFT_CONFIG = {
     # Model
-    "model_name": "unsloth/Qwen3.5-27B-Instruct-unsloth-bnb-4bit",
+    "model_name": "Qwen/Qwen3.5-9B",
     "max_seq_length": 4096,
     "load_in_4bit": True,
     "bnb_4bit_compute_dtype": "bfloat16",

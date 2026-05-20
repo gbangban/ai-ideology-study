@@ -2,7 +2,7 @@ from llama_cpp import Llama
 from src.teacher.prompts import generate_dm_prompt
 
 llm = Llama(
-    model_path="checkpoints/base_model/Qwen3.5-27B-Instruct-Q4_K_M.gguf",
+    model_path="/mnt/c/Users/Guy/.cache/huggingface/hub/models--unsloth--Qwen3.5-9B-GGUF/snapshots/3885219b6810b007914f3a7950a8d1b469d598a5/Qwen3.5-9B-Q4_K_M.gguf",
     n_gpu_layers=-1,
     n_ctx=4096,
     verbose=False,

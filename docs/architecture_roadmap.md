@@ -1,14 +1,19 @@
-# DM-Align Qwen 27B Architecture Roadmap
+# DM-Align Qwen 3.5 9B Architecture Roadmap
 
-> **Version**: 2.0 | **Date**: May 19, 2026 | **Status**: Aligned with Experimental Design v2.2
-> **Base Model**: `unsloth/Qwen3.5-27B-Instruct-unsloth-bnb-4bit`
+> **Version**: 2.2 | **Date**: May 20, 2026 | **Status**: Aligned with Experimental Design v2.4
+> **Teacher Model**: `Unsloth/Qwen3.5-27B` (base, data generation only)
+> **Student Model**: `Qwen/Qwen3.5-9B` (base, SFT + DPO training)
 > **Hardware**: RTX 5090 (32GB), Unsloth Studio (SFT) + custom DPO
 
 ---
 
 ## Executive Summary
 
-This document outlines the architecture and implementation roadmap for training a Dialectical Materialist (DM)-aligned Qwen 3.5 27B Instruct model. The pipeline uses **Unsloth Studio for SFT** and a **custom DPO training script** for preference optimization. The project runs on Docker Desktop on Windows with WSL2 backend.
+This document outlines the architecture and implementation roadmap for training a Dialectical Materialist (DM)-aligned Qwen 3.5 9B Instruct model. The pipeline uses **Unsloth Studio for SFT** and a **custom DPO training script** for preference optimization. The project runs on Docker Desktop on Windows with WSL2 backend.
+
+**Model Roles**:
+- **Teacher (27B)**: `Unsloth/Qwen3.5-27B` (base) — used only for generating DM-aligned training data via Studio. Larger capacity produces higher-quality DM-aligned responses. Quantized to NF4 at runtime by Unsloth.
+- **Student (9B)**: `Qwen/Qwen3.5-9B` (base) — the actual model being trained (SFT + DPO). All baseline evaluations compare against the 9B base model. Quantized to NF4 at runtime by Unsloth.
 
 **Key Design Principle**: The target is a change in *reasoning*, not a change in answer surface. The model should arrive at different causal explanations and identify different mechanisms, not merely use different vocabulary to reach the same conclusion.
 
@@ -317,7 +322,7 @@ Individually Authored Questions
 
 | Parameter | Value |
 |-----------|-------|
-| Base model | `unsloth/Qwen3.5-27B-Instruct-unsloth-bnb-4bit` |
+| Student model | `Qwen/Qwen3.5-9B` (base, NF4 quantized at runtime) |
 | LoRA rank | 32 |
 | LoRA alpha | 32 |
 | LoRA dropout | 0.05 |
@@ -723,6 +728,8 @@ docker-compose down -v
 |---------|------|---------|
 | 1.0 | April 20, 2026 | Initial architecture roadmap |
 | 2.0 | May 19, 2026 | Major rewrite aligned with Experimental Design v2.2: Studio SFT replaces custom SFT; teacher generation scripts removed; question types A-E; two-axis topic taxonomy; 5-eval strategy replacing keyword-based validation; continued pretraining section; updated risk mitigation; metadata isolation design |
+| 2.1 | May 20, 2026 | Separated teacher/student model roles: teacher is 27B (data generation), student is 9B (SFT + DPO); all baseline evaluations target 9B |
+| 2.2 | May 20, 2026 | Corrected model references: replaced fabricated `*-unsloth-bnb-4bit` identifiers with actual cached models; clarified Unsloth handles NF4 quantization at runtime |
 
 ---
 

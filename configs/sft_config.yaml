@@ -1,8 +1,8 @@
 # SFT Training Configuration
-# QLoRA Supervised Fine-Tuning for Qwen 3.5 27B
+# QLoRA Supervised Fine-Tuning for Qwen 3.5 9B
 
 # Model
-model_name: unsloth/Qwen3.5-27B-Instruct-unsloth-bnb-4bit
+model_name: Qwen/Qwen3.5-9B
 max_seq_length: 4096
 load_in_4bit: true
 

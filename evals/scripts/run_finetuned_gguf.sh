@@ -6,7 +6,7 @@
 # API server. The lm_eval gguf backend (GGUFLM) connects via HTTP.
 #
 # NOTE: Requires Studio container to be stopped (GPU must be free)
-# NOTE: llama-server uses ~16GB VRAM for the 27B Q4 model
+# NOTE: llama-server uses ~5.3GB VRAM for the 9B Q4 model
 # NOTE: Export the fine-tuned model as GGUF from Studio UI first
 #
 # Usage:
@@ -47,8 +47,8 @@ LLAMA_SERVER="/mnt/c/llamacpp/llama-server.exe"
 REPO_ROOT="$(dirname "$PROJECT_DIR")"
 
 # Fine-tuned GGUF path — override with FINETUNED_GGUF_PATH env var
-# Default: look in Studio exports directory for the merged GGUF
-FINETUNED_GGUF_DEFAULT="$REPO_ROOT/checkpoints/finetuned/Qwen3.5-27B-Instruct-Q4_K_M.gguf"
+# Default: Studio export of fine-tuned 9B Q4_K_M GGUF
+FINETUNED_GGUF_DEFAULT="/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen3.5-9B-gguf/Qwen3.5-9B.Q4_K_M.gguf"
 GGUF_PATH="${FINETUNED_GGUF_PATH:-$FINETUNED_GGUF_DEFAULT}"
 SERVER_PORT="${GGUF_SERVER_PORT:-8080}"
 SERVER_CTX="${GGUF_CTX_SIZE:-4096}"
@@ -156,7 +156,7 @@ else
         exit 1
     fi
 
-    # Check GPU availability - use a high threshold since the server will use ~16GB
+    # Check GPU availability - use a high threshold since the server will use ~5.3GB
     # Set AUTO_CONTINUE internally since we need the GPU for the server
     export AUTO_CONTINUE="${AUTO_CONTINUE:-true}"
     check_gpu 5000 || exit 1

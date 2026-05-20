@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-DM-Align: Dialectical Materialism alignment pipeline for Qwen3.5-27B-Instruct using Unsloth Studio + custom DPO training.
+DM-Align: Dialectical Materialism alignment pipeline for Qwen3.5-9B (student) using Unsloth Studio + custom DPO training. Qwen3.5-27B used as teacher for data generation only.
 
 ## Architecture
 
@@ -95,7 +95,9 @@ python3 -m src.student.train_dpo --help
 
 ## Model Details
 
-- Base: `unsloth/Qwen3.5-27B-Instruct-unsloth-bnb-4bit`
+- Teacher: `Unsloth/Qwen3.5-27B` (base, data generation only)
+- Student: `Qwen/Qwen3.5-9B` (base, SFT + DPO training)
+- Quantization: NF4 via Unsloth runtime (no separate bnb-4bit model downloaded)
 - LoRA: r=32, alpha=32, dropout=0.05, 7 target modules
 - VRAM: RTX 5090 (32GB), QLoRA NF4 quantization
 - DPO: beta=0.1, sigmoid loss, LR=5e-7

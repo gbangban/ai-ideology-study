@@ -1,6 +1,6 @@
 # Unsloth Studio SFT Configuration
 # Upload via Studio -> Parameters -> Upload YAML
-# Maps to: QLoRA Supervised Fine-Tuning for Qwen3.5-27B
+# Maps to: QLoRA Supervised Fine-Tuning for Qwen3.5-9B
 
 training:
   max_steps: 1000

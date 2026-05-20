@@ -6,7 +6,7 @@
 # API server. The lm_eval gguf backend (GGUFLM) connects via HTTP.
 #
 # NOTE: Requires Studio container to be stopped (GPU must be free)
-# NOTE: llama-server uses ~16GB VRAM for the 27B Q4 model
+# NOTE: llama-server uses ~5.3GB VRAM for the 9B Q4 model
 #
 # Usage:
 #   ./run_baseline_gguf.sh                          # Run all tasks
@@ -41,7 +41,7 @@ source "$VENV_DIR/bin/activate"
 # Server configuration
 LLAMA_SERVER="/mnt/c/llamacpp/llama-server.exe"
 REPO_ROOT="$(dirname "$PROJECT_DIR")"
-GGUF_PATH="${GGUF_MODEL_PATH:-$REPO_ROOT/checkpoints/base_model/Qwen3.5-27B-Instruct-Q4_K_M.gguf}"
+GGUF_PATH="${GGUF_MODEL_PATH:-/mnt/c/Users/Guy/.cache/huggingface/hub/models--unsloth--Qwen3.5-9B-GGUF/snapshots/3885219b6810b007914f3a7950a8d1b469d598a5/Qwen3.5-9B-Q4_K_M.gguf}"
 SERVER_PORT="${GGUF_SERVER_PORT:-8080}"
 SERVER_CTX="${GGUF_CTX_SIZE:-4096}"
 
@@ -146,7 +146,7 @@ else
         exit 1
     fi
 
-    # Check GPU availability - use a high threshold since the server will use ~16GB
+    # Check GPU availability - use a high threshold since the server will use ~5.3GB
     # Set AUTO_CONTINUE internally since we need the GPU for the server
     export AUTO_CONTINUE="${AUTO_CONTINUE:-true}"
     check_gpu 5000 || exit 1

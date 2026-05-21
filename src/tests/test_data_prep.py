@@ -151,3 +151,62 @@ class TestRejectedResponses:
         assert r1 != r2
         assert r1 != r3
         assert r2 != r3
+
+
+class TestDPOPairGeneration:
+    """Test DPO pair generation with real rejections."""
+
+    def test_interleaved_pairs(self, tmp_path):
+        """Test that DPO pairs are interleaved across rejection types."""
+        from src.teacher.generate_dpo_pairs import generate_interleaved_pairs
+
+        records = [
+            {"id": 1, "question": "Q1?", "answer": "Chosen answer 1."},
+            {"id": 2, "question": "Q2?", "answer": "Chosen answer 2."},
+        ]
+        rejections = [
+            {
+                "id": 1,
+                "rejections": [
+                    {"type": "liberal_default", "content": "Liberal R1"},
+                    {"type": "jargon_trap", "content": "Jargon R1"},
+                    {"type": "shallow_dm", "content": "Shallow R1"},
+                ],
+            },
+            {
+                "id": 2,
+                "rejections": [
+                    {"type": "liberal_default", "content": "Liberal R2"},
+                    {"type": "jargon_trap", "content": "Jargon R2"},
+                    {"type": "shallow_dm", "content": "Shallow R2"},
+                ],
+            },
+        ]
+
+        pairs = generate_interleaved_pairs(records, rejections)
+        assert len(pairs) == 6  # 2 questions x 3 rejection types
+
+        types = [p["rejection_type"] for p in pairs]
+        assert "liberal_default" in types
+        assert "jargon_trap" in types
+        assert "shallow_dm" in types
+
+    def test_pair_structure(self, tmp_path):
+        """Test that each DPO pair has correct structure."""
+        from src.teacher.generate_dpo_pairs import generate_interleaved_pairs
+
+        records = [{"id": 1, "question": "Q?", "answer": "Chosen."}]
+        rejections = [{
+            "id": 1,
+            "rejections": [{"type": "liberal_default", "content": "Rejected."}],
+        }]
+
+        pairs = generate_interleaved_pairs(records, rejections)
+        pair = pairs[0]
+
+        assert "prompt" in pair
+        assert "chosen" in pair
+        assert "rejected" in pair
+        assert "rejection_type" in pair
+        assert pair["chosen"] == "Chosen."
+        assert pair["rejected"] == "Rejected."

@@ -46,6 +46,7 @@ MODEL_DIR="${FINETUNED_MODEL_DIR:-$_FINETUNED_EXPORT_DIR}"
 
 # All available tasks
 ALL_TASKS=(
+    "mmlu"
     "mmlu_pro"
     "gpqa_diamond_zeroshot"
     "ifeval"
@@ -53,10 +54,11 @@ ALL_TASKS=(
     "leaderboard_math_hard"
 )
 
-TASKS_LIST="mmlu_pro,gpqa_diamond_zeroshot,ifeval,humaneval,leaderboard_math_hard"
+TASKS_LIST="mmlu,mmlu_pro,gpqa_diamond_zeroshot,ifeval,humaneval,leaderboard_math_hard"
 
 # Parse arguments
 DRY_RUN="false"
+_SELECTED_TASKS=()
 for arg in "$@"; do
     case "$arg" in
         --help)
@@ -65,6 +67,29 @@ for arg in "$@"; do
             ;;
         --dry-run)
             DRY_RUN="true"
+            ;;
+        --suite)
+            shift
+            if [ $# -eq 0 ]; then
+                log_error "--suite requires a value (short, medium, full)"
+                exit 1
+            fi
+            case "$1" in
+                short)
+                    IFS=',' read -ra _SELECTED_TASKS <<< "ifeval,humaneval,mmlu"
+                    ;;
+                medium)
+                    IFS=',' read -ra _SELECTED_TASKS <<< "ifeval,humaneval,mmlu,gpqa_diamond_zeroshot"
+                    ;;
+                full)
+                    # Run all tasks (empty = all)
+                    _SELECTED_TASKS=()
+                    ;;
+                *)
+                    log_error "Unknown suite: $1 (valid: short, medium, full)"
+                    exit 1
+                    ;;
+            esac
             ;;
         --tasks)
             shift
@@ -156,7 +181,6 @@ for TASK in "${TASKS_TO_RUN[@]}"; do
       --batch_size 4 \
       --output_path "$RESULTS_DIR" \
       --log_samples \
-      --use_cache false \
       --trust_remote_code \
       --confirm_run_unsafe_code 2>&1 | tee -a "$EVAL_LOG"
     TASK_EXIT=$?

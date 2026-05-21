@@ -20,8 +20,6 @@ import re
 import sys
 from pathlib import Path
 
-import pandas as pd
-
 
 # Lines that mark the start of trailing meta-commentary blocks
 TRAILING_META_MARKERS = [
@@ -289,6 +287,8 @@ def clean_fallback(rc: str) -> str:
 
 def process_parquet_file(input_path: str, output_dir: str) -> str:
     """Process a parquet file: clean reasoning traces and write back."""
+    import pandas as pd
+
     df = pd.read_parquet(input_path)
 
     if 'answer__reasoning_content' not in df.columns:

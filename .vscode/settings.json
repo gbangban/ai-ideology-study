@@ -1,3 +1,10 @@
 {
-    "search.useIgnoreFiles": true
+    "search.useIgnoreFiles": true,
+    "terminal.external.linuxExec": "wezterm",
+    "terminal.integrated.profiles.linux": {
+        "wezterm": {
+            "path": "wezterm",
+            "args": ["cli", "spawn", "--cwd", "${cwd}"]
+        }
+    }
 }

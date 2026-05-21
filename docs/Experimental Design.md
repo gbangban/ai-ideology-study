@@ -189,7 +189,7 @@ Questions are organized into five types, each serving a distinct role in trainin
 
 A good alignment question satisfies all of:
 
-1. **Individually authored (Hard Constraint)**: Every question is individually conceived and written by a human. No question is produced programmatically — not by LLMs, not by template engines, not by pool rotation, not by batch distribution scripts, and not by any automated synthesis tool. Each question is a unique, standalone artifact authored from scratch. Programmatically assembled questions (even from human-written pools) inherit structural repetition, formulaic patterns, and distribution artifacts that undermine alignment training quality. Generator scripts (`generate_questions.py`, `generate.py`, `run_teacher.sh`) have been removed; questions are placed directly into the dataset as individual entries.
+1. **AI-generated, quality-filtered**: All questions are AI-generated, assembled from two pools via `scripts/build_questions_json.py`: the deprecated pool (1,462 questions) and the secondary pool (454 questions). The assembly pipeline applies quality filters (DM terminology removal, template pattern removal, deduplication) and selects 1,500 questions with balanced distribution across axes, epochs, and types. Original generator scripts (`generate_questions.py`, `generate.py`, `run_teacher.sh`) have been removed.
 2. **Ideologically neutral phrasing**: No DM terminology or framework names in the question
 3. **No framework cues**: Never asks the model to "apply X lens" or "analyze through Y framework"
 4. **Plausible liberal answer**: A standard liberal-reformist response exists and is the model's statistical default
@@ -239,13 +239,12 @@ Tags use `EP` prefix to avoid collision with Axis 1 Disability tags (`E1`-`E5`).
 ### 4.3 How to Use the System
 
 **File formats**:
-- `data/raw/questions.json` — **Primary** source of truth, human-readable, tagged
-- `data/raw/questions.jsonl` — **Secondary**, generated from JSON for pipeline consumption
+- `data/raw/questions.json` — **Primary** source of truth, AI-generated, quality-filtered, tagged
 
 **Tagging**:
 ```bash
 # Auto-tag questions using keyword matching
-python -m src.teacher.tag_questions tag data/raw/questions.jsonl data/raw/questions_tagged.jsonl --auto
+python -m src.teacher.tag_questions tag data/raw/questions.json data/raw/questions_tagged.jsonl --auto
 ```
 
 **Deduplication**:
@@ -257,10 +256,10 @@ python -m src.teacher.dedup_questions
 **Coverage**:
 ```bash
 # Coverage report for a tagged question file
-python -m src.teacher.tag_questions coverage data/raw/questions.jsonl
+python -m src.teacher.tag_questions coverage data/raw/questions.json
 
 # Or via the topics module
-python -m src.teacher.topics coverage data/raw/questions.jsonl
+python -m src.teacher.topics coverage data/raw/questions.json
 ```
 
 **Browse tags**:
@@ -296,18 +295,18 @@ The generation pipeline does not pass tags into training samples. Question text 
 ### 4.1 Actual Workflow
 
 ```
-Individually Authored Questions → [Human written, placed directly into dataset] → Unsloth Studio (Teacher answers) → SFT Training → DPO Training → Eval
+AI-Generated Questions → [Quality-filtered, deduped, assembled via build_questions_json.py] → Unsloth Studio (Teacher answers) → SFT Training → DPO Training → Eval
 ```
 
-**Question Sourcing (Hard Constraint)**: All training questions are individually conceived and written by a human. No question is produced programmatically — not by LLMs, templates, pool rotation, batch distribution, or any automated tool. Each question is authored from scratch and placed directly into the dataset. Generator scripts (`generate_questions.py`, `generate.py`, `run_teacher.sh`) have been removed to enforce this constraint.
+**Question Sourcing**: All 1,500 training questions are AI-generated, assembled from two pools via `scripts/build_questions_json.py` with quality filters (DM terminology removal, template pattern removal, deduplication) and balanced distribution targets. Generator scripts (`generate_questions.py`, `generate.py`, `run_teacher.sh`) have been removed.
 
 **Note**: The teacher answer generation pipeline (`src/teacher/generate.py`, `scripts/run_teacher.sh`) has been removed. The actual workflow is:
 
-1. **Question authoring**: Questions are individually written and placed into `data/raw/questions.json` / `data/raw/questions_clean.jsonl`
+1. **Question assembly**: AI-generated questions from two pools are assembled via `scripts/build_questions_json.py` into `data/raw/questions.json` with quality filters and balanced distribution
 2. **Teacher answers**: Questions are fed into Unsloth Studio, which generates DM-aligned responses using the base model with DM system prompts
 3. **SFT dataset**: Studio outputs are collected into ShareGPT-format JSONL
 4. **SFT training**: Dataset is uploaded to Unsloth Studio for QLoRA SFT
-5. **DPO training**: Dataset uploaded to unsloth studio for training
+5. **DPO training**: Custom script (`src/student/train_dpo.py`), NOT in Studio UI
 6. **Eval**: Trained model is tested against neutral questions
 
 ### 4.2 DPO Pair Construction
@@ -571,6 +570,7 @@ The trained model is designed to enable these capabilities, ordered by complexit
 | 2.3 | May 20, 2026 | Separated teacher/student model roles: teacher is 27B (data generation only), student is 9B (SFT + DPO training); baseline evaluation compares against 9B, not 27B |
 | 2.4 | May 20, 2026 | Corrected model references: replaced fabricated `*-unsloth-bnb-4bit` identifiers with actual cached models (`Qwen/Qwen3.5-9B` base, `Unsloth/Qwen3.5-27B` base); added design note about Instruct variant considerations |
 | 2.5 | May 20, 2026 | Added §13 Evaluation Results with first HumanEval measurements; updated §5.6 regression tests with measured data; documented Q4_K_M quantization collapse (70.73% → 1.83%); documented eval infrastructure (lm_eval 0.4.12, llama.cpp server, eval suite structure) |
+| 2.6 | May 21, 2026 | Corrected question authorship: all 1,500 questions are AI-generated, not human-authored; removed stale "individually authored" hard constraint; corrected §5.1 DPO step (custom script, not Studio); marked GGUF eval scripts as deleted; removed reference to non-existent `questions.jsonl` |
 
 ---
 
@@ -584,7 +584,7 @@ The trained model is designed to enable these capabilities, ordered by complexit
 |---------|----------|---------------|
 | Native HF (`--model hf`) | BF16 baseline, full precision | `evals/scripts/run_baseline_bf16.sh` |
 | Native HF (`--model hf`) | Finetuned BF16, full precision safetensors | `evals/scripts/run_finetuned_bf16.sh` |
-| GGUF via llama.cpp (`--model gguf`) | Quantized models via HTTP server | `evals/scripts/run_baseline_gguf.sh`, `evals/scripts/run_finetuned_gguf.sh` |
+| GGUF via llama.cpp (`--model gguf`) | Quantized models via HTTP server | **DELETED** (scripts removed in commit 4cffa8e; results remain in `evals/results/`) |
 
 **Server** (GGUF only): `llama-server.exe` running on Windows, serving at `http://127.0.0.1:8080`. Context 4096, batch 4096, upload batch 2048, flash attention on, no prompt cache (overhead exceeds benefit for lm_eval's access pattern).
 

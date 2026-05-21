@@ -27,7 +27,7 @@ def get_model_label(result_path: Path, results_dir: Path) -> str:
     parts = rel.parts
 
     # results/baseline/gguf/... -> "baseline-gguf"
-    # results/runs/finetuned/gguf/... -> "finetuned-gguf"
+    # results/finetuned/gguf/... -> "finetuned-gguf"
     # results/baseline/bf16/... -> "baseline-bf16"
     # Strip the 'runs' intermediate directory from label
     parts = [p for p in parts if p != "runs"]

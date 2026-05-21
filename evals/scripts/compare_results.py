@@ -331,7 +331,7 @@ def main():
     parser = argparse.ArgumentParser(description="Compare benchmark evaluation results")
     parser.add_argument(
         "--finetuned",
-        default="results/runs/finetuned",
+        default="results/finetuned/gguf",
         help="Path to fine-tuned results directory",
     )
     parser.add_argument(

@@ -22,7 +22,7 @@
 |-----|------|
 | Baseline BF16 | `results/baseline/bf16/__mnt__c__Users__Guy__.cache__huggingface__hub__models--Qwen--Qwen3.5-9B__snapshots__c202236235762e1c871ad0ccb60c8ee5ba337b9a/results_2026-05-20T18-48-33.036720.json` |
 | Baseline GGUF | `results/baseline/gguf/baseline-2026_05_20T17_27_33/results_2026-05-20T17-27-33.002448.json` |
-| Finetuned GGUF | `results/runs/finetuned/gguf/finetuned-2026_05_20T17_49_34/results_2026-05-20T17-49-34.323483.json` |
+| Finetuned GGUF | `results/finetuned/gguf/finetuned-2026_05_20T17_49_34/results_2026-05-20T17-49-34.323483.json` |
 
 ### Analysis
 

@@ -1,15 +1,21 @@
 #!/bin/bash
-# Run BF16 baseline evaluation (framework validation)
-# Validates that local evaluation matches published scores
+# Run fine-tuned BF16 evaluation using native HF backend
+# Evaluates the full-precision safetensors model exported from Studio
+#
+# This avoids the Q4_K_M quantization penalty that collapses HumanEval
+# from 70.73% to 1.83%, providing a meaningful regression test.
 #
 # NOTE: Requires Studio container to be stopped (GPU must be free)
-# NOTE: Script saves checkpoints after each task group for easy resume
+# NOTE: The full 9B bf16 model uses ~18GB VRAM
 #
 # Usage:
-#   ./run_baseline_bf16.sh                          # Run all tasks
-#   ./run_baseline_bf16.sh --tasks humaneval        # Run single task only
-#   ./run_baseline_bf16.sh --tasks mmlu_pro,humaneval  # Run specific tasks
-#   ./run_baseline_bf16.sh --help                   # Show available tasks
+#   ./run_finetuned_bf16.sh                              # Run all tasks
+#   ./run_finetuned_bf16.sh --tasks humaneval             # Run single task only
+#   ./run_finetuned_bf16.sh --tasks mmlu_pro,humaneval    # Run specific tasks
+#   ./run_finetuned_bf16.sh --help                        # Show available tasks
+#
+# Set FINETUNED_MODEL_DIR to point to a specific checkpoint directory:
+#   FINETUNED_MODEL_DIR=/path/to/checkpoint ./run_finetuned_bf16.sh
 
 set -euo pipefail
 
@@ -22,7 +28,7 @@ source "$SCRIPT_DIR/eval_logging.sh"
 export HF_ALLOW_CODE_EVAL="1"
 
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-RESULTS_DIR="$PROJECT_DIR/results/baseline/bf16"
+RESULTS_DIR="$PROJECT_DIR/results/finetuned/bf16"
 
 # Activate venv
 VENV_DIR="$PROJECT_DIR/.venv"
@@ -32,8 +38,11 @@ if [ ! -f "$VENV_DIR/bin/activate" ]; then
 fi
 source "$VENV_DIR/bin/activate"
 
-# Model paths (cached BF16 safetensors)
-MODEL_DIR="/mnt/c/Users/Guy/.cache/huggingface/hub/models--Qwen--Qwen3.5-9B/snapshots/c202236235762e1c871ad0ccb60c8ee5ba337b9a"
+# Fine-tuned model path — override with FINETUNED_MODEL_DIR env var
+# Default: Studio export of full-precision finetuned 9B safetensors
+# The path points to the checkpoint directory containing model.safetensors.index.json
+_FINETUNED_EXPORT_DIR="/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330"
+MODEL_DIR="${FINETUNED_MODEL_DIR:-$_FINETUNED_EXPORT_DIR}"
 
 # All available tasks
 ALL_TASKS=(
@@ -51,7 +60,7 @@ DRY_RUN="false"
 for arg in "$@"; do
     case "$arg" in
         --help)
-            show_help "$0" "BF16 Baseline Evaluation (framework validation)" "$TASKS_LIST"
+            show_help "$0" "Fine-Tuned BF16 Evaluation (native HF, full precision)" "$TASKS_LIST"
             exit 0
             ;;
         --dry-run)
@@ -74,7 +83,7 @@ EVAL_LOG="$RESULTS_DIR/eval.log"
 # Truncate log for fresh run
 : > "$EVAL_LOG"
 
-log_section "BF16 Baseline Evaluation"
+log_section "Fine-Tuned BF16 Evaluation"
 log_info "Model: $MODEL_DIR"
 log_info "Output: $RESULTS_DIR"
 log_info "Log file: $EVAL_LOG"
@@ -147,7 +156,7 @@ for TASK in "${TASKS_TO_RUN[@]}"; do
       --batch_size 4 \
       --output_path "$RESULTS_DIR" \
       --log_samples \
-      --use_cache refresh \
+      --use_cache false \
       --trust_remote_code \
       --confirm_run_unsafe_code 2>&1 | tee -a "$EVAL_LOG"
     TASK_EXIT=$?

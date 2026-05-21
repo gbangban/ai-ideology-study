@@ -583,6 +583,7 @@ The trained model is designed to enable these capabilities, ordered by complexit
 | Backend | Use Case | Runner Script |
 |---------|----------|---------------|
 | Native HF (`--model hf`) | BF16 baseline, full precision | `evals/scripts/run_baseline_bf16.sh` |
+| Native HF (`--model hf`) | Finetuned BF16, full precision safetensors | `evals/scripts/run_finetuned_bf16.sh` |
 | GGUF via llama.cpp (`--model gguf`) | Quantized models via HTTP server | `evals/scripts/run_baseline_gguf.sh`, `evals/scripts/run_finetuned_gguf.sh` |
 
 **Server** (GGUF only): `llama-server.exe` running on Windows, serving at `http://127.0.0.1:8080`. Context 4096, batch 4096, upload batch 2048, flash attention on, no prompt cache (overhead exceeds benefit for lm_eval's access pattern).

@@ -59,6 +59,7 @@ src/teacher/generate.py -> data/processed/sft_dataset.jsonl
 - `evals/` - Evaluation framework (lm_eval 0.4.12 + llama.cpp server)
 - `evals/scripts/run_baseline_bf16.sh` - BF16 baseline eval (native HF, full precision)
 - `evals/scripts/run_baseline_gguf.sh` - GGUF baseline eval (Q4_K_M, llama.cpp server)
+- `evals/scripts/run_finetuned_bf16.sh` - Finetuned BF16 eval (native HF, full precision safetensors)
 - `evals/scripts/run_finetuned_gguf.sh` - Finetuned GGUF eval (merged LoRA, Q4_K_M)
 - `evals/scripts/eval_logging.sh` - Shared logging utilities
 - `evals/results/` - Eval result JSON files, organized by run type
@@ -99,6 +100,9 @@ python3 -m src.student.train_dpo --help
 
 # GGUF baseline (Q4_K_M, llama.cpp server)
 ./evals/scripts/run_baseline_gguf.sh --tasks humaneval
+
+# Finetuned BF16 (native HF, full precision safetensors)
+./evals/scripts/run_finetuned_bf16.sh --tasks humaneval
 
 # Finetuned GGUF (merged LoRA, Q4_K_M)
 ./evals/scripts/run_finetuned_gguf.sh --tasks humaneval

@@ -35,7 +35,7 @@ export HF_ALLOW_CODE_EVAL="1"
 export LM_EVAL_CONFIRM_RUN_UNSAFE_CODE="True"
 
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-RESULTS_DIR="$PROJECT_DIR/results/runs/finetuned/gguf"
+RESULTS_DIR="$PROJECT_DIR/results/finetuned/gguf"
 
 # Activate venv
 VENV_DIR="$PROJECT_DIR/.venv"

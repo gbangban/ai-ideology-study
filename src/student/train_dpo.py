@@ -1,39 +1,29 @@
+#!/usr/bin/env python3
 """
 DPO Training Script
 
-Direct Preference Optimization training on preference pairs.
-This remains custom code as Unsloth Studio does not support DPO in the UI.
+Direct Preference Optimization on preference pairs.
+Loads SFT v2 adapter, trains with TRL DPOTrainer.
 
-Workflow: Studio SFT -> Export LoRA -> This script -> Export final adapter
+Usage:
+    python3 -m src.student.train_dpo \
+        --sft-adapter-path checkpoints/lora_adapters/sft_v2_adapter \
+        --dpo-pairs-path data/processed/dpo_pairs.jsonl \
+        --output-dir checkpoints/lora_adapters/dpo_adapter
 """
 
 import argparse
 import json
+import sys
 from pathlib import Path
-from typing import List, Dict
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 from src.student.dpo_config import DPO_CONFIG
 
-REQUIRED_DPO_FILES = ["adapter_model.safetensors", "scheduler.pt"]
 
-
-def _get_torch():
-    """Lazy import of torch."""
-    import torch
-
-    return torch
-
-
-def load_dpo_pairs(filepath: str) -> List[dict]:
-    """
-    Load DPO pairs from JSONL file.
-
-    Args:
-        filepath: Path to JSONL file
-
-    Returns:
-        List of DPO pair dictionaries
-    """
+def load_dpo_pairs(filepath: str) -> list[dict]:
+    """Load DPO pairs from JSONL file."""
     pairs = []
     with open(filepath, "r") as f:
         for line in f:
@@ -42,205 +32,81 @@ def load_dpo_pairs(filepath: str) -> List[dict]:
     return pairs
 
 
-def format_dpo_sample(sample: dict) -> dict:
-    """
-    Format DPO sample for training.
+def train(config: dict, sft_adapter_path: str, dpo_pairs_path: str, output_dir: str):
+    """Run DPO training."""
+    from unsloth import FastLanguageModel
+    from trl import DPOTrainer
+    from transformers import TrainingArguments
+    from datasets import load_dataset
 
-    Args:
-        sample: Raw DPO sample
-
-    Returns:
-        Formatted sample with question, chosen, rejected
-    """
-    return {
-        "question": sample.get("question", ""),
-        "chosen": sample.get("chosen", ""),
-        "rejected": sample.get("rejected", ""),
-    }
-
-
-def prepare_dpo_batch(pairs: List[dict], tokenizer) -> dict:
-    """
-    Prepare a batch of DPO pairs for training.
-
-    Args:
-        pairs: List of DPO pairs
-        tokenizer: Tokenizer for encoding
-
-    Returns:
-        Dict with tokenized chosen and rejected inputs
-    """
-    chosen_texts = []
-    rejected_texts = []
-
-    for pair in pairs:
-        formatted = format_dpo_sample(pair)
-        chosen_texts.append(
-            f"User: {formatted['question']}\nAssistant: {formatted['chosen']}"
-        )
-        rejected_texts.append(
-            f"User: {formatted['question']}\nAssistant: {formatted['rejected']}"
-        )
-
-    chosen_encoded = tokenizer(
-        chosen_texts,
-        padding=True,
-        truncation=True,
-        max_length=4096,
-        return_tensors="pt",
+    # Load model with SFT adapter
+    print(f"Loading SFT adapter from {sft_adapter_path}...")
+    model, tokenizer = FastLanguageModel.from_pretrained(
+        model_name=sft_adapter_path,
+        max_seq_length=4096,
+        dtype=None,
+        load_in_4bit=True,
     )
 
-    rejected_encoded = tokenizer(
-        rejected_texts,
-        padding=True,
-        truncation=True,
-        max_length=4096,
-        return_tensors="pt",
+    # Apply LoRA for DPO fine-tuning
+    model = FastLanguageModel.get_peft_model(
+        model,
+        r=16,
+        lora_alpha=16,
+        lora_dropout=0.05,
+        target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+    )
+    model = FastLanguageModel.for_training(model)
+
+    # Load dataset
+    print(f"Loading DPO pairs from {dpo_pairs_path}...")
+    dataset = load_dataset("json", data_files=dpo_pairs_path, split="train")
+    print(f"  Loaded {len(dataset)} pairs")
+
+    # Training args
+    training_args = TrainingArguments(
+        output_dir=output_dir,
+        learning_rate=config["learning_rate"],
+        max_steps=config["max_steps"],
+        per_device_train_batch_size=config["per_device_train_batch_size"],
+        gradient_accumulation_steps=config["gradient_accumulation_steps"],
+        lr_scheduler_type=config["lr_scheduler_type"],
+        warmup_steps=config["warmup_steps"],
+        bf16=True,
+        logging_steps=config.get("logging_steps", 25),
+        save_steps=config.get("save_steps", 100),
+        report_to="none",
     )
 
-    return {
-        "chosen_input_ids": chosen_encoded["input_ids"],
-        "chosen_attention_mask": chosen_encoded["attention_mask"],
-        "rejected_input_ids": rejected_encoded["input_ids"],
-        "rejected_attention_mask": rejected_encoded["attention_mask"],
-    }
+    # DPO trainer
+    trainer = DPOTrainer(
+        model=model,
+        ref_model=None,
+        tokenizer=tokenizer,
+        args=training_args,
+        beta=config["beta"],
+        train_dataset=dataset,
+    )
 
+    print("Starting DPO training...")
+    metrics = trainer.train()
+    print(f"Training complete. Metrics: {metrics}")
 
-def save_dpo_adapter(model, tokenizer, output_dir: str):
-    """
-    Save DPO adapter to directory.
-
-    Args:
-        model: Trained model with DPO adapters
-        tokenizer: Model tokenizer
-        output_dir: Directory to save adapter
-    """
-    Path(output_dir).mkdir(parents=True, exist_ok=True)
-
+    # Save
+    print(f"Saving DPO adapter to {output_dir}...")
     model.save_pretrained(output_dir)
     tokenizer.save_pretrained(output_dir)
-
-    print(f"DPO adapter saved to {output_dir}")
-
-
-def measure_preference_alignment(model, test_questions: List[str]) -> float:
-    """
-    Measure model's preference alignment on test questions.
-
-    Args:
-        model: Trained model
-        test_questions: List of test questions
-
-    Returns:
-        Alignment score (0.0 to 1.0)
-    """
-    from src.teacher.validators import validate_dm_response
-
-    aligned_count = 0
-
-    for question in test_questions:
-        response = model.generate(question)
-        if validate_dm_response(response):
-            aligned_count += 1
-
-    return aligned_count / len(test_questions) if test_questions else 0.0
-
-
-def train_dpo(model, tokenizer, pairs: List[dict], config: dict = None):
-    """
-    Train model with DPO on preference pairs.
-
-    Args:
-        model: Base model (with SFT adapter)
-        tokenizer: Model tokenizer
-        pairs: List of DPO pairs
-        config: Training configuration
-
-    Returns:
-        Trained model
-    """
-    torch = _get_torch()
-
-    if config is None:
-        config = DPO_CONFIG
-
-    # Prepare dataset
-    batch = prepare_dpo_batch(pairs, tokenizer)
-
-    # Setup DPO trainer (using TRL)
-    try:
-        from trl import DPOTrainer
-
-        trainer = DPOTrainer(
-            model=model,
-            ref_model=None,
-            tokenizer=tokenizer,
-            args=config,
-            beta=config.get("beta", 0.1),
-            train_dataset=pairs,
-        )
-
-        # Train
-        trainer.train()
-
-        return trainer.model
-
-    except ImportError:
-        # Fallback: simulate training
-        print("TRL not available - simulating DPO training")
-        return model
+    print("Done.")
 
 
 def main():
-    """Main entry point for DPO training with CLI argument parsing."""
     parser = argparse.ArgumentParser(description="DPO Training for DM Alignment")
-    parser.add_argument(
-        "--sft-adapter-path",
-        type=str,
-        default="checkpoints/lora_adapters/sft_adapter",
-        help="Path to SFT adapter (local path or Studio export path)",
-    )
-    parser.add_argument(
-        "--dpo-pairs-path",
-        type=str,
-        default="data/processed/dpo_pairs.jsonl",
-        help="Path to DPO pairs JSONL file",
-    )
-    parser.add_argument(
-        "--output-dir",
-        type=str,
-        default="checkpoints/lora_adapters/dpo_adapter",
-        help="Output directory for DPO adapter",
-    )
-    parser.add_argument(
-        "--studio-export-path",
-        type=str,
-        default=None,
-        help="Studio export path for SFT adapter (overrides --sft-adapter-path)",
-    )
-
+    parser.add_argument("--sft-adapter-path", default=DPO_CONFIG["base_model"], help="Path to SFT adapter")
+    parser.add_argument("--dpo-pairs-path", default="data/processed/dpo_pairs.jsonl", help="Path to DPO pairs JSONL")
+    parser.add_argument("--output-dir", default=DPO_CONFIG["output_dir"], help="Output directory")
     args = parser.parse_args()
 
-    sft_adapter_path = args.studio_export_path or args.sft_adapter_path
-
-    print(f"Loading SFT adapter from {sft_adapter_path}...")
-
-    from unsloth import FastLanguageModel
-
-    # Load model with SFT adapter
-    model, tokenizer = FastLanguageModel.from_pretrained(
-        model_name=sft_adapter_path, max_seq_length=4096, load_in_4bit=True
-    )
-
-    print(f"Loading DPO pairs from {args.dpo_pairs_path}...")
-    pairs = load_dpo_pairs(args.dpo_pairs_path)
-    print(f"Loaded {len(pairs)} DPO pairs")
-
-    print("Starting DPO training...")
-    model = train_dpo(model, tokenizer, pairs, DPO_CONFIG)
-
-    print(f"Saving DPO adapter to {args.output_dir}...")
-    save_dpo_adapter(model, tokenizer, args.output_dir)
+    train(DPO_CONFIG, args.sft_adapter_path, args.dpo_pairs_path, args.output_dir)
 
 
 if __name__ == "__main__":

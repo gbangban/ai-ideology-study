@@ -1,13 +1,13 @@
 """
 DPO Training Configuration
 
-Hyperparameters for Direct Preference Optimization training
-of Qwen 3.5 27B model on RTX 5090 (32GB VRAM).
+Hyperparameters for Direct Preference Optimization training.
+Student: Qwen/Qwen3.5-9B (Instruct), NF4 quantized at runtime.
 """
 
 DPO_CONFIG = {
-    # Base model (SFT adapter)
-    "base_model": "checkpoints/lora_adapters/sft_adapter",
+    # Base model (SFT v2 adapter)
+    "base_model": "checkpoints/lora_adapters/sft_v2_adapter",
     # DPO-specific
     "beta": 0.1,
     "dpo_loss": "sigmoid",
@@ -20,4 +20,6 @@ DPO_CONFIG = {
     "lr_scheduler_type": "cosine",
     # Output
     "output_dir": "checkpoints/lora_adapters/dpo_adapter",
+    "logging_steps": 25,
+    "save_steps": 100,
 }

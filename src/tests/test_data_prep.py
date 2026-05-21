@@ -108,3 +108,46 @@ class TestBuildSFTDataset:
         assert "B1" not in user_content
         assert "EP6" not in user_content
         assert "axis1" not in user_content
+
+
+class TestRejectedResponses:
+    """Test rejected response generation."""
+
+    def test_liberal_default_generation(self):
+        """Test that liberal default responses are substantive."""
+        from src.teacher.generate_rejected_responses import generate_liberal_default
+
+        response = generate_liberal_default("Why is income inequality increasing?")
+        assert len(response) > 100
+        assert "individual" in response.lower() or "market" in response.lower() or "policy" in response.lower()
+
+    def test_jargon_trap_generation(self):
+        """Test that jargon trap responses use DM terms without structural rigor."""
+        from src.teacher.generate_rejected_responses import generate_jargon_trap
+
+        response = generate_jargon_trap("Why is income inequality increasing?")
+        assert len(response) > 100
+
+    def test_shallow_dm_generation(self):
+        """Test that shallow DM responses are lazy/incomplete."""
+        from src.teacher.generate_rejected_responses import generate_shallow_dm
+
+        response = generate_shallow_dm("Why is income inequality increasing?")
+        assert len(response) > 100
+
+    def test_all_three_differ(self):
+        """Test that all three rejection types produce different responses."""
+        from src.teacher.generate_rejected_responses import (
+            generate_liberal_default,
+            generate_jargon_trap,
+            generate_shallow_dm,
+        )
+
+        q = "Why is income inequality increasing?"
+        r1 = generate_liberal_default(q)
+        r2 = generate_jargon_trap(q)
+        r3 = generate_shallow_dm(q)
+
+        assert r1 != r2
+        assert r1 != r3
+        assert r2 != r3

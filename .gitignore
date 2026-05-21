@@ -13,3 +13,6 @@ references/
 *.gguf
 *.safetensors
 refresh_rank0.db
+
+# Worktrees
+.worktrees/

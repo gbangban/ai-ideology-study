@@ -1,47 +1,36 @@
 # DM-Align: Experimental Design Document
 
-> **Version**: 2.5 | **Date**: May 20, 2026 | **Status**: Draft
+> **Version**: 2.7 | **Date**: May 21, 2026 | **Status**: Draft
 > **Teacher Model**: `Unsloth/Qwen3.5-27B` (base, data generation only)
-> **Student Model**: `Qwen/Qwen3.5-9B` (base, SFT + DPO training)
-> **Hardware**: RTX 5090 (32GB), Unsloth Studio (SFT) + custom DPO
+> **Student Model**: `Qwen/Qwen3.5-9B` (Instruct/post-trained, SFT + DPO training)
+> **Hardware**: RTX 5090 (32GB), programmatic Unsloth Core (SFT) + custom DPO
 
 ---
 
 ## DESIGN NOTE: Model Variant Selection
 
-### Current Models (Base Variants)
+### Current Models
 
-All models used in this experiment are **base** (non-Instruct) variants. Every path below is verified to exist on the system.
+| Role | Model ID | Variant | Architecture | Actual Path (Windows HF cache via WSL2) |
+|------|----------|---------|--------------|----------------------------------------|
+| Teacher (data gen) | `Unsloth/Qwen3.5-27B` | Base | — | `/mnt/c/Users/Guy/.cache/huggingface/hub/models--Unsloth--Qwen3.5-27B/snapshots/358dae112e4fbc7e9c047e26fc55e542efe7e3d7/` |
+| Student (SFT + DPO) | `Qwen/Qwen3.5-9B` | **Instruct** (post-trained) | `Qwen3_5ForConditionalGeneration` | `/mnt/c/Users/Guy/.cache/huggingface/hub/models--Qwen--Qwen3.5-9B/snapshots/c202236235762e1c871ad0ccb60c8ee5ba337b9a/` |
+| Student GGUF (baseline eval) | `unsloth/Qwen3.5-9B-GGUF` | Instruct, Q4_K_M | — | `/mnt/c/Users/Guy/.cache/huggingface/hub/models--unsloth--Qwen3.5-9B-GGUF/snapshots/3885219b6810b007914f3a7950a8d1b469d598a5/Qwen3.5-9B-Q4_K_M.gguf` |
+| Fine-tuned GGUF (eval) | Studio export | Fine-tuned, Q4_K_M | — | `/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen3.5-9B-gguf/Qwen3.5-9B.Q4_K_M.gguf` |
 
-| Role | Model ID | Variant | Actual Path (Windows HF cache via WSL2) |
-|------|----------|---------|----------------------------------------|
-| Teacher (data gen) | `Unsloth/Qwen3.5-27B` | Base | `/mnt/c/Users/Guy/.cache/huggingface/hub/models--Unsloth--Qwen3.5-27B/snapshots/358dae112e4fbc7e9c047e26fc55e542efe7e3d7/` |
-| Student (SFT + DPO) | `Qwen/Qwen3.5-9B` | Base | `/mnt/c/Users/Guy/.cache/huggingface/hub/models--Qwen--Qwen3.5-9B/snapshots/c202236235762e1c871ad0ccb60c8ee5ba337b9a/` |
-| Student GGUF (baseline eval) | `unsloth/Qwen3.5-9B-GGUF` | Base, Q4_K_M | `/mnt/c/Users/Guy/.cache/huggingface/hub/models--unsloth--Qwen3.5-9B-GGUF/snapshots/3885219b6810b007914f3a7950a8d1b469d598a5/Qwen3.5-9B-Q4_K_M.gguf` |
-| Fine-tuned GGUF (eval) | Studio export | Fine-tuned, Q4_K_M | `/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen3.5-9B-gguf/Qwen3.5-9B.Q4_K_M.gguf` |
+**Correction (v2.7)**: The student model `Qwen/Qwen3.5-9B` is the **Instruct** (post-trained) variant, not the Base variant as previously documented. The cached model's architecture is `Qwen3_5ForConditionalGeneration` (multimodal image-text-to-text), which is the post-trained model. The true base variant is `Qwen/Qwen3.5-9B-Base` (`Qwen3_5ForCausalLM`), which is not cached locally.
 
-**No `*-unsloth-bnb-4bit` models exist on this system or were used in training.** Previous documentation referenced fabricated model identifiers. Unsloth Studio handles quantization internally at runtime via NF4 bnb — the `*-unsloth-bnb-4bit` suffix is not a separate model on HuggingFace; it is how Unsloth describes its runtime quantization pipeline applied to the base model.
+**No `*-unsloth-bnb-4bit` models exist on this system or were used in training.** Previous documentation referenced fabricated model identifiers. Unsloth handles quantization internally at runtime via NF4 bnb.
 
-### Why Base Models Were Used
+### Why the Instruct Variant Is Appropriate
 
-The Unsloth training pipeline applies 4-bit NF4 quantization at load time via `bitsandbytes`. The model identifier passed to Unsloth is the base model (`Qwen/Qwen3.5-9B` or `Unsloth/Qwen3.5-27B`); Unsloth handles quantization internally. There is no separate "bnb-4bit" model to download.
+The Instruct variant is advantageous for this experiment:
 
-### Consideration: Moving to Instruct Variants
+1. **Native thinking mode**: Qwen3.5 generates thinking content delimited by `
+2. **Native chat template**: SFT data in chat format aligns with the model's expected input format, reducing SFT effort for instruction-following behavior
+3. **System prompt adherence**: Better response formatting for both teacher data generation and student fine-tuning
 
-**Potential benefits of Instruct variants for future experiments:**
-
-1. **Student (Instruct)**: `Qwen/Qwen3.5-9B-Instruct` has native chat template handling, which means:
-   - SFT data in ShareGPT/chat format aligns with the model's expected input format
-   - Better out-of-the-box response formatting without needing to teach chat conventions via SFT
-   - The model already knows how to follow system prompts, reducing SFT effort needed for instruction-following behavior
-
-2. **Teacher (Instruct)**: `Qwen3.5-27B-Instruct` has:
-   - Better system prompt adherence for generating DM-aligned responses
-   - More reliable response formatting for data generation
-
-3. **Experimental integrity concern**: Switching from Base to Instruct mid-experiment would change the baseline. Any Instruct variant work should start as a new experiment with fresh baselines.
-
-**Current decision**: Maintain Base variants for experimental integrity. The Instruct variants are noted here as a design consideration for future work.
+See §9.3 Loss Masking Strategy for reasoning trace training approach.
 
 ---
 
@@ -486,11 +475,13 @@ The trained model is designed to enable these capabilities, ordered by complexit
 
 ## 9. Training Configuration
 
-### 8.1 SFT (Unsloth Studio)
+### 9.1 SFT (Programmatic, Unsloth Core)
+
+> **Changed from Studio UI to programmatic Python** — Studio UI only supports single-field SFT mapping and cannot handle reasoning trace alignment, loss masking, or Neftune noise injection.
 
 | Parameter | Value |
 |---|---|
-| Student model | `Qwen/Qwen3.5-9B` (base, NF4 quantized at runtime by Unsloth) |
+| Student model | `Qwen/Qwen3.5-9B` (Instruct, NF4 quantized at runtime by Unsloth) |
 | Teacher model | `Unsloth/Qwen3.5-27B` (base, data generation only) |
 | LoRA rank | 32 |
 | LoRA alpha | 32 |
@@ -503,8 +494,24 @@ The trained model is designed to enable these capabilities, ordered by complexit
 | Max steps | 1000 |
 | Scheduler | Cosine |
 | Warmup steps | 100 |
+| Neftune noise | alpha=5 (prevent memorization of teacher's exact phrasing) |
+| Reasoning format | Qwen3.5 native: `
 
-### 8.2 DPO (Custom)
+### 9.2 Loss Masking Strategy
+
+When training on data that includes reasoning traces (`
+
+| Approach | What's Trained | Implementation | Use Case |
+|----------|----------------|----------------|----------|
+| **(a) Train everything** (standard) | Both thinking block and final answer contribute to loss | Default SFTTrainer behavior — all tokens after user prompt contribute equally | **Our choice** — reasoning trace IS the training signal; we want the model to internalize DM reasoning patterns, not just produce correct answers |
+| **(b) Mask reasoning** | Only final answer contributes to loss; thinking block positions set to loss=-100 | Pre-process labels array to set thinking token positions to -100, or subclass SFTTrainer with custom compute_loss | Used by OpenAI o1 and DeepSeek-R1 distillation — when you want internal reasoning but only optimize answer quality |
+| **(c) Differential weighting** | Both contribute, but with different loss weights (e.g., reasoning 0.1x, answer 1.0x) | Custom compute_loss in SFTTrainer that applies per-token weight multipliers | Fine-grained control over what the model learns; useful if reasoning overfits before answer quality converges |
+
+**Decision: Approach (a) — train on everything.** The reasoning trace is the primary training signal. Masking it away (approach b) would defeat the purpose of trace-aligned training. Approach (c) is noted for future experiments if we observe reasoning overfit.
+
+**Implementation details**: Unsloth's FastLanguageModel delegates to TRL's SFTTrainer. No custom masking needed for approach (a). Approaches (b) and (c) would require either subclassing SFTTrainer with a custom compute_loss method, or pre-processing the labels column to set thinking token positions to -100 (for masking) or applying weight multipliers (for differential).
+
+### 9.3 DPO (Custom, Programmatic)
 
 | Parameter | Value |
 |---|---|
@@ -516,6 +523,8 @@ The trained model is designed to enable these capabilities, ordered by complexit
 | Max steps | 500 (scales with dataset) |
 | Scheduler | Cosine |
 | Warmup steps | 50 |
+
+
 
 ---
 
@@ -571,6 +580,7 @@ The trained model is designed to enable these capabilities, ordered by complexit
 | 2.4 | May 20, 2026 | Corrected model references: replaced fabricated `*-unsloth-bnb-4bit` identifiers with actual cached models (`Qwen/Qwen3.5-9B` base, `Unsloth/Qwen3.5-27B` base); added design note about Instruct variant considerations |
 | 2.5 | May 20, 2026 | Added §13 Evaluation Results with first HumanEval measurements; updated §5.6 regression tests with measured data; documented Q4_K_M quantization collapse (70.73% → 1.83%); documented eval infrastructure (lm_eval 0.4.12, llama.cpp server, eval suite structure) |
 | 2.6 | May 21, 2026 | Corrected question authorship: all 1,500 questions are AI-generated, not human-authored; removed stale "individually authored" hard constraint; corrected §5.1 DPO step (custom script, not Studio); marked GGUF eval scripts as deleted; removed reference to non-existent `questions.jsonl` |
+| 2.7 | May 21, 2026 | Corrected student model variant: `Qwen/Qwen3.5-9B` is the Instruct/post-trained variant (`Qwen3_5ForConditionalGeneration`), not Base; updated model table and design note; added loss masking strategy section documenting three approaches (train everything, mask reasoning, differential weighting) with justification for approach (a); updated hardware note from "Unsloth Studio (SFT)" to "programmatic Unsloth Core (SFT)" |
 
 ---
 

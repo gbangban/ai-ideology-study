@@ -128,7 +128,7 @@ Results in `evals/results/` organized by `baseline/` and `finetuned/` subdirecto
 ## Model Details
 
 - Teacher: `Unsloth/Qwen3.5-27B` (base, data generation only)
-- Student: `Qwen/Qwen3.5-9B` (base, SFT + DPO training)
+- Student: `Qwen/Qwen3.5-9B` (Instruct/post-trained, SFT + DPO training) — NOT base; architecture is `Qwen3_5ForConditionalGeneration` with native thinking mode (`
 - Quantization: NF4 via Unsloth runtime
 - LoRA: r=32, alpha=32, dropout=0.05, 7 target modules
 - VRAM: RTX 5090 (32GB), QLoRA NF4 quantization

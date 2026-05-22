@@ -6,5 +6,6 @@
             "path": "wezterm",
             "args": ["cli", "spawn", "--cwd", "${cwd}"]
         }
-    }
+    },
+    "remote.autoForwardPortsFilter": "4096 8080"
 }

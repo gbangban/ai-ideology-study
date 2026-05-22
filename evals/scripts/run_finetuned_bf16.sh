@@ -52,9 +52,14 @@ ALL_TASKS=(
     "ifeval"
     "humaneval"
     "leaderboard_math_hard"
+    "econcausal_task1_econ"
+    "econcausal_task1_finance"
+    "econcausal_task2"
+    "econcausal_task3"
+    "corr2cause"
 )
 
-TASKS_LIST="mmlu,mmlu_pro,gpqa_diamond_zeroshot,ifeval,humaneval,leaderboard_math_hard"
+TASKS_LIST="mmlu,mmlu_pro,gpqa_diamond_zeroshot,ifeval,humaneval,leaderboard_math_hard,econcausal_task1_econ,econcausal_task1_finance,econcausal_task2,econcausal_task3,corr2cause"
 
 # Parse arguments
 DRY_RUN="false"
@@ -81,12 +86,15 @@ for arg in "$@"; do
                 medium)
                     IFS=',' read -ra _SELECTED_TASKS <<< "ifeval,humaneval,mmlu,gpqa_diamond_zeroshot"
                     ;;
+                causal)
+                    IFS=',' read -ra _SELECTED_TASKS <<< "econcausal_task1_econ,econcausal_task1_finance,econcausal_task2,econcausal_task3,corr2cause"
+                    ;;
                 full)
                     # Run all tasks (empty = all)
                     _SELECTED_TASKS=()
                     ;;
                 *)
-                    log_error "Unknown suite: $1 (valid: short, medium, full)"
+                    log_error "Unknown suite: $1 (valid: short, medium, causal, full)"
                     exit 1
                     ;;
             esac
@@ -182,6 +190,7 @@ for TASK in "${TASKS_TO_RUN[@]}"; do
       --output_path "$RESULTS_DIR" \
       --log_samples \
       --trust_remote_code \
+      --include_path "$PROJECT_DIR/configs/task_configs" \
       --confirm_run_unsafe_code 2>&1 | tee -a "$EVAL_LOG"
     TASK_EXIT=$?
     set -e

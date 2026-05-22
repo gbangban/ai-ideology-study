@@ -34,3 +34,33 @@ task:
       - metric: exact_match
         aggregation: mean
         higher_is_better: true
+  - name: econcausal_task1_econ
+    task: econcausal_task1_econ
+    metric_list:
+      - metric: acc
+        aggregation: mean
+        higher_is_better: true
+  - name: econcausal_task1_finance
+    task: econcausal_task1_finance
+    metric_list:
+      - metric: acc
+        aggregation: mean
+        higher_is_better: true
+  - name: econcausal_task2
+    task: econcausal_task2
+    metric_list:
+      - metric: acc
+        aggregation: mean
+        higher_is_better: true
+  - name: econcausal_task3
+    task: econcausal_task3
+    metric_list:
+      - metric: acc
+        aggregation: mean
+        higher_is_better: true
+  - name: corr2cause
+    task: corr2cause
+    metric_list:
+      - metric: acc
+        aggregation: mean
+        higher_is_better: true

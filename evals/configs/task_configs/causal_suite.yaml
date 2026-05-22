@@ -1,0 +1,10 @@
+# Causal reasoning benchmark suite
+# Contains EconCausal (4 subtasks) + Corr2Cause (1 task)
+
+group: causal_reasoning_suite
+task:
+  - task: econcausal_task1_econ
+  - task: econcausal_task1_finance
+  - task: econcausal_task2
+  - task: econcausal_task3
+  - task: corr2cause

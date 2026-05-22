@@ -1,0 +1,27 @@
+# EconCausal Task 1 - Finance
+# Causal sign prediction with finance context (860 samples)
+# Source: https://github.com/econaikaist/econcausal-benchmark (CC BY-NC 4.0)
+
+task: econcausal_task1_finance
+dataset_path: json
+dataset_kwargs:
+  data_files:
+    test: https://raw.githubusercontent.com/econaikaist/econcausal-benchmark/main/data/tasks/task1_finance.jsonl
+test_split: test
+output_type: generate_until
+doc_to_text: "{{question}}"
+doc_to_target: "{{answer}}"
+process_results: !function econcausal.process_results
+generation_kwargs:
+  until:
+    - "\n\n\n"
+    - "</s>"
+  max_gen_toks: 256
+  do_sample: false
+metric_list:
+  - metric: acc
+    aggregation: mean
+    higher_is_better: true
+num_fewshot: 0
+metadata:
+  version: 1.0

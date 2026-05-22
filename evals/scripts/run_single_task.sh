@@ -28,7 +28,7 @@ if [ $# -lt 2 ]; then
     echo "Run a single lm_eval task against a model."
     echo ""
     echo "Arguments:"
-    echo "  TASK          Task name (e.g., humaneval, mmlu_pro, ifeval, gpqa_diamond_zeroshot, leaderboard_math_hard)"
+    echo "  TASK          Task name (e.g., humaneval, mmlu_pro, corr2cause, econcausal_task1_econ)"
     echo "  MODEL_PATH    Path to model directory (safetensors)"
     echo "  RESULTS_DIR   Output directory (default: results/single_runs)"
     echo ""
@@ -42,6 +42,11 @@ if [ $# -lt 2 ]; then
     echo "  ifeval                - Instruction Following Evaluation"
     echo "  humaneval             - HumanEval (code generation)"
     echo "  leaderboard_math_hard - Math reasoning (hard subset)"
+    echo "  econcausal_task1_econ - EconCausal Task 1 (economics)"
+    echo "  econcausal_task1_finance - EconCausal Task 1 (finance)"
+    echo "  econcausal_task2      - EconCausal Task 2 (context-dependent)"
+    echo "  econcausal_task3      - EconCausal Task 3 (misinformation-robust)"
+    echo "  corr2cause            - Corr2Cause (causal inference from correlations)"
     echo ""
     echo "Examples:"
     echo "  $0 humaneval /path/to/model"
@@ -123,6 +128,7 @@ lm_eval --model hf \
   --output_path "$RESULTS_DIR" \
   --log_samples \
   --trust_remote_code \
+  --include_path "$PROJECT_DIR/configs/task_configs" \
   --confirm_run_unsafe_code 2>&1 | tee -a "$EVAL_LOG"
 TASK_EXIT=$?
 set -e

@@ -1,0 +1,27 @@
+# EconCausal Task 1 - Economics
+# Causal sign prediction with economics context (947 samples)
+# Source: https://github.com/econaikaist/econcausal-benchmark (CC BY-NC 4.0)
+
+task: econcausal_task1_econ
+dataset_path: json
+dataset_kwargs:
+  data_files:
+    test: https://raw.githubusercontent.com/econaikaist/econcausal-benchmark/main/data/tasks/task1_econ.jsonl
+test_split: test
+output_type: generate_until
+doc_to_text: "{{question}}"
+doc_to_target: "{{answer}}"
+process_results: !function econcausal.process_results
+generation_kwargs:
+  until:
+    - "\n\n\n"
+    - "</s>"
+  max_gen_toks: 256
+  do_sample: false
+metric_list:
+  - metric: acc
+    aggregation: mean
+    higher_is_better: true
+num_fewshot: 0
+metadata:
+  version: 1.0

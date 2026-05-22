@@ -197,6 +197,7 @@ show_help() {
     echo "Suites:"
     echo "  short   - IFEval + HumanEval + MMLU 5-shot (~2 hours)"
     echo "  medium  - short + GPQA Diamond (~3 hours)"
+    echo "  causal  - EconCausal (4 subtasks) + Corr2Cause (~3-6 hours)"
     echo "  full    - All tasks including MMLU-Pro (~40 hours)"
     echo ""
     echo "Available tasks:"

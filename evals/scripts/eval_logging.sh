@@ -29,12 +29,12 @@ _log_write() {
 
     # Stdout with color based on level
     case "$level" in
-        ERROR)   echo -e "${_RED}[${timestamp}] [${level}] ${msg}${_NC}" ;;
-        WARN)    echo -e "${_YELLOW}[${timestamp}] [${level}] ${msg}${_NC}" ;;
-        INFO)    echo -e "${_GREEN}[${timestamp}] [${level}] ${msg}${_NC}" ;;
-        TASK)    echo -e "${_CYAN}[${timestamp}] [${level}] ${msg}${_NC}" ;;
-        HEADER)  echo -e "${_BLUE}${_BOLD}[${timestamp}] ${msg}${_NC}" ;;
-        *)       echo -e "[${timestamp}] [${level}] ${msg}" ;;
+        ERROR)   printf '%b[%s] [%s] %s%b\n' "${_RED}" "${timestamp}" "${level}" "${msg}" "${_NC}" ;;
+        WARN)    printf '%b[%s] [%s] %s%b\n' "${_YELLOW}" "${timestamp}" "${level}" "${msg}" "${_NC}" ;;
+        INFO)    printf '%b[%s] [%s] %s%b\n' "${_GREEN}" "${timestamp}" "${level}" "${msg}" "${_NC}" ;;
+        TASK)    printf '%b[%s] [%s] %s%b\n' "${_CYAN}" "${timestamp}" "${level}" "${msg}" "${_NC}" ;;
+        HEADER)  printf '%b[%s] %s%b\n' "${_BLUE}${_BOLD}" "${timestamp}" "${msg}" "${_NC}" ;;
+        *)       printf '[%s] [%s] %s\n' "${timestamp}" "${level}" "${msg}" ;;
     esac
 
     # Log file (plain text, no colors)

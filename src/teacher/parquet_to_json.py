@@ -29,16 +29,20 @@ def parquet_to_records(parquet_path: str) -> list[dict]:
     """Read a parquet file and return a list of dictionaries."""
     df = pd.read_parquet(parquet_path)
 
+    # Use to_dict which is significantly faster than iterrows()
+    import numpy as np
+
     records = []
-    for _, row in df.iterrows():
-        record = {}
-        for col in df.columns:
-            val = row[col]
+    for row in df.to_dict(orient='records'):
+        cleaned = {}
+        for col, val in row.items():
             # Convert numpy types to Python natives for JSON serialization
-            if hasattr(val, 'item'):
+            if isinstance(val, (np.integer, np.floating, np.bool_)):
                 val = val.item()
-            record[col] = val
-        records.append(record)
+            elif isinstance(val, np.ndarray):
+                val = val.tolist()
+            cleaned[col] = val
+        records.append(cleaned)
     return records
 
 
@@ -95,8 +99,11 @@ def main():
 
     for pq in parquet_files:
         out = convert_parquet_file(str(pq), output_dir)
-        records = sum(1 for _ in open(out))
-        print(f"  {pq.name} -> {out} ({records} lines)")
+        # Count records from the returned JSON, not line count (indent=2 produces multi-line output)
+        with open(out) as f:
+            data = json.load(f)
+        record_count = len(data) if isinstance(data, list) else 1
+        print(f"  {pq.name} -> {out} ({record_count} records)")
 
     print(f"\nDone. Output: {output_dir}")
 

@@ -38,7 +38,13 @@ fi
 source "$VENV_DIR/bin/activate"
 
 # Base model path — the untrained student model from HF cache
-MODEL_DIR="/mnt/c/Users/Guy/.cache/huggingface/hub/models--Qwen--Qwen3.5-9B/snapshots/c202236235762e1c871ad0ccb60c8ee5ba337b9a"
+MODEL_DIR="${BASELINE_MODEL_DIR:-/mnt/c/Users/Guy/.cache/huggingface/hub/models--Qwen--Qwen3.5-9B/snapshots/c202236235762e1c871ad0ccb60c8ee5ba337b9a}"
+
+if [ ! -d "$MODEL_DIR" ]; then
+    log_error "Baseline model directory not found: $MODEL_DIR"
+    log_error "Set BASELINE_MODEL_DIR env var to override."
+    exit 1
+fi
 
 # All available tasks
 ALL_TASKS=(
@@ -164,7 +170,7 @@ for TASK in "${TASKS_TO_RUN[@]}"; do
     fi
 
     log_info "Starting $TASK..."
-    log_info "Command: lm_eval --model hf --model_args pretrained=$MODEL_DIR,dtype=bfloat16 --tasks $TASK --batch_size 4 ..."
+    log_info "Command: lm_eval --model hf --model_args pretrained=$MODEL_DIR,dtype=bfloat16,enable_thinking=False --tasks $TASK --batch_size 4 ..."
 
     if _is_dry_run; then
         log_info "[DRY RUN] Would run lm_eval for task: $TASK"
@@ -180,13 +186,14 @@ for TASK in "${TASKS_TO_RUN[@]}"; do
 
     set +e
     lm_eval --model hf \
-      --model_args pretrained=$MODEL_DIR,dtype=bfloat16 \
+      --model_args pretrained=$MODEL_DIR,dtype=bfloat16,enable_thinking=False \
       --tasks "$TASK" \
       --batch_size 4 \
       --output_path "$RESULTS_DIR" \
       --log_samples \
       --trust_remote_code \
       --include_path "$PROJECT_DIR/configs/task_configs" \
+      --apply_chat_template \
       --confirm_run_unsafe_code 2>&1 | tee -a "$EVAL_LOG"
     TASK_EXIT=$?
     set -e

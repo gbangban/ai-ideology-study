@@ -37,15 +37,15 @@ class TestTrainSFTV2:
         mock_flm_class.get_peft_model.return_value = Mock()
         mock_unsloth = MagicMock()
         mock_unsloth.FastLanguageModel = mock_flm_class
-        sys.modules["unsloth"] = mock_unsloth
 
-        from src.student.train_sft_v2 import prepare_model_for_training
+        with patch.dict(sys.modules, {"unsloth": mock_unsloth}):
+            from src.student.train_sft_v2 import prepare_model_for_training
 
-        mock_model = Mock()
-        mock_tokenizer = Mock()
+            mock_model = Mock()
+            mock_tokenizer = Mock()
 
-        prepare_model_for_training(mock_model, mock_tokenizer, {
-            "lora_r": 32, "lora_alpha": 32, "lora_dropout": 0.05,
-            "target_modules": ["q_proj"],
-        })
-        mock_flm_class.get_peft_model.assert_called_once()
+            prepare_model_for_training(mock_model, mock_tokenizer, {
+                "lora_r": 32, "lora_alpha": 32, "lora_dropout": 0.05,
+                "target_modules": ["q_proj"],
+            })
+            mock_flm_class.get_peft_model.assert_called_once()

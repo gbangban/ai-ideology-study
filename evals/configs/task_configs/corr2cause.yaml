@@ -10,14 +10,15 @@ dataset_path: causal-nlp/corr2cause
 dataset_name: default
 test_split: test
 output_type: generate_until
-doc_to_text: "{{input}}\n\nBased on the premise, is the hypothesis true or false? Answer with True or False only."
+doc_to_text: "Answer with only the word True or False. Do not include reasoning, thinking, or any explanation.\n\n{{input}}\n\nDoes the premise support the causal hypothesis?"
 doc_to_target: "{{'True' if label == 1 else 'False'}}"
 process_results: !function corr2cause.process_results
 generation_kwargs:
   until:
     - "\n\n"
     - "</s>"
-  max_gen_toks: 64
+    - "\n"
+  max_gen_toks: 16
   do_sample: false
 metric_list:
   - metric: acc

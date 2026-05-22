@@ -44,6 +44,12 @@ source "$VENV_DIR/bin/activate"
 _FINETUNED_EXPORT_DIR="/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330"
 MODEL_DIR="${FINETUNED_MODEL_DIR:-$_FINETUNED_EXPORT_DIR}"
 
+if [ ! -d "$MODEL_DIR" ]; then
+    log_error "Fine-tuned model directory not found: $MODEL_DIR"
+    log_error "Set FINETUNED_MODEL_DIR env var to override."
+    exit 1
+fi
+
 # All available tasks
 ALL_TASKS=(
     "mmlu"
@@ -168,7 +174,7 @@ for TASK in "${TASKS_TO_RUN[@]}"; do
     fi
 
     log_info "Starting $TASK..."
-    log_info "Command: lm_eval --model hf --model_args pretrained=$MODEL_DIR,dtype=bfloat16 --tasks $TASK --batch_size 4 ..."
+    log_info "Command: lm_eval --model hf --model_args pretrained=$MODEL_DIR,dtype=bfloat16,enable_thinking=False --tasks $TASK --batch_size 4 ..."
 
     if _is_dry_run; then
         log_info "[DRY RUN] Would run lm_eval for task: $TASK"
@@ -184,13 +190,14 @@ for TASK in "${TASKS_TO_RUN[@]}"; do
 
     set +e
     lm_eval --model hf \
-      --model_args pretrained=$MODEL_DIR,dtype=bfloat16 \
+      --model_args pretrained=$MODEL_DIR,dtype=bfloat16,enable_thinking=False \
       --tasks "$TASK" \
       --batch_size 4 \
       --output_path "$RESULTS_DIR" \
       --log_samples \
       --trust_remote_code \
       --include_path "$PROJECT_DIR/configs/task_configs" \
+      --apply_chat_template \
       --confirm_run_unsafe_code 2>&1 | tee -a "$EVAL_LOG"
     TASK_EXIT=$?
     set -e

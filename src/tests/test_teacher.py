@@ -12,7 +12,7 @@ import pytest
 from pathlib import Path
 from unittest.mock import Mock, patch, MagicMock
 
-sys.path.insert(0, "/home/yao/projects/ml-lora-training")
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 
 class TestSampleStructure:
@@ -67,28 +67,31 @@ class TestDMKeywordValidation:
 
         assert isinstance(REQUIRED_KEYWORDS, list)
         assert len(REQUIRED_KEYWORDS) > 0
-        assert "Material" in str(REQUIRED_KEYWORDS)
+        assert "Material Conditions" in REQUIRED_KEYWORDS
 
     def test_validate_response_with_all_keywords(self):
         """Test validation passes when all keywords and structure present."""
         from src.teacher.validators import validate_dm_response
 
         response = """
-### Materialist Analysis
-**Step 1: Economic Base**
+### Structural Analysis
+**Material Conditions**
 Material conditions shape society and determine the economic base.
 
-**Step 2: Contradictions**
-The Contradiction between classes drives historical change.
+**Structural Constraints**
+Structural constraints limit outcomes regardless of individual intentions.
 
-**Step 3: Superstructure**
-The Superstructure reflects and reinforces the economic base.
+**Power Relations**
+Economic power translates into political and cultural influence.
 
-**Step 4: Dialectical Development**
-This is a Dialectical analysis of how change unfolds through conflict.
+**Systemic Contradictions**
+Tensions within the system that reform cannot resolve.
 
-### Final Synthesis
-The analysis above demonstrates how material conditions, contradictions, superstructure, and dialectical reasoning interconnect. Understanding these concepts reveals the underlying dynamics of social change.
+**Frame Critique**
+What the dominant analytical frame takes for granted and renders invisible.
+
+### Synthesis
+The analysis demonstrates how material conditions, structural constraints, power relations, and systemic contradictions interconnect. Understanding these concepts reveals the underlying dynamics of social change.
         """
         assert validate_dm_response(response) is True
 
@@ -104,21 +107,24 @@ The analysis above demonstrates how material conditions, contradictions, superst
         from src.teacher.validators import validate_dm_response
 
         response = """
-### Materialist Analysis
-**Step 1: Economic Base**
-material conditions determine the economic foundation of society.
+### Structural Analysis
+**Material Conditions**
+MATERIAL CONDITIONS determine the economic foundation of society.
 
-**Step 2: Contradictions**
-The CONTRADICTION between opposing forces drives development.
+**Structural Constraints**
+STRUCTURAL CONSTRAINTS limit outcomes regardless of intentions.
 
-**Step 3: Superstructure**
-The SUPERSTRUCTURE emerges from and reinforces the base.
+**Power Relations**
+POWER RELATIONS shape political and cultural influence.
 
-**Step 4: Dialectical Development**
-This is DIALECTICAL reasoning applied to social change.
+**Systemic Contradictions**
+SYSTEMIC CONTRADICTIONS drive development.
 
-### Final Synthesis
-The interplay of material conditions, contradictions, superstructure, and dialectical development forms a coherent framework. This analysis shows how each element connects to the others in a unified theory.
+**Frame Critique**
+What the dominant analytical frame takes for granted.
+
+### Synthesis
+The interplay of material conditions, structural constraints, power relations, and systemic contradictions forms a coherent framework. This analysis shows how each element connects to the others in a unified theory.
         """
         assert validate_dm_response(response) is True
 
@@ -134,13 +140,14 @@ class TestRetryLogic:
 
         def _valid_response():
             return (
-                "### Materialist Analysis\n"
-                "**Step 1: Economic Base**\nMaterial conditions shape society.\n"
-                "**Step 2: Contradictions**\nContradiction drives change.\n"
-                "**Step 3: Superstructure**\nSuperstructure reflects the base.\n"
-                "**Step 4: Dialectical Development**\nDialectical reasoning reveals patterns.\n"
-                "### Final Synthesis\n"
-                f"The analysis integrates {' '.join(REQUIRED_KEYWORDS)} into a coherent framework that explains social dynamics."
+                "### Structural Analysis\n"
+                "**Material Conditions**\nMaterial conditions shape society.\n"
+                "**Structural Constraints**\nStructural constraints limit outcomes.\n"
+                "**Power Relations**\nEconomic power translates into influence.\n"
+                "**Systemic Contradictions**\nSystemic contradictions drive change.\n"
+                "**Frame Critique**\nWhat the dominant frame renders invisible.\n"
+                "### Synthesis\n"
+                f"The analysis integrates {' '.join(REQUIRED_KEYWORDS)} into a coherent framework that explains social dynamics. This framework reveals structural patterns."
             )
 
         def mock_generate():
@@ -162,12 +169,13 @@ class TestRetryLogic:
         def mock_generate():
             call_count[0] += 1
             return (
-                "### Materialist Analysis\n"
-                "**Step 1: Economic Base**\nMaterial conditions shape society.\n"
-                "**Step 2: Contradictions**\nContradiction drives change.\n"
-                "**Step 3: Superstructure**\nSuperstructure reflects the base.\n"
-                "**Step 4: Dialectical Development**\nDialectical reasoning reveals patterns.\n"
-                "### Final Synthesis\n"
+                "### Structural Analysis\n"
+                "**Material Conditions**\nMaterial conditions shape society.\n"
+                "**Structural Constraints**\nStructural constraints limit outcomes.\n"
+                "**Power Relations**\nEconomic power translates into influence.\n"
+                "**Systemic Contradictions**\nSystemic contradictions drive change.\n"
+                "**Frame Critique**\nWhat the dominant frame renders invisible.\n"
+                "### Synthesis\n"
                 f"The analysis integrates {' '.join(REQUIRED_KEYWORDS)} into a coherent framework. This framework explains social dynamics and reveals how economic structures shape ideological formations. Understanding these connections is essential for rigorous analysis."
             )
 
@@ -254,19 +262,19 @@ class TestPromptTemplates:
     """Test DM prompt template generation."""
 
     def test_prompt_includes_dm_framework(self):
-        """Test that prompts include DM analysis framework."""
-        from src.teacher.prompts import get_dm_prompt_template
+        """Test that prompts include structural analysis framework."""
+        from src.teacher.prompts import get_system_prompt
 
-        template = get_dm_prompt_template()
+        template = get_system_prompt()
         assert "Material" in template
-        assert "Dialectical" in template or "dialectical" in template
+        assert "structural" in template.lower() or "Structural" in template
 
     def test_prompt_includes_chain_of_thought(self):
-        """Test that prompts include CoT structure."""
-        from src.teacher.prompts import get_dm_prompt_template
+        """Test that prompts include analysis structure."""
+        from src.teacher.prompts import get_system_prompt
 
-        template = get_dm_prompt_template()
-        assert "step" in template.lower() or "analyze" in template.lower()
+        template = get_system_prompt()
+        assert "analyze" in template.lower()
 
     def test_generate_prompt_includes_question(self):
         """Test that generated prompt includes the question."""
@@ -287,13 +295,14 @@ def create_mock_sample():
             {
                 "role": "assistant",
                 "content": (
-                    "### Materialist Analysis\n"
-                    "**Step 1: Economic Base**\nMaterial conditions shape society.\n"
-                    "**Step 2: Contradictions**\nContradiction drives change.\n"
-                    "**Step 3: Superstructure**\nSuperstructure reflects the base.\n"
-                    "**Step 4: Dialectical Development**\nDialectical reasoning reveals patterns.\n"
-                    "### Final Synthesis\n"
-                    "The analysis integrates Material Conditions, Contradiction, Superstructure, and Dialectical reasoning into a coherent framework."
+                    "### Structural Analysis\n"
+                    "**Material Conditions**\nMaterial conditions shape society.\n"
+                    "**Structural Constraints**\nStructural constraints limit outcomes.\n"
+                    "**Power Relations**\nEconomic power translates into influence.\n"
+                    "**Systemic Contradictions**\nSystemic contradictions drive change.\n"
+                    "**Frame Critique**\nWhat the dominant frame renders invisible.\n"
+                    "### Synthesis\n"
+                    "The analysis integrates Material Conditions, Structural Constraints, Power Relations, and Systemic Contradictions into a coherent framework."
                 ),
             },
         ]
@@ -312,26 +321,27 @@ class TestStructuralValidation:
         """Test that structural headers are defined."""
         from src.teacher.validators import STRUCTURAL_HEADERS
 
-        assert "### Materialist Analysis" in STRUCTURAL_HEADERS
-        assert "### Final Synthesis" in STRUCTURAL_HEADERS
+        assert "### Structural Analysis" in STRUCTURAL_HEADERS
+        assert "### Synthesis" in STRUCTURAL_HEADERS
 
     def test_required_steps_defined(self):
-        """Test that all 4 required steps are defined."""
+        """Test that all 5 required steps are defined."""
         from src.teacher.validators import REQUIRED_STEPS
 
-        assert len(REQUIRED_STEPS) == 4
-        assert "**Step 1: Economic Base**" in REQUIRED_STEPS
-        assert "**Step 2: Contradictions**" in REQUIRED_STEPS
-        assert "**Step 3: Superstructure**" in REQUIRED_STEPS
-        assert "**Step 4: Dialectical Development**" in REQUIRED_STEPS
+        assert len(REQUIRED_STEPS) == 5
+        assert "**Material Conditions**" in REQUIRED_STEPS
+        assert "**Structural Constraints**" in REQUIRED_STEPS
+        assert "**Power Relations**" in REQUIRED_STEPS
+        assert "**Systemic Contradictions**" in REQUIRED_STEPS
+        assert "**Frame Critique**" in REQUIRED_STEPS
 
-    def test_fails_missing_materialist_analysis_header(self):
-        """Test validation fails when ### Materialist Analysis is missing."""
+    def test_fails_missing_structural_analysis_header(self):
+        """Test validation fails when ### Structural Analysis is missing."""
         from src.teacher.validators import validate_dm_response
 
         response = """
-### Final Synthesis
-Material Conditions, Contradiction, Superstructure, and Dialectical reasoning are all present here. This is a long enough sentence to pass the length check. Another sentence for good measure.
+### Synthesis
+Material Conditions, Structural Constraints, Power Relations, and Systemic Contradictions are all present here. This is a long enough sentence to pass the length check. Another sentence for good measure.
 """
         assert validate_dm_response(response) is False
 
@@ -340,32 +350,34 @@ Material Conditions, Contradiction, Superstructure, and Dialectical reasoning ar
         from src.teacher.validators import validate_dm_response
 
         response = """
-### Materialist Analysis
-**Step 1: Economic Base**
+### Structural Analysis
+**Material Conditions**
 Material conditions are key.
-**Step 2: Contradictions**
-Contradiction drives change.
-**Step 4: Dialectical Development**
-Dialectical reasoning applies.
-### Final Synthesis
-Material Conditions, Contradiction, Superstructure, and Dialectical reasoning are all present here. This is a long enough sentence to pass the length check. Another sentence for good measure.
+**Structural Constraints**
+Structural constraints limit outcomes.
+**Frame Critique**
+Frame critique reveals blind spots.
+### Synthesis
+Material Conditions, Structural Constraints, Power Relations, and Systemic Contradictions are all present here. This is a long enough sentence to pass the length check. Another sentence for good measure.
 """
         assert validate_dm_response(response) is False
 
-    def test_fails_missing_final_synthesis_header(self):
-        """Test validation fails when ### Final Synthesis is missing."""
+    def test_fails_missing_synthesis_header(self):
+        """Test validation fails when ### Synthesis is missing."""
         from src.teacher.validators import validate_dm_response
 
         response = """
-### Materialist Analysis
-**Step 1: Economic Base**
+### Structural Analysis
+**Material Conditions**
 Material conditions are key.
-**Step 2: Contradictions**
-Contradiction drives change.
-**Step 3: Superstructure**
-Superstructure reflects the base.
-**Step 4: Dialectical Development**
-Dialectical reasoning applies.
+**Structural Constraints**
+Structural constraints limit outcomes.
+**Power Relations**
+Power relations shape influence.
+**Systemic Contradictions**
+Systemic contradictions drive change.
+**Frame Critique**
+Frame critique reveals blind spots.
 """
         assert validate_dm_response(response) is False
 
@@ -380,16 +392,18 @@ Dialectical reasoning applies.
         from src.teacher.validators import validate_dm_response
 
         response = """
-### Materialist Analysis
-**Step 1: Economic Base**
+### Structural Analysis
+**Material Conditions**
 The economy is important.
-**Step 2: Contradictions**
+**Structural Constraints**
 Opposing forces exist.
-**Step 3: Superstructure**
+**Power Relations**
 Culture matters a great deal.
-**Step 4: Dialectical Development**
+**Systemic Contradictions**
 Change happens over time.
-### Final Synthesis
+**Frame Critique**
+Some critique here.
+### Synthesis
 This response has the right structure but does not contain any of the required DM keywords. It is long enough to pass the length check for the synthesis section. Another sentence here to ensure we meet the minimum period count requirement.
 """
         assert validate_dm_response(response) is False
@@ -399,59 +413,65 @@ class TestFinalSynthesisQuality:
     """Test the Final Synthesis quality gate."""
 
     def test_fails_short_synthesis(self):
-        """Test validation fails when Final Synthesis is too short."""
+        """Test validation fails when Synthesis is too short."""
         from src.teacher.validators import validate_dm_response
 
         response = """
-### Materialist Analysis
-**Step 1: Economic Base**
+### Structural Analysis
+**Material Conditions**
 Material conditions are key.
-**Step 2: Contradictions**
-Contradiction drives change.
-**Step 3: Superstructure**
-Superstructure reflects the base.
-**Step 4: Dialectical Development**
-Dialectical reasoning applies.
-### Final Synthesis
+**Structural Constraints**
+Structural constraints limit outcomes.
+**Power Relations**
+Power relations shape influence.
+**Systemic Contradictions**
+Systemic contradictions drive change.
+**Frame Critique**
+Frame critique reveals blind spots.
+### Synthesis
 Too short.
 """
         assert validate_dm_response(response) is False
 
     def test_fails_synthesis_no_sentences(self):
-        """Test validation fails when Final Synthesis has no periods."""
+        """Test validation fails when Synthesis has no periods."""
         from src.teacher.validators import validate_dm_response
 
         response = """
-### Materialist Analysis
-**Step 1: Economic Base**
+### Structural Analysis
+**Material Conditions**
 Material conditions are key.
-**Step 2: Contradictions**
-Contradiction drives change.
-**Step 3: Superstructure**
-Superstructure reflects the base.
-**Step 4: Dialectical Development**
-Dialectical reasoning applies.
-### Final Synthesis
+**Structural Constraints**
+Structural constraints limit outcomes.
+**Power Relations**
+Power relations shape influence.
+**Systemic Contradictions**
+Systemic contradictions drive change.
+**Frame Critique**
+Frame critique reveals blind spots.
+### Synthesis
 This is a long enough response but it has no periods at all so the sentence count heuristic should reject it because there are zero periods found
 """
         assert validate_dm_response(response) is False
 
     def test_passes_synthesis_with_enough_content(self):
-        """Test validation passes when Final Synthesis has sufficient prose."""
+        """Test validation passes when Synthesis has sufficient prose."""
         from src.teacher.validators import validate_dm_response
 
         response = """
-### Materialist Analysis
-**Step 1: Economic Base**
+### Structural Analysis
+**Material Conditions**
 Material conditions are key.
-**Step 2: Contradictions**
-Contradiction drives change.
-**Step 3: Superstructure**
-Superstructure reflects the base.
-**Step 4: Dialectical Development**
-Dialectical reasoning applies.
-### Final Synthesis
-The analysis demonstrates how Material Conditions, Contradiction, Superstructure, and Dialectical reasoning interconnect. Together they form a coherent framework for understanding social change.
+**Structural Constraints**
+Structural constraints limit outcomes.
+**Power Relations**
+Power relations shape influence.
+**Systemic Contradictions**
+Systemic contradictions drive change.
+**Frame Critique**
+Frame critique reveals blind spots.
+### Synthesis
+The analysis demonstrates how Material Conditions, Structural Constraints, Power Relations, and Systemic Contradictions interconnect. Together they form a coherent framework for understanding social change.
 """
         assert validate_dm_response(response) is True
 
@@ -470,18 +490,18 @@ class TestMissingHelpers:
         """Test only missing keywords are reported."""
         from src.teacher.validators import get_missing_keywords
 
-        response = "Material Conditions and Contradiction are discussed."
+        response = "Material Conditions and Systemic Contradictions are discussed."
         missing = get_missing_keywords(response)
         assert "Material Conditions" not in missing
-        assert "Contradiction" not in missing
-        assert "Superstructure" in missing
-        assert "Dialectical" in missing
+        assert "Systemic Contradictions" not in missing
+        assert "Structural Constraints" in missing
+        assert "Power Relations" in missing
 
     def test_get_missing_keywords_none_missing(self):
         """Test empty list returned when all keywords present."""
         from src.teacher.validators import get_missing_keywords
 
-        response = "Material Conditions, Contradiction, Superstructure, Dialectical."
+        response = "Material Conditions, Structural Constraints, Power Relations, Systemic Contradictions."
         missing = get_missing_keywords(response)
         assert missing == []
 
@@ -497,31 +517,33 @@ class TestMissingHelpers:
         from src.teacher.validators import get_missing_structure
 
         response = """
-### Materialist Analysis
-**Step 1: Economic Base**
+### Structural Analysis
+**Material Conditions**
 Some content.
 """
         missing = get_missing_structure(response)
-        assert "### Materialist Analysis" not in missing
-        assert "**Step 1: Economic Base**" not in missing
-        assert "### Final Synthesis" in missing
-        assert "**Step 2: Contradictions**" in missing
+        assert "### Structural Analysis" not in missing
+        assert "**Material Conditions**" not in missing
+        assert "### Synthesis" in missing
+        assert "**Structural Constraints**" in missing
 
     def test_get_missing_structure_none_missing(self):
         """Test empty list returned when all structural elements present."""
         from src.teacher.validators import get_missing_structure
 
         response = """
-### Materialist Analysis
-**Step 1: Economic Base**
+### Structural Analysis
+**Material Conditions**
 Content.
-**Step 2: Contradictions**
+**Structural Constraints**
 Content.
-**Step 3: Superstructure**
+**Power Relations**
 Content.
-**Step 4: Dialectical Development**
+**Systemic Contradictions**
 Content.
-### Final Synthesis
+**Frame Critique**
+Content.
+### Synthesis
 Content.
 """
         missing = get_missing_structure(response)
@@ -601,25 +623,26 @@ class TestGenerateDMMessages:
         from src.teacher.prompts import generate_dm_messages, DM_ANSWER_FORMAT
 
         messages = generate_dm_messages("Test question?")
-        assert "### Materialist Analysis" in messages[1]["content"]
-        assert "### Final Synthesis" in messages[1]["content"]
-        assert "**Step 1: Economic Base**" in messages[1]["content"]
+        assert "### Structural Analysis" in messages[1]["content"]
+        assert "### Synthesis" in messages[1]["content"]
+        assert "**Material Conditions**" in messages[1]["content"]
 
-    def test_system_message_contains_dm_instruction(self):
-        """Test that the system message contains DM framework instructions."""
+    def test_system_message_contains_structural_instruction(self):
+        """Test that the system message contains structural analysis instructions."""
         from src.teacher.prompts import generate_dm_messages
 
         messages = generate_dm_messages("Test question?")
-        assert "Dialectical Materialism" in messages[0]["content"]
+        assert "material conditions" in messages[0]["content"].lower()
+        assert "structural" in messages[0]["content"].lower()
 
     def test_answer_format_constant_defined(self):
         """Test that DM_ANSWER_FORMAT constant exists and has expected content."""
         from src.teacher.prompts import DM_ANSWER_FORMAT
 
-        assert "### Materialist Analysis" in DM_ANSWER_FORMAT
-        assert "### Final Synthesis" in DM_ANSWER_FORMAT
-        assert "Step 1" in DM_ANSWER_FORMAT
-        assert "Step 4" in DM_ANSWER_FORMAT
+        assert "### Structural Analysis" in DM_ANSWER_FORMAT
+        assert "### Synthesis" in DM_ANSWER_FORMAT
+        assert "**Material Conditions**" in DM_ANSWER_FORMAT
+        assert "**Frame Critique**" in DM_ANSWER_FORMAT
 
 
 class TestShortDMPrompt:
@@ -638,15 +661,16 @@ class TestShortDMPrompt:
         from src.teacher.prompts import get_short_dm_prompt
 
         prompt = get_short_dm_prompt("Test?")
-        assert "### Materialist Analysis" in prompt
-        assert "### Final Synthesis" in prompt
+        assert "### Structural Analysis" in prompt
+        assert "### Synthesis" in prompt
 
-    def test_short_prompt_includes_dm_instruction(self):
-        """Test that short prompt mentions Dialectical Materialism."""
+    def test_short_prompt_includes_structural_instruction(self):
+        """Test that short prompt mentions structural analysis concepts."""
         from src.teacher.prompts import get_short_dm_prompt
 
         prompt = get_short_dm_prompt("Test?")
-        assert "Dialectical Materialism" in prompt
+        assert "material conditions" in prompt.lower()
+        assert "structural" in prompt.lower()
 
 
 class TestGenerateSingleSample:
@@ -662,13 +686,14 @@ class TestGenerateSingleSample:
                 {
                     "message": {
                         "content": (
-                            "### Materialist Analysis\n"
-                            "**Step 1: Economic Base**\nMaterial conditions.\n"
-                            "**Step 2: Contradictions**\nContradiction.\n"
-                            "**Step 3: Superstructure**\nSuperstructure.\n"
-                            "**Step 4: Dialectical Development**\nDialectical.\n"
-                            "### Final Synthesis\n"
-                            "Material Conditions, Contradiction, Superstructure, and Dialectical reasoning form a framework. This is a second sentence."
+                            "### Structural Analysis\n"
+                            "**Material Conditions**\nMaterial conditions.\n"
+                            "**Structural Constraints**\nStructural constraints.\n"
+                            "**Power Relations**\nPower relations.\n"
+                            "**Systemic Contradictions**\nSystemic contradictions.\n"
+                            "**Frame Critique**\nFrame critique.\n"
+                            "### Synthesis\n"
+                            "Material Conditions, Structural Constraints, Power Relations, and Systemic Contradictions form a framework. This is a second sentence."
                         )
                     }
                 }
@@ -683,7 +708,7 @@ class TestGenerateSingleSample:
         )
 
         assert sample["conversations"][0]["content"] == "What is value?"
-        assert "### Materialist Analysis" in sample["conversations"][1]["content"]
+        assert "### Structural Analysis" in sample["conversations"][1]["content"]
 
     def test_generate_single_sample_passes_correct_args(self):
         """Test that generate_single_sample passes correct args to LLM."""
@@ -857,13 +882,14 @@ def create_mock_valid_sample():
             {
                 "role": "assistant",
                 "content": (
-                    "### Materialist Analysis\n"
-                    "**Step 1: Economic Base**\nMaterial conditions shape society.\n"
-                    "**Step 2: Contradictions**\nContradiction drives change.\n"
-                    "**Step 3: Superstructure**\nSuperstructure reflects the base.\n"
-                    "**Step 4: Dialectical Development**\nDialectical reasoning reveals patterns.\n"
-                    "### Final Synthesis\n"
-                    "The analysis integrates Material Conditions, Contradiction, Superstructure, and Dialectical reasoning into a coherent framework. This framework explains social dynamics and reveals how economic structures shape ideological formations."
+                    "### Structural Analysis\n"
+                    "**Material Conditions**\nMaterial conditions shape society.\n"
+                    "**Structural Constraints**\nStructural constraints limit outcomes.\n"
+                    "**Power Relations**\nEconomic power translates into influence.\n"
+                    "**Systemic Contradictions**\nSystemic contradictions drive change.\n"
+                    "**Frame Critique**\nWhat the dominant frame renders invisible.\n"
+                    "### Synthesis\n"
+                    "The analysis integrates Material Conditions, Structural Constraints, Power Relations, and Systemic Contradictions into a coherent framework. This framework explains social dynamics and reveals how economic structures shape ideological formations."
                 ),
             },
         ]

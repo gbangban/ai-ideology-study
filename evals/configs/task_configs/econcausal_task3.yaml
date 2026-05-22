@@ -9,7 +9,7 @@ dataset_kwargs:
     test: https://raw.githubusercontent.com/econaikaist/econcausal-benchmark/main/data/tasks/task3.jsonl
 test_split: test
 output_type: generate_until
-doc_to_text: "{{question}}"
+doc_to_text: "Answer with only JSON: {\"predicted_sign\": \"+\"}, {\"predicted_sign\": \"-\"}, {\"predicted_sign\": \"None\"}, or {\"predicted_sign\": \"mixed\"}. Do not include reasoning, thinking, or any explanation.\n\n{{question}}"
 doc_to_target: "{{answer}}"
 process_results: !function econcausal.process_results
 generation_kwargs:

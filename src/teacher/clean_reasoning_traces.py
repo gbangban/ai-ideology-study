@@ -65,12 +65,14 @@ def find_last_substantive_line_after_section(text: str, section_start: int) -> i
     """
     lines = text[section_start:].split('\n')
     last_content_pos = 0  # relative to section_start
+    running_pos = 0  # track position incrementally to avoid O(n^2)
 
     for i, line in enumerate(lines):
         stripped = line.strip()
 
         # Skip empty lines
         if not stripped:
+            running_pos += len(line) + 1  # +1 for newline
             continue
 
         # Check if this line starts a meta block
@@ -95,9 +97,9 @@ def find_last_substantive_line_after_section(text: str, section_start: int) -> i
             break
 
         # This is a substantive line
-        # Calculate absolute position
-        line_pos = sum(len(l) + 1 for l in lines[:i])  # +1 for newline
+        line_pos = running_pos
         last_content_pos = section_start + line_pos + len(line)
+        running_pos = line_pos + len(line) + 1  # +1 for newline
 
     return last_content_pos
 
@@ -296,12 +298,9 @@ def process_parquet_file(input_path: str, output_dir: str) -> str:
         return str(input_path)
 
     # Check if any rows have non-empty reasoning content
-    has_content = False
-    for _, row in df.iterrows():
-        rc = row.get('answer__reasoning_content')
-        if rc and isinstance(rc, str) and len(rc.strip()) > 0:
-            has_content = True
-            break
+    has_content = df['answer__reasoning_content'].apply(
+        lambda x: bool(x and isinstance(x, str) and len(x.strip()) > 0)
+    ).any()
 
     if not has_content:
         print(f"  Skipping {os.path.basename(input_path)}: no reasoning content to clean")
@@ -311,16 +310,17 @@ def process_parquet_file(input_path: str, output_dir: str) -> str:
         lambda x: len(str(x)) if x is not None else 0
     ).astype(int)
 
-    cleaned_traces = []
-    for idx, row in df.iterrows():
-        rc = row.get('answer__reasoning_content') or ''
-        cleaned = clean_reasoning_trace(rc)
-        cleaned_traces.append(cleaned)
+    cleaned_traces = df['answer__reasoning_content'].apply(
+        lambda x: clean_reasoning_trace(x or '')
+    ).tolist()
 
-        if idx < 3:
-            orig_len = len(str(rc))
-            print(f"  Row {idx}: {orig_len} -> {len(cleaned)} chars "
-                  f"({100*len(cleaned)/max(orig_len,1):.1f}%)")
+    # Log first few rows
+    for idx in range(min(3, len(df))):
+        orig_rc = df.iloc[idx].get('answer__reasoning_content') or ''
+        orig_len = len(str(orig_rc))
+        cleaned_len = len(cleaned_traces[idx])
+        print(f"  Row {idx}: {orig_len} -> {cleaned_len} chars "
+              f"({100*cleaned_len/max(orig_len,1):.1f}%)")
 
     df['answer__reasoning_content'] = cleaned_traces
 

@@ -23,12 +23,12 @@ RUN pip install --no-cache-dir unsloth==2026.4.6
 
 # Install ML Stack (Updated for 2026 compatibility)
 RUN pip install --no-cache-dir \
-    transformers>=4.46.0 \
-    datasets>=3.0.0 \
-    peft>=0.13.0 \
-    trl>=0.12.0 \
-    accelerate>=1.0.0 \
-    bitsandbytes>=0.44.0 \
+    transformers==4.46.1 \
+    datasets==3.1.0 \
+    peft==0.13.2 \
+    trl==0.12.3 \
+    accelerate==1.0.1 \
+    bitsandbytes==0.44.1 \
     sentencepiece
 
 # --- FIX: Match llama-cpp-python to CUDA 12.4+ ---

@@ -1,6 +1,6 @@
 # DM-Align: Experimental Design Document
 
-> **Version**: 2.7 | **Date**: May 21, 2026 | **Status**: Draft
+> **Version**: 2.8 | **Date**: May 22, 2026 | **Status**: Draft
 > **Teacher Model**: `Unsloth/Qwen3.5-27B` (base, data generation only)
 > **Student Model**: `Qwen/Qwen3.5-9B` (Instruct/post-trained, SFT + DPO training)
 > **Hardware**: RTX 5090 (32GB), programmatic Unsloth Core (SFT) + custom DPO
@@ -581,6 +581,7 @@ When training on data that includes reasoning traces (`
 | 2.5 | May 20, 2026 | Added §13 Evaluation Results with first HumanEval measurements; updated §5.6 regression tests with measured data; documented Q4_K_M quantization collapse (70.73% → 1.83%); documented eval infrastructure (lm_eval 0.4.12, llama.cpp server, eval suite structure) |
 | 2.6 | May 21, 2026 | Corrected question authorship: all 1,500 questions are AI-generated, not human-authored; removed stale "individually authored" hard constraint; corrected §5.1 DPO step (custom script, not Studio); marked GGUF eval scripts as deleted; removed reference to non-existent `questions.jsonl` |
 | 2.7 | May 21, 2026 | Corrected student model variant: `Qwen/Qwen3.5-9B` is the Instruct/post-trained variant (`Qwen3_5ForConditionalGeneration`), not Base; updated model table and design note; added loss masking strategy section documenting three approaches (train everything, mask reasoning, differential weighting) with justification for approach (a); updated hardware note from "Unsloth Studio (SFT)" to "programmatic Unsloth Core (SFT)" |
+| 2.8 | May 22, 2026 | Added §13.2 measured runtimes table (BF16 actual execution times for HumanEval, MMLU, GPQA, IFEval); added §13.3 new datasets section documenting EconCausal (4 tasks, 2,943 samples) and Corr2Cause (1,160 samples) with sizes, descriptions, and estimated runtimes (~35-47 min total BF16); updated pending tasks table with new tasks and BF16 time estimates; added design implication about EconCausal/Corr2Cause as domain-relevant regression tests |
 
 ---
 
@@ -600,13 +601,62 @@ When training on data that includes reasoning traces (`
 
 **Eval suites**:
 
-| Suite | Tasks | Est Time (GGUF) |
-|-------|-------|-----------------|
-| Short | IFEval + HumanEval + MMLU 5-shot | ~2 hours |
-| Medium | Short + GPQA Diamond | ~3 hours |
-| Full | MMLU-Pro + GPQA + IFEval + HumanEval + Math-Hard | ~40 hours |
+| Suite | Tasks | Est Time (GGUF) | Est Time (BF16) |
+|-------|-------|-----------------|-----------------|
+| Short | IFEval + HumanEval + MMLU 5-shot | ~2 hours | ~20 min |
+| Medium | Short + GPQA Diamond | ~3 hours | ~23 min |
+| Full | MMLU-Pro + GPQA + IFEval + HumanEval + Math-Hard | ~40 hours | — |
 
-### 13.2 HumanEval Results (2026-05-20)
+### 13.2 Measured Runtimes (BF16, Native HF, batch=4)
+
+All times from actual execution on RTX 5090 (32GB). Cold run times are shown where cache effects were controlled.
+
+| Task | Samples | Baseline Time | Finetuned Time | Samples/sec | Generation |
+|------|---------|---------------|----------------|-------------|------------|
+| **HumanEval** | 164 | 1530.4s (25m 30s) | 172.2s (2m 52s) | 0.1-1.3 | Long (1024 toks) |
+| **MMLU (62 subtasks)** | 14,042 | 1112.9s (18m 33s) | 898.4s (14m 58s) | 12.6-15.6 | Short (~5 toks) |
+| **GPQA Diamond** | 198 | 161.2s (2m 41s) | 128.8s (2m 9s) | 1.2-1.5 | Medium (~256 toks) |
+| **IFEval** | 541 | 5499.4s (91m 40s) | 122.7s (2m 3s) | 0.1-4.4 | Variable |
+
+**Notes**:
+- HumanEval baseline 1530s was a cold run with cache refresh; a warm run completed in 130.8s. Finetuned was 172.2s (warm).
+- IFEval baseline 5499s was a cold run; finetuned 122.7s was likely a cache hit. A second finetuned cold run took 7314.9s (121.9m).
+- MMLU finetuned is ~24% faster than baseline for the same 14,042 samples, likely due to shorter generation (fewer tokens to decode per sample).
+- GPQA finetuned is ~20% faster than baseline.
+
+### 13.3 New Datasets: EconCausal + Corr2Cause
+
+Five new evaluation tasks have been configured, targeting causal reasoning in economics and statistics — domains directly relevant to DM-aligned analysis.
+
+| Task | Dataset | Samples | max_gen_toks | Config File |
+|------|---------|---------|--------------|-------------|
+| **econcausal_task1_econ** | EconCausal Task 1 — Economics | 947 | 256 | `evals/configs/task_configs/econcausal_task1_econ.yaml` |
+| **econcausal_task1_finance** | EconCausal Task 1 — Finance | 860 | 256 | `evals/configs/task_configs/econcausal_task1_finance.yaml` |
+| **econcausal_task2** | EconCausal Task 2 — Context-dependent | 284 | 256 | `evals/configs/task_configs/econcausal_task2.yaml` |
+| **econcausal_task3** | EconCausal Task 3 — Misinformation-robust | 852 | 256 | `evals/configs/task_configs/econcausal_task3.yaml` |
+| **corr2cause** | Corr2Cause — Causal inference from correlations | ~1,160 | 64 | `evals/configs/task_configs/corr2cause.yaml` |
+| **TOTAL** | | **4,103** | | |
+
+**Task descriptions**:
+- **EconCausal Task 1**: Predict the sign (+, -, None, mixed) of a causal relationship given economic/financial context. Ground truth is extracted from empirical literature.
+- **EconCausal Task 2**: Context-dependent sign prediction — the causal sign may flip depending on conditions specified in the prompt.
+- **EconCausal Task 3**: Misinformation-robust sign prediction — distractors and misleading information are included in the prompt; model must identify the correct causal direction.
+- **Corr2Cause**: Binary classification — given correlation/independence statements (premise), determine whether a causal hypothesis is True or False.
+
+**Estimated BF16 runtime** (based on GPQA Diamond as reference: 198 samples in ~161s cold, ~129s warm):
+
+| Task | Samples | Est Cold (BF16) | Est Warm (BF16) | Rationale |
+|------|---------|-----------------|-----------------|-----------|
+| econcausal_task1_econ | 947 | ~830s (13m 50s) | ~630s (10m 30s) | Similar to GPQA: medium gen, 256 toks |
+| econcausal_task1_finance | 860 | ~754s (12m 34s) | ~573s (9m 33s) | Same as above, fewer samples |
+| econcausal_task2 | 284 | ~248s (4m 8s) | ~187s (3m 7s) | Same pattern, small sample count |
+| econcausal_task3 | 852 | ~747s (12m 27s) | ~567s (9m 27s) | Same as above |
+| corr2cause | ~1,160 | ~186s (3m 6s) | ~141s (2m 21s) | Short gen (64 toks), ~4x faster than GPQA per sample |
+| **ALL 5 tasks** | **4,103** | **~2,765s (46m 5s)** | **~2,098s (34m 58s)** | |
+
+These estimates assume similar prompt lengths to GPQA Diamond. EconCausal prompts include economic context which may be longer, potentially adding 10-20% to prompt processing time.
+
+### 13.4 HumanEval Results (2026-05-20)
 
 All runs: 0-shot, greedy decoding (`do_sample=false`), max_gen_toks=1024, same stop sequences, random seed 0, 164 samples.
 
@@ -622,18 +672,24 @@ All runs: 0-shot, greedy decoding (`do_sample=false`), max_gen_toks=1024, same s
 
 **Runtime**: Normalized to batch size 4, the bf16 baseline is approximately 2.7x slower than either GGUF variant. The baseline GGUF ran at batch 2 (conservative), making it 25% slower than the finetuned GGUF at batch 4 despite identical quantization.
 
-### 13.3 Pending Tasks
+### 13.5 Pending Tasks
 
-| Task | Suite | Est Time (GGUF) | Status |
-|------|-------|-----------------|--------|
-| IFEval | short | ~69 min | Not run |
-| MMLU 5-shot | short | ~26 min | Not run |
-| GPQA Diamond | medium | ~57 min | Not run |
-| MMLU-Pro | full | ~15 hours | Not run |
-| Math-Hard | full | ~22 hours | Not run |
+| Task | Suite | Est Time (GGUF) | Est Time (BF16) | Status |
+|------|-------|-----------------|-----------------|--------|
+| IFEval | short | ~69 min | ~2-122 min | Run (BF16) |
+| MMLU 5-shot | short | ~26 min | ~15-19 min | Run (BF16) |
+| GPQA Diamond | medium | ~57 min | ~2-3 min | Run (BF16) |
+| MMLU-Pro | full | ~15 hours | — | Not run |
+| Math-Hard | full | ~22 hours | — | Not run |
+| econcausal_task1_econ | new | — | ~10-14 min | Not run |
+| econcausal_task1_finance | new | — | ~10-13 min | Not run |
+| econcausal_task2 | new | — | ~3-4 min | Not run |
+| econcausal_task3 | new | — | ~9-12 min | Not run |
+| corr2cause | new | — | ~2-3 min | Not run |
 
-### 13.4 Design Implications
+### 13.6 Design Implications
 
 1. **Regression tests must control for format**: Comparing bf16 to GGUF confounds training effects with quantization. Future SFT→DPO regression comparisons should either use bf16 throughout or accept the GGUF floor.
 2. **Q4_K_M may be too aggressive for this model**: The 97.4% collapse on HumanEval suggests Q4_K_M destroys coding capability on Qwen3.5-9B. Consider Q5_K_M or Q6_K for deployment if coding competence matters.
 3. **BM25-style knowledge benchmarks (MMLU 5-shot) will be more meaningful than generation benchmarks** for the GGUF format — they generate ~5 tokens per question vs. hundreds for code generation, so quantization artifacts in generation have less surface area to manifest.
+4. **EconCausal + Corr2Cause are domain-relevant regression tests**: These tasks test causal reasoning in economics, which overlaps with DM-aligned analysis domains. A regression here would signal that training corrupted general causal reasoning, not just political analysis. Total runtime for all 5 tasks is ~35-47 min (BF16), making them practical to run after each training stage.

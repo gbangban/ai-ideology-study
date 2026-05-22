@@ -12,25 +12,50 @@ from typing import Any, Dict, Optional
 
 
 _SIGN_JSON = re.compile(r'"predicted_sign"\s*:\s*"([^"]+)"', re.IGNORECASE)
+# Context-aware: sign must appear after an answer keyword or as a standalone token
 # \b doesn't work with + and - (non-word chars), so use lookahead/lookbehind
+_SIGN_CONTEXT = re.compile(
+    r"(?:sign|answer|prediction|result|conclusion)[:\s]+(?<!\w)(\+|-|None|mixed)(?!\w)",
+    re.IGNORECASE,
+)
+# Standalone sign: avoid matching '-' in hyphenated words or prose dashes.
+# For '-' specifically, require it's not surrounded by letters (catches "not-significant").
+# '+' is safe (rare in prose). 'None'/'mixed' are word-bounded.
 _SIGN_STANDALONE = re.compile(
-    r"(?<!\w)(\+|-|None|mixed)(?!\w)", re.IGNORECASE
+    r"(?<![a-zA-Z0])(\+|-)(?![a-zA-Z0-])|(?<!\w)(None|mixed)(?!\w)",
+    re.IGNORECASE
 )
 
 
 def _extract_sign(text: str) -> Optional[str]:
-    """Extract predicted causal sign from model output."""
+    """Extract predicted causal sign from model output.
+
+    Strategy:
+    1. Try JSON extraction (most reliable).
+    2. Try context-aware extraction (sign after answer keyword).
+    3. Fallback: take the LAST standalone sign token (model often corrects itself).
+    """
     # Try JSON extraction first
     m = _SIGN_JSON.search(text)
     if m:
         return m.group(1)
 
-    # Fallback: standalone sign token
-    for m in _SIGN_STANDALONE.finditer(text):
-        val = m.group(1)
-        if val.lower() == "none":
-            return "None"
-        return val
+    # Context-aware: sign after answer keyword — use LAST match (model often
+    # corrects itself, e.g. "initial prediction: + ... final answer: -")
+    context_matches = list(_SIGN_CONTEXT.finditer(text))
+    if context_matches:
+        return _normalize(context_matches[-1].group(1))
+
+    # Fallback: take the LAST standalone sign token (model often corrects itself,
+    # e.g. "not + but rather -"). Using last match avoids picking up signs in
+    # negated or disclaimed contexts earlier in the text.
+    # Note: regex has two groups - group(1) for +/-, group(2) for None/mixed.
+    matches = list(_SIGN_STANDALONE.finditer(text))
+    if matches:
+        val = matches[-1].group(1) or matches[-1].group(2)
+        if val:
+            return _normalize(val)
+        return None
 
     return None
 
@@ -41,6 +66,8 @@ def _normalize(sign: Optional[str]) -> Optional[str]:
     sign = sign.strip()
     if sign.lower() == "none":
         return "None"
+    if sign.lower() == "mixed":
+        return "mixed"
     return sign
 
 

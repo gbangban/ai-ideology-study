@@ -75,12 +75,19 @@ def configure_model_for_training(model, gradient_checkpointing: str = "unsloth")
             from unsloth import FastLanguageModel
 
             FastLanguageModel.for_training(model)
+            model.config.use_gradient_checkpointing = True
         except ImportError:
-            pass  # unsloth not available in test environment
+            import warnings
+            warnings.warn(
+                "Unsloth not available; falling back to native gradient checkpointing.",
+                UserWarning,
+            )
+            model.enable_gradient_checkpointing()
+            model.config.use_gradient_checkpointing = True
     else:
         model.enable_gradient_checkpointing()
+        model.config.use_gradient_checkpointing = True
 
-    model.config.use_gradient_checkpointing = True
     return model
 
 
@@ -171,8 +178,11 @@ def train_sft(
         config["max_steps"], len(dataset) // config["per_device_train_batch_size"]
     )
 
+    # Generate shuffled indices for this epoch
+    perm = torch.randperm(len(dataset))
+
     for step in range(total_steps):
-        batch_idx = step % len(dataset)
+        batch_idx = perm[step % len(dataset)].item()
         batch = {
             "input_ids": tokenized["input_ids"][batch_idx : batch_idx + 1],
             "attention_mask": tokenized["attention_mask"][batch_idx : batch_idx + 1],

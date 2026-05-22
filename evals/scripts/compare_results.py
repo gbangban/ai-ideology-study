@@ -30,7 +30,7 @@ from pathlib import Path
 # Published Qwen3.5-9B scores from model card
 PUBLISHED_SCORES = {
     "mmlu_pro": 82.5,
-    "gpqa:diamond": 81.7,
+    "gpqa_diamond_zeroshot": 81.7,
     "ifeval": 91.5,
     "livecodebench": 65.6,
     "hmmt": 83.2,
@@ -39,7 +39,7 @@ PUBLISHED_SCORES = {
 # Regression thresholds (points below Q4 baseline)
 REGRESSION_THRESHOLDS = {
     "mmlu_pro": 3,
-    "gpqa:diamond": 3,
+    "gpqa_diamond_zeroshot": 3,
     "ifeval": 5,
     "livecodebench": 5,
     "hmmt": 3,
@@ -193,7 +193,7 @@ def compare_results(
     # Map display names
     display_names = {
         "mmlu_pro": "MMLU-Pro",
-        "gpqa:diamond": "GPQA Diamond",
+        "gpqa_diamond_zeroshot": "GPQA Diamond",
         "ifeval": "IFEval",
         "livecodebench": "LiveCodeBench",
         "hmmt": "HMMT",

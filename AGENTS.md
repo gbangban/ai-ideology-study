@@ -107,11 +107,9 @@ python3 -m src.student.train_dpo --help
 # Override with FINETUNED_MODEL_DIR env var
 ./evals/scripts/run_finetuned_bf16.sh --tasks humaneval
 
-# Single task runner
-./evals/scripts/run_single_task.sh
 ```
 
-Eval scripts: `run_baseline_bf16.sh`, `run_finetuned_bf16.sh`, `run_single_task.sh`, `eval_logging.sh`, `compare_results.py`, `compare_answers.py`, `label_results.py`.
+Eval scripts: `run_baseline_bf16.sh`, `run_finetuned_bf16.sh`, `eval_logging.sh`, `compare_results.py`, `compare_answers.py`, `label_results.py`.
 
 GGUF evals were previously run via `llama-server.exe` at `/mnt/c/llamacpp/llama-server.exe` (port 8080, ctx 4096). Scripts deleted; results remain in `evals/results/`.
 

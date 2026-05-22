@@ -100,7 +100,7 @@ def train(config: dict, dataset_path: str, output_dir: str):
         model=model,
         tokenizer=tokenizer,
         train_dataset=dataset,
-        dataset_text_field="",
+        dataset_text_field=None,
         max_seq_length=config["max_seq_length"],
         args=training_args,
     )

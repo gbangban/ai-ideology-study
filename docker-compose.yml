@@ -23,6 +23,8 @@ services:
       - /home/yao/.cache/huggingface:/root/.cache/huggingface
       # Mount checkpoints for GGUF model access
       - ./checkpoints:/app/checkpoints
+    env_file:
+      - .env
     environment:
       - HF_HOME=/root/.cache/huggingface
       - TRANSFORMERS_CACHE=/root/.cache/huggingface

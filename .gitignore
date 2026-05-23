@@ -1,5 +1,8 @@
 *.pyc
 
+# Environment files (may contain API keys)
+.env
+
 # Evaluation environment
 evals/.venv/
 evals/results/**/*.json*

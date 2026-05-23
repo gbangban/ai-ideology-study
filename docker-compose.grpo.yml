@@ -1,0 +1,9 @@
+# Alternative GRPO container with CUDA 13 + vLLM + TRL GRPOTrainer
+# Use: docker compose -f docker-compose.yml -f docker-compose.grpo.yml up -d
+services:
+  training:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.cu13
+    container_name: ml-training-grpo
+    image: ml-lora-training-training-grpo:latest

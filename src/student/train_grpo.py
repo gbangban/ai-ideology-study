@@ -1,45 +1,164 @@
 #!/usr/bin/env python3
 """
-GRPO Training Script
+Custom GRPO Training Script
 
-Group Relative Policy Optimization for DM alignment.
-Loads SFT merged checkpoint via Unsloth NF4, trains with TRL GRPOTrainer.
+Group Relative Policy Optimization implemented from scratch (no TRL GRPOTrainer/vLLM dependency).
+Loads SFT merged checkpoint via Unsloth NF4, trains with custom GRPO loop.
 
 Usage:
-    python3 -m src.student.train_grpo \\
-        --base-model /path/to/sft/checkpoint \\
+    python3 -m src.student.train_grpo \
+        --base-model /path/to/sft/checkpoint \
         --output-dir checkpoints/lora_adapters/grpo_adapter
 """
 
 import argparse
 import json
+import logging
+import math
 import sys
+import time
 from pathlib import Path
-from typing import List
+from typing import Dict, List, Tuple
 
 import torch
+import torch.nn.functional as F
 from datasets import Dataset
-from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments
+from torch.utils.data import DataLoader, Dataset as TorchDataset
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 from src.student.grpo_config import GRPO_CONFIG
 from src.student.rewards import (
-    build_reward_fn,
+    compute_directional_assertion,
+    compute_format_reward,
     compute_length_reward,
+    compute_dm_alignment_judge,
 )
 
+logging.basicConfig(
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    level=logging.INFO,
+)
+logger = logging.getLogger(__name__)
 
-def load_questions(filepath: str) -> List[str]:
-    """Load questions from questions.json, returning only prompt text."""
-    with open(filepath, "r") as f:
-        data = json.load(f)
-    return [q["question"] for q in data]
+
+class GRPODataset(TorchDataset):
+    """Simple dataset of prompts for GRPO training."""
+
+    def __init__(self, prompts: List[str]):
+        self.prompts = prompts
+
+    def __len__(self):
+        return len(self.prompts)
+
+    def __getitem__(self, idx):
+        return self.prompts[idx]
 
 
-def format_prompt(question: str) -> str:
-    """Format a question as a chat prompt for the model."""
-    return [{"role": "user", "content": question}]
+def compute_kl_penalty(
+    log_probs_new: torch.Tensor,
+    log_probs_ref: torch.Tensor,
+    beta: float,
+) -> torch.Tensor:
+    """Compute KL divergence penalty: beta * (log_pi_ref - log_pi_new)."""
+    return beta * (log_probs_ref - log_probs_new)
+
+
+def compute_advantage(
+    rewards: List[float],
+    group_size: int,
+) -> torch.Tensor:
+    """Compute group-relative advantage: (r_i - mean) / std within each group."""
+    rewards_tensor = torch.tensor(rewards, dtype=torch.float32)
+    means = rewards_tensor.view(-1, group_size).mean(dim=1, keepdim=True)
+    stds = rewards_tensor.view(-1, group_size).std(dim=1, keepdim=True).clamp(min=1e-8)
+    advantages = ((rewards_tensor - means.flatten()) / stds.flatten()).detach()
+    return advantages
+
+
+def get_log_probs(
+    model,
+    input_ids: torch.Tensor,
+    attention_mask: torch.Tensor,
+    prompt_length: int,
+) -> torch.Tensor:
+    """Get log probabilities for generated tokens (after prompt)."""
+    with torch.no_grad():
+        outputs = model(input_ids, attention_mask=attention_mask, use_cache=False)
+    logits = outputs.logits
+
+    labels = input_ids[:, prompt_length:]
+    logits_shifted = logits[:, prompt_length - 1: -1, :]
+    log_probs = F.log_softmax(logits_shifted, dim=-1)
+
+    label_mask = (labels != -100)
+    token_log_probs = log_probs.gather(2, labels.unsqueeze(-1)).squeeze(-1)
+    return token_log_probs, label_mask
+
+
+def generate_completions(
+    model,
+    tokenizer,
+    prompt: str,
+    group_size: int,
+    max_new_tokens: int,
+    temperature: float = 1.0,
+    top_p: float = 1.0,
+) -> List[str]:
+    """Generate G completions for a single prompt."""
+    completions = []
+    for _ in range(group_size):
+        inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+        with torch.no_grad():
+            output_ids = model.generate(
+                **inputs,
+                max_new_tokens=max_new_tokens,
+                do_sample=True,
+                temperature=temperature,
+                top_p=top_p,
+                pad_token_id=tokenizer.eos_token_id,
+            )
+        generated = output_ids[0][inputs["input_ids"].shape[1]:]
+        text = tokenizer.decode(generated, skip_special_tokens=True)
+        completions.append(text)
+    return completions
+
+
+def compute_rewards(
+    completions: List[str],
+    weights: dict,
+    tokenizer,
+    judge_model=None,
+    judge_tokenizer=None,
+) -> List[float]:
+    """Compute weighted sum of all reward functions for a batch of completions."""
+    n = len(completions)
+    total_scores = [0.0] * n
+
+    if "directional_assertion" in weights:
+        w = weights["directional_assertion"]
+        for i, c in enumerate(completions):
+            total_scores[i] += w * compute_directional_assertion(c)
+
+    if "format" in weights:
+        w = weights["format"]
+        for i, c in enumerate(completions):
+            total_scores[i] += w * compute_format_reward(c)
+
+    if "length" in weights:
+        w = weights["length"]
+        for i, c in enumerate(completions):
+            tokens = len(tokenizer.encode(c, add_special_tokens=False))
+            total_scores[i] += w * compute_length_reward(tokens)
+
+    if "dm_alignment" in weights and judge_model is not None and judge_tokenizer is not None:
+        w = weights["dm_alignment"]
+        dm_scores = compute_dm_alignment_judge(completions, judge_model, judge_tokenizer)
+        for i, s in enumerate(dm_scores):
+            total_scores[i] += w * s
+
+    return total_scores
 
 
 def train(config: dict, base_model_path: str, output_dir: str):
@@ -47,7 +166,7 @@ def train(config: dict, base_model_path: str, output_dir: str):
     from unsloth import FastLanguageModel
 
     # Load model with NF4 quantization
-    print(f"Loading model from {base_model_path}...")
+    logger.info(f"Loading model from {base_model_path}...")
     model, tokenizer = FastLanguageModel.from_pretrained(
         model_name=base_model_path,
         max_seq_length=2048,
@@ -64,91 +183,218 @@ def train(config: dict, base_model_path: str, output_dir: str):
         target_modules=config["target_modules"],
     )
     model = FastLanguageModel.for_training(model)
-    print(f"LoRA applied: rank={config['lora_rank']}, alpha={config['lora_alpha']}")
+    logger.info(f"LoRA applied: rank={config['lora_rank']}, alpha={config['lora_alpha']}")
+
+    # Create reference model (snapshot before training)
+    import copy
+    ref_model = copy.deepcopy(model)
+    ref_model.eval()
+    for p in ref_model.parameters():
+        p.requires_grad = False
+    logger.info("Reference model created")
 
     # Load judge model
     judge_model = None
     judge_tokenizer = None
-    if "dm_alignment" in config["reward_weights"]:
-        print(f"Loading judge model: {config['judge_model']}...")
+    if config["reward_weights"].get("dm_alignment", 0) > 0:
+        logger.info(f"Loading judge model: {config['judge_model']}...")
         judge_model = AutoModelForCausalLM.from_pretrained(
             config["judge_model"],
             torch_dtype=torch.bfloat16,
-        ).cuda()
+            device_map="auto",
+        )
         judge_tokenizer = AutoTokenizer.from_pretrained(config["judge_model"])
-        print(f"Judge model loaded on {judge_model.device}")
-
-    # Build reward function
-    reward_fn = build_reward_fn(
-        config["reward_weights"],
-        judge_model,
-        judge_tokenizer,
-    )
+        logger.info(f"Judge model loaded on {judge_model.device}")
 
     # Load and prepare dataset
-    print(f"Loading questions from {config['questions_path']}...")
-    questions = load_questions(config["questions_path"])
-    print(f"  Loaded {len(questions)} questions")
+    logger.info(f"Loading questions from {config['questions_path']}...")
+    with open(config["questions_path"], "r") as f:
+        data = json.load(f)
+    questions = [q["question"] for q in data]
+    logger.info(f"  Loaded {len(questions)} questions")
 
-    prompts = [format_prompt(q) for q in questions]
-    prompt_texts = [tokenizer.apply_chat_template(p, tokenize=False, add_generation_prompt=True) for p in prompts]
+    prompts = []
+    for q in questions:
+        chat = [{"role": "user", "content": q}]
+        prompt_text = tokenizer.apply_chat_template(chat, tokenize=False, add_generation_prompt=True)
+        prompts.append(prompt_text)
 
-    dataset = Dataset.from_dict({"prompt": prompt_texts})
+    dataset = GRPODataset(prompts)
+    dataloader = DataLoader(dataset, batch_size=config["per_device_train_batch_size"], shuffle=True)
 
-    # Length-aware reward wrapper
-    def length_aware_reward(completions: List[str]) -> List[float]:
-        base_scores = reward_fn(completions)
-        length_weight = config["reward_weights"].get("length", 0)
-        if length_weight > 0:
-            for i, completion in enumerate(completions):
-                tokens = len(tokenizer.encode(completion, add_special_tokens=False))
-                length_score = compute_length_reward(tokens)
-                base_scores[i] += length_weight * length_score
-        return base_scores
+    # Training hyperparameters
+    group_size = config["grpo_g"]
+    beta = config.get("beta", 0.1)
+    lr = config["learning_rate"]
+    max_steps = config["max_steps"]
+    max_completion_tokens = config["max_completion_length"]
+    warmup_steps = config["warmup_steps"]
+    save_steps = config["save_steps"]
+    logging_steps = config["logging_steps"]
 
-    # Training arguments
-    training_args = TrainingArguments(
-        output_dir=output_dir,
-        learning_rate=config["learning_rate"],
-        max_steps=config["max_steps"],
-        per_device_train_batch_size=config["per_device_train_batch_size"],
-        gradient_accumulation_steps=config["gradient_accumulation_steps"],
-        lr_scheduler_type=config["lr_scheduler_type"],
-        warmup_steps=config["warmup_steps"],
-        bf16=True,
-        logging_steps=config["logging_steps"],
-        save_steps=config["save_steps"],
-        report_to="wandb",
-        run_name="grpo-dm-alignment",
+    # Optimizer
+    optimizer = torch.optim.AdamW(
+        [p for p in model.parameters() if p.requires_grad],
+        lr=lr,
+        weight_decay=0.01,
     )
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max_steps)
 
-    # GRPOTrainer
-    from trl import GRPOTrainer
+    # Training loop
+    model.train()
+    step = 0
+    total_rewards = []
+    start_time = time.time()
 
-    trainer = GRPOTrainer(
-        model=model,
-        ref_model=None,
-        tokenizer=tokenizer,
-        args=training_args,
-        reward_funcs=[length_aware_reward],
-        train_dataset=dataset,
-        # GRPO-specific
-        grpo_g=config["grpo_g"],
-        max_completion_length=config["max_completion_length"],
-    )
+    logger.info(f"Starting GRPO training...")
+    logger.info(f"  Steps: {max_steps}, G: {group_size}, LR: {lr}, Beta: {beta}")
+    logger.info(f"  Estimated duration: 9-12 hours")
 
-    print(f"Starting GRPO training...")
-    print(f"  Steps: {config['max_steps']}, G: {config['grpo_g']}, LR: {config['learning_rate']}")
-    print(f"  Estimated duration: 9-12 hours")
+    while step < max_steps:
+        for batch_prompts in dataloader:
+            if step >= max_steps:
+                break
 
-    metrics = trainer.train()
-    print(f"Training complete. Metrics: {metrics}")
+            batch_start = time.time()
 
-    # Save adapter
-    print(f"Saving GRPO adapter to {output_dir}...")
+            # Generate completions for each prompt in batch
+            all_completions = []
+            all_prompt_texts = []
+            for prompt in batch_prompts:
+                completions = generate_completions(
+                    model, tokenizer, prompt,
+                    group_size=group_size,
+                    max_new_tokens=max_completion_tokens,
+                )
+                all_completions.extend(completions)
+                all_prompt_texts.extend([prompt] * group_size)
+
+            # Compute rewards
+            rewards = compute_rewards(
+                all_completions,
+                config["reward_weights"],
+                tokenizer,
+                judge_model,
+                judge_tokenizer,
+            )
+
+            # Compute advantages
+            advantages = compute_advantage(rewards, group_size)
+
+            # Policy update
+            model.train()
+            optimizer.zero_grad()
+
+            batch_loss = 0.0
+            n_samples = len(all_completions)
+
+            # Process in mini-batches to manage VRAM
+            mini_batch_size = 4
+            for mb_start in range(0, n_samples, mini_batch_size):
+                mb_end = min(mb_start + mini_batch_size, n_samples)
+                mb_advantages = advantages[mb_start:mb_end]
+
+                # Tokenize prompt + completion pairs
+                mb_texts = []
+                mb_prompt_lengths = []
+                for i in range(mb_start, mb_end):
+                    full_text = all_prompt_texts[i] + all_completions[i]
+                    mb_texts.append(full_text)
+                    prompt_enc = tokenizer(all_prompt_texts[i], add_special_tokens=False)
+                    mb_prompt_lengths.append(len(prompt_enc["input_ids"]))
+
+                tokenized = tokenizer(
+                    mb_texts,
+                    padding=True,
+                    truncation=True,
+                    max_length=2048,
+                    return_tensors="pt",
+                ).to(model.device)
+
+                input_ids = tokenized["input_ids"]
+                attention_mask = tokenized["attention_mask"]
+
+                # New policy log probs
+                with torch.no_grad():
+                    new_outputs = model(input_ids, attention_mask=attention_mask, use_cache=False)
+                new_logits = new_outputs.logits
+
+                # Reference policy log probs
+                with torch.no_grad():
+                    ref_outputs = ref_model(input_ids, attention_mask=attention_mask, use_cache=False)
+                ref_logits = ref_outputs.logits
+
+                # Compute log probs for completion tokens only
+                for b_idx in range(len(mb_texts)):
+                    prompt_len = mb_prompt_lengths[b_idx]
+                    labels = input_ids[b_idx, prompt_len:]
+                    new_logit_shifted = new_logits[b_idx, prompt_len - 1: -1, :]
+                    ref_logit_shifted = ref_logits[b_idx, prompt_len - 1: -1, :]
+
+                    label_mask = (labels != -100) & (labels != tokenizer.pad_token_id)
+                    if label_mask.sum() == 0:
+                        continue
+
+                    new_log_probs = F.log_softmax(new_logit_shifted, dim=-1)
+                    ref_log_probs = F.log_softmax(ref_logit_shifted, dim=-1)
+
+                    new_token_lp = new_log_probs.gather(2, labels.unsqueeze(-1)).squeeze(-1)
+                    ref_token_lp = ref_log_probs.gather(2, labels.unsqueeze(-1)).squeeze(-1)
+
+                    # Policy ratio
+                    old_log_probs = ref_token_lp.detach()
+                    log_ratio = new_token_lp - old_log_probs
+                    ratio = log_ratio.exp()
+
+                    # Clipped PPO-style objective
+                    adv = mb_advantages[b_idx].item()
+                    policy_loss = -(ratio * adv).mean()
+                    clipped_loss = (-torch.clamp(ratio, 1.0 - 0.2, 1.0 + 0.2) * adv).mean()
+                    pg_loss = torch.max(policy_loss, clipped_loss)
+
+                    # KL penalty
+                    kl = (old_log_probs - new_token_lp).mean()
+                    total_loss = pg_loss + beta * kl
+
+                    total_loss.backward()
+                    batch_loss += total_loss.item()
+
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+            optimizer.step()
+            scheduler.step()
+            step += 1
+
+            avg_reward = sum(rewards) / len(rewards)
+            total_rewards.append(avg_reward)
+            elapsed = time.time() - batch_start
+            est_remaining = (elapsed / step) * (max_steps - step) / 3600
+
+            if step % logging_steps == 0 or step == 1:
+                logger.info(
+                    f"Step {step}/{max_steps} | "
+                    f"Loss: {batch_loss / len(all_completions):.4f} | "
+                    f"Avg Reward: {avg_reward:.3f} | "
+                    f"Time: {elapsed:.1f}s | "
+                    f"ETA: {est_remaining:.1f}h"
+                )
+
+            # Save checkpoint
+            if step % save_steps == 0:
+                ckpt_dir = f"{output_dir}/checkpoint-{step}"
+                logger.info(f"Saving checkpoint to {ckpt_dir}...")
+                model.save_pretrained(ckpt_dir)
+                tokenizer.save_pretrained(ckpt_dir)
+
+    # Final save
+    logger.info(f"Training complete. Saving final adapter to {output_dir}...")
     model.save_pretrained(output_dir)
     tokenizer.save_pretrained(output_dir)
-    print("Done.")
+    logger.info(f"Total time: {(time.time() - start_time) / 3600:.1f}h")
+
+    # Save reward history
+    with open(f"{output_dir}/reward_history.json", "w") as f:
+        json.dump(total_rewards, f)
+    logger.info("Done.")
 
 
 def main():

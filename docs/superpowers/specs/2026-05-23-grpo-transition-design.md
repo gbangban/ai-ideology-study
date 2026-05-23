@@ -16,18 +16,20 @@ The DM-Align project trains a Qwen3.5-9B model whose default analytical frame is
 
 ```
 questions.json (1,500 prompts)
-    → train_grpo.py loads NF4 model via Unsloth + GRPOTrainer (TRL)
+    → train_grpo.py loads NF4 model via Unsloth + custom GRPO loop (no TRL/vLLM)
     → For each prompt, generates G=8 completions (including thinking blocks)
     → rewards.py evaluates each completion:
        - DM Alignment: Qwen3.5-4B judge, single prompt, 4 binary checks → 0-1 score (weight 0.5)
        - Directional Assertion: keyword-based definitive stance reward (weight 0.2)
        - Format: multi-paragraph, ≥200 chars, causal language (weight 0.15)
        - Length: anti-collapse penalty <20 tokens, hard cap at 500 tokens (weight 0.15)
-    → GRPOTrainer computes advantages, performs policy gradient step
+    → Custom GRPO loop computes group-relative advantages, PPO-clipped policy update + KL penalty
     → LoRA adapters saved, merged to BF16 for evaluation
 ```
 
 **Judge model**: Qwen3.5-4B loaded in BF16 (~7-8GB VRAM) on the same GPU during reward computation.
+
+**No TRL/vLLM dependency**: TRL's GRPOTrainer requires vLLM (hard import), which in turn requires CUDA 13 + torch 2.11.0 — incompatible with our CUDA 12.6 container. Custom GRPO loop uses PPO-clipped objective with KL penalty against frozen reference model.
 
 **Reward registry**: List of callable objects with configurable weights. Adding or removing reward functions is appending/removing entries.
 

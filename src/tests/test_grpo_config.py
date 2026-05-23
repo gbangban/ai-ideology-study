@@ -38,9 +38,10 @@ class TestGRPOConfig:
         weights = GRPO_CONFIG["reward_weights"]
         assert all(v > 0 for v in weights.values())
 
-    def test_loss_type_is_dapo(self):
+    def test_beta_kl_penalty(self):
         from src.student.grpo_config import GRPO_CONFIG
-        assert GRPO_CONFIG["grpo_loss_type"] == "dapo"
+        assert "beta" in GRPO_CONFIG
+        assert GRPO_CONFIG["beta"] >= 0
 
     def test_max_completion_length(self):
         from src.student.grpo_config import GRPO_CONFIG

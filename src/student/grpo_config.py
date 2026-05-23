@@ -1,9 +1,11 @@
 """
 GRPO Training Configuration
 
-Hyperparameters for Group Relative Policy Optimization training.
+Hyperparameters for custom Group Relative Policy Optimization training.
 Student: Qwen/Qwen3.5-9B (Instruct), NF4 quantized at runtime via Unsloth.
 Starting from SFT merged BF16 checkpoint.
+
+No TRL/vLLM dependency — custom GRPO loop with PPO-style clipped objective.
 """
 
 GRPO_CONFIG = {
@@ -26,9 +28,8 @@ GRPO_CONFIG = {
 
     # GRPO-specific
     "grpo_g": 8,
-    "grpo_loss_type": "dapo",
     "max_completion_length": 1024,
-    "beta": 0.0,
+    "beta": 0.1,
 
     # Reward weights (must sum to 1.0)
     "reward_weights": {

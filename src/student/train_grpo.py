@@ -161,9 +161,69 @@ def compute_rewards(
     return total_scores
 
 
-def train(config: dict, base_model_path: str, output_dir: str):
-    """Run GRPO training."""
+def find_latest_checkpoint(output_dir: str) -> Tuple[int, str]:
+    """Find the latest checkpoint directory in output_dir.
+
+    Returns (step, path) or (0, "") if no checkpoint found.
+    """
+    if not Path(output_dir).exists():
+        return 0, ""
+
+    checkpoints = []
+    for d in Path(output_dir).iterdir():
+        if d.is_dir() and d.name.startswith("checkpoint-"):
+            try:
+                step_num = int(d.name.split("-")[1])
+                checkpoints.append((step_num, str(d)))
+            except (ValueError, IndexError):
+                continue
+
+    if not checkpoints:
+        return 0, ""
+
+    checkpoints.sort(key=lambda x: x[0])
+    latest_step, latest_path = checkpoints[-1]
+    return latest_step, latest_path
+
+
+def save_training_state(
+    step: int,
+    optimizer: torch.optim.Optimizer,
+    scheduler,
+    total_rewards: list,
+    ckpt_dir: str,
+):
+    """Save optimizer, scheduler, and reward history alongside model weights."""
+    Path(ckpt_dir).mkdir(parents=True, exist_ok=True)
+    torch.save({
+        "step": step,
+        "optimizer_state_dict": optimizer.state_dict(),
+        "scheduler_state_dict": scheduler.state_dict(),
+        "rewards": total_rewards,
+    }, f"{ckpt_dir}/training_state.pt")
+
+
+def train(config: dict, base_model_path: str, output_dir: str, resume_step: int = 0):
+    """Run GRPO training.
+
+    Args:
+        config: Training configuration dict.
+        base_model_path: Path to SFT merged checkpoint or latest GRPO checkpoint.
+        output_dir: Output directory for GRPO adapter.
+        resume_step: If >0, resume from this step (loads checkpoint state).
+    """
     from unsloth import FastLanguageModel
+
+    # Check for latest checkpoint if not explicitly resuming
+    if resume_step == 0:
+        latest_step, latest_path = find_latest_checkpoint(output_dir)
+        if latest_step > 0:
+            logger.info(
+                f"Found checkpoint at step {latest_step}: {latest_path}\n"
+                f"To resume, pass --resume-step {latest_step} --base-model {latest_path}"
+            )
+    else:
+        logger.info(f"Resuming from step {resume_step}")
 
     # Load model with NF4 quantization
     logger.info(f"Loading model from {base_model_path}...")
@@ -240,15 +300,35 @@ def train(config: dict, base_model_path: str, output_dir: str):
     )
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max_steps)
 
+    # Resume training state if requested
+    total_rewards = []
+    start_step = resume_step
+    if resume_step > 0:
+        state_path = f"{output_dir}/checkpoint-{resume_step}/training_state.pt"
+        if Path(state_path).exists():
+            state = torch.load(state_path, weights_only=False)
+            optimizer.load_state_dict(state["optimizer_state_dict"])
+            scheduler.load_state_dict(state["scheduler_state_dict"])
+            total_rewards = state.get("rewards", [])
+            logger.info(
+                f"Resumed optimizer + scheduler from step {resume_step}, "
+                f"{len(total_rewards)} reward history entries"
+            )
+        else:
+            logger.warning(
+                f"No training_state.pt at step {resume_step}, "
+                f"starting optimizer/scheduler fresh (model weights loaded from checkpoint)"
+            )
+
     # Training loop
     model.train()
-    step = 0
-    total_rewards = []
+    step = start_step
     start_time = time.time()
 
     logger.info(f"Starting GRPO training...")
     logger.info(f"  Steps: {max_steps}, G: {group_size}, LR: {lr}, Beta: {beta}")
-    logger.info(f"  Estimated duration: 9-12 hours")
+    logger.info(f"  Starting from step: {start_step}")
+    logger.info(f"  Estimated remaining: {((max_steps - start_step) / max_steps * 10):.0f}-{((max_steps - start_step) / max_steps * 12):.0f}h")
 
     while step < max_steps:
         for batch_prompts in dataloader:
@@ -384,6 +464,7 @@ def train(config: dict, base_model_path: str, output_dir: str):
                 logger.info(f"Saving checkpoint to {ckpt_dir}...")
                 model.save_pretrained(ckpt_dir)
                 tokenizer.save_pretrained(ckpt_dir)
+                save_training_state(step, optimizer, scheduler, total_rewards, ckpt_dir)
 
     # Final save
     logger.info(f"Training complete. Saving final adapter to {output_dir}...")
@@ -402,7 +483,7 @@ def main():
     parser.add_argument(
         "--base-model",
         default=GRPO_CONFIG["base_model"],
-        help="Path to SFT merged checkpoint",
+        help="Path to SFT merged checkpoint or GRPO checkpoint to resume from",
     )
     parser.add_argument(
         "--output-dir",
@@ -414,13 +495,47 @@ def main():
         default=GRPO_CONFIG["questions_path"],
         help="Path to questions.json",
     )
+    parser.add_argument(
+        "--resume-step",
+        type=int,
+        default=0,
+        help="Resume from checkpoint at this step (sets base-model to checkpoint dir automatically)",
+    )
+    parser.add_argument(
+        "--find-checkpoint",
+        action="store_true",
+        help="List available checkpoints and exit",
+    )
     args = parser.parse_args()
 
     config = GRPO_CONFIG.copy()
-    config["base_model"] = args.base_model
     config["questions_path"] = args.questions_path
 
-    train(config, args.base_model, args.output_dir)
+    # Find checkpoint mode
+    if args.find_checkpoint:
+        step, path = find_latest_checkpoint(args.output_dir)
+        if step > 0:
+            print(f"Latest checkpoint: step {step} at {path}")
+            # List all checkpoints
+            for d in sorted(Path(args.output_dir).iterdir()):
+                if d.is_dir() and d.name.startswith("checkpoint-"):
+                    print(f"  {d.name}")
+        else:
+            print(f"No checkpoints found in {args.output_dir}")
+        return
+
+    # Auto-resume: if --resume-step given, find the checkpoint and set base-model
+    resume_step = args.resume_step
+    base_model = args.base_model
+    if resume_step > 0:
+        ckpt_path = f"{args.output_dir}/checkpoint-{resume_step}"
+        if Path(ckpt_path).exists():
+            base_model = ckpt_path
+            logger.info(f"Auto-resuming from {ckpt_path}")
+        else:
+            logger.warning(f"Checkpoint {ckpt_path} not found, using base-model as-is")
+
+    train(config, base_model, args.output_dir, resume_step=resume_step)
 
 
 if __name__ == "__main__":

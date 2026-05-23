@@ -7,8 +7,32 @@
 #
 # Run inside Docker container:
 #   docker exec -it ml-training bash -c "source /opt/venv/bin/activate && ./scripts/run_grpo.sh"
+#
+# Resumption:
+#   ./scripts/run_grpo.sh --resume          # auto-resume from latest checkpoint
+#   ./scripts/run_grpo.sh --resume 300      # resume from checkpoint-300
+#   ./scripts/run_grpo.sh --list            # list available checkpoints
 
 set -e
+
+# Parse resume flag
+RESUME=""
+RESUME_STEP=""
+LIST=""
+for arg in "$@"; do
+    case "$arg" in
+        --resume)
+            RESUME=1
+            ;;
+        --resume=*)
+            RESUME=1
+            RESUME_STEP="${arg#*=}"
+            ;;
+        --list)
+            LIST=1
+            ;;
+    esac
+done
 
 echo "========================================="
 echo "GRPO Training - Group Relative Policy Optimization"
@@ -24,11 +48,12 @@ echo "Questions: $QUESTIONS_PATH"
 echo "Output: $OUTPUT_DIR"
 echo "========================================="
 
-# Check if base model exists
-if [ ! -d "$BASE_MODEL" ]; then
-    echo "ERROR: Base model not found at $BASE_MODEL"
-    echo "Set BASE_MODEL to point to your SFT merged checkpoint."
-    exit 1
+# List checkpoints mode
+if [ "$LIST" = "1" ]; then
+    python3 -m src.student.train_grpo \
+        --output-dir "$OUTPUT_DIR" \
+        --find-checkpoint
+    exit 0
 fi
 
 # Check if questions exist
@@ -42,11 +67,6 @@ QUESTION_COUNT=$(python3 -c "import json; print(len(json.load(open('$QUESTIONS_P
 echo "Found $QUESTION_COUNT questions"
 
 # Check dependencies
-python3 -c "from trl import GRPOTrainer" 2>/dev/null || {
-    echo "ERROR: TRL GRPOTrainer not available. Install: pip install trl>=0.15.0"
-    exit 1
-}
-
 python3 -c "import unsloth" 2>/dev/null || {
     echo "ERROR: Unsloth not available. Install: pip install unsloth"
     exit 1
@@ -63,15 +83,40 @@ else
     echo "WandB: logging enabled"
 fi
 
+# Build training command
+TRAIN_CMD="python3 -m src.student.train_grpo \
+    --base-model \"$BASE_MODEL\" \
+    --output-dir \"$OUTPUT_DIR\" \
+    --questions-path \"$QUESTIONS_PATH\""
+
+if [ "$RESUME" = "1" ]; then
+    if [ -n "$RESUME_STEP" ]; then
+        TRAIN_CMD="$TRAIN_CMD --resume-step $RESUME_STEP"
+        echo "Resuming from checkpoint-$RESUME_STEP"
+    else
+        # Auto-detect latest checkpoint
+        LATEST=$(ls -d "$OUTPUT_DIR"/checkpoint-* 2>/dev/null | sort | tail -1)
+        if [ -n "$LATEST" ]; then
+            RESUME_STEP=$(basename "$LATEST" | sed 's/checkpoint-//')
+            BASE_MODEL="$LATEST"
+            TRAIN_CMD="python3 -m src.student.train_grpo \
+                --base-model \"$BASE_MODEL\" \
+                --output-dir \"$OUTPUT_DIR\" \
+                --questions-path \"$QUESTIONS_PATH\" \
+                --resume-step $RESUME_STEP"
+            echo "Auto-resuming from checkpoint-$RESUME_STEP ($LATEST)"
+        else
+            echo "No checkpoints found, starting fresh"
+        fi
+    fi
+fi
+
 # Run GRPO training
 echo "Starting GRPO training..."
 echo "Expected duration: 9-12 hours"
 echo ""
 
-python3 -m src.student.train_grpo \
-    --base-model "$BASE_MODEL" \
-    --output-dir "$OUTPUT_DIR" \
-    --questions-path "$QUESTIONS_PATH"
+eval "$TRAIN_CMD"
 
 # Validate output
 if [ -d "$OUTPUT_DIR" ]; then
@@ -83,6 +128,10 @@ if [ -d "$OUTPUT_DIR" ]; then
     echo "Next steps:"
     echo "  1. Merge adapter for BF16 eval"
     echo "  2. Run eval suite: ./evals/scripts/run_finetuned_bf16.sh --tasks econcausal_task1_econ"
+    echo ""
+    echo "Resumption:"
+    echo "  ./scripts/run_grpo.sh --resume         # auto-resume from latest"
+    echo "  ./scripts/run_grpo.sh --resume 300     # resume from checkpoint-300"
 
     echo ""
     echo "Adapter files:"

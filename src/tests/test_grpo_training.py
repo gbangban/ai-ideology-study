@@ -80,3 +80,35 @@ class TestGRPOIntegration:
         scores = compute_rewards(completions, weights, FakeTokenizer(), None, None)
         assert len(scores) == 1
         assert scores[0] > 0
+
+    def test_find_latest_checkpoint(self):
+        """Test checkpoint discovery."""
+        import tempfile, os
+        from pathlib import Path
+        from src.student.train_grpo import find_latest_checkpoint
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            step, path = find_latest_checkpoint(tmpdir)
+            assert step == 0 and path == ""
+
+            for s in [100, 200, 300]:
+                os.makedirs(f"{tmpdir}/checkpoint-{s}")
+            step, path = find_latest_checkpoint(tmpdir)
+            assert step == 300
+            assert "checkpoint-300" in path
+
+    def test_save_load_training_state(self):
+        """Test training state save and restore."""
+        import tempfile
+        from pathlib import Path
+        from src.student.train_grpo import save_training_state
+        import torch
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            optimizer = torch.optim.AdamW([torch.nn.Parameter(torch.randn(2, 2))], lr=1e-3)
+            scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100)
+
+            save_training_state(50, optimizer, scheduler, [0.5, 0.6], f"{tmpdir}/checkpoint-50")
+            state = torch.load(f"{tmpdir}/checkpoint-50/training_state.pt", weights_only=False)
+            assert state["step"] == 50
+            assert len(state["rewards"]) == 2

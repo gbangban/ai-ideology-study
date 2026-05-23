@@ -21,15 +21,16 @@ RUN pip install --no-cache-dir torch==2.7.0 torchvision torchaudio \
 # Install Unsloth (pinned to your required version)
 RUN pip install --no-cache-dir unsloth==2026.4.6
 
-# Install ML Stack (Updated for 2026 compatibility)
+# Install ML Stack (Updated for GRPO support)
 RUN pip install --no-cache-dir \
-    transformers==4.46.1 \
-    datasets==3.1.0 \
-    peft==0.13.2 \
-    trl==0.12.3 \
-    accelerate==1.0.1 \
-    bitsandbytes==0.44.1 \
-    sentencepiece
+    transformers>=4.46.1 \
+    datasets>=3.1.0 \
+    peft>=0.13.2 \
+    trl>=0.15.0 \
+    accelerate>=1.0.1 \
+    bitsandbytes>=0.44.1 \
+    sentencepiece \
+    wandb
 
 # --- FIX: Match llama-cpp-python to CUDA 12.4+ ---
 RUN CMAKE_ARGS="-DGGML_CUDA=ON" pip install llama-cpp-python==0.3.20 --no-cache-dir

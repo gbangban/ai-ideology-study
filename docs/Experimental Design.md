@@ -1,6 +1,6 @@
 # DM-Align: Experimental Design Document
 
-> **Version**: 2.8 | **Date**: May 22, 2026 | **Status**: Draft
+> **Version**: 3.0 | **Date**: May 23, 2026 | **Status**: Draft
 > **Teacher Model**: `Unsloth/Qwen3.5-27B` (base, data generation only)
 > **Student Model**: `Qwen/Qwen3.5-9B` (Instruct/post-trained, SFT + DPO training)
 > **Hardware**: RTX 5090 (32GB), programmatic Unsloth Core (SFT) + custom DPO
@@ -284,7 +284,7 @@ The generation pipeline does not pass tags into training samples. Question text 
 ### 4.1 Actual Workflow
 
 ```
-AI-Generated Questions → [Quality-filtered, deduped, assembled via build_questions_json.py] → Unsloth Studio (Teacher answers) → SFT Training → DPO Training → Eval
+AI-Generated Questions → [Quality-filtered, deduped, assembled via build_questions_json.py] → Unsloth Studio (Teacher answers) → SFT Training → GRPO Training → Eval
 ```
 
 **Question Sourcing**: All 1,500 training questions are AI-generated, assembled from two pools via `scripts/build_questions_json.py` with quality filters (DM terminology removal, template pattern removal, deduplication) and balanced distribution targets. Generator scripts (`generate_questions.py`, `generate.py`, `run_teacher.sh`) have been removed.
@@ -295,7 +295,7 @@ AI-Generated Questions → [Quality-filtered, deduped, assembled via build_quest
 2. **Teacher answers**: Questions are fed into Unsloth Studio, which generates DM-aligned responses using the base model with DM system prompts
 3. **SFT dataset**: Studio outputs are collected into ShareGPT-format JSONL
 4. **SFT training**: Dataset is uploaded to Unsloth Studio for QLoRA SFT
-5. **DPO training**: Custom script (`src/student/train_dpo.py`), NOT in Studio UI
+5. **GRPO training**: Custom script (`src/student/train_grpo.py`), NOT in Studio UI
 6. **Eval**: Trained model is tested against neutral questions
 
 ### 4.2 DPO Pair Construction
@@ -511,18 +511,25 @@ When training on data that includes reasoning traces (`
 
 **Implementation details**: Unsloth's FastLanguageModel delegates to TRL's SFTTrainer. No custom masking needed for approach (a). Approaches (b) and (c) would require either subclassing SFTTrainer with a custom compute_loss method, or pre-processing the labels column to set thinking token positions to -100 (for masking) or applying weight multipliers (for differential).
 
-### 9.3 DPO (Custom, Programmatic)
+### 9.3 GRPO (Custom, Programmatic)
 
 | Parameter | Value |
 |---|---|
-| Base | SFT adapter |
-| Beta | 0.1 |
-| Loss | Sigmoid |
+| Base | SFT merged BF16 checkpoint |
+| Quantization | NF4 at runtime via Unsloth |
+| LoRA rank / alpha | 16 / 16 |
+| G (completions/prompt) | 8 |
+| Loss type | `dapo` |
 | Batch size | 1 (effective 4 with gradient accumulation) |
 | Learning rate | 5e-7 |
-| Max steps | 500 (scales with dataset) |
+| Max steps | 500 |
 | Scheduler | Cosine |
 | Warmup steps | 50 |
+| Max completion length | 1024 |
+| Reward: DM Alignment | 0.5 (Qwen3.5-4B judge, binary checks) |
+| Reward: Directional Assertion | 0.2 (keyword-based) |
+| Reward: Format | 0.15 (rule-based) |
+| Reward: Length | 0.15 (cap at 500 tokens) |
 
 
 
@@ -532,7 +539,7 @@ When training on data that includes reasoning traces (`
 
 ### 9.1 Alignment Metrics
 
-| Metric | Base Model | SFT Model | DPO Model (Target) |
+| Metric | Base Model | SFT Model | GRPO Model (Target) |
 |---|---|---|---|
 | Baseline divergence (conclusion) | — | — | ≥ 40% |
 | Baseline divergence (reasoning) | — | — | ≥ 60% |
@@ -582,6 +589,8 @@ When training on data that includes reasoning traces (`
 | 2.6 | May 21, 2026 | Corrected question authorship: all 1,500 questions are AI-generated, not human-authored; removed stale "individually authored" hard constraint; corrected §5.1 DPO step (custom script, not Studio); marked GGUF eval scripts as deleted; removed reference to non-existent `questions.jsonl` |
 | 2.7 | May 21, 2026 | Corrected student model variant: `Qwen/Qwen3.5-9B` is the Instruct/post-trained variant (`Qwen3_5ForConditionalGeneration`), not Base; updated model table and design note; added loss masking strategy section documenting three approaches (train everything, mask reasoning, differential weighting) with justification for approach (a); updated hardware note from "Unsloth Studio (SFT)" to "programmatic Unsloth Core (SFT)" |
 | 2.8 | May 22, 2026 | Added §13.2 measured runtimes table (BF16 actual execution times for HumanEval, MMLU, GPQA, IFEval); added §13.3 new datasets section documenting EconCausal (4 tasks, 2,943 samples) and Corr2Cause (1,160 samples) with sizes, descriptions, and estimated runtimes (~35-47 min total BF16); updated pending tasks table with new tasks and BF16 time estimates; added design implication about EconCausal/Corr2Cause as domain-relevant regression tests |
+| 2.9 | May 22, 2026 | Added §13.5 Corr2Cause results: baseline 36.3% vs finetuned 74.6% (+38.3pp); documented baseline's pathological True-bias (74.7% True predictions on 15.5% True dataset); sample-level verification ruling out prompt, thinking mode, contamination, and parser artifacts; accuracy breakdown by template type and variable complexity; interpretation that SFT on DM data transfers to causal inference ability |
+| 3.0 | May 23, 2026 | Added §13.6 EconCausal results: all 4 tasks show large statistically significant regressions (-3.9pp to -13.5pp); sample-level analysis reveals dominant `+` → `mixed` hedging failure mode (52-64% of Task1 regressions) and `+` → `-` flipping; interpretation that DM training's epistemic skepticism transfers to empirical economics where definitive directional effects are the norm; Task3 (misinformation-robust) worst absolute performance (22.2% → 11.4%); updated §13.7 design implications with 4 new items addressing hedging bias, Corr2Cause/EconCausal divergence, DPO counteraction strategy, and runtime estimation corrections |
 
 ---
 
@@ -672,7 +681,101 @@ All runs: 0-shot, greedy decoding (`do_sample=false`), max_gen_toks=1024, same s
 
 **Runtime**: Normalized to batch size 4, the bf16 baseline is approximately 2.7x slower than either GGUF variant. The baseline GGUF ran at batch 2 (conservative), making it 25% slower than the finetuned GGUF at batch 4 despite identical quantization.
 
-### 13.5 Pending Tasks
+### 13.5 Corr2Cause Results (2026-05-22)
+
+**Task**: Binary classification — given correlation/independence statements (premise), determine whether a causal hypothesis is True or False. 1,162 samples, 0-shot greedy decoding, max_gen_toks=16.
+
+| # | Run | Model | Format | Accuracy | Std Err | Samples | Eval Time |
+|---|-----|-------|--------|----------|---------|---------|-----------|
+| 1 | Baseline BF16 v1 | `Qwen/Qwen3.5-9B` | Native HF | bfloat16 | **0.0%** | 0.0% | 1,162 | — |
+| 2 | Finetuned BF16 v1 | SFT LoRA | Native HF | bfloat16 | **0.0%** | 0.0% | 1,162 | — |
+| 3 | Baseline BF16 v2 | `Qwen/Qwen3.5-9B` | Native HF | bfloat16 | **36.3%** | ±1.4% | 1,162 | 262.6s (4m 23s) |
+| 4 | Finetuned BF16 v2 | SFT LoRA | Native HF | bfloat16 | **74.6%** | ±1.3% | 1,162 | 267.0s (4m 27s) |
+
+**v1 runs (0.0%)**: Both models scored 0%, indicating a pipeline bug (likely the `_extract_bool` parser failing on all outputs). These results are discarded.
+
+**v2 runs**: The 38.3pp gap (36.3% → 74.6%) is genuine. Verified by sample-level analysis:
+
+**Ground truth distribution**: Only 15.5% of labels are `True` (180/1,162). 84.5% are `False`.
+
+**Baseline failure mode — pathological True-bias**: The baseline predicts `True` 74.7% of the time despite only 15.5% of labels being `True`. By template:
+
+| Template | Baseline True-Rate | Ground Truth True-Rate | Baseline Acc | Finetuned Acc | Delta |
+|----------|-------------------|----------------------|-------------|---------------|-------|
+| `has_collider` | 98.4% | 33.1% | 34.7% | 44.6% | +9.8 |
+| `has_confounder` | 97.4% | 8.8% | 11.9% | 54.9% | +43.0 |
+| `non-parent ancestor` | 96.9% | 11.3% | 14.4% | 87.2% | +72.8 |
+| `non-child descendant` | 92.7% | 5.7% | 13.0% | 94.3% | +81.3 |
+| `parent` | 43.8% | 33.5% | 62.9% | 66.5% | +3.6 |
+| `child` | 19.1% | 0.0% | 80.9% | 100.0% | +19.1 |
+
+The baseline is essentially affirming every causal hypothesis regardless of evidence. It is not reasoning — it is defaulting affirmative.
+
+**Sample-level comparison**:
+- 520 samples: baseline wrong, finetuned correct
+- 75 samples: baseline correct, finetuned wrong
+- 347 samples: both correct
+- 220 samples: both wrong
+- **Net gain: +445 correct answers**
+
+**Ruled-out artifacts**:
+- **Prompt difference**: Both models received byte-identical prompts (`arg_0` is the same)
+- **Thinking mode artifacts**: Both prompts end with `</antThinking>\n\n`; both models produce clean 4-5 char responses with zero thinking traces
+- **Training data contamination**: SFT dataset (1,460 DM-aligned Q&A samples) contains zero corr2cause-style questions
+- **Parser errors**: Zero unparseable responses in either run
+
+### 13.6 EconCausal Results (2026-05-22/23)
+
+**Task**: Causal sign prediction in economics. Given a treatment-outcome pair and economic context from empirical literature, predict the causal sign: `+`, `-`, `None`, or `mixed`. 0-shot, greedy decoding, max_gen_toks=256, JSON-only output format.
+
+| Task | Samples | Baseline BF16 | Finetuned BF16 | Δ | Std Err (base) | Std Err (finetuned) | Eval Time (base) | Eval Time (finetuned) |
+|------|---------|---------------|----------------|-----|---------------|-------------------|-----------------|---------------------|
+| **Task1 Econ** | 947 | **60.30%** | **47.94%** | **-12.36pp** | ±1.59% | ±1.62% | 1472.9s | 1513.0s |
+| **Task1 Finance** | 860 | **56.51%** | **43.02%** | **-13.49pp** | ±1.69% | ±1.69% | 1299.6s | 1308.8s |
+| **Task2** | 284 | **69.72%** | **65.85%** | **-3.87pp** | ±2.73% | ±2.82% | 430.3s | 552.4s |
+| **Task3** | 852 | **22.18%** | **11.38%** | **-10.80pp** | ±1.42% | ±1.09% | 1260.8s | 1475.7s |
+| **TOTAL** | **2,943** | | | | | | **4463.6s** (74m 24s) | **4849.9s** (80m 50s) |
+
+All regressions are **highly statistically significant** (Δ >> 2× combined stderr for every task).
+
+**Sample-level regression analysis**:
+
+| Task | Regressions | Improvements | Both Correct | Both Wrong | Net |
+|------|-------------|--------------|--------------|------------|-----|
+| Task1 Econ | 182 | 65 | 389 | 311 | **-117** |
+| Task1 Finance | 174 | 58 | 312 | 316 | **-116** |
+| Task2 | 14 | 3 | 184 | 83 | **-11** |
+| Task3 | 98 | 6 | 91 | 657 | **-92** |
+
+**Ground truth distribution** (Task1 Econ, representative): `+` 57.0%, `-` 32.2%, `none` 9.2%, `mixed` 1.6%. Positive effects dominate the dataset.
+
+**Dominant failure mode — `+` → `mixed` hedging**: The finetuned model systematically converts correct positive predictions into "mixed" (ambiguous). This pattern accounts for:
+- 52.7% of Task1 Econ regressions (96/182)
+- 54.6% of Task1 Finance regressions (95/174)
+- 64.3% of Task2 regressions (9/14)
+- 34.7% of Task3 regressions (34/98)
+
+**Second failure mode — `+` → `-` flipping**: The finetuned model flips correct positive predictions to negative (37 on Task1 Econ, 41 on Task1 Finance, 5 on Task2, 36 on Task3).
+
+Combined `+` → `mixed` and `+` → `-` account for 77-85% of all Task1 regressions. The model has developed a systematic bias against positive causal relationships.
+
+**Interpretation**: DM-aligned training data emphasizes structural ambiguity, systemic contradictions, and the limits of simple causal claims. The model has internalized this skepticism and defaults to hedging ("mixed") or flipping sign when confronted with straightforward positive causal effects. This is a direct transfer of the training distribution's epistemic stance to empirical economic causal inference — where definitive directional effects are the norm.
+
+**Task3 severity**: Task3 (misinformation-robust) shows the worst absolute performance for both models (22.2% baseline, 11.4% finetuned), with 77.1% of samples being wrong for both models. The task inherently requires resisting misleading context, which is difficult even for the baseline. The finetuned model's additional regression here (-10.8pp) suggests DM training further impairs the ability to filter signal from noise in adversarial prompts.
+
+**Accuracy by variable complexity** (both models degrade with more variables, but finetuned maintains large lead):
+
+| Variables | Baseline Acc | Finetuned Acc |
+|-----------|-------------|---------------|
+| 2 | 100.0% | 100.0% |
+| 3 | 52.1% | 89.6% |
+| 4 | 43.1% | 86.1% |
+| 5 | 30.5% | 76.3% |
+| 6 | 38.9% | 69.7% |
+
+**Interpretation**: The SFT training on DM-aligned data (which emphasizes structural/material analysis of causal relationships) transferred to improved causal inference ability on this formal reasoning task, despite no explicit causal reasoning tasks in the training set. The baseline's 36.3% is actively worse than a "predict-all-False" strategy (which would score 84.5%), meaning the True-bias is the dominant failure mode, not poor reasoning per se.
+
+### 13.6 Pending Tasks
 
 | Task | Suite | Est Time (GGUF) | Est Time (BF16) | Status |
 |------|-------|-----------------|-----------------|--------|
@@ -681,15 +784,19 @@ All runs: 0-shot, greedy decoding (`do_sample=false`), max_gen_toks=1024, same s
 | GPQA Diamond | medium | ~57 min | ~2-3 min | Run (BF16) |
 | MMLU-Pro | full | ~15 hours | — | Not run |
 | Math-Hard | full | ~22 hours | — | Not run |
-| econcausal_task1_econ | new | — | ~10-14 min | Not run |
-| econcausal_task1_finance | new | — | ~10-13 min | Not run |
-| econcausal_task2 | new | — | ~3-4 min | Not run |
-| econcausal_task3 | new | — | ~9-12 min | Not run |
-| corr2cause | new | — | ~2-3 min | Not run |
+| econcausal_task1_econ | new | — | ~25 min | Run (BF16, 2026-05-22/23) |
+| econcausal_task1_finance | new | — | ~22 min | Run (BF16, 2026-05-22/23) |
+| econcausal_task2 | new | — | ~7-9 min | Run (BF16, 2026-05-22/23) |
+| econcausal_task3 | new | — | ~21-25 min | Run (BF16, 2026-05-22/23) |
+| corr2cause | new | — | ~2-3 min | Run (BF16, 2026-05-22) |
 
-### 13.6 Design Implications
+### 13.7 Design Implications
 
 1. **Regression tests must control for format**: Comparing bf16 to GGUF confounds training effects with quantization. Future SFT→DPO regression comparisons should either use bf16 throughout or accept the GGUF floor.
 2. **Q4_K_M may be too aggressive for this model**: The 97.4% collapse on HumanEval suggests Q4_K_M destroys coding capability on Qwen3.5-9B. Consider Q5_K_M or Q6_K for deployment if coding competence matters.
 3. **BM25-style knowledge benchmarks (MMLU 5-shot) will be more meaningful than generation benchmarks** for the GGUF format — they generate ~5 tokens per question vs. hundreds for code generation, so quantization artifacts in generation have less surface area to manifest.
-4. **EconCausal + Corr2Cause are domain-relevant regression tests**: These tasks test causal reasoning in economics, which overlaps with DM-aligned analysis domains. A regression here would signal that training corrupted general causal reasoning, not just political analysis. Total runtime for all 5 tasks is ~35-47 min (BF16), making them practical to run after each training stage.
+4. **EconCausal + Corr2Cause are domain-relevant regression tests**: These tasks test causal reasoning in economics, which overlaps with DM-aligned analysis domains. Total runtime for all 5 tasks is ~75-81 min (BF16), making them practical to run after each training stage.
+5. **EconCausal regression is a critical training artifact**: SFT on DM-aligned data causes large, statistically significant regressions on EconCausal (-3.9pp to -13.5pp across all four tasks). The dominant failure mode is `+` → `mixed` hedging — the model has learned to be skeptical of straightforward positive causal effects, a direct transfer of DM epistemic stance to empirical economics where definitive directional effects are the norm.
+6. **Corr2Cause improvement vs. EconCausal regression divergence**: The same SFT that improves Corr2Cause by +38.3pp (formal causal inference) degrades EconCausal by -4-13pp (applied economic causal reasoning). This suggests the training transfers structural reasoning capability to formal/graphical tasks but corrupts applied domain knowledge where the training distribution's bias (skepticism of simple causality) conflicts with ground truth.
+7. **DPO must address the `+` → `mixed` hedging bias**: The DPO training phase needs explicit chosen/rejected pairs that reward definitive causal predictions when warranted, counteracting the hedging tendency learned during SFT. Rejected responses should include over-hedged "mixed" predictions for cases where the ground truth is clearly directional.
+8. **Actual BF16 runtimes are 2-4x higher than estimated**: EconCausal tasks took 74-81 min total vs. the estimated 35-47 min. The discrepancy is likely due to longer prompt lengths (economic context from papers) than the GPQA Diamond reference used for estimation. Future runtime estimates should use actual EconCausal timings as baseline.

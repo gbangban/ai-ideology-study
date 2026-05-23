@@ -132,7 +132,9 @@ Results in `evals/results/` organized by `baseline/` and `finetuned/` subdirecto
 - VRAM: RTX 5090 (32GB), QLoRA NF4 quantization
 - DPO: beta=0.1, sigmoid loss, LR=5e-7
 
-## Eval Results (HumanEval, 2026-05-20)
+## Eval Results
+
+### HumanEval (2026-05-20)
 
 | Run | Format | pass@1 | Eval Time |
 |-----|--------|--------|-----------|
@@ -140,4 +142,16 @@ Results in `evals/results/` organized by `baseline/` and `finetuned/` subdirecto
 | Baseline GGUF | Q4_K_M | **1.83%** | 19m 14s |
 | Finetuned GGUF | Q4_K_M (SFT LoRA) | **3.05%** | 15m 24s |
 
-**Key finding**: Q4_K_M quantization collapses HumanEval from 70.73% to 1.83% (97.4% relative loss). SFT fine-tuning on DM-aligned data is essentially neutral for coding at this quantization level. See `evals/results/README.md` for full analysis.
+**Key finding**: Q4_K_M quantization collapses HumanEval from 70.73% to 1.83% (97.4% relative loss). SFT fine-tuning on DM-aligned data is essentially neutral for coding at this quantization level.
+
+### EconCausal + Corr2Cause (2026-05-22/23)
+
+| Task | Baseline BF16 | Finetuned BF16 | Δ |
+|------|---------------|----------------|-----|
+| EconCausal Task1 Econ | 60.30% | 47.94% | **-12.36pp** |
+| EconCausal Task1 Finance | 56.51% | 43.02% | **-13.49pp** |
+| EconCausal Task2 | 69.72% | 65.85% | **-3.87pp** |
+| EconCausal Task3 | 22.18% | 11.38% | **-10.80pp** |
+| Corr2Cause | 36.3% | 74.6% | **+38.3pp** |
+
+**Key finding**: SFT on DM-aligned data causes large regressions on applied economic causal reasoning (EconCausal -4 to -13pp) but large improvement on formal causal inference (Corr2Cause +38pp). Dominant failure mode is `+` → `mixed` hedging — the model learns to be skeptical of straightforward positive causal effects. See `evals/results/README.md` for full analysis.

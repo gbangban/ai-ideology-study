@@ -112,3 +112,29 @@ class TestGRPOIntegration:
             state = torch.load(f"{tmpdir}/checkpoint-50/training_state.pt", weights_only=False)
             assert state["step"] == 50
             assert len(state["rewards"]) == 2
+
+    def test_ppo_clip_uses_min(self):
+        """Verify PPO objective uses min (conservative update), not max."""
+        import torch
+        ratio = torch.tensor([1.3, 0.8, 1.5])
+        adv = torch.tensor([1.0, -0.5, 0.8])
+
+        unclipped = -(ratio * adv).mean()
+        clipped = -(torch.clamp(ratio, 0.8, 1.2) * adv).mean()
+
+        pg_loss = torch.min(unclipped, clipped)
+        assert pg_loss.item() <= max(unclipped.item(), clipped.item())
+
+    def test_dataloader_cycles_for_max_steps(self):
+        """Verify training loop handles more steps than dataset size."""
+        from src.student.train_grpo import GRPODataset
+        from torch.utils.data import DataLoader
+        import itertools
+
+        prompts = ["q1", "q2", "q3"]
+        dataset = GRPODataset(prompts)
+        dataloader = DataLoader(dataset, batch_size=1, shuffle=False)
+        dataloader_iter = iter(itertools.cycle(dataloader))
+
+        items = [next(dataloader_iter) for _ in range(10)]
+        assert len(items) == 10

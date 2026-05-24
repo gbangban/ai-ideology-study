@@ -24,7 +24,7 @@ import torch
 import torch.nn.functional as F
 from datasets import Dataset
 from torch.utils.data import DataLoader, Dataset as TorchDataset
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
@@ -203,6 +203,52 @@ def save_training_state(
     }, f"{ckpt_dir}/training_state.pt")
 
 
+def _strip_vision_config(model_path: str):
+    """Remove vision_config from model config.json to avoid image processor init errors.
+
+    Qwen3.5 checkpoints carry vision_config from the base multimodal model even
+    though we only use the text LM head. This causes transformers to try loading
+    an image processor which fails.
+
+    Strips from both the given path and any HF cache copies.
+    """
+    def _strip_at(path: str):
+        config_path = Path(path) / "config.json"
+        if not config_path.exists():
+            return False
+
+        with open(config_path) as f:
+            config = json.load(f)
+
+        stripped = False
+        for key in list(config.keys()):
+            if "vision" in key.lower():
+                del config[key]
+                stripped = True
+
+        if stripped:
+            with open(config_path, "w") as f:
+                json.dump(config, f, indent=2)
+            logger.info(f"Stripped vision config from {config_path}")
+        return stripped
+
+    # Strip from the provided path
+    _strip_at(model_path)
+
+    # Also strip from HF cache if the model was downloaded
+    import os
+    hf_cache = os.environ.get("HF_HOME", Path.home() / ".cache" / "huggingface" / "hub")
+    if Path(hf_cache).exists():
+        for cache_dir in Path(hf_cache).iterdir():
+            if not cache_dir.is_dir():
+                continue
+            # Search one level deeper for the actual model dir
+            sub_dirs = list(cache_dir.iterdir()) if cache_dir.is_dir() else []
+            for sub in sub_dirs:
+                if sub.is_dir() and (sub / "config.json").exists():
+                    _strip_at(str(sub))
+
+
 def train(config: dict, base_model_path: str, output_dir: str, resume_step: int = 0):
     """Run GRPO training.
 
@@ -226,13 +272,23 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
         logger.info(f"Resuming from step {resume_step}")
 
     # Load model with NF4 quantization
+    # Qwen3.5 checkpoints carry vision_config from the base model even though
+    # we only use the text LM. Strip it to avoid image processor init errors.
     logger.info(f"Loading model from {base_model_path}...")
+    _strip_vision_config(base_model_path)
+
     model, tokenizer = FastLanguageModel.from_pretrained(
         model_name=base_model_path,
         max_seq_length=2048,
         dtype=None,
         load_in_4bit=True,
     )
+
+    # Qwen3.5 returns a VLProcessor that tries to process images on every call.
+    # Extract the underlying text tokenizer so we bypass the image pipeline entirely.
+    if hasattr(tokenizer, "tokenizer"):
+        tokenizer = tokenizer.tokenizer
+        logger.info("Extracted text tokenizer from VLProcessor (text-only mode)")
 
     # Apply LoRA
     model = FastLanguageModel.get_peft_model(
@@ -245,23 +301,22 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
     model = FastLanguageModel.for_training(model)
     logger.info(f"LoRA applied: rank={config['lora_rank']}, alpha={config['lora_alpha']}")
 
-    # Create reference model (snapshot before training)
-    import copy
-    ref_model = copy.deepcopy(model)
-    ref_model.eval()
-    for p in ref_model.parameters():
-        p.requires_grad = False
-    logger.info("Reference model created")
-
     # Load judge model
     judge_model = None
     judge_tokenizer = None
     if config["reward_weights"].get("dm_alignment", 0) > 0:
         logger.info(f"Loading judge model: {config['judge_model']}...")
+        _strip_vision_config(config["judge_model"])
+        bnb_config = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_compute_dtype=torch.bfloat16,
+            bnb_4bit_use_double_quant=True,
+        )
         judge_model = AutoModelForCausalLM.from_pretrained(
             config["judge_model"],
-            torch_dtype=torch.bfloat16,
             device_map="auto",
+            quantization_config=bnb_config,
         )
         judge_tokenizer = AutoTokenizer.from_pretrained(config["judge_model"])
         logger.info(f"Judge model loaded on {judge_model.device}")
@@ -368,6 +423,12 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
             batch_loss = 0.0
             n_samples = len(all_completions)
 
+            # Snapshot LoRA weights for reference policy
+            lora_weights = {}
+            for name, param in model.named_parameters():
+                if param.requires_grad:
+                    lora_weights[name] = param.data.clone()
+
             # Process in mini-batches to manage VRAM
             mini_batch_size = 4
             for mb_start in range(0, n_samples, mini_batch_size):
@@ -394,15 +455,19 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
                 input_ids = tokenized["input_ids"]
                 attention_mask = tokenized["attention_mask"]
 
-                # New policy log probs
+                # Reference policy log probs (restore original LoRA weights)
+                for name, param in model.named_parameters():
+                    if name in lora_weights:
+                        param.data.copy_(lora_weights[name])
+                model.eval()
                 with torch.no_grad():
-                    new_outputs = model(input_ids, attention_mask=attention_mask, use_cache=False)
-                new_logits = new_outputs.logits
-
-                # Reference policy log probs
-                with torch.no_grad():
-                    ref_outputs = ref_model(input_ids, attention_mask=attention_mask, use_cache=False)
+                    ref_outputs = model(input_ids, attention_mask=attention_mask, use_cache=False)
                 ref_logits = ref_outputs.logits
+                model.train()
+
+                # New policy log probs (current LoRA weights, WITH gradients)
+                new_outputs = model(input_ids, attention_mask=attention_mask, use_cache=False)
+                new_logits = new_outputs.logits
 
                 # Compute log probs for completion tokens only
                 for b_idx in range(len(mb_texts)):
@@ -426,11 +491,11 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
                     log_ratio = new_token_lp - old_log_probs
                     ratio = log_ratio.exp()
 
-                    # Clipped PPO-style objective
-                    adv = mb_advantages[b_idx].item()
-                    policy_loss = -(ratio * adv).mean()
-                    clipped_loss = (-torch.clamp(ratio, 1.0 - 0.2, 1.0 + 0.2) * adv).mean()
-                    pg_loss = torch.max(policy_loss, clipped_loss)
+                    # Clipped PPO-style objective (MIN, not MAX)
+                    adv = mb_advantages[b_idx]
+                    pg_loss_unclipped = -(ratio * adv).mean()
+                    pg_loss_clipped = -(torch.clamp(ratio, 1.0 - 0.2, 1.0 + 0.2) * adv).mean()
+                    pg_loss = torch.min(pg_loss_unclipped, pg_loss_clipped)
 
                     # KL penalty
                     kl = (old_log_probs - new_token_lp).mean()
@@ -535,7 +600,15 @@ def main():
         else:
             logger.warning(f"Checkpoint {ckpt_path} not found, using base-model as-is")
 
-    train(config, base_model, args.output_dir, resume_step=resume_step)
+    try:
+        train(config, base_model, args.output_dir, resume_step=resume_step)
+    except Exception:
+        logger.error("Training failed, flushing VRAM...")
+        torch.cuda.empty_cache()
+        allocated = torch.cuda.memory_allocated(0)
+        reserved = torch.cuda.memory_reserved(0)
+        logger.error(f"VRAM after flush: allocated={allocated/1e9:.1f}GB, reserved={reserved/1e9:.1f}GB")
+        raise
 
 
 if __name__ == "__main__":

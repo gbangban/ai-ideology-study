@@ -39,7 +39,7 @@ echo "GRPO Training - Group Relative Policy Optimization"
 echo "========================================="
 
 # Configuration
-BASE_MODEL="${BASE_MODEL:-/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330}"
+BASE_MODEL="${BASE_MODEL:-/studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330}"
 OUTPUT_DIR="${OUTPUT_DIR:-checkpoints/lora_adapters/grpo_adapter}"
 QUESTIONS_PATH="${QUESTIONS_PATH:-data/raw/questions.json}"
 

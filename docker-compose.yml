@@ -13,16 +13,18 @@ services:
               count: all
               capabilities: [gpu]
     volumes:
-      # Mount project code
-      - ./src:/app/src
-      - ./configs:/app/configs
-      - ./data:/app/data
-      - ./outputs:/app/outputs
-      - ./scripts:/app/scripts
-      # Mount model cache to avoid re-downloading
-      - /home/yao/.cache/huggingface:/root/.cache/huggingface
-      # Mount checkpoints for GGUF model access
-      - ./checkpoints:/app/checkpoints
+       # Mount project code
+       - ./src:/app/src
+       - ./configs:/app/configs
+       - ./data:/app/data
+       - ./outputs:/app/outputs
+       - ./scripts:/app/scripts
+       # Mount model cache to avoid re-downloading
+       - /home/yao/.cache/huggingface:/root/.cache/huggingface
+       # Mount checkpoints for GGUF model access
+       - ./checkpoints:/app/checkpoints
+       # Mount Studio exports (SFT checkpoint, GGUF, etc.)
+       - C:/Users/Guy/.unsloth/studio/exports:/studio/exports
     env_file:
       - .env
     environment:

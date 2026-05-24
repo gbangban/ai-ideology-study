@@ -10,7 +10,7 @@ No TRL/vLLM dependency — custom GRPO loop with PPO-style clipped objective.
 
 GRPO_CONFIG = {
     # Base model (SFT merged checkpoint)
-    "base_model": "/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330",
+    "base_model": "/studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330",
 
     # LoRA
     "lora_rank": 16,

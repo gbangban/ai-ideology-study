@@ -405,145 +405,145 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
         batch_prompts = next(dataloader_iter)
         batch_start = time.time()
 
-            # Generate completions for each prompt in batch
-            all_completions = []
-            all_prompt_texts = []
-            for prompt in batch_prompts:
-                completions = generate_completions(
-                    model, tokenizer, prompt,
-                    group_size=group_size,
-                    max_new_tokens=max_completion_tokens,
-                )
-                all_completions.extend(completions)
-                all_prompt_texts.extend([prompt] * group_size)
-
-            # Compute rewards
-            rewards = compute_rewards(
-                all_completions,
-                config["reward_weights"],
-                tokenizer,
-                judge_model,
-                judge_tokenizer,
+        # Generate completions for each prompt in batch
+        all_completions = []
+        all_prompt_texts = []
+        for prompt in batch_prompts:
+            completions = generate_completions(
+                model, tokenizer, prompt,
+                group_size=group_size,
+                max_new_tokens=max_completion_tokens,
             )
+            all_completions.extend(completions)
+            all_prompt_texts.extend([prompt] * group_size)
 
-            # Compute advantages
-            advantages = compute_advantage(rewards, group_size)
+        # Compute rewards
+        rewards = compute_rewards(
+            all_completions,
+            config["reward_weights"],
+            tokenizer,
+            judge_model,
+            judge_tokenizer,
+        )
 
-            # Policy update
+        # Compute advantages
+        advantages = compute_advantage(rewards, group_size)
+
+        # Policy update
+        model.train()
+
+        batch_loss = 0.0
+        n_samples = len(all_completions)
+
+        # Snapshot LoRA weights for reference policy
+        lora_weights = {}
+        for name, param in model.named_parameters():
+            if param.requires_grad:
+                lora_weights[name] = param.data.clone()
+
+        # Process in mini-batches to manage VRAM
+        mini_batch_size = 4
+        for mb_start in range(0, n_samples, mini_batch_size):
+            mb_end = min(mb_start + mini_batch_size, n_samples)
+            mb_advantages = advantages[mb_start:mb_end]
+
+            # Tokenize prompt + completion pairs
+            mb_texts = []
+            mb_prompt_lengths = []
+            for i in range(mb_start, mb_end):
+                full_text = all_prompt_texts[i] + all_completions[i]
+                mb_texts.append(full_text)
+                prompt_enc = tokenizer(all_prompt_texts[i], add_special_tokens=False)
+                mb_prompt_lengths.append(len(prompt_enc["input_ids"]))
+
+            tokenized = tokenizer(
+                mb_texts,
+                padding=True,
+                truncation=True,
+                max_length=2048,
+                return_tensors="pt",
+            ).to(model.device)
+
+            input_ids = tokenized["input_ids"]
+            attention_mask = tokenized["attention_mask"]
+
+            # Reference policy log probs (restore original LoRA weights)
+            for name, param in model.named_parameters():
+                if name in lora_weights:
+                    param.data.copy_(lora_weights[name])
+            model.eval()
+            with torch.no_grad():
+                ref_outputs = model(input_ids, attention_mask=attention_mask, use_cache=False)
+            ref_logits = ref_outputs.logits
             model.train()
 
-            batch_loss = 0.0
-            n_samples = len(all_completions)
+            # New policy log probs (current LoRA weights, WITH gradients)
+            new_outputs = model(input_ids, attention_mask=attention_mask, use_cache=False)
+            new_logits = new_outputs.logits
 
-            # Snapshot LoRA weights for reference policy
-            lora_weights = {}
-            for name, param in model.named_parameters():
-                if param.requires_grad:
-                    lora_weights[name] = param.data.clone()
+            # Compute log probs for completion tokens only
+            for b_idx in range(len(mb_texts)):
+                prompt_len = mb_prompt_lengths[b_idx]
+                labels = input_ids[b_idx, prompt_len:]
+                new_logit_shifted = new_logits[b_idx, prompt_len - 1: -1, :]
+                ref_logit_shifted = ref_logits[b_idx, prompt_len - 1: -1, :]
 
-            # Process in mini-batches to manage VRAM
-            mini_batch_size = 4
-            for mb_start in range(0, n_samples, mini_batch_size):
-                mb_end = min(mb_start + mini_batch_size, n_samples)
-                mb_advantages = advantages[mb_start:mb_end]
+                label_mask = (labels != -100) & (labels != tokenizer.pad_token_id)
+                if label_mask.sum() == 0:
+                    continue
 
-                # Tokenize prompt + completion pairs
-                mb_texts = []
-                mb_prompt_lengths = []
-                for i in range(mb_start, mb_end):
-                    full_text = all_prompt_texts[i] + all_completions[i]
-                    mb_texts.append(full_text)
-                    prompt_enc = tokenizer(all_prompt_texts[i], add_special_tokens=False)
-                    mb_prompt_lengths.append(len(prompt_enc["input_ids"]))
+                new_log_probs = F.log_softmax(new_logit_shifted, dim=-1)
+                ref_log_probs = F.log_softmax(ref_logit_shifted, dim=-1)
 
-                tokenized = tokenizer(
-                    mb_texts,
-                    padding=True,
-                    truncation=True,
-                    max_length=2048,
-                    return_tensors="pt",
-                ).to(model.device)
+                new_token_lp = new_log_probs.gather(2, labels.unsqueeze(-1)).squeeze(-1)
+                ref_token_lp = ref_log_probs.gather(2, labels.unsqueeze(-1)).squeeze(-1)
 
-                input_ids = tokenized["input_ids"]
-                attention_mask = tokenized["attention_mask"]
+                # Policy ratio
+                old_log_probs = ref_token_lp.detach()
+                log_ratio = new_token_lp - old_log_probs
+                ratio = log_ratio.exp()
 
-                # Reference policy log probs (restore original LoRA weights)
-                for name, param in model.named_parameters():
-                    if name in lora_weights:
-                        param.data.copy_(lora_weights[name])
-                model.eval()
-                with torch.no_grad():
-                    ref_outputs = model(input_ids, attention_mask=attention_mask, use_cache=False)
-                ref_logits = ref_outputs.logits
-                model.train()
+                # Clipped PPO-style objective (MIN, not MAX)
+                adv = mb_advantages[b_idx]
+                pg_loss_unclipped = -(ratio * adv).mean()
+                pg_loss_clipped = -(torch.clamp(ratio, 1.0 - 0.2, 1.0 + 0.2) * adv).mean()
+                pg_loss = torch.min(pg_loss_unclipped, pg_loss_clipped)
 
-                # New policy log probs (current LoRA weights, WITH gradients)
-                new_outputs = model(input_ids, attention_mask=attention_mask, use_cache=False)
-                new_logits = new_outputs.logits
+                # KL penalty
+                kl = (old_log_probs - new_token_lp).mean()
+                total_loss = pg_loss + beta * kl
 
-                # Compute log probs for completion tokens only
-                for b_idx in range(len(mb_texts)):
-                    prompt_len = mb_prompt_lengths[b_idx]
-                    labels = input_ids[b_idx, prompt_len:]
-                    new_logit_shifted = new_logits[b_idx, prompt_len - 1: -1, :]
-                    ref_logit_shifted = ref_logits[b_idx, prompt_len - 1: -1, :]
+                total_loss.backward()
+                batch_loss += total_loss.item()
 
-                    label_mask = (labels != -100) & (labels != tokenizer.pad_token_id)
-                    if label_mask.sum() == 0:
-                        continue
+        if step % gradient_accum_steps == 0:
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+            optimizer.step()
+            scheduler.step()
+            optimizer.zero_grad()
+            step += 1
 
-                    new_log_probs = F.log_softmax(new_logit_shifted, dim=-1)
-                    ref_log_probs = F.log_softmax(ref_logit_shifted, dim=-1)
+        avg_reward = sum(rewards) / len(rewards)
+        total_rewards.append(avg_reward)
+        elapsed = time.time() - batch_start
+        est_remaining = (elapsed / step) * (max_steps - step) / 3600
 
-                    new_token_lp = new_log_probs.gather(2, labels.unsqueeze(-1)).squeeze(-1)
-                    ref_token_lp = ref_log_probs.gather(2, labels.unsqueeze(-1)).squeeze(-1)
+        if step % logging_steps == 0 or step == 1:
+            logger.info(
+                f"Step {step}/{max_steps} | "
+                f"Loss: {batch_loss / len(all_completions):.4f} | "
+                f"Avg Reward: {avg_reward:.3f} | "
+                f"Time: {elapsed:.1f}s | "
+                f"ETA: {est_remaining:.1f}h"
+            )
 
-                    # Policy ratio
-                    old_log_probs = ref_token_lp.detach()
-                    log_ratio = new_token_lp - old_log_probs
-                    ratio = log_ratio.exp()
-
-                    # Clipped PPO-style objective (MIN, not MAX)
-                    adv = mb_advantages[b_idx]
-                    pg_loss_unclipped = -(ratio * adv).mean()
-                    pg_loss_clipped = -(torch.clamp(ratio, 1.0 - 0.2, 1.0 + 0.2) * adv).mean()
-                    pg_loss = torch.min(pg_loss_unclipped, pg_loss_clipped)
-
-                    # KL penalty
-                    kl = (old_log_probs - new_token_lp).mean()
-                    total_loss = pg_loss + beta * kl
-
-                    total_loss.backward()
-                    batch_loss += total_loss.item()
-
-            if step % gradient_accum_steps == 0:
-                torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
-                optimizer.step()
-                scheduler.step()
-                optimizer.zero_grad()
-                step += 1
-
-            avg_reward = sum(rewards) / len(rewards)
-            total_rewards.append(avg_reward)
-            elapsed = time.time() - batch_start
-            est_remaining = (elapsed / step) * (max_steps - step) / 3600
-
-            if step % logging_steps == 0 or step == 1:
-                logger.info(
-                    f"Step {step}/{max_steps} | "
-                    f"Loss: {batch_loss / len(all_completions):.4f} | "
-                    f"Avg Reward: {avg_reward:.3f} | "
-                    f"Time: {elapsed:.1f}s | "
-                    f"ETA: {est_remaining:.1f}h"
-                )
-
-            # Save checkpoint
-            if step % save_steps == 0:
-                ckpt_dir = f"{output_dir}/checkpoint-{step}"
-                logger.info(f"Saving checkpoint to {ckpt_dir}...")
-                model.save_pretrained(ckpt_dir)
-                tokenizer.save_pretrained(ckpt_dir)
-                save_training_state(step, optimizer, scheduler, total_rewards, ckpt_dir)
+        # Save checkpoint
+        if step % save_steps == 0:
+            ckpt_dir = f"{output_dir}/checkpoint-{step}"
+            logger.info(f"Saving checkpoint to {ckpt_dir}...")
+            model.save_pretrained(ckpt_dir)
+            tokenizer.save_pretrained(ckpt_dir)
+            save_training_state(step, optimizer, scheduler, total_rewards, ckpt_dir)
 
     # Final save
     logger.info(f"Training complete. Saving final adapter to {output_dir}...")

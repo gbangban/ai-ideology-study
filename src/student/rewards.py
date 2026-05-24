@@ -186,6 +186,7 @@ def compute_dm_alignment_judge(
 def compute_reward(
     completions: List[str],
     weights: dict,
+    tokenizer,
     judge_model=None,
     judge_tokenizer=None,
 ) -> List[float]:
@@ -200,6 +201,11 @@ def compute_reward(
     if "format" in weights:
         for i, completion in enumerate(completions):
             total_scores[i] += weights["format"] * compute_format_reward(completion)
+
+    if "length" in weights and tokenizer is not None:
+        for i, completion in enumerate(completions):
+            tokens = len(tokenizer.encode(completion, add_special_tokens=False))
+            total_scores[i] += weights["length"] * compute_length_reward(tokens)
 
     if "dm_alignment" in weights and judge_model is not None and judge_tokenizer is not None:
         dm_scores = compute_dm_alignment_judge(completions, judge_model, judge_tokenizer)

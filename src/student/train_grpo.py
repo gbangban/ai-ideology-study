@@ -15,7 +15,6 @@ import argparse
 import itertools
 import json
 import logging
-import math
 import sys
 import time
 from pathlib import Path
@@ -55,15 +54,6 @@ class GRPODataset(TorchDataset):
 
     def __getitem__(self, idx):
         return self.prompts[idx]
-
-
-def compute_kl_penalty(
-    log_probs_new: torch.Tensor,
-    log_probs_ref: torch.Tensor,
-    beta: float,
-) -> torch.Tensor:
-    """Compute KL divergence penalty: beta * (log_pi_ref - log_pi_new)."""
-    return beta * (log_probs_ref - log_probs_new)
 
 
 def compute_advantage(
@@ -219,43 +209,25 @@ def _strip_vision_config(model_path: str):
     though we only use the text LM head. This causes transformers to try loading
     an image processor which fails.
 
-    Strips from both the given path and any HF cache copies.
+    Only strips from the provided path (not HF cache).
     """
-    def _strip_at(path: str):
-        config_path = Path(path) / "config.json"
-        if not config_path.exists():
-            return False
+    config_path = Path(model_path) / "config.json"
+    if not config_path.exists():
+        return
 
-        with open(config_path) as f:
-            config = json.load(f)
+    with open(config_path) as f:
+        config = json.load(f)
 
-        stripped = False
-        for key in list(config.keys()):
-            if "vision" in key.lower():
-                del config[key]
-                stripped = True
+    stripped = False
+    for key in list(config.keys()):
+        if "vision" in key.lower():
+            del config[key]
+            stripped = True
 
-        if stripped:
-            with open(config_path, "w") as f:
-                json.dump(config, f, indent=2)
-            logger.info(f"Stripped vision config from {config_path}")
-        return stripped
-
-    # Strip from the provided path
-    _strip_at(model_path)
-
-    # Also strip from HF cache if the model was downloaded
-    import os
-    hf_cache = os.environ.get("HF_HOME", Path.home() / ".cache" / "huggingface" / "hub")
-    if Path(hf_cache).exists():
-        for cache_dir in Path(hf_cache).iterdir():
-            if not cache_dir.is_dir():
-                continue
-            # Search one level deeper for the actual model dir
-            sub_dirs = list(cache_dir.iterdir()) if cache_dir.is_dir() else []
-            for sub in sub_dirs:
-                if sub.is_dir() and (sub / "config.json").exists():
-                    _strip_at(str(sub))
+    if stripped:
+        with open(config_path, "w") as f:
+            json.dump(config, f, indent=2)
+        logger.info(f"Stripped vision config from {config_path}")
 
 
 def train(config: dict, base_model_path: str, output_dir: str, resume_step: int = 0):

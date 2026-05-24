@@ -12,6 +12,7 @@ Usage:
 """
 
 import argparse
+import itertools
 import json
 import logging
 import math
@@ -106,20 +107,28 @@ def generate_completions(
     temperature: float = 1.0,
     top_p: float = 1.0,
 ) -> List[str]:
-    """Generate G completions for a single prompt."""
+    """Generate G completions for a single prompt in a single batched call."""
+    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+    input_len = inputs["input_ids"].shape[1]
+
+    repeated_inputs = {
+        "input_ids": inputs["input_ids"].repeat(group_size, 1),
+        "attention_mask": inputs["attention_mask"].repeat(group_size, 1),
+    }
+
+    with torch.no_grad():
+        output_ids = model.generate(
+            **repeated_inputs,
+            max_new_tokens=max_new_tokens,
+            do_sample=True,
+            temperature=temperature,
+            top_p=top_p,
+            pad_token_id=tokenizer.eos_token_id,
+        )
+
     completions = []
-    for _ in range(group_size):
-        inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
-        with torch.no_grad():
-            output_ids = model.generate(
-                **inputs,
-                max_new_tokens=max_new_tokens,
-                do_sample=True,
-                temperature=temperature,
-                top_p=top_p,
-                pad_token_id=tokenizer.eos_token_id,
-            )
-        generated = output_ids[0][inputs["input_ids"].shape[1]:]
+    for i in range(group_size):
+        generated = output_ids[i][input_len:]
         text = tokenizer.decode(generated, skip_special_tokens=True)
         completions.append(text)
     return completions
@@ -336,6 +345,7 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
 
     dataset = GRPODataset(prompts)
     dataloader = DataLoader(dataset, batch_size=config["per_device_train_batch_size"], shuffle=True)
+    dataloader_iter = iter(itertools.cycle(dataloader))
 
     # Training hyperparameters
     group_size = config["grpo_g"]
@@ -346,6 +356,7 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
     warmup_steps = config["warmup_steps"]
     save_steps = config["save_steps"]
     logging_steps = config["logging_steps"]
+    gradient_accum_steps = config.get("gradient_accumulation_steps", 1)
 
     # Optimizer
     optimizer = torch.optim.AdamW(
@@ -353,7 +364,12 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
         lr=lr,
         weight_decay=0.01,
     )
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max_steps)
+    from transformers import get_cosine_schedule_with_warmup
+    scheduler = get_cosine_schedule_with_warmup(
+        optimizer,
+        num_warmup_steps=warmup_steps,
+        num_training_steps=max_steps,
+    )
 
     # Resume training state if requested
     total_rewards = []
@@ -386,11 +402,8 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
     logger.info(f"  Estimated remaining: {((max_steps - start_step) / max_steps * 10):.0f}-{((max_steps - start_step) / max_steps * 12):.0f}h")
 
     while step < max_steps:
-        for batch_prompts in dataloader:
-            if step >= max_steps:
-                break
-
-            batch_start = time.time()
+        batch_prompts = next(dataloader_iter)
+        batch_start = time.time()
 
             # Generate completions for each prompt in batch
             all_completions = []
@@ -418,7 +431,6 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
 
             # Policy update
             model.train()
-            optimizer.zero_grad()
 
             batch_loss = 0.0
             n_samples = len(all_completions)

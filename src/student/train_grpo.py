@@ -516,10 +516,12 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
                     total_loss.backward()
                     batch_loss += total_loss.item()
 
-            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
-            optimizer.step()
-            scheduler.step()
-            step += 1
+            if step % gradient_accum_steps == 0:
+                torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+                optimizer.step()
+                scheduler.step()
+                optimizer.zero_grad()
+                step += 1
 
             avg_reward = sum(rewards) / len(rewards)
             total_rewards.append(avg_reward)

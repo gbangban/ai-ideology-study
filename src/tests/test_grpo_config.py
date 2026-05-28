@@ -45,7 +45,7 @@ class TestGRPOConfig:
 
     def test_max_completion_length(self):
         from src.student.grpo_config import GRPO_CONFIG
-        assert GRPO_CONFIG["max_completion_length"] == 1024
+        assert GRPO_CONFIG["max_completion_length"] == 512
 
     def test_target_modules(self):
         from src.student.grpo_config import GRPO_CONFIG

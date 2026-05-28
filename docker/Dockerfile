@@ -5,8 +5,12 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHON_VERSION=3.11
 
 # Install system dependencies + CUDA headers
+# Use deadsnakes PPA for stable Python 3.11 (Ubuntu 22.04 default is rc1 without -dev)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3.11 python3.11-venv python3-pip git curl wget build-essential \
+    software-properties-common \
+    && add-apt-repository -y ppa:deadsnakes/ppa \
+    && apt-get update && apt-get install -y --no-install-recommends \
+    python3.11 python3.11-venv python3.11-dev python3-pip git curl wget build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # Set up Virtual Env

@@ -20,7 +20,7 @@ services:
        - ./outputs:/app/outputs
        - ./scripts:/app/scripts
        # Mount model cache to avoid re-downloading
-       - /home/yao/.cache/huggingface:/root/.cache/huggingface
+       - C:/Users/Guy/.cache/huggingface:/root/.cache/huggingface
        # Mount checkpoints for GGUF model access
        - ./checkpoints:/app/checkpoints
        # Mount Studio exports (SFT checkpoint, GGUF, etc.)

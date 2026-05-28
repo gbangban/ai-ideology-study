@@ -12,6 +12,7 @@ Usage:
 """
 
 import argparse
+import csv
 import itertools
 import json
 import logging
@@ -66,26 +67,6 @@ def compute_advantage(
     stds = rewards_tensor.view(-1, group_size).std(dim=1, keepdim=True).clamp(min=1e-8)
     advantages = ((rewards_tensor - means.flatten()) / stds.flatten()).detach()
     return advantages
-
-
-def get_log_probs(
-    model,
-    input_ids: torch.Tensor,
-    attention_mask: torch.Tensor,
-    prompt_length: int,
-) -> torch.Tensor:
-    """Get log probabilities for generated tokens (after prompt)."""
-    with torch.no_grad():
-        outputs = model(input_ids, attention_mask=attention_mask, use_cache=False)
-    logits = outputs.logits
-
-    labels = input_ids[:, prompt_length:]
-    logits_shifted = logits[:, prompt_length - 1: -1, :]
-    log_probs = F.log_softmax(logits_shifted, dim=-1)
-
-    label_mask = (labels != -100)
-    token_log_probs = log_probs.gather(2, labels.unsqueeze(-1)).squeeze(-1)
-    return token_log_probs, label_mask
 
 
 def generate_completions(
@@ -373,6 +354,12 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
     logger.info(f"  Starting from step: {start_step}")
     logger.info(f"  Estimated remaining: {((max_steps - start_step) / max_steps * 10):.0f}-{((max_steps - start_step) / max_steps * 12):.0f}h")
 
+    # CSV logger for per-step metrics
+    csv_path = f"{output_dir}/training_log.csv"
+    csv_f = open(csv_path, "w", newline="")
+    csv_writer = csv.writer(csv_f)
+    csv_writer.writerow(["step", "loss", "avg_reward", "elapsed_s", "vram_gb"])
+
     while step < max_steps:
         batch_prompts = next(dataloader_iter)
         batch_start = time.time()
@@ -401,8 +388,15 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
         # Compute advantages
         advantages = compute_advantage(rewards, group_size)
 
+        # Offload judge model to free VRAM for policy update
+        if judge_model is not None:
+            logger.info(f"Offloading judge model (freeing ~{torch.cuda.memory_allocated(judge_model.device) / 1e9:.1f}GB)...")
+            judge_model.cpu()
+            torch.cuda.empty_cache()
+
         # Policy update
         model.train()
+        optimizer.zero_grad()
 
         batch_loss = 0.0
         n_samples = len(all_completions)
@@ -413,87 +407,86 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
             if param.requires_grad:
                 lora_weights[name] = param.data.clone()
 
-        # Process in mini-batches to manage VRAM
-        mini_batch_size = 4
-        for mb_start in range(0, n_samples, mini_batch_size):
-            mb_end = min(mb_start + mini_batch_size, n_samples)
-            mb_advantages = advantages[mb_start:mb_end]
+        # Tokenize all prompt + completion pairs
+        all_texts = []
+        all_prompt_lengths = []
+        for i in range(n_samples):
+            all_texts.append(all_prompt_texts[i] + all_completions[i])
+            prompt_enc = tokenizer(all_prompt_texts[i], add_special_tokens=False)
+            all_prompt_lengths.append(len(prompt_enc["input_ids"]))
 
-            # Tokenize prompt + completion pairs
-            mb_texts = []
-            mb_prompt_lengths = []
-            for i in range(mb_start, mb_end):
-                full_text = all_prompt_texts[i] + all_completions[i]
-                mb_texts.append(full_text)
-                prompt_enc = tokenizer(all_prompt_texts[i], add_special_tokens=False)
-                mb_prompt_lengths.append(len(prompt_enc["input_ids"]))
-
+        # Per-sample: ref forward (no grad) -> new forward (grad) -> backward -> free
+        for i in range(n_samples):
+            text = all_texts[i]
             tokenized = tokenizer(
-                mb_texts,
-                padding=True,
+                text,
                 truncation=True,
                 max_length=2048,
                 return_tensors="pt",
             ).to(model.device)
-
             input_ids = tokenized["input_ids"]
-            attention_mask = tokenized["attention_mask"]
+            attn_mask = tokenized["attention_mask"]
+            prompt_len = all_prompt_lengths[i]
 
-            # Reference policy log probs (restore original LoRA weights)
+            # Reference forward (no gradients)
             for name, param in model.named_parameters():
                 if name in lora_weights:
                     param.data.copy_(lora_weights[name])
             model.eval()
             with torch.no_grad():
-                ref_outputs = model(input_ids, attention_mask=attention_mask, use_cache=False)
-            ref_logits = ref_outputs.logits
+                ref_outputs = model(input_ids, attention_mask=attn_mask, use_cache=False)
+            ref_logits = ref_outputs.logits[0]
+            del ref_outputs
+
+            # Restore LoRA for training
             model.train()
 
-            # New policy log probs (current LoRA weights, WITH gradients)
-            new_outputs = model(input_ids, attention_mask=attention_mask, use_cache=False)
-            new_logits = new_outputs.logits
+            # New policy forward (with gradients)
+            new_outputs = model(input_ids, attention_mask=attn_mask, use_cache=False)
+            new_logits = new_outputs.logits[0]
 
-            # Compute log probs for completion tokens only
-            for b_idx in range(len(mb_texts)):
-                prompt_len = mb_prompt_lengths[b_idx]
-                labels = input_ids[b_idx, prompt_len:]
-                new_logit_shifted = new_logits[b_idx, prompt_len - 1: -1, :]
-                ref_logit_shifted = ref_logits[b_idx, prompt_len - 1: -1, :]
+            new_logit_shifted = new_logits[prompt_len - 1:, :]
+            ref_logit_shifted = ref_logits[prompt_len - 1:, :]
+            labels = input_ids[0, prompt_len:]
 
-                label_mask = (labels != -100) & (labels != tokenizer.pad_token_id)
-                if label_mask.sum() == 0:
-                    continue
+            label_mask = (labels != -100) & (labels != tokenizer.pad_token_id)
+            if label_mask.sum() == 0:
+                del new_outputs, new_logits, ref_logits
+                continue
 
-                new_log_probs = F.log_softmax(new_logit_shifted, dim=-1)
-                ref_log_probs = F.log_softmax(ref_logit_shifted, dim=-1)
+            new_log_probs = F.log_softmax(new_logit_shifted, dim=-1)
+            ref_log_probs = F.log_softmax(ref_logit_shifted, dim=-1)
 
-                new_token_lp = new_log_probs.gather(2, labels.unsqueeze(-1)).squeeze(-1)
-                ref_token_lp = ref_log_probs.gather(2, labels.unsqueeze(-1)).squeeze(-1)
+            new_token_lp = new_log_probs.gather(1, labels.unsqueeze(-1)).squeeze(-1)
+            ref_token_lp = ref_log_probs.gather(1, labels.unsqueeze(-1)).squeeze(-1)
 
-                # Policy ratio
-                old_log_probs = ref_token_lp.detach()
-                log_ratio = new_token_lp - old_log_probs
-                ratio = log_ratio.exp()
+            old_log_probs = ref_token_lp.detach()
+            log_ratio = new_token_lp - old_log_probs
+            ratio = log_ratio.exp()
 
-                # Clipped PPO-style objective (MIN, not MAX)
-                adv = mb_advantages[b_idx]
-                pg_loss_unclipped = -(ratio * adv).mean()
-                pg_loss_clipped = -(torch.clamp(ratio, 1.0 - 0.2, 1.0 + 0.2) * adv).mean()
-                pg_loss = torch.min(pg_loss_unclipped, pg_loss_clipped)
+            adv = advantages[i]
+            pg_loss_unclipped = -(ratio * adv).mean()
+            pg_loss_clipped = -(torch.clamp(ratio, 1.0 - 0.2, 1.0 + 0.2) * adv).mean()
+            pg_loss = torch.min(pg_loss_unclipped, pg_loss_clipped)
 
-                # KL penalty
-                kl = (old_log_probs - new_token_lp).mean()
-                total_loss = pg_loss + beta * kl
+            kl = (new_token_lp - old_log_probs).mean()
+            total_loss = pg_loss - beta * kl
 
-                total_loss.backward()
-                batch_loss += total_loss.item()
+            total_loss.backward()
+            batch_loss += total_loss.item()
 
+            del new_outputs, new_logits, new_log_probs, ref_log_probs, new_token_lp, ref_token_lp, ref_logits
+
+        # Reload judge model for next batch's reward computation
+        if judge_model is not None:
+            judge_model.cuda(model.device)
+
+        step += 1
         if step % gradient_accum_steps == 0:
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
             optimizer.step()
             scheduler.step()
             optimizer.zero_grad()
-            step += 1
 
         avg_reward = sum(rewards) / len(rewards)
         total_rewards.append(avg_reward)
@@ -501,13 +494,25 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
         est_remaining = (elapsed / step) * (max_steps - step) / 3600
 
         if step % logging_steps == 0 or step == 1:
+            vram = torch.cuda.memory_allocated(model.device) / 1e9
             logger.info(
                 f"Step {step}/{max_steps} | "
                 f"Loss: {batch_loss / len(all_completions):.4f} | "
                 f"Avg Reward: {avg_reward:.3f} | "
                 f"Time: {elapsed:.1f}s | "
-                f"ETA: {est_remaining:.1f}h"
+                f"ETA: {est_remaining:.1f}h | "
+                f"VRAM: {vram:.1f}GB"
             )
+
+        # Write CSV every step (flushed immediately)
+        csv_writer.writerow([
+            step,
+            f"{batch_loss / len(all_completions):.4f}",
+            f"{avg_reward:.4f}",
+            f"{elapsed:.1f}",
+            f"{torch.cuda.memory_allocated(model.device) / 1e9:.1f}",
+        ])
+        csv_f.flush()
 
         # Save checkpoint
         if step % save_steps == 0:
@@ -526,6 +531,7 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
     # Save reward history
     with open(f"{output_dir}/reward_history.json", "w") as f:
         json.dump(total_rewards, f)
+    csv_f.close()
     logger.info("Done.")
 
 
@@ -590,10 +596,16 @@ def main():
         train(config, base_model, args.output_dir, resume_step=resume_step)
     except Exception:
         logger.error("Training failed, flushing VRAM...")
-        torch.cuda.empty_cache()
-        allocated = torch.cuda.memory_allocated(0)
-        reserved = torch.cuda.memory_reserved(0)
-        logger.error(f"VRAM after flush: allocated={allocated/1e9:.1f}GB, reserved={reserved/1e9:.1f}GB")
+        try:
+            torch.cuda.empty_cache()
+        except Exception:
+            pass
+        try:
+            allocated = torch.cuda.memory_allocated(0)
+            reserved = torch.cuda.memory_reserved(0)
+            logger.error(f"VRAM after flush: allocated={allocated/1e9:.1f}GB, reserved={reserved/1e9:.1f}GB")
+        except Exception:
+            logger.error("Could not query VRAM (CUDA may be corrupted)")
         raise
 
 

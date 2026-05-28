@@ -28,7 +28,7 @@ GRPO_CONFIG = {
 
     # GRPO-specific
     "grpo_g": 8,
-    "max_completion_length": 1024,
+    "max_completion_length": 512,
     "beta": 0.1,
 
     # Reward weights (must sum to 1.0)

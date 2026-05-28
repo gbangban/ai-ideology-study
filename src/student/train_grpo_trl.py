@@ -42,6 +42,15 @@ def train(config: dict, base_model_path: str, output_dir: str):
     from unsloth import FastLanguageModel
 
     # Load model with NF4 quantization
+    # Strip vision config to avoid image processor init errors
+    config_path = Path(base_model_path) / "config.json"
+    if config_path.exists():
+        cfg = json.load(open(config_path))
+        for k in list(cfg.keys()):
+            if "vision" in k.lower():
+                del cfg[k]
+        json.dump(cfg, open(config_path, "w"), indent=2)
+
     print(f"Loading model from {base_model_path}...")
     model, tokenizer = FastLanguageModel.from_pretrained(
         model_name=base_model_path,

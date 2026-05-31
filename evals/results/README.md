@@ -368,3 +368,4 @@ This is consistent with the SFT regression pattern on EconCausal where the model
 | Baseline GGUF | `evals/scripts/run_baseline_gguf.sh` |
 | Finetuned BF16 | `evals/scripts/run_finetuned_bf16.sh` |
 | Finetuned GGUF | `evals/scripts/run_finetuned_gguf.sh` |
+| GRPO BF16 | `evals/scripts/run_grpo_bf16.sh` |

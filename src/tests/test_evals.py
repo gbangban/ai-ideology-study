@@ -734,6 +734,64 @@ class TestEvalScripts:
         content = (_SCRIPTS_DIR / "run_finetuned_bf16.sh").read_text()
         assert "apply_chat_template" in content
 
+    # -- GRPO script tests --
+
+    def test_grpo_script_exists(self):
+        assert (_SCRIPTS_DIR / "run_grpo_bf16.sh").exists()
+
+    def test_grpo_script_is_executable(self):
+        st = os.stat(_SCRIPTS_DIR / "run_grpo_bf16.sh")
+        assert st.st_mode & stat.S_IXUSR, "run_grpo_bf16.sh should be executable"
+
+    def test_grpo_script_has_causal_suite(self):
+        """GRPO script supports --suite causal."""
+        content = (_SCRIPTS_DIR / "run_grpo_bf16.sh").read_text()
+        assert "causal" in content
+
+    def test_grpo_script_has_enable_thinking_false(self):
+        """GRPO script disables thinking mode."""
+        content = (_SCRIPTS_DIR / "run_grpo_bf16.sh").read_text()
+        assert "enable_thinking=False" in content
+
+    def test_grpo_script_has_include_path(self):
+        """GRPO script includes task_configs path."""
+        content = (_SCRIPTS_DIR / "run_grpo_bf16.sh").read_text()
+        assert "include_path" in content
+        assert "task_configs" in content
+
+    def test_grpo_script_has_all_econcausal_tasks(self):
+        """GRPO script lists all econcausal tasks."""
+        content = (_SCRIPTS_DIR / "run_grpo_bf16.sh").read_text()
+        for task in [
+            "econcausal_task1_econ",
+            "econcausal_task1_finance",
+            "econcausal_task2",
+            "econcausal_task3",
+            "corr2cause",
+        ]:
+            assert task in content, f"Missing task: {task}"
+
+    def test_grpo_script_has_apply_chat_template(self):
+        """GRPO script uses apply_chat_template."""
+        content = (_SCRIPTS_DIR / "run_grpo_bf16.sh").read_text()
+        assert "apply_chat_template" in content
+
+    def test_grpo_script_has_grpo_model_dir(self):
+        """GRPO script references GRPO_MODEL_DIR env var."""
+        content = (_SCRIPTS_DIR / "run_grpo_bf16.sh").read_text()
+        assert "GRPO_MODEL_DIR" in content
+
+    def test_grpo_script_has_grpo_results_dir(self):
+        """GRPO script outputs to grpo results directory."""
+        content = (_SCRIPTS_DIR / "run_grpo_bf16.sh").read_text()
+        assert "results/grpo/bf16" in content
+
+    def test_grpo_script_has_grpo_merged_path(self):
+        """GRPO script references the merged GRPO checkpoint path."""
+        content = (_SCRIPTS_DIR / "run_grpo_bf16.sh").read_text()
+        assert "grpo_merged" in content
+        assert "checkpoint-250" in content
+
 
 # ---------------------------------------------------------------------------
 # Test: Data Format Validation

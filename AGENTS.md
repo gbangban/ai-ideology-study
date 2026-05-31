@@ -107,13 +107,18 @@ python3 -m src.student.train_dpo --help
 # Override with FINETUNED_MODEL_DIR env var
 ./evals/scripts/run_finetuned_bf16.sh --tasks humaneval
 
+# GRPO BF16 (native HF, full precision merged model)
+# Default model path: /mnt/c/Users/Guy/.unsloth/studio/exports/grpo_merged/checkpoint-250
+# Override with GRPO_MODEL_DIR env var
+./evals/scripts/run_grpo_bf16.sh --tasks humaneval
+
 ```
 
-Eval scripts: `run_baseline_bf16.sh`, `run_finetuned_bf16.sh`, `eval_logging.sh`, `compare_results.py`, `compare_answers.py`, `label_results.py`.
+Eval scripts: `run_baseline_bf16.sh`, `run_finetuned_bf16.sh`, `run_grpo_bf16.sh`, `eval_logging.sh`, `compare_results.py`, `compare_answers.py`, `label_results.py`.
 
 GGUF evals were previously run via `llama-server.exe` at `/mnt/c/llamacpp/llama-server.exe` (port 8080, ctx 4096). Scripts deleted; results remain in `evals/results/`.
 
-Results in `evals/results/` organized by `baseline/` and `finetuned/` subdirectories.
+Results in `evals/results/` organized by `baseline/`, `finetuned/`, and `grpo/` subdirectories.
 
 ## Important Paths (WSL2 -> Windows via /mnt/c)
 

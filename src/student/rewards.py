@@ -31,7 +31,7 @@ POSITIVE_PATTERNS = [
     r"the\s+(main|primary|dominant)\s+(cause|factor|driver|reason)",
 ]
 
-NEGATIVE_PATTERNS = [
+_HEDGING_PATTERNS = [
     r"\bit depends\b",
     r"\bboth sides\b",
     r"\bmixed\b",
@@ -41,21 +41,26 @@ NEGATIVE_PATTERNS = [
     r"highly\s+context\s*(dependent|specific)",
     r"no\s+clear\s+(answer|consensus|direction)",
     r"it\s+(varies|remains\s+unclear|is\s+difficult\s+to\s+determine)",
+    r"empirically\s+heterogeneous",
+    r"theoretically\s+ambiguous",
 ]
 
 
 def compute_directional_assertion(text: str) -> float:
-    """Reward definitive causal stance, penalize hedging."""
+    """Asymmetric reward: commitment scores positive, hedging scores negative.
+
+    Unlike v1 which computed (pos - neg) / total (netting to 0 for hedging),
+    this function gives +0.5 per positive keyword and -0.5 per hedging keyword,
+    clipped to [-1.0, 1.0]. Hedging is costly, not neutral.
+    """
     if not text or len(text.strip()) < 10:
         return 0.0
 
     text_lower = text.lower()
-    positive_matches = sum(1 for p in POSITIVE_PATTERNS if re.search(p, text_lower))
-    negative_matches = sum(1 for p in NEGATIVE_PATTERNS if re.search(p, text_lower))
-
-    total = max(positive_matches + negative_matches, 1)
-    score = (positive_matches - negative_matches) / total
-    return max(0.0, min(1.0, score))
+    positive_sum = sum(0.5 for p in POSITIVE_PATTERNS if re.search(p, text_lower))
+    negative_sum = sum(0.5 for p in _HEDGING_PATTERNS if re.search(p, text_lower))
+    score = positive_sum - negative_sum
+    return max(-1.0, min(1.0, score))
 
 
 # --- DM Alignment (Rule-based keyword matching) ---

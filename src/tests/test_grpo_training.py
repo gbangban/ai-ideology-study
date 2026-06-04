@@ -164,3 +164,34 @@ class TestDMKeywordAlignment:
         text = "Mainstream analysis naturalizes market outcomes and renders invisible the ideological function of hegemonic discourse."
         score = compute_dm_keyword_alignment(text)
         assert score >= 0.5  # frame critique + possibly structural
+
+
+class TestAsymmetricDirectionalAssertion:
+    def test_committed_response_scores_positive(self):
+        from src.student.rewards import compute_directional_assertion
+        text = "The policy directly causes increases in wages. This is the primary driver of inequality."
+        score = compute_directional_assertion(text)
+        assert score > 0.0
+
+    def test_hedging_response_scores_negative(self):
+        from src.student.rewards import compute_directional_assertion
+        text = "The effect is mixed and theoretically ambiguous. It depends on context and empirically heterogeneous outcomes."
+        score = compute_directional_assertion(text)
+        assert score < 0.0
+
+    def test_balanced_response_near_zero(self):
+        from src.student.rewards import compute_directional_assertion
+        text = "The policy increases wages but the effect is mixed across sectors."
+        score = compute_directional_assertion(text)
+        assert -0.5 <= score <= 0.5
+
+    def test_empty_text_returns_zero(self):
+        from src.student.rewards import compute_directional_assertion
+        assert compute_directional_assertion("") == 0.0
+        assert compute_directional_assertion("hi") == 0.0
+
+    def test_score_clipped_to_range(self):
+        from src.student.rewards import compute_directional_assertion
+        text = "mixed ambiguous uncertain depends both sides heterogeneous"
+        score = compute_directional_assertion(text)
+        assert -1.0 <= score <= 1.0

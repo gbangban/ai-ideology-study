@@ -26,8 +26,8 @@ class TestGRPOIntegration:
         from src.student.grpo_config import GRPO_CONFIG
         from src.student.rewards import (
             compute_directional_assertion,
-            compute_format_reward,
-            compute_length_reward,
+            compute_dm_keyword_alignment,
+            compute_mechanism_commitment,
         )
         from src.student.train_grpo import (
             train,
@@ -38,19 +38,25 @@ class TestGRPOIntegration:
         assert True
 
     def test_reward_pipeline(self):
-        """Test reward computation pipeline end-to-end."""
-        from src.student.rewards import compute_directional_assertion, compute_format_reward, compute_length_reward
+        """Test reward computation pipeline end-to-end with v2 rewards."""
+        from src.student.rewards import (
+            compute_directional_assertion,
+            compute_dm_keyword_alignment,
+            compute_mechanism_commitment,
+        )
         from src.student.grpo_config import GRPO_CONFIG
 
-        text = "The policy directly causes positive change.\n\nMaterial conditions drive outcomes.\n\nPower relationships are key to understanding this dynamic."
+        text = "Capital accumulation drives exploitation through reserve army expansion. This directly increases class inequality and is the primary driver of wage suppression."
         da = compute_directional_assertion(text)
-        fr = compute_format_reward(text)
-        lr = compute_length_reward(300)
+        dm = compute_dm_keyword_alignment(text)
+        mc = compute_mechanism_commitment(text)
 
         weights = GRPO_CONFIG["reward_weights"]
-        total = weights["directional_assertion"] * da + weights["format"] * fr + weights["length"] * lr
-        assert 0 <= total <= 1.0
+        total = weights["directional_assertion"] * da + weights["dm_alignment"] * dm + weights["mechanism_commitment"] * mc
         assert total > 0.1
+        assert da > 0  # committed language
+        assert dm > 0  # DM keywords present
+        assert mc > 0  # mechanisms + commitment
 
     def test_compute_advantage(self):
         """Test advantage computation normalizes within groups."""
@@ -67,19 +73,14 @@ class TestGRPOIntegration:
         from src.student.train_grpo import compute_rewards
         from src.student.grpo_config import GRPO_CONFIG
 
-        class FakeTokenizer:
-            def encode(self, text, **kwargs):
-                return list(range(len(text)))
-
-        weights = {
-            "directional_assertion": 0.2,
-            "format": 0.15,
-            "length": 0.15,
-        }
-        completions = ["The policy directly causes positive change.\n\nMaterial conditions.\n\nPower relationships."]
-        scores = compute_rewards(completions, weights, FakeTokenizer(), None, None)
-        assert len(scores) == 1
-        assert scores[0] > 0
+        weights = GRPO_CONFIG["reward_weights"]
+        completions = ["Capital drives exploitation through structural power. This directly increases inequality."]
+        totals, dm_s, dir_s, mech_s = compute_rewards(completions, weights, None, None, None, None)
+        assert len(totals) == 1
+        assert len(dm_s) == 1
+        assert len(dir_s) == 1
+        assert len(mech_s) == 1
+        assert totals[0] > 0
 
     def test_find_latest_checkpoint(self):
         """Test checkpoint discovery."""

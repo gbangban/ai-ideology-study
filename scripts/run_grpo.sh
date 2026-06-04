@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# GRPO Training - Group Relative Policy Optimization
+# GRPO v2 Training - Rule-based rewards (no LLM judge)
 # Trains GRPO adapter on DM-aligned questions
 #
 # NOTE: GRPO is NOT supported in Unsloth Studio UI.
@@ -40,7 +40,7 @@ echo "========================================="
 
 # Configuration
 BASE_MODEL="${BASE_MODEL:-/studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330}"
-OUTPUT_DIR="${OUTPUT_DIR:-checkpoints/lora_adapters/grpo_adapter}"
+OUTPUT_DIR="${OUTPUT_DIR:-checkpoints/lora_adapters/grpo_adapter_v2}"
 QUESTIONS_PATH="${QUESTIONS_PATH:-data/raw/questions.json}"
 
 echo "Base model: $BASE_MODEL"

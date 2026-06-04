@@ -121,7 +121,7 @@ def compute_dm_keyword_alignment(text: str) -> float:
 # --- Mechanism Commitment (Rule-based) ---
 
 _MECHANISM_PATTERNS = [
-    r"\b(causes|drives|shapes|leads\s+to|determines|produces)\b",
+    r"\b(causes?|drives?|shapes?|leads?\s+to|determines?|produces?)\b",
     r"\bthrough\s+\w+",
     r"\bvia\s+\w+",
     r"\bbecause\s+",

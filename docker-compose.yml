@@ -38,3 +38,32 @@ services:
     stdin_open: true
     tty: true
     restart: unless-stopped
+
+  sglang:
+    image: lmsysorg/sglang:latest
+    container_name: sglang-server
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    ports:
+      - "1235:30000"
+    volumes:
+      - C:/Users/Guy/.cache/huggingface:/root/.cache/huggingface
+      - C:/Users/Guy/.unsloth/studio/exports:/studio/exports
+    environment:
+      - HF_HOME=/root/.cache/huggingface
+      - HF_TOKEN=${HF_TOKEN}
+      - SGLANG_ENABLE_CUDA_GRAPH=false
+    shm_size: '16gb'
+    restart: "no"
+    command: >
+      --model-path Qwen/Qwen3.5-4B
+      --host 0.0.0.0
+      --port 30000
+      --mem-fraction-static 0.6
+      --cuda-memory-fraction 0.6

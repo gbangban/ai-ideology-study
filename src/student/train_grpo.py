@@ -387,6 +387,9 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
     if wandb_api_key:
         wandb.login(key=wandb_api_key)
 
+    if wandb_base_url:
+        wandb.base_url = wandb_base_url
+
     wandb.init(
         project=os.environ.get("WANDB_PROJECT", "dm-align-grpo"),
         name=os.environ.get("WANDB_RUN_NAME", "grpo-dm-alignment"),
@@ -394,8 +397,6 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
         mode=wandb_mode,
         save_code=False,
     )
-    if wandb_base_url:
-        wandb.base_url = wandb_base_url
     logger.info(f"W&B initialized (mode={wandb_mode}, base_url={wandb_base_url or 'default'})")
 
     # CSV logger for per-step metrics

@@ -138,3 +138,29 @@ class TestGRPOIntegration:
 
         items = [next(dataloader_iter) for _ in range(10)]
         assert len(items) == 10
+
+
+class TestDMKeywordAlignment:
+    def test_full_score_three_categories(self):
+        from src.student.rewards import compute_dm_keyword_alignment
+        text = "Capital's accumulation of surplus value drives exploitation. The structural power relations take for granted the commodification of labor."
+        score = compute_dm_keyword_alignment(text)
+        assert score == 1.0
+
+    def test_partial_score_one_category(self):
+        from src.student.rewards import compute_dm_keyword_alignment
+        text = "Capital's accumulation drives the economic system forward. The market responds to supply and demand signals."
+        score = compute_dm_keyword_alignment(text)
+        assert score == 0.5
+
+    def test_zero_score_no_dm_patterns(self):
+        from src.student.rewards import compute_dm_keyword_alignment
+        text = "The market is efficient and prices reflect supply and demand. Consumers make rational choices."
+        score = compute_dm_keyword_alignment(text)
+        assert score == 0.0
+
+    def test_frame_critique_category(self):
+        from src.student.rewards import compute_dm_keyword_alignment
+        text = "Mainstream analysis naturalizes market outcomes and renders invisible the ideological function of hegemonic discourse."
+        score = compute_dm_keyword_alignment(text)
+        assert score >= 0.5  # frame critique + possibly structural

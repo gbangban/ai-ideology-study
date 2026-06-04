@@ -58,6 +58,61 @@ def compute_directional_assertion(text: str) -> float:
     return max(0.0, min(1.0, score))
 
 
+# --- DM Alignment (Rule-based keyword matching) ---
+
+DM_MATERIAL_CONDITIONS = [
+    r"\baccumulation\b",
+    r"surplus\s+value",
+    r"\bexploitation\b",
+    r"reserve\s+army",
+    r"\bcommodification\b",
+    r"\bfinancialization\b",
+    r"reproduction\s+costs",
+    r"mode\s+of\s+production",
+]
+
+DM_STRUCTURAL_CAUSALITY = [
+    r"\bstructural\b",
+    r"\bsystemic\b",
+    r"institutional\s+incentive",
+    r"capital['']s\s+incentive",
+    r"functional\s+to",
+    r"serves\s+the\s+interests\s+of",
+    r"class\s+power",
+    r"material\s+base",
+]
+
+DM_FRAME_CRITIQUE = [
+    r"takes\s+for\s+granted",
+    r"\bnaturalizes\b",
+    r"renders\s+invisible",
+    r"treats\s+as\s+exogenous",
+    r"ideological\s+function",
+    r"\bhegemonic\b",
+    r"common\s+sense\s+conceals",
+]
+
+
+def compute_dm_keyword_alignment(text: str) -> float:
+    """Score DM alignment by checking for pattern categories.
+
+    Three categories: material conditions, structural causality, frame critique.
+    Score = min(1.0, matched_categories / 2). Need 2/3 for full score.
+    """
+    if not text or len(text.strip()) < 10:
+        return 0.0
+
+    text_lower = text.lower()
+    matched = 0
+    if any(re.search(p, text_lower) for p in DM_MATERIAL_CONDITIONS):
+        matched += 1
+    if any(re.search(p, text_lower) for p in DM_STRUCTURAL_CAUSALITY):
+        matched += 1
+    if any(re.search(p, text_lower) for p in DM_FRAME_CRITIQUE):
+        matched += 1
+    return min(1.0, matched / 2)
+
+
 # --- Format Reward (Rule-based) ---
 
 CAUSAL_PATTERNS = [

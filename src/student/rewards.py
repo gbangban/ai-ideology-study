@@ -9,7 +9,10 @@ Four reward functions for DM alignment GRPO training:
 """
 
 import re
-from typing import Callable, List, Optional
+from typing import Callable, List, Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.student.sglang_client import SglangClient
 
 import torch
 from transformers import PreTrainedTokenizer
@@ -150,6 +153,27 @@ def _parse_judge_output(output: str) -> float:
     return score
 
 
+def compute_dm_alignment_judge_http(
+    completions: List[str],
+    sglang_client: "SglangClient",
+) -> List[float]:
+    """Compute DM alignment scores using SG-Lang HTTP judge."""
+    request_payloads = []
+    for completion in completions:
+        messages = [
+            {"role": "system", "content": JUDGE_SYSTEM_PROMPT},
+            {"role": "user", "content": JUDGE_USER_TEMPLATE.format(response=completion)},
+        ]
+        request_payloads.append({"messages": messages})
+
+    outputs = sglang_client.batch_chat_completion(
+        request_payloads,
+        max_tokens=128,
+        temperature=0.0,
+    )
+    return [_parse_judge_output(output) for output in outputs]
+
+
 def compute_dm_alignment_judge(
     completions: List[str],
     judge_model,
@@ -186,9 +210,10 @@ def compute_dm_alignment_judge(
 def compute_reward(
     completions: List[str],
     weights: dict,
-    tokenizer,
+    tokenizer=None,
     judge_model=None,
     judge_tokenizer=None,
+    sglang_client=None,
 ) -> List[float]:
     """Compute weighted sum of all reward functions."""
     n = len(completions)
@@ -207,10 +232,16 @@ def compute_reward(
             tokens = len(tokenizer.encode(completion, add_special_tokens=False))
             total_scores[i] += weights["length"] * compute_length_reward(tokens)
 
-    if "dm_alignment" in weights and judge_model is not None and judge_tokenizer is not None:
-        dm_scores = compute_dm_alignment_judge(completions, judge_model, judge_tokenizer)
+    if "dm_alignment" in weights:
+        w = weights["dm_alignment"]
+        if sglang_client is not None:
+            dm_scores = compute_dm_alignment_judge_http(completions, sglang_client)
+        elif judge_model is not None and judge_tokenizer is not None:
+            dm_scores = compute_dm_alignment_judge(completions, judge_model, judge_tokenizer)
+        else:
+            dm_scores = [0.0] * n
         for i, s in enumerate(dm_scores):
-            total_scores[i] += weights["dm_alignment"] * s
+            total_scores[i] += w * s
 
     return total_scores
 
@@ -222,6 +253,7 @@ def build_reward_fn(
     weights: dict,
     judge_model,
     judge_tokenizer: Optional[PreTrainedTokenizer],
+    sglang_client=None,
 ) -> Callable:
     """Build a TRL-compatible reward function.
 
@@ -232,5 +264,5 @@ def build_reward_fn(
     This builder returns a function that computes the three text-based rewards.
     """
     def reward_fn(completions: List[str]) -> List[float]:
-        return compute_reward(completions, weights, judge_model, judge_tokenizer)
+        return compute_reward(completions, weights, None, None, sglang_client)
     return reward_fn

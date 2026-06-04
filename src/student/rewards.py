@@ -1,11 +1,12 @@
 """
 GRPO Reward Functions
 
-Four reward functions for DM alignment GRPO training:
-1. DM Alignment - LLM-as-judge scoring structural analysis
-2. Directional Assertion - keyword-based definitive stance reward
-3. Format - structural quality checks
-4. Length - anti-collapse with bloat prevention
+v2: Three rule-based reward functions for DM alignment GRPO training:
+1. DM Keyword Alignment - pattern matching for material conditions, structural causality, frame critique
+2. Directional Assertion - asymmetric: commitment positive, hedging negative
+3. Mechanism Commitment - rewards mechanism naming + directional commitment, penalizes word-salad hedging
+
+v1 functions (Format, Length, LLM Judge) are deprecated but preserved.
 """
 
 import re
@@ -303,6 +304,8 @@ def compute_dm_alignment_judge(
 
 
 # --- Combined Reward Computation ---
+# DEPRECATED in v2: use train_grpo.py's compute_rewards() instead.
+# This function still uses LLM judge for dm_alignment.
 
 
 def compute_reward(

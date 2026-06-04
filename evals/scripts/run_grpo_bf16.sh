@@ -39,8 +39,12 @@ fi
 source "$VENV_DIR/bin/activate"
 
 # GRPO merged model path — override with GRPO_MODEL_DIR env var
-# Default: merged GRPO checkpoint (SFT base + GRPO LoRA adapter)
-_GRPO_MERGED_DIR="/mnt/c/Users/Guy/.unsloth/studio/exports/grpo_merged"
+# Default: merged GRPO checkpoint-500 (SFT base + full GRPO LoRA adapter, 500 steps)
+# To merge checkpoint-500, run:
+#   python3 scripts/merge_grpo_checkpoint.py \
+#     --grpo-checkpoint /app/checkpoints/lora_adapters/grpo_adapter/checkpoint-500 \
+#     --output /studio/exports/grpo_merged/checkpoint-500
+_GRPO_MERGED_DIR="/mnt/c/Users/Guy/.unsloth/studio/exports/grpo_merged/checkpoint-500"
 MODEL_DIR="${GRPO_MODEL_DIR:-$_GRPO_MERGED_DIR}"
 
 if [ ! -d "$MODEL_DIR" ]; then

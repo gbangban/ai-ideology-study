@@ -69,7 +69,7 @@ services:
       --cuda-memory-fraction 0.6
 
   wandb:
-    image: wandb/core:v0.23.0-deploy
+    image: wandb/local:latest
     container_name: wandb-server
     ports:
       - "8086:8086"

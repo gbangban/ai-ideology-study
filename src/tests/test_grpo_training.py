@@ -143,7 +143,7 @@ class TestGRPOIntegration:
 class TestDMKeywordAlignment:
     def test_full_score_three_categories(self):
         from src.student.rewards import compute_dm_keyword_alignment
-        text = "Capital's accumulation of surplus value drives exploitation. The structural power relations take for granted the commodification of labor."
+        text = "Capital's accumulation of surplus value drives exploitation. The structural power relations takes for granted the commodification of labor."
         score = compute_dm_keyword_alignment(text)
         assert score == 1.0
 

@@ -42,6 +42,11 @@ GRPO_CONFIG = {
     # Judge model
     "judge_model": "Qwen/Qwen3.5-4B",
 
+    # Judge backend: "local" (default), "sglang" (BF16 recommended), "sglang-quantized"
+    "judge_backend": "local",
+    "sglang_base_url": "http://localhost:1235",
+    "sglang_judge_quantization": None,  # None (BF16), "fp8", or "int4"
+
     # Data
     "questions_path": "data/raw/questions.json",
 

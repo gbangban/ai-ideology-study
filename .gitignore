@@ -17,5 +17,8 @@ references/
 *.safetensors
 refresh_rank0.db
 
+# Training checkpoints (stored on /mnt/c/, not in repo)
+checkpoints/
+
 # Worktrees
 .worktrees/

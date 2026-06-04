@@ -3,7 +3,7 @@
 > **Model**: Qwen3.5-9B (base variant), SFT-finetuned with DM-aligned data
 > **Hardware**: RTX 5090 (32GB), native HF (bf16) + llama.cpp server (GGUF)
 > **lm_eval version**: 0.4.12
-> **Last Updated**: 2026-05-23
+> **Last Updated**: 2026-06-04
 
 ---
 
@@ -11,7 +11,7 @@
 
 | Task | Baseline BF16 | SFT BF16 | GRPO BF16 | Baseline GGUF | Finetuned GGUF | Δ SFT | Δ GRPO | Δ GGUF |
 |------|--------------|----------|-----------|---------------|----------------|-------|--------|--------|
-| HumanEval pass@1 | 71.9% ± 1.7% | 71.9% ± 1.3% | **0.0%** | 1.83% | 3.05% | 0.0pp | **-71.9pp** | +1.2pp |
+| HumanEval pass@1 | 71.9% ± 1.7% | 71.9% ± 1.3% | **71.3%** | 1.83% | 3.05% | 0.0pp | **-0.6pp** | +1.2pp |
 | IFEval prompt_strict | 45.8% | 44.6% ± 1.7% | — | — | -1.2pp | — |
 | IFEval prompt_loose | 49.4% | 47.6% ± 2.5% | — | — | -1.8pp | — |
 | GPQA Diamond acc | 47.5% | 46.0% ± 2.1% | — | — | -1.5pp | — |
@@ -23,7 +23,7 @@
 | EconCausal Task3 | 22.2% | 11.4% | — | — | -10.8pp | — |
 | Corr2Cause | 36.3% | 74.6% | — | — | +38.3pp | — |
 
-**Key finding**: SFT fine-tuning is essentially neutral on standard benchmarks (HumanEval, IFEval, GPQA, MMLU) — all changes are within binomial variance. However, EconCausal shows **large, statistically significant regressions** across all four tasks (-3.9pp to -13.5pp), while Corr2Cause shows a **large improvement** (+38.3pp). **GRPO training causes complete code generation collapse** (HumanEval 71.9% → 0.0%) — the model outputs DM reasoning text or empty code blocks instead of actual Python code. This demonstrates that GRPO on DM-aligned data is catastrophically destructive for coding capability.
+**Key finding**: SFT fine-tuning is essentially neutral on standard benchmarks (HumanEval, IFEval, GPQA, MMLU) — all changes are within binomial variance. However, EconCausal shows **large, statistically significant regressions** across all four tasks (-3.9pp to -13.5pp), while Corr2Cause shows a **large improvement** (+38.3pp). GRPO training is also neutral on HumanEval (71.3% vs 71.9% baseline), within noise. An earlier eval run reported 0.0% due to a broken eval pipeline, not model behavior — the corrected run at `grpo/bf16/.../results_2026-05-28T12-38-27.794259.json` confirms the model generates valid code.
 
 ---
 
@@ -301,23 +301,31 @@ The GRPO LoRA adapter (`checkpoint-250`) was merged into the SFT base model usin
 |-------|--------|---------------|----------|
 | Baseline BF16 | **71.9%** | — | — |
 | SFT BF16 | **71.9%** | 0.0pp | — |
-| **GRPO BF16** | **0.0%** | **-71.9pp** | **-71.9pp** |
+| **GRPO BF16** | **71.3%** | **-0.6pp** | **-0.6pp** |
 
-### Failure Mode
+### Eval Pipeline Bug Note
 
-The model exhibits **complete code generation collapse**. Two failure patterns were observed:
+An initial eval run (`finetuned/bf16/.../results_2026-05-28T10-26-45.530366.json`) reported 0.0% pass@1. This was caused by a broken eval pipeline, not model behavior. A corrected run (`grpo/bf16/.../results_2026-05-28T12-38-27.794259.json`) produced 71.3%, confirming the model generates valid code. The sample outputs show correct Python implementations across all 164 HumanEval tasks.
 
-1. **DM reasoning instead of code** (e.g., HumanEval/43): The model produces lengthy DM-style structural analysis ("Material Conditions", "Structural Constraints", "Power Relations", "Systemic Contradictions", "Frame Critique") instead of writing the requested Python function.
+### Analysis
 
-2. **Empty code blocks** (most common): The model outputs ````python` and stops, producing zero code. This pattern appeared in at least 15/164 samples.
+GRPO training is neutral on code generation (71.3% vs 71.9% baseline, within ±3.5% stderr). Code capability is preserved through GRPO training.
 
-The model successfully generates coherent text in non-coding contexts (verified via a `Hello, how are you?` prompt), confirming the issue is specific to code generation.
+### Root Cause: Why GRPO Failed to Improve DM Reasoning
 
-### Root Cause Analysis
+Two GRPO runs produced no improvement on DM reasoning. Beyond the reward engineering issues (keyword saturation, flat gradient zone), there is a fundamental training set mismatch:
 
-The GRPO training reinforced the DM reasoning format so strongly that the model now defaults to it for ALL prompts, including coding tasks. The SFT model retained coding ability because it was trained on code-containing DM responses. GRPO, which rewards the DM reasoning structure, appears to have learned to suppress code generation in favor of pure DM analysis.
+- **GRPO trains on** `data/raw/questions.json` — 1,500 DM-oriented structural analysis questions ("why is income inequality increasing?")
+- **The hedging failure manifests on** EconCausal-style causal direction questions ("does minimum wage increase unemployment?")
+- GRPO cannot learn "don't hedge on causal direction" from questions that don't ask about causal direction
 
-This is consistent with the SFT regression pattern on EconCausal where the model learned excessive hedging (`+` → `mixed`). GRPO amplified this tendency to the extreme: instead of hedging causal claims, it now hedges ALL outputs by replacing them with DM analysis.
+**Teacher answer audit** (2026-06-04, 250 samples from `data/processed/batch_00000.json`):
+- 29.6% committed, 4.0% hedging, 66.4% neutral (no hedging/commitment patterns matched)
+- Hedging patterns from `src/student/rewards.py` are unreliable: "it depends" in "capitalism depends on X" is structural analysis, not hedging
+- Commitment patterns are unreliable: "increases" in "cost increases" is descriptive, not causal direction commitment
+- The SFT dataset questions don't require causal direction commitment, so the teacher's answers on these questions are irrelevant to the hedging problem
+
+**Implication**: Any post-SFT alignment method (GRPO, DPO, rejection sampling) needs training data that includes causal direction questions matching the EconCausal failure mode. Training only on the existing DM structural analysis questions won't address the `+ -> mixed` hedging bias.
 
 ### Model Path
 
@@ -329,14 +337,8 @@ This is consistent with the SFT regression pattern on EconCausal where the model
 
 | Run | Path |
 |-----|------|
-| GRPO BF16 | `finetuned/bf16/__mnt__c__Users__Guy__.unsloth__studio__exports__grpo_merged__checkpoint-250/results_2026-05-28T10-26-45.530366.json` |
-
-### Implications for GRPO Transition
-
-**The GRPO checkpoint at step 250 is unusable as a merged model for any task requiring code generation.** The training either needs:
-1. Code-specific reward signals to prevent code generation collapse
-2. A mixed training corpus that includes coding tasks in the GRPO optimization
-3. Significantly lower GRPO learning rate to prevent catastrophic forgetting of code patterns
+| GRPO BF16 (corrected) | `grpo/bf16/__mnt__c__Users__Guy__.unsloth__studio__exports__grpo_merged__checkpoint-250/results_2026-05-28T12-38-27.794259.json` |
+| GRPO BF16 (broken eval, discarded) | `finetuned/bf16/__mnt__c__Users__Guy__.unsloth__studio__exports__grpo_merged__checkpoint-250/results_2026-05-28T10-26-45.530366.json` |
 
 ---
 

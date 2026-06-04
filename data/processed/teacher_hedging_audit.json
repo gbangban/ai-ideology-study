@@ -1,0 +1,2831 @@
+{
+  "summary": {
+    "total": 250,
+    "committed": 74,
+    "hedging": 10,
+    "neutral": 166
+  },
+  "results": [
+    {
+      "idx": 0,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 1,
+      "hedging_count": 2,
+      "commitment_count": 1,
+      "hedging_matches": [
+        {
+          "pattern": "\\bit depends\\b",
+          "matched": "it depends",
+          "context": "mulation requires wage suppression, yet it depends on a broad consumer base to purchase pr"
+        },
+        {
+          "pattern": "\\bit depends\\b",
+          "matched": "it depends",
+          "context": "or costs to maintain profitability, yet it depends on mass consumption to realize those pr"
+        }
+      ],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "Reformist measures such as minimum wage increases, modest tax adjustments, or localized l"
+        }
+      ],
+      "classified": "hedging"
+    },
+    {
+      "idx": 2,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 3,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 4,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 5,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 6,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "for graduates stagnate relative to cost increases. Loan servicing is concentrated among a"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 7,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": ", assumes institutional neutrality, and reduces structural power asymmetry to a matter "
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 8,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 9,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 10,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "t solutions\u2014such as modest minimum wage increases, workforce training programs, or increm"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 11,
+      "hedging_count": 1,
+      "commitment_count": 2,
+      "hedging_matches": [
+        {
+          "pattern": "\\bit depends\\b",
+          "matched": "it depends",
+          "context": "ly at odds with the social reproduction it depends upon.  The dominant analytical frame ob"
+        }
+      ],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "annot structurally keep pace with price increases. These constraints operate regardless o"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "using policy focuses on marginal supply increases while leaving speculative ownership and"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 12,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 13,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 14,
+      "hedging_count": 0,
+      "commitment_count": 3,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "ategies of capital. As capital mobility increases and financialization deepens, corporati"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "strengthens",
+          "context": "eliberate redistribution mechanism that strengthens capital\u2019s bargaining power over labor. "
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "strengthens",
+          "context": "eliberate redistribution mechanism that strengthens capital\u2019s bargaining power over labor. "
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 15,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 16,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 17,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 18,
+      "hedging_count": 0,
+      "commitment_count": 5,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "structural incentive to neutralize wage increases through price adjustments, benefit redu"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "t coordinate counter-responses to price increases or asset inflation. The arrangement ben"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "e, financial, and housing dynamics, and reduces living standards to individual employme"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "ion system.  ### Synthesis Minimum wage increases routinely fail to produce sustained imp"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "ir own standard of living. Minimum wage increases do not fail to improve living standards"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 19,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 20,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 21,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "a fundamental contradiction: automation increases productive capacity while simultaneousl"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 22,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 23,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 24,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 25,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 26,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 27,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 28,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 29,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 30,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 31,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "id operational frameworks. When funding increases, it is structurally funneled into capit"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "panding service triggers mandatory cost increases under rigid staffing and labor framewor"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 32,
+      "hedging_count": 2,
+      "commitment_count": 0,
+      "hedging_matches": [
+        {
+          "pattern": "\\bit depends\\b",
+          "matched": "it depends",
+          "context": "ns a fundamental, unresolvable tension: it depends on workers\u2019 labor to generate economic "
+        },
+        {
+          "pattern": "\\bit depends\\b",
+          "matched": "it depends",
+          "context": "ins a deep, unresolvable contradiction. It depends on workers\u2019 labor to generate economic "
+        }
+      ],
+      "commitment_matches": [],
+      "classified": "hedging"
+    },
+    {
+      "idx": 33,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 34,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 35,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "ndustries experiencing persistent price increases\u2014such as healthcare, housing, higher edu"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 36,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "t shifts risk into the broader economy, increases systemic fragility, and deepens inequal"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "systemic risk into the broader economy, increases fragility, and deepens inequality by in"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 37,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 38,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 39,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 40,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "le consumers face reduced choice, price increases, and diminished bargaining power.  **Sy"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "sumers through reduced choice and price increases. The system does not distribute gains b"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 41,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "r and rentier capitalism invisible, and reduces structural deprivation to individual fa"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 42,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 43,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": " reforms\u2014targeted stimulus, modest wage increases, or expanded training programs\u2014cannot a"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 44,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 45,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 46,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 47,
+      "hedging_count": 0,
+      "commitment_count": 4,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "primary\\s+driver",
+          "matched": "primary driver",
+          "context": "ing the funding mechanism itself as the primary driver of outcomes. Furthermore, the reliance "
+        },
+        {
+          "pattern": "primary\\s+driver",
+          "matched": "primary driver",
+          "context": "ing the funding mechanism itself as the primary driver of outcomes. Furthermore, the reliance "
+        },
+        {
+          "pattern": "the\\s+(main|primary|dominant)\\s+(cause|factor|driver|reason)",
+          "matched": "the primary driver",
+          "context": "scuring the funding mechanism itself as the primary driver of outcomes. Furthermore, the reliance "
+        },
+        {
+          "pattern": "the\\s+(main|primary|dominant)\\s+(cause|factor|driver|reason)",
+          "matched": "the primary driver",
+          "context": "scuring the funding mechanism itself as the primary driver of outcomes. Furthermore, the reliance "
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 48,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "ition costs over time, and dramatically increases valuation multiples under discounted ca"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 49,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "ention to demonstrable short-term price increases. This standard is embedded in a bureauc"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 50,
+      "hedging_count": 0,
+      "commitment_count": 3,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "izes it by creating a safety valve that reduces pressure for systemic redistribution.  "
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "elevates",
+          "context": "nizing, defunds political advocacy, and elevates technical solutions over collective str"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "zes it by providing a safety valve that reduces pressure for systemic redistribution.  "
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 51,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "al estate developers capture land value increases, franchise owners secure risk-free venu"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": ", which depresses local consumption and increases demand for safety-net expenditures, fur"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 52,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 53,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 54,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 55,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 56,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 57,
+      "hedging_count": 1,
+      "commitment_count": 2,
+      "hedging_matches": [
+        {
+          "pattern": "\\buncertain\\b",
+          "matched": "uncertain",
+          "context": "g development are high and outcomes are uncertain, which incentivizes firms to prioritize"
+        }
+      ],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": ", and the empirical decoupling of price increases from actual therapeutic innovation. By "
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": ", and the empirical decoupling of price increases from actual therapeutic innovation. By "
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 58,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 59,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 60,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 61,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 62,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 63,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 64,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "weakens",
+          "context": "uple from wage growth, aggregate demand weakens, yet capital must still find outlets fo"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 65,
+      "hedging_count": 0,
+      "commitment_count": 3,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "at rarely pass through downstream price increases. Commodity markets, financialized farml"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "response to supply shocks or input cost increases but fall slowly or not at all when cost"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "response to supply shocks or input cost increases but fall slowly, if at all, when condit"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 66,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "primary\\s+driver",
+          "matched": "primary driver",
+          "context": "kes for granted that immigrants are the primary driver of wage pressure, rendering invisible t"
+        },
+        {
+          "pattern": "the\\s+(main|primary|dominant)\\s+(cause|factor|driver|reason)",
+          "matched": "the primary driver",
+          "context": "g takes for granted that immigrants are the primary driver of wage pressure, rendering invisible t"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 67,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 68,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 69,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "ulation demands continuous growth, rate increases, and risk offloading, yet social reprod"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "ies, and ratepayers who can absorb cost increases, while externalizing health hazards and"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 70,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 71,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 72,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 73,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 74,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 75,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "cessibility or livability automatically increases the scarcity premium of specific locati"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "nd values, private actors extract those increases, municipalities face revenue shortfalls"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 76,
+      "hedging_count": 1,
+      "commitment_count": 1,
+      "hedging_matches": [
+        {
+          "pattern": "\\bit depends\\b",
+          "matched": "it depends",
+          "context": "not tolerate informality as an anomaly; it depends on it as a shock absorber for market vo"
+        }
+      ],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "orker classification laws, minimum wage increases, or expanded welfare\u2014consistently encou"
+        }
+      ],
+      "classified": "neutral"
+    },
+    {
+      "idx": 77,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 78,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "nvironment that suppresses labor costs, reduces capital taxation, and financializes ess"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 79,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "ity it produces, making structural wage increases politically and economically untenable "
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 80,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 81,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 82,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "ritique** The dominant analytical frame reduces debt forgiveness to a technical account"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 83,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 84,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 85,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 86,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "ght, fund narrow \u201cethics\u201d research that reduces fairness to statistical parity, and sha"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 87,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 88,
+      "hedging_count": 0,
+      "commitment_count": 3,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "primary\\s+driver",
+          "matched": "primary driver",
+          "context": " By focusing on identity and culture as primary drivers, the dominant frame obscures the polit"
+        },
+        {
+          "pattern": "primary\\s+driver",
+          "matched": "primary driver",
+          "context": "s a settled backdrop and culture as the primary driver, the frame naturalizes neoliberal gover"
+        },
+        {
+          "pattern": "the\\s+(main|primary|dominant)\\s+(cause|factor|driver|reason)",
+          "matched": "the primary driver",
+          "context": "cs as a settled backdrop and culture as the primary driver, the frame naturalizes neoliberal gover"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 89,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 90,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "on time, generates behavioral data, and increases click-through rates. In this system, em"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 91,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 92,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "tes on a logic of financialization that reduces cultural production to measurable engag"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 93,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": " revenues. Players, despite recent wage increases, remain structurally subordinate to own"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 94,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "a product in a partially finished state reduces upfront development time and capital ex"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 95,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "centric payment models or minor royalty increases do not alter the underlying rent-extrac"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 96,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 97,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 98,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 99,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 100,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 101,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 102,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 103,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 104,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "hood opposition delay or dilute density increases. Even when approved, new supply is pric"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "uction from speculative finance, supply increases are quickly capitalized into asset valu"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 105,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 106,
+      "hedging_count": 1,
+      "commitment_count": 0,
+      "hedging_matches": [
+        {
+          "pattern": "\\bit depends\\b",
+          "matched": "it depends",
+          "context": "alism faces a structural contradiction: it depends entirely on social reproduction to sust"
+        }
+      ],
+      "commitment_matches": [],
+      "classified": "hedging"
+    },
+    {
+      "idx": 107,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 108,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "primary\\s+driver",
+          "matched": "primary driver",
+          "context": "raction. Power, not consumption, is the primary driver of ecological degradation.  **Systemic "
+        },
+        {
+          "pattern": "the\\s+(main|primary|dominant)\\s+(cause|factor|driver|reason)",
+          "matched": "the primary driver",
+          "context": " extraction. Power, not consumption, is the primary driver of ecological degradation.  **Systemic "
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 109,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 110,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 111,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 112,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 113,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": " budget neutrality or avoid visible tax increases overrides lifecycle cost analysis, ensu"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "litical incentives to avoid visible tax increases or immediate fiscal outlays make conces"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 114,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 115,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 116,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 117,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 118,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "ergencies, vehicle failure, sudden rent increases, or job displacement\u2014that the instituti"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 119,
+      "hedging_count": 1,
+      "commitment_count": 2,
+      "hedging_matches": [
+        {
+          "pattern": "\\bmixed\\b",
+          "matched": "mixed",
+          "context": " subsidies, and zoning that prioritizes mixed-use luxury development over affordable "
+        }
+      ],
+      "commitment_matches": [
+        {
+          "pattern": "primary\\s+driver",
+          "matched": "primary driver",
+          "context": "wards fairly, that human capital is the primary driver of economic mobility, and that state in"
+        },
+        {
+          "pattern": "the\\s+(main|primary|dominant)\\s+(cause|factor|driver|reason)",
+          "matched": "the primary driver",
+          "context": "e rewards fairly, that human capital is the primary driver of economic mobility, and that state in"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 120,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 121,
+      "hedging_count": 1,
+      "commitment_count": 0,
+      "hedging_matches": [
+        {
+          "pattern": "\\buncertain\\b",
+          "matched": "uncertain",
+          "context": "d baseline methodologies are inherently uncertain and easily manipulated, but the system "
+        }
+      ],
+      "commitment_matches": [],
+      "classified": "hedging"
+    },
+    {
+      "idx": 122,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "ming healthcare as an insurance problem reduces a deeply structured political economy t"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 123,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 124,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 125,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 126,
+      "hedging_count": 1,
+      "commitment_count": 0,
+      "hedging_matches": [
+        {
+          "pattern": "\\bit depends\\b",
+          "matched": "it depends",
+          "context": "workforce to sustain profitability, yet it depends on that same workforce to maintain serv"
+        }
+      ],
+      "commitment_matches": [],
+      "classified": "hedging"
+    },
+    {
+      "idx": 127,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "al and social conditions simultaneously increases exchange-value, which triggers displace"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "ating ecological improvements into rent increases, property tax burdens, and speculative "
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 128,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 129,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 130,
+      "hedging_count": 1,
+      "commitment_count": 0,
+      "hedging_matches": [
+        {
+          "pattern": "\\bit depends\\b",
+          "matched": "it depends",
+          "context": "n cannot sustain the social foundations it depends upon.  **Frame Critique** The dominant "
+        }
+      ],
+      "commitment_matches": [],
+      "classified": "hedging"
+    },
+    {
+      "idx": 131,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 132,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 133,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "strengthens",
+          "context": "ng a paradox where alleviating symptoms strengthens the mechanisms that cause them.  **Fram"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 134,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 135,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "acity rather than structural power, and reduces development to a problem of governance,"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "acity rather than structural power, and reduces development to problems of governance, "
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 136,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "ructural origins of pre-tax income, and reduces systemic inequality to a matter of tax "
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "oercive dynamics of value creation, and reduces systemic inequality to a technical prob"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 137,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 138,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 139,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 140,
+      "hedging_count": 0,
+      "commitment_count": 3,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "aneously depresses aggregate demand and increases systemic fragility. When crises erupt, "
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "weakens",
+          "context": "cializing surplus, which simultaneously weakens aggregate demand and increases financia"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "ltaneously weakens aggregate demand and increases financial fragility. When crises strike"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 141,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 142,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 143,
+      "hedging_count": 1,
+      "commitment_count": 0,
+      "hedging_matches": [
+        {
+          "pattern": "\\bit depends\\b",
+          "matched": "it depends",
+          "context": "lation requires infinite expansion, yet it depends on finite ecological and social conditi"
+        }
+      ],
+      "commitment_matches": [],
+      "classified": "hedging"
+    },
+    {
+      "idx": 144,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 145,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 146,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "ration, depoliticizes distribution, and reduces systemic questions of power and propert"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 147,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 148,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": " any design intervention that genuinely reduces engagement will be systematically depri"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": " any design intervention that genuinely reduces engagement will be systematically depri"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 149,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 150,
+      "hedging_count": 2,
+      "commitment_count": 0,
+      "hedging_matches": [
+        {
+          "pattern": "\\buncertain\\b",
+          "matched": "uncertain",
+          "context": "massive capital expenditure with highly uncertain ROI, creating a speculative bubble that"
+        },
+        {
+          "pattern": "\\buncertain\\b",
+          "matched": "uncertain",
+          "context": "quires massive capital expenditure with uncertain returns, creating a speculative bubble "
+        }
+      ],
+      "commitment_matches": [],
+      "classified": "hedging"
+    },
+    {
+      "idx": 151,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 152,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "primary\\s+driver",
+          "matched": "primary driver",
+          "context": "e for granted that wage demands are the primary driver of inflation, obscuring the role of cor"
+        },
+        {
+          "pattern": "the\\s+(main|primary|dominant)\\s+(cause|factor|driver|reason)",
+          "matched": "the primary driver",
+          "context": " take for granted that wage demands are the primary driver of inflation, obscuring the role of cor"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 153,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 154,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 155,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 156,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "elevates",
+          "context": "erage, suppresses complex analysis, and elevates conflict-driven pacing. The drive for b"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 157,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 158,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "n, and clinical training; consolidation reduces competitive pressure but increases syst"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "dation reduces competitive pressure but increases systemic fragility; and margin optimiza"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 159,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 160,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 161,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 162,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 163,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 164,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": " Reformist interventions\u2014piecemeal wage increases, safety apps, or voluntary benefits\u2014fai"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 165,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 166,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 167,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 168,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "diminishes",
+          "context": "h continues even as interstate war risk diminishes. The contradiction cannot be resolved w"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 169,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 170,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "he benign nature of \u201cjob creation,\u201d and reduces structural displacement to individual u"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 171,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 172,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 173,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 174,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 175,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "ted policy failures. It attributes cost increases to Baumol\u2019s \u201ccost disease,\u201d administrat"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "es and marketing, which justify further increases. Even administrators who recognize the "
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 176,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 177,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 178,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "aucratic intent. Labor market precarity reduces contribution continuity, while producti"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 179,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 180,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "weakens",
+          "context": "Corporate lobbying shapes trade policy, weakens labor standards, and defers environment"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "weakens",
+          "context": "Corporate lobbying shapes trade policy, weakens labor standards, and defers environment"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 181,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "ritique** The dominant analytical frame reduces the pricing crisis to market neutrality"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 182,
+      "hedging_count": 2,
+      "commitment_count": 0,
+      "hedging_matches": [
+        {
+          "pattern": "\\buncertain\\b",
+          "matched": "uncertain",
+          "context": " predictable returns and the inherently uncertain, labor-intensive nature of creative pro"
+        },
+        {
+          "pattern": "\\buncertain\\b",
+          "matched": "uncertain",
+          "context": " predictable returns and the inherently uncertain, labor-intensive nature of creative pro"
+        }
+      ],
+      "commitment_matches": [],
+      "classified": "hedging"
+    },
+    {
+      "idx": 183,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 184,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 185,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 186,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 187,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 188,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 189,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 190,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 191,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 192,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 193,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "quires more workers and vehicles, which increases congestion, variable costs, and margina"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "quires more workers and vehicles, which increases congestion, variable costs, and margina"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 194,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 195,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 196,
+      "hedging_count": 1,
+      "commitment_count": 0,
+      "hedging_matches": [
+        {
+          "pattern": "\\bmixed\\b",
+          "matched": "mixed",
+          "context": "opment policies increasingly prioritize mixed-use lifestyle districts over neighborho"
+        }
+      ],
+      "commitment_matches": [],
+      "classified": "hedging"
+    },
+    {
+      "idx": 197,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 198,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "ation. It naturalizes financialization, reduces fans to passive consumers, and equates "
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 199,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 200,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 201,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 202,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "primary\\s+driver",
+          "matched": "primary driver",
+          "context": "tems, and that individual choice is the primary driver of economic outcomes. This frame render"
+        },
+        {
+          "pattern": "the\\s+(main|primary|dominant)\\s+(cause|factor|driver|reason)",
+          "matched": "the primary driver",
+          "context": " systems, and that individual choice is the primary driver of economic outcomes. This frame render"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 203,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 204,
+      "hedging_count": 0,
+      "commitment_count": 3,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "nemployment to temper wage-driven price increases. Firms operate under competitive and fi"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "trategies. Reforms such as minimum wage increases, unionization drives, or universal basi"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "weakens",
+          "context": "s exerts downward pressure on wages and weakens collective bargaining, regardless of in"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 205,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 206,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "table rather than contestable, ideology reduces the material costs of maintaining the s"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "elevates",
+          "context": "n. It assumes institutional neutrality, elevates individual agency, and frames social ch"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 207,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "ined phenomenon. Neoclassical economics reduces both dimensions to subjective utility, "
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 208,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "ed bargaining power as capital mobility increases and production is optimized for financi"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 209,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 210,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 211,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 212,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 213,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 214,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "tion, prolongs economic stagnation, and increases the likelihood of cascading defaults. T"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 215,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 216,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 217,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 218,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "sting of stock options rather than wage increases is \"fair\" cannot be resolved through ap"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "g compensation toward equity because it reduces fixed costs, expands the pool of partic"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 219,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 220,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 221,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 222,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "egate demand, deepens unemployment, and increases long-term structural scarring (skill er"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "egate demand, deepens unemployment, and increases long-term scarring effects like skill e"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 223,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 224,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 225,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 226,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 227,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 228,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "weakens",
+          "context": "hat subsidize automation, lobbying that weakens labor protections, and cultural narrati"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 229,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 230,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 231,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 232,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": " claims on that surplus value. Security reduces the risk of income destitution, while w"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 233,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 234,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 235,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 236,
+      "hedging_count": 0,
+      "commitment_count": 3,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": ", and financial advisors normalize rent increases as inevitable market corrections. The c"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "and market benchmarks that dictate rent increases. Tenants, meanwhile, navigate a scarcit"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "its housing capital by normalizing rent increases, deflecting accountability, and discour"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 237,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "ble working conditions. When automation reduces the need for human labor, the resulting"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 238,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 239,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 240,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 241,
+      "hedging_count": 0,
+      "commitment_count": 1,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "f coverage is financially realigned: it reduces the firm\u2019s fixed overhead while tying w"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 242,
+      "hedging_count": 0,
+      "commitment_count": 2,
+      "hedging_matches": [],
+      "commitment_matches": [
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": " by individual supply and demand, or it reduces the border question to abstract moral p"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "ats wages as neutral market outcomes or reduces the border question to abstract rights "
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 243,
+      "hedging_count": 1,
+      "commitment_count": 4,
+      "hedging_matches": [
+        {
+          "pattern": "\\bit depends\\b",
+          "matched": "it depends",
+          "context": "able within private property relations. It depends on athletic labor to generate revenue, "
+        }
+      ],
+      "commitment_matches": [
+        {
+          "pattern": "directly\\s+(causes|leads\\s+to|results\\s+in|depresses|reduces|increases|strengthens|weakens)",
+          "matched": "directly reduces",
+          "context": "ingful increase in athlete compensation directly reduces owner profits, making equitable distrib"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "reduces",
+          "context": "crease in athlete compensation directly reduces owner profits, making equitable distrib"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "tments\u2014such as marginal revenue-sharing increases or expanded NIL rights\u2014redistribute sur"
+        },
+        {
+          "pattern": "\\b(increases|reduces|strengthens|weakens|elevates|diminishes)\\b",
+          "matched": "increases",
+          "context": "st adjustments\u2014marginal revenue-sharing increases, expanded name-image-likeness rights, o"
+        }
+      ],
+      "classified": "committed"
+    },
+    {
+      "idx": 244,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 245,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 246,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 247,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 248,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    },
+    {
+      "idx": 249,
+      "hedging_count": 0,
+      "commitment_count": 0,
+      "hedging_matches": [],
+      "commitment_matches": [],
+      "classified": "neutral"
+    }
+  ]
+}

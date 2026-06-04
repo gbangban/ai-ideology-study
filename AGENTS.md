@@ -40,8 +40,12 @@ data/raw/questions.json (1,500 AI-generated questions, quality-filtered)
   - `clean_reasoning_traces.py` - Strips meta-commentary from Studio parquet outputs
   - `parquet_to_json.py` - Studio parquet -> JSON converter
 - `src/student/train_dpo.py` - DPO training (custom, NOT in Studio). Run via `python3 -m src.student.train_dpo --help`
+- `src/student/train_grpo.py` - GRPO training (active). W&B logging via `wandb.init()` + per-step `wandb.log()`. Judge offloading via SG-Lang HTTP (`judge_backend` config).
+- `src/student/grpo_config.py` - GRPO hyperparameters and judge backend config
+- `src/student/rewards.py` - Reward functions with dual judge paths: local (NF4) and SG-Lang HTTP (BF16)
+- `src/student/sglang_client.py` - HTTP client for SG-Lang OpenAI-compatible API with batch completion
 - `src/student/dpo_config.py` - DPO hyperparameters (beta=0.1, LR=5e-7)
-- `src/tests/` - Test suite (test_teacher.py, test_sft_training.py, test_dpo_training.py, test_e2e.py)
+- `src/tests/` - Test suite (test_teacher.py, test_sft_training.py, test_dpo_training.py, test_e2e.py, test_sglang_client.py, test_grpo_training.py)
 
 ## Deprecated (Reference Only)
 
@@ -60,7 +64,8 @@ data/raw/questions.json (1,500 AI-generated questions, quality-filtered)
 
 - `scripts/run_dpo.sh` - DPO training (set `STUDIO_EXPORT_PATH` env var to point to Studio export)
 - `scripts/run_dpo_pair_generation.sh` - DPO pair generation
-- `scripts/run_e2e_tests.sh` - Test runner
+- `scripts/run_e2e_tests.sh` - Test runner (includes SG-Lang client + GRPO tests)
+- `scripts/sglang_health.sh` - Health check for SG-Lang container
 - `scripts/ddk` - CLI bridge: WSL2 -> Windows PowerShell for Docker Desktop
 - `scripts/build_questions_json.py` - Assembles questions.json with balanced distribution
 - `scripts/audit_question_quality.py` - Question quality scoring
@@ -77,9 +82,12 @@ data/raw/questions.json (1,500 AI-generated questions, quality-filtered)
 
 ## Docker
 
-- `docker-compose.yml` - Active compose for Docker Desktop (container: `ml-training`)
+- `docker-compose.yml` - Active compose for Docker Desktop (containers: `ml-training`, `sglang-server`, `wandb-server`)
 - `docker/Dockerfile` - CUDA 12.6 + PyTorch 2.7.0 + Unsloth 2026.4.6
 - `checkpoints/` directory does not exist yet; adapters saved to `checkpoints/lora_adapters/`
+- SG-Lang service (`sglang-server`): `lmsysorg/sglang:latest` on port 1235 (maps to internal 30000), BF16 Qwen3.5-4B judge model
+- W&B service (`wandb-server`): `wandb/core:v0.23.0-deploy` on port 8086, local tracking server
+- `.env` contains `WANDB_API_KEY`, `WANDB_BASE_URL`, `WANDB_MODE` (gitignored, never commit)
 
 ## Workflow Commands
 
@@ -111,14 +119,18 @@ python3 -m src.student.train_dpo --help
 # Override with FINETUNED_MODEL_DIR env var
 ./evals/scripts/run_finetuned_bf16.sh --tasks humaneval
 
-# GRPO BF16 (native HF, full precision merged model)
-# Default model path: /mnt/c/Users/Guy/.unsloth/studio/exports/grpo_merged/checkpoint-250
+# GRPO BF16 (native HF, full precision merged model, 500 steps)
+# Default model path: /mnt/c/Users/Guy/.unsloth/studio/exports/grpo_merged/checkpoint-500
 # Override with GRPO_MODEL_DIR env var
 ./evals/scripts/run_grpo_bf16.sh --tasks humaneval
 
+# SG-Lang BF16 (lm_eval via OpenAI-compatible backend, server lifecycle managed)
+# Default model: Qwen/Qwen3.5-9B, override with SGLANG_MODEL env var
+./evals/scripts/run_sglang_bf16.sh --tasks humaneval
+
 ```
 
-Eval scripts: `run_baseline_bf16.sh`, `run_finetuned_bf16.sh`, `run_grpo_bf16.sh`, `eval_logging.sh`, `compare_results.py`, `compare_answers.py`, `label_results.py`.
+Eval scripts: `run_baseline_bf16.sh`, `run_finetuned_bf16.sh`, `run_grpo_bf16.sh`, `run_sglang_bf16.sh`, `eval_logging.sh`, `compare_results.py`, `compare_answers.py`, `label_results.py`.
 
 GGUF evals were previously run via `llama-server.exe` at `/mnt/c/llamacpp/llama-server.exe` (port 8080, ctx 4096). Scripts deleted; results remain in `evals/results/`.
 

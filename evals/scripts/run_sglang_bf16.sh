@@ -203,7 +203,7 @@ else
     log_info "SG-Lang is healthy at $SGLANG_URL"
 fi
 
-export LM_EVAL_CONFIRM_RUN_UNSAFE_CODE="True"
+export OPENAI_API_KEY=""
 
 progress_init ${#TASKS_TO_RUN[@]}
 
@@ -222,8 +222,8 @@ for TASK in "${TASKS_TO_RUN[@]}"; do
     fi
 
     log_info "Starting $TASK..."
-    MODEL_ARGS="model=$SGLANG_MODEL,base_url=$SGLANG_URL,vllm_guided_decoding_enabled=False"
-    log_info "Command: lm_eval --model openai-completions --model_args $MODEL_ARGS --tasks $TASK ..."
+    MODEL_ARGS="model=$SGLANG_MODEL,base_url=$SGLANG_URL/v1/completions,tokenizer_backend=huggingface"
+    log_info "Command: lm_eval --model local-completions --model_args $MODEL_ARGS --tasks $TASK ..."
 
     if _is_dry_run; then
         log_info "[DRY RUN] Would run lm_eval for task: $TASK"
@@ -233,7 +233,7 @@ for TASK in "${TASKS_TO_RUN[@]}"; do
     TASK_START=$(date +%s)
 
     set +e
-    lm_eval --model openai-completions \
+    lm_eval --model local-completions \
       --model_args "$MODEL_ARGS" \
       --tasks "$TASK" \
       --batch_size auto \

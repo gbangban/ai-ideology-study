@@ -5,7 +5,8 @@ Hyperparameters for custom Group Relative Policy Optimization training.
 Student: Qwen/Qwen3.5-9B (Instruct), NF4 quantized at runtime via Unsloth.
 Starting from SFT merged BF16 checkpoint.
 
-No TRL/vLLM dependency — custom GRPO loop with PPO-style clipped objective.
+No TRL/vLLM dependency -- custom GRPO loop with PPO-style clipped objective.
+v2: all rule-based rewards, LLM judge deprecated.
 """
 
 GRPO_CONFIG = {
@@ -33,25 +34,24 @@ GRPO_CONFIG = {
 
     # Reward weights (must sum to 1.0)
     "reward_weights": {
-        "dm_alignment": 0.50,
-        "directional_assertion": 0.20,
-        "format": 0.15,
-        "length": 0.15,
+        "dm_alignment": 0.45,
+        "directional_assertion": 0.30,
+        "mechanism_commitment": 0.25,
     },
 
-    # Judge model
+    # Judge model (deprecated - code preserved for restoration)
     "judge_model": "Qwen/Qwen3.5-4B",
 
-    # Judge backend: "local" (default), "sglang" (BF16 recommended), "sglang-quantized"
-    "judge_backend": "local",
+    # Judge backend: "disabled" (default), "local", "sglang"
+    "judge_backend": "disabled",
     "sglang_base_url": "http://localhost:1235",
-    "sglang_judge_quantization": None,  # None (BF16), "fp8", or "int4"
+    "sglang_judge_quantization": None,
 
     # Data
     "questions_path": "data/raw/questions.json",
 
     # Output
-    "output_dir": "checkpoints/lora_adapters/grpo_adapter",
+    "output_dir": "checkpoints/lora_adapters/grpo_adapter_v2",
     "logging_steps": 25,
     "save_steps": 50,
 }

@@ -198,6 +198,8 @@ def compute_length_reward(num_tokens: int) -> float:
 
 
 # --- DM Alignment Judge (LLM-based) ---
+# DEPRECATED: replaced by rule-based keyword matching in v2.
+# Code preserved for potential future restoration.
 
 JUDGE_SYSTEM_PROMPT = """You are an expert evaluator analyzing whether a response demonstrates Dialectical Materialist analytical reasoning.
 

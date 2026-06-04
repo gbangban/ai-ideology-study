@@ -51,3 +51,16 @@ class TestGRPOConfig:
         from src.student.grpo_config import GRPO_CONFIG
         expected = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
         assert GRPO_CONFIG["target_modules"] == expected
+
+    def test_v2_reward_components(self):
+        from src.student.grpo_config import GRPO_CONFIG
+        weights = GRPO_CONFIG["reward_weights"]
+        assert "dm_alignment" in weights
+        assert "directional_assertion" in weights
+        assert "mechanism_commitment" in weights
+        assert "format" not in weights
+        assert "length" not in weights
+
+    def test_judge_disabled_by_default(self):
+        from src.student.grpo_config import GRPO_CONFIG
+        assert GRPO_CONFIG["judge_backend"] == "disabled"

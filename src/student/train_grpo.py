@@ -36,6 +36,7 @@ from src.student.rewards import (
     compute_length_reward,
     compute_dm_alignment_judge,
 )
+from src.student.sglang_client import SglangClient
 
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -111,6 +112,7 @@ def compute_rewards(
     tokenizer,
     judge_model=None,
     judge_tokenizer=None,
+    sglang_client=None,
 ) -> List[float]:
     """Compute weighted sum of all reward functions for a batch of completions."""
     n = len(completions)
@@ -132,9 +134,15 @@ def compute_rewards(
             tokens = len(tokenizer.encode(c, add_special_tokens=False))
             total_scores[i] += w * compute_length_reward(tokens)
 
-    if "dm_alignment" in weights and judge_model is not None and judge_tokenizer is not None:
+    if "dm_alignment" in weights:
         w = weights["dm_alignment"]
-        dm_scores = compute_dm_alignment_judge(completions, judge_model, judge_tokenizer)
+        if sglang_client is not None:
+            from src.student.rewards import compute_dm_alignment_judge_http
+            dm_scores = compute_dm_alignment_judge_http(completions, sglang_client)
+        elif judge_model is not None and judge_tokenizer is not None:
+            dm_scores = compute_dm_alignment_judge(completions, judge_model, judge_tokenizer)
+        else:
+            dm_scores = [0.0] * n
         for i, s in enumerate(dm_scores):
             total_scores[i] += w * s
 
@@ -263,25 +271,40 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
     model = FastLanguageModel.for_training(model)
     logger.info(f"LoRA applied: rank={config['lora_rank']}, alpha={config['lora_alpha']}")
 
-    # Load judge model
+    # Load judge model or SG-Lang client
     judge_model = None
     judge_tokenizer = None
+    sglang_client = None
     if config["reward_weights"].get("dm_alignment", 0) > 0:
-        logger.info(f"Loading judge model: {config['judge_model']}...")
-        _strip_vision_config(config["judge_model"])
-        bnb_config = BitsAndBytesConfig(
-            load_in_4bit=True,
-            bnb_4bit_quant_type="nf4",
-            bnb_4bit_compute_dtype=torch.bfloat16,
-            bnb_4bit_use_double_quant=True,
-        )
-        judge_model = AutoModelForCausalLM.from_pretrained(
-            config["judge_model"],
-            device_map="auto",
-            quantization_config=bnb_config,
-        )
-        judge_tokenizer = AutoTokenizer.from_pretrained(config["judge_model"])
-        logger.info(f"Judge model loaded on {judge_model.device}")
+        judge_backend = config.get("judge_backend", "local")
+        if judge_backend == "local":
+            logger.info(f"Loading judge model (local): {config['judge_model']}...")
+            _strip_vision_config(config["judge_model"])
+            bnb_config = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_quant_type="nf4",
+                bnb_4bit_compute_dtype=torch.bfloat16,
+                bnb_4bit_use_double_quant=True,
+            )
+            judge_model = AutoModelForCausalLM.from_pretrained(
+                config["judge_model"],
+                device_map="auto",
+                quantization_config=bnb_config,
+            )
+            judge_tokenizer = AutoTokenizer.from_pretrained(config["judge_model"])
+            logger.info(f"Judge model loaded on {judge_model.device}")
+        else:
+            sglang_client = SglangClient(
+                base_url=config.get("sglang_base_url", "http://localhost:1235"),
+                timeout=60,
+                max_retries=3,
+            )
+            if not sglang_client.health_check():
+                raise RuntimeError(
+                    f"SG-Lang is not reachable at {config.get('sglang_base_url', 'http://localhost:1235')}. "
+                    "Start the SG-Lang container first, or set judge_backend='local' to use local judge."
+                )
+            logger.info(f"SG-Lang client connected at {config.get('sglang_base_url', 'http://localhost:1235')}")
 
     # Load and prepare dataset
     logger.info(f"Loading questions from {config['questions_path']}...")
@@ -383,13 +406,14 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
             tokenizer,
             judge_model,
             judge_tokenizer,
+            sglang_client,
         )
 
         # Compute advantages
         advantages = compute_advantage(rewards, group_size)
 
-        # Offload judge model to free VRAM for policy update
-        if judge_model is not None:
+        # Offload judge model to free VRAM for policy update (local only)
+        if judge_model is not None and sglang_client is None:
             logger.info(f"Offloading judge model (freeing ~{torch.cuda.memory_allocated(judge_model.device) / 1e9:.1f}GB)...")
             judge_model.cpu()
             torch.cuda.empty_cache()
@@ -477,8 +501,8 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
 
             del new_outputs, new_logits, new_log_probs, ref_log_probs, new_token_lp, ref_token_lp, ref_logits
 
-        # Reload judge model for next batch's reward computation
-        if judge_model is not None:
+        # Reload judge model for next batch's reward computation (local only)
+        if judge_model is not None and sglang_client is None:
             judge_model.cuda(model.device)
 
         step += 1

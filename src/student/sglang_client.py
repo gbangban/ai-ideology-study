@@ -8,7 +8,7 @@ Used for judge offloading during GRPO training and lm_eval evaluations.
 import logging
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import requests
 

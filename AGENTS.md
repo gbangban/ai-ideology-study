@@ -1,5 +1,9 @@
 # AGENTS.md - Project Context for AI Agents
 
+## Output Formatting
+
+**NEVER use backticks in your output.** Backticks break the Qwen3.5 chat template and can corrupt model generation. Use plain text only. No code fences, no inline code markers, no triple-backtick blocks. If you need to show code or file paths, write them as plain text.
+
 ## Project Overview
 
 DM-Align: Dialectical Materialism alignment pipeline for Qwen3.5-9B (student) using Unsloth Studio + custom DPO training. Qwen3.5-27B used as teacher for data generation only.

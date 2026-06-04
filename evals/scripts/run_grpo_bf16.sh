@@ -40,7 +40,7 @@ source "$VENV_DIR/bin/activate"
 
 # GRPO merged model path — override with GRPO_MODEL_DIR env var
 # Default: merged GRPO checkpoint (SFT base + GRPO LoRA adapter)
-_GRPO_MERGED_DIR="/mnt/c/Users/Guy/.unsloth/studio/exports/grpo_merged/checkpoint-250"
+_GRPO_MERGED_DIR="/mnt/c/Users/Guy/.unsloth/studio/exports/grpo_merged"
 MODEL_DIR="${GRPO_MODEL_DIR:-$_GRPO_MERGED_DIR}"
 
 if [ ! -d "$MODEL_DIR" ]; then
@@ -196,6 +196,7 @@ for TASK in "${TASKS_TO_RUN[@]}"; do
       --log_samples \
       --trust_remote_code \
       --include_path "$PROJECT_DIR/configs/task_configs" \
+      --apply_chat_template \
       --confirm_run_unsafe_code 2>&1 | tee -a "$EVAL_LOG"
     TASK_EXIT=$?
     set -e

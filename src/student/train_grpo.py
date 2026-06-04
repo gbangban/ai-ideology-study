@@ -34,9 +34,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 from src.student.grpo_config import GRPO_CONFIG
 from src.student.rewards import (
     compute_directional_assertion,
-    compute_format_reward,
-    compute_length_reward,
-    compute_dm_alignment_judge,
+    compute_dm_keyword_alignment,
+    compute_mechanism_commitment,
 )
 from src.student.sglang_client import SglangClient
 
@@ -111,44 +110,43 @@ def generate_completions(
 def compute_rewards(
     completions: List[str],
     weights: dict,
-    tokenizer,
+    tokenizer=None,
     judge_model=None,
     judge_tokenizer=None,
     sglang_client=None,
-) -> List[float]:
-    """Compute weighted sum of all reward functions for a batch of completions."""
+) -> Tuple[List[float], List[float], List[float], List[float]]:
+    """Compute rewards returning per-component scores.
+
+    Returns (total_scores, dm_scores, dir_scores, mech_scores).
+    """
     n = len(completions)
     total_scores = [0.0] * n
+    dm_scores = [0.0] * n
+    dir_scores = [0.0] * n
+    mech_scores = [0.0] * n
 
     if "directional_assertion" in weights:
         w = weights["directional_assertion"]
         for i, c in enumerate(completions):
-            total_scores[i] += w * compute_directional_assertion(c)
-
-    if "format" in weights:
-        w = weights["format"]
-        for i, c in enumerate(completions):
-            total_scores[i] += w * compute_format_reward(c)
-
-    if "length" in weights:
-        w = weights["length"]
-        for i, c in enumerate(completions):
-            tokens = len(tokenizer.encode(c, add_special_tokens=False))
-            total_scores[i] += w * compute_length_reward(tokens)
+            s = compute_directional_assertion(c)
+            dir_scores[i] = s
+            total_scores[i] += w * s
 
     if "dm_alignment" in weights:
         w = weights["dm_alignment"]
-        if sglang_client is not None:
-            from src.student.rewards import compute_dm_alignment_judge_http
-            dm_scores = compute_dm_alignment_judge_http(completions, sglang_client)
-        elif judge_model is not None and judge_tokenizer is not None:
-            dm_scores = compute_dm_alignment_judge(completions, judge_model, judge_tokenizer)
-        else:
-            dm_scores = [0.0] * n
-        for i, s in enumerate(dm_scores):
+        for i, c in enumerate(completions):
+            s = compute_dm_keyword_alignment(c)
+            dm_scores[i] = s
             total_scores[i] += w * s
 
-    return total_scores
+    if "mechanism_commitment" in weights:
+        w = weights["mechanism_commitment"]
+        for i, c in enumerate(completions):
+            s = compute_mechanism_commitment(c)
+            mech_scores[i] = s
+            total_scores[i] += w * s
+
+    return total_scores, dm_scores, dir_scores, mech_scores
 
 
 def find_latest_checkpoint(output_dir: str) -> Tuple[int, str]:
@@ -277,7 +275,8 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
     judge_model = None
     judge_tokenizer = None
     sglang_client = None
-    if config["reward_weights"].get("dm_alignment", 0) > 0:
+    judge_backend = config.get("judge_backend", "disabled")
+    if judge_backend != "disabled" and config["reward_weights"].get("dm_alignment", 0) > 0:
         judge_backend = config.get("judge_backend", "local")
         if judge_backend == "local":
             logger.info(f"Loading judge model (local): {config['judge_model']}...")
@@ -403,7 +402,7 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
     csv_path = f"{output_dir}/training_log.csv"
     csv_f = open(csv_path, "w", newline="")
     csv_writer = csv.writer(csv_f)
-    csv_writer.writerow(["step", "loss", "avg_reward", "elapsed_s", "vram_gb"])
+    csv_writer.writerow(["step", "loss", "avg_reward", "dm_reward", "dir_reward", "mech_reward", "elapsed_s", "vram_gb"])
 
     while step < max_steps:
         batch_prompts = next(dataloader_iter)
@@ -422,7 +421,7 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
             all_prompt_texts.extend([prompt] * group_size)
 
         # Compute rewards
-        rewards = compute_rewards(
+        rewards, dm_comp, dir_comp, mech_comp = compute_rewards(
             all_completions,
             config["reward_weights"],
             tokenizer,
@@ -551,10 +550,17 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
             )
 
         # Write CSV every step (flushed immediately)
+        avg_dm = sum(dm_comp) / len(dm_comp)
+        avg_dir = sum(dir_comp) / len(dir_comp)
+        avg_mech = sum(mech_comp) / len(mech_comp)
+
         csv_writer.writerow([
             step,
             f"{batch_loss / len(all_completions):.4f}",
             f"{avg_reward:.4f}",
+            f"{avg_dm:.4f}",
+            f"{avg_dir:.4f}",
+            f"{avg_mech:.4f}",
             f"{elapsed:.1f}",
             f"{torch.cuda.memory_allocated(model.device) / 1e9:.1f}",
         ])
@@ -564,6 +570,9 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
             "step": step,
             "loss": batch_loss / len(all_completions),
             "avg_reward": avg_reward,
+            "dm_reward": avg_dm,
+            "dir_reward": avg_dir,
+            "mech_reward": avg_mech,
             "batch_time_s": elapsed,
             "vram_gb": torch.cuda.memory_allocated(model.device) / 1e9,
             "lr": scheduler.get_last_lr()[0] if hasattr(scheduler, "get_last_lr") else lr,

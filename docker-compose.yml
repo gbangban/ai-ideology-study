@@ -67,3 +67,17 @@ services:
       --port 30000
       --mem-fraction-static 0.6
       --cuda-memory-fraction 0.6
+
+  wandb:
+    image: wandb/core:v0.23.0-deploy
+    container_name: wandb-server
+    ports:
+      - "8086:8086"
+    volumes:
+      - wandb-data:/home/wandb/wandb/local
+    environment:
+      - WANDB_BASE_URL=http://localhost:8086
+    restart: unless-stopped
+
+volumes:
+  wandb-data:

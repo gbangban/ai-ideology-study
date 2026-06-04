@@ -16,12 +16,14 @@ import csv
 import itertools
 import json
 import logging
+import os
 import sys
 import time
 from pathlib import Path
 from typing import Dict, List, Tuple
 
 import torch
+import wandb
 import torch.nn.functional as F
 from datasets import Dataset
 from torch.utils.data import DataLoader, Dataset as TorchDataset
@@ -377,6 +379,25 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
     logger.info(f"  Starting from step: {start_step}")
     logger.info(f"  Estimated remaining: {((max_steps - start_step) / max_steps * 10):.0f}-{((max_steps - start_step) / max_steps * 12):.0f}h")
 
+    # Initialize W&B logging
+    wandb_mode = os.environ.get("WANDB_MODE", "online")
+    wandb_base_url = os.environ.get("WANDB_BASE_URL")
+    wandb_api_key = os.environ.get("WANDB_API_KEY")
+
+    if wandb_api_key:
+        wandb.login(key=wandb_api_key)
+
+    wandb.init(
+        project=os.environ.get("WANDB_PROJECT", "dm-align-grpo"),
+        name=os.environ.get("WANDB_RUN_NAME", "grpo-dm-alignment"),
+        config=config,
+        mode=wandb_mode,
+        save_code=False,
+    )
+    if wandb_base_url:
+        wandb.base_url = wandb_base_url
+    logger.info(f"W&B initialized (mode={wandb_mode}, base_url={wandb_base_url or 'default'})")
+
     # CSV logger for per-step metrics
     csv_path = f"{output_dir}/training_log.csv"
     csv_f = open(csv_path, "w", newline="")
@@ -538,6 +559,15 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
         ])
         csv_f.flush()
 
+        wandb.log({
+            "step": step,
+            "loss": batch_loss / len(all_completions),
+            "avg_reward": avg_reward,
+            "batch_time_s": elapsed,
+            "vram_gb": torch.cuda.memory_allocated(model.device) / 1e9,
+            "lr": scheduler.get_last_lr()[0] if hasattr(scheduler, "get_last_lr") else lr,
+        })
+
         # Save checkpoint
         if step % save_steps == 0:
             ckpt_dir = f"{output_dir}/checkpoint-{step}"
@@ -556,6 +586,7 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
     with open(f"{output_dir}/reward_history.json", "w") as f:
         json.dump(total_rewards, f)
     csv_f.close()
+    wandb.finish()
     logger.info("Done.")
 
 

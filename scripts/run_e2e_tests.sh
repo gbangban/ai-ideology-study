@@ -60,9 +60,35 @@ if [ $DPO_EXIT -ne 0 ]; then
 fi
 echo ""
 
+# Run SG-Lang client tests
+echo "========================================="
+echo "Step 4: Running SG-Lang Client Tests"
+echo "========================================="
+python3 -m pytest $TEST_DIR/test_sglang_client.py -${VERBOSE} --tb=short
+SGLANG_EXIT=$?
+
+if [ $SGLANG_EXIT -ne 0 ]; then
+    echo "ERROR: SG-Lang client tests failed"
+    exit $SGLANG_EXIT
+fi
+echo ""
+
+# Run GRPO training tests
+echo "========================================="
+echo "Step 5: Running GRPO Training Tests"
+echo "========================================="
+python3 -m pytest $TEST_DIR/test_grpo_training.py -${VERBOSE} --tb=short
+GRPO_EXIT=$?
+
+if [ $GRPO_EXIT -ne 0 ]; then
+    echo "ERROR: GRPO training tests failed"
+    exit $GRPO_EXIT
+fi
+echo ""
+
 # Run E2E integration tests
 echo "========================================="
-echo "Step 4: Running E2E Integration Tests"
+echo "Step 6: Running E2E Integration Tests"
 echo "========================================="
 python3 -m pytest $TEST_DIR/test_e2e.py -${VERBOSE} --tb=short
 E2E_EXIT=$?
@@ -81,6 +107,8 @@ echo "========================================="
 echo "Teacher Phase:       $([ $TEACHER_EXIT -eq 0 ] && echo 'PASS' || echo 'FAIL')"
 echo "SFT Config:          $([ $SFT_EXIT -eq 0 ] && echo 'PASS' || echo 'FAIL')"
 echo "DPO Unit Tests:      $([ $DPO_EXIT -eq 0 ] && echo 'PASS' || echo 'FAIL')"
+echo "SG-Lang Client:      $([ $SGLANG_EXIT -eq 0 ] && echo 'PASS' || echo 'FAIL')"
+echo "GRPO Training:       $([ $GRPO_EXIT -eq 0 ] && echo 'PASS' || echo 'FAIL')"
 echo "E2E Integration:     $([ $E2E_EXIT -eq 0 ] && echo 'PASS' || echo 'PARTIAL - needs GPU')"
 echo "========================================="
 echo ""
@@ -117,7 +145,7 @@ echo "8. Evaluate in Studio Chat / Model Arena"
 echo "9. Export final GGUF from Studio"
 echo "========================================="
 
-if [ $TEACHER_EXIT -ne 0 ] || [ $SFT_EXIT -ne 0 ] || [ $DPO_EXIT -ne 0 ]; then
+if [ $TEACHER_EXIT -ne 0 ] || [ $SFT_EXIT -ne 0 ] || [ $DPO_EXIT -ne 0 ] || [ $SGLANG_EXIT -ne 0 ] || [ $GRPO_EXIT -ne 0 ]; then
     exit 1
 fi
 

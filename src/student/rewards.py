@@ -118,6 +118,42 @@ def compute_dm_keyword_alignment(text: str) -> float:
     return min(1.0, matched / 2)
 
 
+# --- Mechanism Commitment (Rule-based) ---
+
+_MECHANISM_PATTERNS = [
+    r"\b(causes|drives|shapes|leads\s+to|determines|produces)\b",
+    r"\bthrough\s+\w+",
+    r"\bvia\s+\w+",
+    r"\bbecause\s+",
+    r"as\s+a\s+result\s+of\s+",
+]
+
+
+def compute_mechanism_commitment(text: str) -> float:
+    """Reward causal mechanism naming paired with directional commitment.
+
+    - Mechanisms present AND commitment (positive > hedging): min(1.0, count/2)
+    - Mechanisms present BUT hedging (hedging >= positive): -0.5
+    - No mechanisms: 0.0
+    """
+    if not text or len(text.strip()) < 10:
+        return 0.0
+
+    text_lower = text.lower()
+    mechanism_count = sum(1 for p in _MECHANISM_PATTERNS if re.search(p, text_lower))
+
+    if mechanism_count == 0:
+        return 0.0
+
+    positive_count = sum(1 for p in POSITIVE_PATTERNS if re.search(p, text_lower))
+    hedging_count = sum(1 for p in _HEDGING_PATTERNS if re.search(p, text_lower))
+
+    if positive_count > hedging_count:
+        return min(1.0, mechanism_count / 2)
+    else:
+        return -0.5
+
+
 # --- Format Reward (Rule-based) ---
 
 CAUSAL_PATTERNS = [

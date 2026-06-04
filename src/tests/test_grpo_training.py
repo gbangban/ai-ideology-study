@@ -195,3 +195,27 @@ class TestAsymmetricDirectionalAssertion:
         text = "mixed ambiguous uncertain depends both sides heterogeneous"
         score = compute_directional_assertion(text)
         assert -1.0 <= score <= 1.0
+
+
+class TestMechanismCommitment:
+    def test_mechanism_with_commitment_scores_positive(self):
+        from src.student.rewards import compute_mechanism_commitment
+        text = "Capital accumulation drives wage suppression through reserve army expansion. This directly increases exploitation."
+        score = compute_mechanism_commitment(text)
+        assert score > 0.0
+
+    def test_mechanism_with_hedging_scores_negative(self):
+        from src.student.rewards import compute_mechanism_commitment
+        text = "Capital drives outcomes through market mechanisms, but the effect is mixed and depends on structural conditions."
+        score = compute_mechanism_commitment(text)
+        assert score < 0.0
+
+    def test_no_mechanism_returns_zero(self):
+        from src.student.rewards import compute_mechanism_commitment
+        text = "The situation is complex and multifaceted. There are many factors at play."
+        score = compute_mechanism_commitment(text)
+        assert score == 0.0
+
+    def test_empty_text_returns_zero(self):
+        from src.student.rewards import compute_mechanism_commitment
+        assert compute_mechanism_commitment("") == 0.0

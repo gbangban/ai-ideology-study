@@ -161,7 +161,7 @@ Introduce synthetic prompts containing completely decoupled economic variables a
 
 
 # References
-- RLMVR - https://openreview.net/pdf?id=cTbAevdwBE
+- RLMVR - https://arxiv.org/pdf/2507.22844
 - https://ui.adsabs.harvard.edu/abs/2026arXiv260220571S/abstract
 - https://ui.adsabs.harvard.edu/abs/2025arXiv250518931S/abstract
 - https://ui.adsabs.harvard.edu/abs/2026arXiv260421334L/abstract

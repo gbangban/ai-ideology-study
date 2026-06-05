@@ -1,0 +1,593 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>Ideological Bias in LLMs’ Economic Causal Reasoning</title>
+<!--Generated on Thu Apr 23 06:12:08 2026 by LaTeXML (version 0.8.8) http://dlmf.nist.gov/LaTeXML/.-->
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="/static/browse/0.3.4/css/arxiv-html-papers-20260131.css" type="text/css">
+<script src="/static/browse/0.3.4/js/arxiv-html-papers-20260131.js"></script>
+<script>
+  // Restore the saved color scheme preference, or
+  // enact the browser preference if "automatic", 
+  // without expecting DOM load to have completed.
+  //
+  // Also restore any saved readingmode and ToC display preferences.
+  function initializeReadingPreferences() {
+    let saved_theme = localStorage.getItem("ar5iv_theme") || "automatic";
+    if (saved_theme === "automatic") {
+      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        saved_theme = "dark";
+      }
+    }
+    if (saved_theme == "dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.setAttribute("data-theme", "light");
+    }
+
+    const tocDisplay = localStorage.getItem('arxiv_html_paper_toc_display');
+    if (tocDisplay) {
+      document.documentElement.setAttribute("data-toc-display", tocDisplay);
+    }
+    const readingMode = localStorage.getItem('arxiv_html_paper_reading_mode');
+    if (readingMode) {
+      document.documentElement.setAttribute("data-reading-mode", readingMode);
+    }
+  }
+  // Run as soon as JS starts, to minimize repainting
+  initializeReadingPreferences();
+</script>
+<link rel="apple-touch-icon" sizes="180x180"
+  href="/static/browse/0.3.4/images/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32"
+  href="/static/browse/0.3.4/images/icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16"
+  href="/static/browse/0.3.4/images/icons/favicon-16x16.png">
+<link rel="manifest" href="/static/browse/0.3.4/images/icons/site.webmanifest">
+<link rel="mask-icon" href="/static/browse/0.3.4/images/icons/safari-pinned-tab.svg" color="#5bbad5">
+<link rel="stylesheet" type="text/css" media="screen" href="https://use.typekit.net/utz6mli.css">
+</head>
+<body>
+<dialog id="modal-form" aria-labelledby="modal-title" closedby="any">
+  <form id="modal-form-content" method="dialog" enctype="multipart/form-data">
+    <header class="modal-header">
+      <h5 id="modal-title" class="modal-title">Report GitHub Issue</h5>
+      <button type="submit" formnovalidate class="modal-close" aria-label="Close">×</button>
+    </header>
+
+    <div class="modal-body">
+      <label for="form_title">Title:</label>
+      <input class="form-control" id="form_title" name="form_title" required placeholder="Enter title">
+
+      <p id="selectedTextModalDescription" hidden>Content selection saved. Describe the issue below:</p>
+
+      <label for="description">Description:</label>
+      <textarea class="form-control" id="description" name="description" required maxlength="500"
+        placeholder="500 characters maximum"></textarea>
+    </div>
+
+    <footer class="modal-footer">
+      <button type="submit" value="internal-report" class="sr-only modal-submit">Submit without GitHub</button>
+      <button type="submit" value="github-report" class="modal-submit">Submit in GitHub</button>
+    </footer>
+  </form>
+</dialog>
+
+<header class="arxiv-html-header">
+  <div class="html-header-logo">
+    <a href="/">
+      <img alt="arXiv logo" class="logo desktop-only" width="100"
+        src="/static/browse/0.3.4/images/arxiv-logo-one-color-white.svg">
+      <span class="sr-only">Back to arXiv</span>
+    </a>
+  </div>
+  <!--TOC, dark mode, links-->
+  <nav class="html-header-nav">
+    <a class="header-button hover-effect desktop-only" href="https://info.arxiv.org/about/accessible_HTML.html"
+      target="_blank">Why HTML?</a>
+    <a class="header-button" title="Report an Issue" href="#" title="Report an issue"
+      onclick="event.preventDefault(); showModalForm();">
+      <svg role="presentation" class="mobile-only toggle-icon" aria-hidden="true" height="1.25rem"
+        viewBox="0 0 640 640">
+        <path
+          d="M224 160C224 107 267 64 320 64C373 64 416 107 416 160L416 163.6C416 179.3 403.3 192 387.6 192L252.5 192C236.8 192 224.1 179.3 224.1 163.6L224.1 160zM569.6 172.8C580.2 186.9 577.3 207 563.2 217.6L465.4 290.9C470.7 299.8 474.7 309.6 477.2 320L576 320C593.7 320 608 334.3 608 352C608 369.7 593.7 384 576 384L480 384L480 416C480 418.6 479.9 421.3 479.8 423.9L563.2 486.4C577.3 497 580.2 517.1 569.6 531.2C559 545.3 538.9 548.2 524.8 537.6L461.7 490.3C438.5 534.5 395.2 566.5 344 574.2L344 344C344 330.7 333.3 320 320 320C306.7 320 296 330.7 296 344L296 574.2C244.8 566.5 201.5 534.5 178.3 490.3L115.2 537.6C101.1 548.2 81 545.3 70.4 531.2C59.8 517.1 62.7 497 76.8 486.4L160.2 423.9C160.1 421.3 160 418.7 160 416L160 384L64 384C46.3 384 32 369.7 32 352C32 334.3 46.3 320 64 320L162.8 320C165.3 309.6 169.3 299.8 174.6 290.9L76.8 217.6C62.7 207 59.8 186.9 70.4 172.8C81 158.7 101.1 155.8 115.2 166.4L224 248C236.3 242.9 249.8 240 264 240L376 240C390.2 240 403.7 242.8 416 248L524.8 166.4C538.9 155.8 559 158.7 569.6 172.8z" />
+      </svg>
+      <span class="desktop-only">Report Issue</span></a>
+    <!--back to abstract-->
+    <a class="header-button" title="Back to abstract page" aria-label="Back to abstract page"
+      href="/abs/2604.21334v1">
+      <svg class="mobile-only toggle-icon" role="presentation" height="1.25rem" viewBox="0 0 512 512" fill="#ffffff"
+        aria-hidden="true">
+        <path
+          d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 192 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128zM160 96c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 32C43 32 0 75 0 128L0 384c0 53 43 96 96 96l64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0z">
+        </path>
+      </svg>
+      <span class="desktop-only">Back to Abstract</span>
+    </a>
+    <!-- PDF download link -->
+    <a class="header-button" title="Download PDF" href="/pdf/2604.21334v1"
+      target="_blank">
+      <svg class="mobile-only toggle-icon" role="presentation" height="1.25rem" viewBox="0 0 576 542">
+        <path
+          d="M208 48L96 48c-8.8 0-16 7.2-16 16l0 384c0 8.8 7.2 16 16 16l80 0 0 48-80 0c-35.3 0-64-28.7-64-64L32 64C32 28.7 60.7 0 96 0L229.5 0c17 0 33.3 6.7 45.3 18.7L397.3 141.3c12 12 18.7 28.3 18.7 45.3l0 149.5-48 0 0-128-88 0c-39.8 0-72-32.2-72-72l0-88zM348.1 160L256 67.9 256 136c0 13.3 10.7 24 24 24l68.1 0zM240 380l32 0c33.1 0 60 26.9 60 60s-26.9 60-60 60l-12 0 0 28c0 11-9 20-20 20s-20-9-20-20l0-128c0-11 9-20 20-20zm32 80c11 0 20-9 20-20s-9-20-20-20l-12 0 0 40 12 0zm96-80l32 0c28.7 0 52 23.3 52 52l0 64c0 28.7-23.3 52-52 52l-32 0c-11 0-20-9-20-20l0-128c0-11 9-20 20-20zm32 128c6.6 0 12-5.4 12-12l0-64c0-6.6-5.4-12-12-12l-12 0 0 88 12 0zm76-108c0-11 9-20 20-20l48 0c11 0 20 9 20 20s-9 20-20 20l-28 0 0 24 28 0c11 0 20 9 20 20s-9 20-20 20l-28 0 0 44c0 11-9 20-20 20s-20-9-20-20l0-128z" />
+      </svg>
+      <span class="desktop-only">Download PDF</span></a>
+    <!-- navigational table of contents toggle -->
+    <a class="header-button toggle-icon" href="javascript:toggleNavTOC();" title="Toggle navigation"
+      aria-label="Toggle navigation">
+      <svg height="1.25rem" role="presentation" viewBox="0 0 512 512">
+        <path
+          d="M40 48C26.7 48 16 58.7 16 72v48c0 13.3 10.7 24 24 24H88c13.3 0 24-10.7 24-24V72c0-13.3-10.7-24-24-24H40zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zM16 232v48c0 13.3 10.7 24 24 24H88c13.3 0 24-10.7 24-24V232c0-13.3-10.7-24-24-24H40c-13.3 0-24 10.7-24 24zM40 368c-13.3 0-24 10.7-24 24v48c0 13.3 10.7 24 24 24H88c13.3 0 24-10.7 24-24V392c0-13.3-10.7-24-24-24H40z">
+        </path>
+      </svg>
+    </a>
+    <!--- collapsable header / reading mode toggle -->
+    <a class="header-button toggle-icon" href="javascript:toggleReadingMode();"
+      title="Disable reading mode, show header and footer">
+      <svg role="presentation" height="1.25rem"
+        viewBox="0 0 448 512"><!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
+        <path
+          d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32S0 334.3 0 352l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z" />
+      </svg>
+    </a>
+    <!--- colored theme toggle -->
+    <button type="button" class="header-button color-tog" onclick="toggleColorScheme();" title="Toggle dark/light mode" aria-label="Toggle color scheme">
+      <span class="toggle-icon automatic-tog" aria-hidden="true">
+        <svg role="presentation" height="1.25rem" viewBox="0 0 24 24">
+          <path
+            d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9h-1.9M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69m-9.15 3.96h2.3L12 9l-1.15 3.65Z">
+          </path>
+        </svg>
+      </span>
+      <span class="toggle-icon light-tog" aria-hidden="true">
+        <svg role="presentation" height="1.25rem" viewBox="0 0 24 24">
+          <path
+            d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z">
+          </path>
+        </svg>
+      </span>
+      <span class="toggle-icon dark-tog" aria-hidden="true">
+        <svg role="presentation" height="1.25rem" viewBox="0 0 24 24">
+          <path
+            d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z">
+          </path>
+        </svg>
+      </span>
+    </button>
+  </nav>
+</header><nav class="ltx_page_navbar">
+<nav class="ltx_TOC">
+<ol class="ltx_toclist">
+<li class="ltx_tocentry ltx_tocentry_abstract"><a href="#abstract1" title="In Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_title">Abstract</span></a></li>
+<li class="ltx_tocentry ltx_tocentry_section"><a href="#S1" title="In Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">1 </span>Introduction</span></a></li>
+<li class="ltx_tocentry ltx_tocentry_section">
+<a href="#S2" title="In Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">2 </span>Related Work</span></a>
+<ol class="ltx_toclist ltx_toclist_section">
+<li class="ltx_tocentry ltx_tocentry_subsection"><a href="#S2.SS1" title="In 2 Related Work ‣ Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">2.1 </span>Political and Ideological Bias in LLMs</span></a></li>
+<li class="ltx_tocentry ltx_tocentry_subsection"><a href="#S2.SS2" title="In 2 Related Work ‣ Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">2.2 </span>LLMs in Economic and Causal Reasoning</span></a></li>
+</ol>
+</li>
+<li class="ltx_tocentry ltx_tocentry_section">
+<a href="#S3" title="In Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">3 </span>EconCausal and Ideology-contested Extension</span></a>
+<ol class="ltx_toclist ltx_toclist_section">
+<li class="ltx_tocentry ltx_tocentry_subsection"><a href="#S3.SS1" title="In 3 EconCausal and Ideology-contested Extension ‣ Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">3.1 </span>EconCausal Benchmark Overview</span></a></li>
+<li class="ltx_tocentry ltx_tocentry_subsection">
+<a href="#S3.SS2" title="In 3 EconCausal and Ideology-contested Extension ‣ Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">3.2 </span>Defining Ideology-contested Causal Triplets</span></a>
+<ol class="ltx_toclist ltx_toclist_subsection">
+<li class="ltx_tocentry ltx_tocentry_paragraph"><a href="#S3.SS2.SSS0.Px1" title="In 3.2 Defining Ideology-contested Causal Triplets ‣ 3 EconCausal and Ideology-contested Extension ‣ Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_title">Expert Validation.</span></a></li>
+</ol>
+</li>
+</ol>
+</li>
+<li class="ltx_tocentry ltx_tocentry_section">
+<a href="#S4" title="In Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">4 </span>Main Results: Ideological Distortion in Economic Causal Reasoning</span></a>
+<ol class="ltx_toclist ltx_toclist_section">
+<li class="ltx_tocentry ltx_tocentry_subsection"><a href="#S4.SS1" title="In 4 Main Results: Ideological Distortion in Economic Causal Reasoning ‣ Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">4.1 </span>Evaluation Settings</span></a></li>
+<li class="ltx_tocentry ltx_tocentry_subsection">
+<a href="#S4.SS2" title="In 4 Main Results: Ideological Distortion in Economic Causal Reasoning ‣ Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">4.2 </span>Main Results: Performance and Bias on Ideology-contested Items</span></a>
+<ol class="ltx_toclist ltx_toclist_subsection">
+<li class="ltx_tocentry ltx_tocentry_paragraph"><a href="#S4.SS2.SSS0.Px1" title="In 4.2 Main Results: Performance and Bias on Ideology-contested Items ‣ 4 Main Results: Ideological Distortion in Economic Causal Reasoning ‣ Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_title">Ideology-contested triplets are harder.</span></a></li>
+<li class="ltx_tocentry ltx_tocentry_paragraph"><a href="#S4.SS2.SSS0.Px2" title="In 4.2 Main Results: Performance and Bias on Ideology-contested Items ‣ 4 Main Results: Ideological Distortion in Economic Causal Reasoning ‣ Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_title">Accuracy is asymmetric across ideological directions.</span></a></li>
+<li class="ltx_tocentry ltx_tocentry_paragraph"><a href="#S4.SS2.SSS0.Px3" title="In 4.2 Main Results: Performance and Bias on Ideology-contested Items ‣ 4 Main Results: Ideological Distortion in Economic Causal Reasoning ‣ Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_title">Errors are systematically directional.</span></a></li>
+</ol>
+</li>
+<li class="ltx_tocentry ltx_tocentry_subsection"><a href="#S4.SS3" title="In 4 Main Results: Ideological Distortion in Economic Causal Reasoning ‣ Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">4.3 </span>Heterogeneity Across Economic Subfields</span></a></li>
+<li class="ltx_tocentry ltx_tocentry_subsection"><a href="#S4.SS4" title="In 4 Main Results: Ideological Distortion in Economic Causal Reasoning ‣ Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">4.4 </span>Robustness Check: Difficulty Matching</span></a></li>
+</ol>
+</li>
+<li class="ltx_tocentry ltx_tocentry_section">
+<a href="#S5" title="In Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">5 </span>Ideological Steering via In-Context Examples</span></a>
+<ol class="ltx_toclist ltx_toclist_section">
+<li class="ltx_tocentry ltx_tocentry_subsection"><a href="#S5.SS1" title="In 5 Ideological Steering via In-Context Examples ‣ Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">5.1 </span>Results</span></a></li>
+</ol>
+</li>
+</ol></nav>
+</nav>
+<div class="ltx_page_main">
+<div id="infobox" class="infobox">
+  <a id="license-tr" href="https://info.arxiv.org/help/license/index.html#licenses-available">
+    License: CC BY 4.0
+  </a>
+  <div id="watermark-tr">
+arXiv:2604.21334v1 [cs.AI] 23 Apr 2026</div>
+</div><div class="ltx_page_content">
+<article class="ltx_document ltx_authors_1line">
+<h1 class="ltx_title ltx_title_document">Ideological Bias in LLMs’ Economic Causal Reasoning</h1>
+<div class="ltx_authors">
+<span class="ltx_creator ltx_role_author">
+<span class="ltx_personname">
+Donggyu Lee<sup id="id13.13.id1" class="ltx_sup"><span id="id13.13.id1.1" class="ltx_text ltx_font_italic">1</span></sup>  Hyeok Yun<sup id="id14.14.id2" class="ltx_sup"><span id="id14.14.id2.1" class="ltx_text ltx_font_italic">2</span></sup>  Jungwon Kim<sup id="id15.15.id3" class="ltx_sup"><span id="id15.15.id3.1" class="ltx_text ltx_font_italic">2</span></sup>  Junsik Min<sup id="id16.16.id4" class="ltx_sup"><span id="id16.16.id4.1" class="ltx_text ltx_font_italic">3</span></sup> 
+<br class="ltx_break"><span id="id5.5.1" class="ltx_text ltx_font_bold">Sungwon Park<math id="id5.5.1.m1" class="ltx_Math" alttext="{}^{3\,*}" display="inline" intent=":literal"><semantics><msup><mi></mi><mrow><mn>3</mn><mo lspace="0.392em">⁣</mo><mo>∗</mo></mrow></msup><annotation encoding="application/x-tex">{}^{3\,*}</annotation></semantics></math></span>  <span id="id6.6.2" class="ltx_text ltx_font_bold">Sangyoon Park<math id="id6.6.2.m1" class="ltx_Math" alttext="{}^{4\,*}" display="inline" intent=":literal"><semantics><msup><mi></mi><mrow><mn>4</mn><mo lspace="0.392em">⁣</mo><mo>∗</mo></mrow></msup><annotation encoding="application/x-tex">{}^{4\,*}</annotation></semantics></math></span>  <span id="id7.7.3" class="ltx_text ltx_font_bold">Jihee Kim<math id="id7.7.3.m1" class="ltx_Math" alttext="{}^{2\,*}" display="inline" intent=":literal"><semantics><msup><mi></mi><mrow><mn>2</mn><mo lspace="0.392em">⁣</mo><mo>∗</mo></mrow></msup><annotation encoding="application/x-tex">{}^{2\,*}</annotation></semantics></math></span> 
+<br class="ltx_break">
+<sup id="id17.17.id5" class="ltx_sup"><span id="id17.17.id5.1" class="ltx_text ltx_font_italic">1</span></sup>Graduate School of Data Science, KAIST, Daejeon, South Korea 
+<br class="ltx_break"><sup id="id18.18.id6" class="ltx_sup"><span id="id18.18.id6.1" class="ltx_text ltx_font_italic">2</span></sup>College of Business, KAIST, Daejeon, South Korea 
+<br class="ltx_break"><sup id="id19.19.id7" class="ltx_sup"><span id="id19.19.id7.1" class="ltx_text ltx_font_italic">3</span></sup>School of Computing, KAIST, Daejeon, South Korea 
+<br class="ltx_break"><sup id="id20.20.id8" class="ltx_sup"><span id="id20.20.id8.1" class="ltx_text ltx_font_italic">4</span></sup>Division of Social Science, HKUST, Hong Kong, China 
+<br class="ltx_break">
+<span id="id21.21.id9" class="ltx_text ltx_font_typewriter">donggyu.lee@kaist.ac.kr</span>, <span id="id22.22.id10" class="ltx_text ltx_font_typewriter">ed_yun98@kaist.ac.kr</span>, 
+<br class="ltx_break"><span id="id23.23.id11" class="ltx_text ltx_font_typewriter">jungwonkim126@kaist.ac.kr</span>, <span id="id24.24.id12" class="ltx_text ltx_font_typewriter">junshik1211@kaist.ac.kr</span>, 
+<br class="ltx_break"><span id="id25.25.id13" class="ltx_text ltx_font_typewriter">psw0416@kaist.ac.kr</span>, <span id="id26.26.id14" class="ltx_text ltx_font_typewriter">sangyoon@ust.hk</span>, <span id="id27.27.id15" class="ltx_text ltx_font_typewriter">jiheekim@kaist.ac.kr</span>
+</span><span class="ltx_author_notes"><sup id="id28.28.id1" class="ltx_sup"><span id="id28.28.id1.1" class="ltx_text ltx_font_italic">∗</span></sup>Co-corresponding authors.</span></span>
+</div>
+
+<div id="abstract1" class="ltx_abstract">
+<h6 class="ltx_title ltx_title_abstract">Abstract</h6>
+<p class="ltx_p">Do large language models (LLMs) exhibit systematic ideological bias when reasoning about economic causal effects? As LLMs are increasingly used in policy analysis and economic reporting, where directionally correct causal judgments are essential, this question has direct practical stakes. We present a systematic evaluation by extending the EconCausal benchmark with ideology-contested cases—instances where intervention-oriented (pro-government) and market-oriented (pro-market) perspectives predict divergent causal signs. From 10,490 causal triplets (treatment–outcome pairs with empirically verified effect directions) derived from top-tier economics and finance journals, we identify 1,056 ideology-contested instances and evaluate 20 state-of-the-art LLMs on their ability to predict empirically supported causal directions. We find that ideology-contested items are consistently harder than non-contested ones, and that across 18 of 20 models, accuracy is systematically higher when the empirically verified causal sign aligns with intervention-oriented expectations than with market-oriented ones. Moreover, when models err, their incorrect predictions disproportionately lean intervention-oriented—and this directional skew is not eliminated by one-shot in-context prompting. These results highlight that LLMs are not only less accurate on ideologically contested economic questions, but systematically less reliable in one ideological direction than the other, underscoring the need for direction-aware evaluation in high-stakes economic and policy settings.
+</p>
+</div>
+<section id="S1" class="ltx_section">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">1 </span>Introduction</h2>
+
+<div id="S1.p1" class="ltx_para ltx_noindent">
+<p id="S1.p1.1" class="ltx_p">Do Large Language Models exhibit systematic ideological bias when reasoning about economic causal effects? This question is pressing because LLMs are increasingly deployed in high-stakes analytical workflows, such as economic reporting, policy evaluation, and corporate decision support <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">kwon2024large</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">ludwig2025large</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">handler2024large</span>)</cite>, where predicting causal directions correctly is essential. Yet in many such settings, that direction is genuinely contested: a single intervention can trigger competing mechanisms whose relative magnitudes are debated along ideological lines. A minimum wage increase, for instance, is expected to reduce hiring under a market-oriented framework that prioritizes labor cost effects, but to sustain employment under an intervention-oriented framework that emphasizes demand or job-matching gains. When LLMs predict causal directions in such settings, their outputs may implicitly privilege one set of priors over another, producing an invisible tilt in downstream policy advice.</p>
+</div>
+<div id="S1.p2" class="ltx_para ltx_noindent">
+<p id="S1.p2.1" class="ltx_p">Existing approaches to detecting such effects fall short in complementary ways. Work on LLM bias typically relies on survey-style instruments that probe expressed opinions or preferences, often in social or political domains, and does not assess how models reason about causal relationships grounded in empirical evidence. In contrast, benchmarks for causal reasoning focus on formal logic or context-dependent inference, but assume a single correct expectation for each causal effect and do not account for settings where competing, internally consistent frameworks imply different expected directions. As a result, we lack a framework for asking whether LLMs reason about economic causation more reliably in one ideological direction than another, the setting where bias would have the most direct policy consequences.</p>
+</div>
+<div id="S1.p3" class="ltx_para ltx_noindent">
+<p id="S1.p3.1" class="ltx_p">In this paper, we present the first systematic analysis of ideological bias in LLMs’ economic causal reasoning. Leveraging the EconCausal benchmark dataset—a large-scale corpus of 10,490 context-annotated causal triplets derived from top-tier economics and finance journals—we identify 1,056 ideologically contested triplets (10.1%) where market-oriented and intervention-oriented frameworks predict divergent causal signs. We evaluate LLM accuracy separately across contested and non-contested settings, and define a directional bias measure that captures systematic asymmetries in model predictions across competing frameworks.</p>
+</div>
+<div id="S1.p4" class="ltx_para ltx_noindent">
+<p id="S1.p4.1" class="ltx_p">Through an extensive evaluation of 20 state-of-the-art LLMs, we document a striking asymmetry in reasoning ability. Models exhibit lower accuracy on ideologically contested triplets and perform significantly better when the empirical truth aligns with intervention-oriented expectations, showing an average accuracy gap of +9.7 to +15.1 percentage points relative to market-oriented cases. Errors are not random but systematically directional, and this pattern is robust across model families and difficulty levels. These findings highlight substantial reliability risks when LLMs serve as intermediaries in policy analysis, where implicit ideological anchoring can lead to systematically skewed conclusions.</p>
+</div>
+<div id="S1.p5" class="ltx_para ltx_noindent">
+<p id="S1.p5.1" class="ltx_p">Our contributions are as follows. First, we introduce the notion of ideologically contested causal relationships as a new lens for studying LLM causal reasoning beyond context dependence. Second, we construct a labeled subset of EconCausal distinguishing contested from non-contested triplets, enabling controlled evaluation across these settings. Third, we provide a systematic empirical analysis showing lower accuracy and asymmetric performance in contested cases. Fourth, we define a directional bias measure and document consistent asymmetry patterns across a range of models. Together, our results highlight the importance of evaluating causal reasoning not only across contexts, but also across settings where disagreement over causal expectations is intrinsic.</p>
+</div>
+<figure id="S1.F1" class="ltx_figure"><img src="2604.21334v1/x1.png" id="S1.F1.g1" class="ltx_graphics ltx_centering ltx_img_landscape" width="830" height="425" alt="Refer to caption">
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 1: </span>Overview of ideological divergence in LLM economic causal reasoning</figcaption>
+</figure>
+</section>
+<section id="S2" class="ltx_section">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">2 </span>Related Work</h2>
+
+<section id="S2.SS1" class="ltx_subsection">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">2.1 </span>Political and Ideological Bias in LLMs</h3>
+
+<div id="S2.SS1.p1" class="ltx_para ltx_noindent">
+<p id="S2.SS1.p1.1" class="ltx_p">Whether LLMs exhibit systematic political biases has attracted considerable attention. A common approach applies political orientation instruments to LLMs and positions their responses on ideological scales, and the emerging consensus is that instruction-tuned LLMs lean left on social and cultural dimensions <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">santurkar2023</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">rozado2024</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">hartmann2023</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">motoki2023</span>)</cite>. More recent efforts confirm a leftward tendency but show that its magnitude was overstated by earlier instruments, and that small changes in question format can substantially shift measured positions <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">rottger2024</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">faulborn2025</span>)</cite>.</p>
+</div>
+<div id="S2.SS1.p2" class="ltx_para ltx_noindent">
+<p id="S2.SS1.p2.1" class="ltx_p">These leanings have been traced to multiple sources. <cite class="ltx_cite ltx_citemacro_citet"><span class="ltx_ref ltx_missing_citation ltx_ref_self">feng2023</span></cite> show that political biases in pretraining corpora propagate into downstream task predictions. <cite class="ltx_cite ltx_citemacro_citet"><span class="ltx_ref ltx_missing_citation ltx_ref_self">fulay2024</span></cite> find that optimizing for truthfulness amplifies left-leaning tendencies in larger models, and <cite class="ltx_cite ltx_citemacro_citet"><span class="ltx_ref ltx_missing_citation ltx_ref_self">exler2025</span></cite> document a monotonic relationship between parameter count and alignment with left-leaning parties.</p>
+</div>
+<div id="S2.SS1.p3" class="ltx_para ltx_noindent">
+<p id="S2.SS1.p3.1" class="ltx_p">However, these studies focus on expressed preferences in response to opinion-like questions. They reveal what positions LLMs appear to endorse, but not whether ideological priors systematically distort reasoning about verifiable factual claims. This distinction may be especially important in economic settings, where users can easily interpret a model’s causal prediction as reflecting an empirical regularity rather than a prior absorbed during training. Whether ideological leanings also shape how LLMs reason about economic causal relationships—where ground-truth effect signs are available from peer-reviewed empirical research—remains unexplored.</p>
+</div>
+</section>
+<section id="S2.SS2" class="ltx_subsection">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">2.2 </span>LLMs in Economic and Causal Reasoning</h3>
+
+<div id="S2.SS2.p1" class="ltx_para ltx_noindent">
+<p id="S2.SS2.p1.1" class="ltx_p">Work on causal reasoning suggests that LLMs often rely on priors rather than principled inference, which may help explain why directional bias can arise in economic prediction. Benchmarks such as CLadder and CORR2CAUSE consistently find that LLMs struggle with genuine causal reasoning across different levels of formalism <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">jin2023cladder</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">jin2024corr2cause</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">wang2024causalbench</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">chen2024calm</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">yu2025causaleval</span>)</cite>. A common explanation is that their causal judgments rely heavily on priors absorbed during pretraining rather than principled inference: LLMs have been described as “causal parrots,” shown to exploit textual metadata rather than observational evidence, to adopt rigid rule-like strategies, and to inadequately revise beliefs when confronted with contradictory evidence <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">zecevic2023</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">kiciman2023</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">wilie2024</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">dettki2026</span>)</cite>.</p>
+</div>
+<div id="S2.SS2.p2" class="ltx_para ltx_noindent">
+<p id="S2.SS2.p2.1" class="ltx_p">Related work on LLMs in economic and policy settings points to similar limitations. LLMs have already been applied to policy-adjacent tasks such as classifying central bank communications <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">silva2025</span>)</cite>, while existing benchmarks show persistent weaknesses in economic and causal reasoning <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">raman2024steer</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">raman2025steerme</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">quan2024</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">guo2024</span>)</cite>. Yet this literature evaluates performance mainly in terms of accuracy and robustness, not whether prediction errors are systematically directional along ideological lines. Our work addresses this gap by testing whether LLMs exhibit ideologically asymmetric errors when predicting economic causal effect signs documented in the empirical literature.</p>
+</div>
+</section>
+</section>
+<section id="S3" class="ltx_section">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">3 </span>EconCausal and Ideology-contested Extension</h2>
+
+<section id="S3.SS1" class="ltx_subsection">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.1 </span>EconCausal Benchmark Overview</h3>
+
+<div id="S3.SS1.p1" class="ltx_para ltx_noindent">
+<p id="S3.SS1.p1.5" class="ltx_p">This study leverages the experimental framework of the EconCausal benchmark <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">lee2026econcausalcontextawarecausalreasoning</span>)</cite>, which provides a dataset of causal relationships extracted from empirical studies in top-tier economics and finance journals.
+For each data instance, a causal triplet <math id="S3.SS1.p1.1.m1" class="ltx_Math" alttext="(T,O,Sign)" display="inline" intent=":literal"><semantics><mrow><mo stretchy="false">(</mo><mi>T</mi><mo>,</mo><mi>O</mi><mo>,</mo><mrow><mi>S</mi><mo lspace="0em" rspace="0em">​</mo><mi>i</mi><mo lspace="0em" rspace="0em">​</mo><mi>g</mi><mo lspace="0em" rspace="0em">​</mo><mi>n</mi></mrow><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(T,O,Sign)</annotation></semantics></math> consisting of the treatment <math id="S3.SS1.p1.2.m2" class="ltx_Math" alttext="T" display="inline" intent=":literal"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>, outcome <math id="S3.SS1.p1.3.m3" class="ltx_Math" alttext="O" display="inline" intent=":literal"><semantics><mi>O</mi><annotation encoding="application/x-tex">O</annotation></semantics></math>, and the directional sign of the effect <math id="S3.SS1.p1.4.m4" class="ltx_Math" alttext="Sign" display="inline" intent=":literal"><semantics><mrow><mi>S</mi><mo lspace="0em" rspace="0em">​</mo><mi>i</mi><mo lspace="0em" rspace="0em">​</mo><mi>g</mi><mo lspace="0em" rspace="0em">​</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">Sign</annotation></semantics></math> was extracted, along with a corresponding context paragraph <math id="S3.SS1.p1.5.m5" class="ltx_Math" alttext="C" display="inline" intent=":literal"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math> that provides the essential socio-economic background for the observed relationship.</p>
+</div>
+<div id="S3.SS1.p2" class="ltx_para ltx_noindent">
+<p id="S3.SS1.p2.3" class="ltx_p">The primary experimental setup adopts a sign prediction task, requiring language models to predict the direction of the causal effect <math id="S3.SS1.p2.1.m1" class="ltx_Math" alttext="Sign" display="inline" intent=":literal"><semantics><mrow><mi>S</mi><mo lspace="0em" rspace="0em">​</mo><mi>i</mi><mo lspace="0em" rspace="0em">​</mo><mi>g</mi><mo lspace="0em" rspace="0em">​</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">Sign</annotation></semantics></math> given a context <math id="S3.SS1.p2.2.m2" class="ltx_Math" alttext="C" display="inline" intent=":literal"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math> and a treatment-outcome pair <math id="S3.SS1.p2.3.m3" class="ltx_Math" alttext="(T,O)" display="inline" intent=":literal"><semantics><mrow><mo stretchy="false">(</mo><mi>T</mi><mo>,</mo><mi>O</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(T,O)</annotation></semantics></math> as inputs. The sign label space is defined as</p>
+<table id="S3.Ex1" class="ltx_equation ltx_eqn_table">
+
+<tbody><tr class="ltx_equation ltx_eqn_row ltx_align_baseline">
+<td class="ltx_eqn_cell ltx_eqn_center_padleft"></td>
+<td class="ltx_eqn_cell ltx_align_center"><math id="S3.Ex1.m1" class="ltx_Math" alttext="\mathcal{S}=\{+,-,\text{None},\text{Mixed}\}," display="block" intent=":literal"><semantics><mrow><mrow><mi class="ltx_font_mathcaligraphic">𝒮</mi><mo>=</mo><mrow><mo stretchy="false">{</mo><mo lspace="0em" rspace="0em">+</mo><mo rspace="0em">,</mo><mo lspace="0em" rspace="0em">−</mo><mo>,</mo><mtext>None</mtext><mo>,</mo><mtext>Mixed</mtext><mo stretchy="false">}</mo></mrow></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">\mathcal{S}=\{+,-,\text{None},\text{Mixed}\},</annotation></semantics></math></td>
+<td class="ltx_eqn_cell ltx_eqn_center_padright"></td>
+</tr></tbody>
+</table>
+<p id="S3.SS1.p2.4" class="ltx_p">where the four classes represent significantly positive, significantly negative, insignificant, and heterogeneous/complex effects, respectively.</p>
+</div>
+</section>
+<section id="S3.SS2" class="ltx_subsection">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.2 </span>Defining Ideology-contested Causal Triplets</h3>
+
+<div id="S3.SS2.p1" class="ltx_para ltx_noindent">
+<p id="S3.SS2.p1.1" class="ltx_p">Following the EconCausal benchmark, each of the 10,490 causal triplets is assigned a ground-truth sign based on the original authors’ empirical specification.
+To construct ideology-conditioned labels, we queried four LLMs (GPT, Claude, Qwen, and Grok) once per triplet, asking each model to jointly assign an intervention-oriented expected sign and a market-oriented expected sign while remaining blinded to the paper’s empirical result. Detailed prompt is provided in Appendix  <span class="ltx_ref ltx_missing_label ltx_ref_self">LABEL:app:prompts</span>.</p>
+</div>
+<div id="S3.SS2.p2" class="ltx_para ltx_noindent">
+<p id="S3.SS2.p2.2" class="ltx_p">These signs are defined along the economic dimension of ideology <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">alesina2011preferences</span>; <span class="ltx_ref ltx_missing_citation ltx_ref_self">feldman2014understanding</span>)</cite>: <math id="S3.SS2.p2.1.m1" class="ltx_Math" alttext="s^{\mathrm{intervention}}" display="inline" intent=":literal"><semantics><msup><mi>s</mi><mi>intervention</mi></msup><annotation encoding="application/x-tex">s^{\mathrm{intervention}}</annotation></semantics></math> reflects the expected causal sign under an intervention-oriented perspective that favors active government intervention to correct market failures, reduce inequality, and expand social insurance, while <math id="S3.SS2.p2.2.m2" class="ltx_Math" alttext="s^{\mathrm{market}}" display="inline" intent=":literal"><semantics><msup><mi>s</mi><mi>market</mi></msup><annotation encoding="application/x-tex">s^{\mathrm{market}}</annotation></semantics></math> reflects expectations under a market-oriented perspective that favors market-determined outcomes, individual responsibility, and limited government intervention.</p>
+</div>
+<div id="S3.SS2.p3" class="ltx_para ltx_noindent">
+<p id="S3.SS2.p3.2" class="ltx_p">We retained a triplet for ideology-contested labeling only when at least three of the four models assigned different signs to the two perspectives. For the retained triplets, we determined the final
+<math id="S3.SS2.p3.1.m1" class="ltx_Math" alttext="s^{\mathrm{intervention}}" display="inline" intent=":literal"><semantics><msup><mi>s</mi><mi>intervention</mi></msup><annotation encoding="application/x-tex">s^{\mathrm{intervention}}</annotation></semantics></math>
+and
+<math id="S3.SS2.p3.2.m2" class="ltx_Math" alttext="s^{\mathrm{market}}" display="inline" intent=":literal"><semantics><msup><mi>s</mi><mi>market</mi></msup><annotation encoding="application/x-tex">s^{\mathrm{market}}</annotation></semantics></math>
+by majority vote across models for the intervention- and market-oriented signs, respectively. A triplet was then classified as ideology-contested when these final labels differed.</p>
+</div>
+<div id="S3.SS2.p4" class="ltx_para ltx_noindent">
+<p id="S3.SS2.p4.1" class="ltx_p">Formally, the ideology-contested subset is defined as</p>
+<table id="S3.E1" class="ltx_equation ltx_eqn_table">
+
+<tbody><tr class="ltx_equation ltx_eqn_row ltx_align_baseline">
+<td class="ltx_eqn_cell ltx_eqn_center_padleft"></td>
+<td class="ltx_eqn_cell ltx_align_center"><math id="S3.E1.m1" class="ltx_Math" alttext="\mathcal{D}_{\mathrm{div}}=\left\{x\in\mathcal{D}\;\middle|\;s^{\mathrm{intervention}}(x)\neq s^{\mathrm{market}}(x)\right\}." display="block" intent=":literal"><semantics><mrow><mrow><msub><mi class="ltx_font_mathcaligraphic">𝒟</mi><mi>div</mi></msub><mo>=</mo><mrow><mo>{</mo><mrow><mi>x</mi><mo>∈</mo><mi class="ltx_font_mathcaligraphic">𝒟</mi></mrow><mo stretchy="true">|</mo><mrow><mrow><msup><mi>s</mi><mi>intervention</mi></msup><mo lspace="0em" rspace="0em">​</mo><mrow><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow></mrow><mo>≠</mo><mrow><msup><mi>s</mi><mi>market</mi></msup><mo lspace="0em" rspace="0em">​</mo><mrow><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow></mrow></mrow><mo>}</mo></mrow></mrow><mo lspace="0em">.</mo></mrow><annotation encoding="application/x-tex">\mathcal{D}_{\mathrm{div}}=\left\{x\in\mathcal{D}\;\middle|\;s^{\mathrm{intervention}}(x)\neq s^{\mathrm{market}}(x)\right\}.</annotation></semantics></math></td>
+<td class="ltx_eqn_cell ltx_eqn_center_padright"></td>
+<td rowspan="1" class="ltx_eqn_cell ltx_eqn_eqno ltx_align_middle ltx_align_right"><span class="ltx_tag ltx_tag_equation ltx_align_right">(1)</span></td>
+</tr></tbody>
+</table>
+</div>
+<div id="S3.SS2.p5" class="ltx_para ltx_noindent">
+<p id="S3.SS2.p5.2" class="ltx_p">This procedure yields 1,056 ideology-contested triplets (10.1% of the full set).
+Among these, 751 have a ground-truth sign coinciding with either <math id="S3.SS2.p5.1.m1" class="ltx_Math" alttext="s^{\mathrm{intervention}}" display="inline" intent=":literal"><semantics><msup><mi>s</mi><mi>intervention</mi></msup><annotation encoding="application/x-tex">s^{\mathrm{intervention}}</annotation></semantics></math> or <math id="S3.SS2.p5.2.m2" class="ltx_Math" alttext="s^{\mathrm{market}}" display="inline" intent=":literal"><semantics><msup><mi>s</mi><mi>market</mi></msup><annotation encoding="application/x-tex">s^{\mathrm{market}}</annotation></semantics></math>, broken down:</p>
+<ul id="S3.I1" class="ltx_itemize">
+<li id="S3.I1.i1" class="ltx_item" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span> 
+<div id="S3.I1.i1.p1" class="ltx_para">
+<p id="S3.I1.i1.p1.1" class="ltx_p"><span id="S3.I1.i1.p1.1.1" class="ltx_text ltx_font_bold">Intervention-truth</span> (436 triplets, 58.1%): the ground-truth sign matches <math id="S3.I1.i1.p1.1.m1" class="ltx_Math" alttext="s^{\mathrm{intervention}}" display="inline" intent=":literal"><semantics><msup><mi>s</mi><mi>intervention</mi></msup><annotation encoding="application/x-tex">s^{\mathrm{intervention}}</annotation></semantics></math>.</p>
+</div>
+</li>
+<li id="S3.I1.i2" class="ltx_item" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span> 
+<div id="S3.I1.i2.p1" class="ltx_para">
+<p id="S3.I1.i2.p1.1" class="ltx_p"><span id="S3.I1.i2.p1.1.1" class="ltx_text ltx_font_bold">Market-truth</span> (315 triplets, 41.9%): the ground-truth sign matches <math id="S3.I1.i2.p1.1.m1" class="ltx_Math" alttext="s^{\mathrm{market}}" display="inline" intent=":literal"><semantics><msup><mi>s</mi><mi>market</mi></msup><annotation encoding="application/x-tex">s^{\mathrm{market}}</annotation></semantics></math>.</p>
+</div>
+</li>
+</ul>
+</div>
+<section id="S3.SS2.SSS0.Px1" class="ltx_paragraph">
+<h4 class="ltx_title ltx_title_paragraph">Expert Validation.</h4>
+
+<div id="S3.SS2.SSS0.Px1.p1" class="ltx_para ltx_noindent">
+<p id="S3.SS2.SSS0.Px1.p1.1" class="ltx_p">Two economics professors independently reviewed a representative
+subset of 126 triplets (18 per subcategory <math id="S3.SS2.SSS0.Px1.p1.1.m1" class="ltx_Math" alttext="\times" display="inline" intent=":literal"><semantics><mo>×</mo><annotation encoding="application/x-tex">\times</annotation></semantics></math> 7 subcategories,
+balanced across intervention-oriented, market-oriented, and neutral alignments).
+Individual expert accuracies were 93.60% and 98.35%, respectively,
+and inter-rater agreement reached 93.33%, confirming the stability
+of the labeling process.
+The subfield composition of the ideology-contested subset, based on
+JEL classification codes, is detailed in Appendix <span class="ltx_ref ltx_missing_label ltx_ref_self">LABEL:app:subfield</span>.</p>
+</div>
+</section>
+</section>
+</section>
+<section id="S4" class="ltx_section">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">4 </span>Main Results: Ideological Distortion in Economic Causal Reasoning</h2>
+
+<section id="S4.SS1" class="ltx_subsection">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.1 </span>Evaluation Settings</h3>
+
+<div id="S4.SS1.p1" class="ltx_para ltx_noindent">
+<p id="S4.SS1.p1.1" class="ltx_p">We evaluate a diverse set of LLMs spanning both closed-source and open-source families.
+The closed-source group includes OpenAI GPT, Anthropic Claude, Google Gemini, and xAI Grok;
+the open-source group includes Meta Llama and Alibaba Qwen, chosen across varying parameter scales to examine the effect of model size.
+</p>
+</div>
+<div id="S4.SS1.p2" class="ltx_para ltx_noindent">
+<p id="S4.SS1.p2.5" class="ltx_p">For evaluation, we measure overall accuracy as well as accuracy on the ideology-contested and non-contested subsets separately.
+Within the ideology-contested subset, we define intervention-truth accuracy (<math id="S4.SS1.p2.1.m1" class="ltx_Math" alttext="\text{Acc}^{\text{intervention}}" display="inline" intent=":literal"><semantics><msup><mtext>Acc</mtext><mtext>intervention</mtext></msup><annotation encoding="application/x-tex">\text{Acc}^{\text{intervention}}</annotation></semantics></math>) as the accuracy on items whose ground truth aligns with intervention expectations, and market-truth accuracy (<math id="S4.SS1.p2.2.m2" class="ltx_Math" alttext="\text{Acc}^{\text{market}}" display="inline" intent=":literal"><semantics><msup><mtext>Acc</mtext><mtext>market</mtext></msup><annotation encoding="application/x-tex">\text{Acc}^{\text{market}}</annotation></semantics></math>) as the accuracy on items whose ground truth aligns with market expectations.
+We further define <math id="S4.SS1.p2.3.m3" class="ltx_Math" alttext="\text{Errors}^{\text{intervention}}" display="inline" intent=":literal"><semantics><msup><mtext>Errors</mtext><mtext>intervention</mtext></msup><annotation encoding="application/x-tex">\text{Errors}^{\text{intervention}}</annotation></semantics></math> and <math id="S4.SS1.p2.4.m4" class="ltx_Math" alttext="\text{Errors}^{\text{market}}" display="inline" intent=":literal"><semantics><msup><mtext>Errors</mtext><mtext>market</mtext></msup><annotation encoding="application/x-tex">\text{Errors}^{\text{market}}</annotation></semantics></math> as the numbers of incorrect predictions whose predicted sign aligns with intervention and market expectations, respectively, and let <math id="S4.SS1.p2.5.m5" class="ltx_Math" alttext="\text{Errors}^{\text{total}}" display="inline" intent=":literal"><semantics><msup><mtext>Errors</mtext><mtext>total</mtext></msup><annotation encoding="application/x-tex">\text{Errors}^{\text{total}}</annotation></semantics></math> denote the total number of errors in the ideology-contested subset.
+Their accuracy gap and directional error bias are then formalized as:</p>
+<table id="S4.E2" class="ltx_equation ltx_eqn_table">
+
+<tbody><tr class="ltx_equation ltx_eqn_row ltx_align_baseline">
+<td class="ltx_eqn_cell ltx_eqn_center_padleft"></td>
+<td class="ltx_eqn_cell ltx_align_center"><math id="S4.E2.m1" class="ltx_Math" alttext="\Delta_{\text{acc}}=\text{Acc}^{\text{intervention}}-\text{Acc}^{\text{market}},\qquad B_{\text{dir}}=\frac{\text{Errors}^{\text{intervention}}-\text{Errors}^{\text{market}}}{\text{Errors}^{\text{total}}}" display="block" intent=":literal"><semantics><mrow><mrow><msub><mi mathvariant="normal">Δ</mi><mtext>acc</mtext></msub><mo>=</mo><mrow><msup><mtext>Acc</mtext><mtext>intervention</mtext></msup><mo>−</mo><msup><mtext>Acc</mtext><mtext>market</mtext></msup></mrow></mrow><mo rspace="2.167em">,</mo><mrow><msub><mi>B</mi><mtext>dir</mtext></msub><mo>=</mo><mfrac><mrow><msup><mtext>Errors</mtext><mtext>intervention</mtext></msup><mo>−</mo><msup><mtext>Errors</mtext><mtext>market</mtext></msup></mrow><msup><mtext>Errors</mtext><mtext>total</mtext></msup></mfrac></mrow></mrow><annotation encoding="application/x-tex">\Delta_{\text{acc}}=\text{Acc}^{\text{intervention}}-\text{Acc}^{\text{market}},\qquad B_{\text{dir}}=\frac{\text{Errors}^{\text{intervention}}-\text{Errors}^{\text{market}}}{\text{Errors}^{\text{total}}}</annotation></semantics></math></td>
+<td class="ltx_eqn_cell ltx_eqn_center_padright"></td>
+<td rowspan="1" class="ltx_eqn_cell ltx_eqn_eqno ltx_align_middle ltx_align_right"><span class="ltx_tag ltx_tag_equation ltx_align_right">(2)</span></td>
+</tr></tbody>
+</table>
+</div>
+</section>
+<section id="S4.SS2" class="ltx_subsection">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.2 </span>Main Results: Performance and Bias on Ideology-contested Items</h3>
+
+<figure id="S4.F2" class="ltx_figure"><img src="2604.21334v1/x2.png" id="S4.F2.g1" class="ltx_graphics ltx_centering ltx_img_landscape" width="748" height="553" alt="Refer to caption">
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure">Figure 2: </span>Accuracy on intervention-truth versus market-truth items across 20 LLMs. Most models fall above the equal-accuracy line, indicating a systematic advantage on intervention-aligned causal effects.</figcaption>
+</figure>
+<div id="S4.SS2.p1" class="ltx_para ltx_noindent">
+<p id="S4.SS2.p1.1" class="ltx_p">Before examining accuracy, we note that the ground-truth labels themselves lean toward intervention-side (58.1% vs. 41.9% among directional items), and the models’ average predictions closely track this base rate (59.2% vs. 40.8%). Figure <a href="#S4.F2" title="Figure 2 ‣ 4.2 Main Results: Performance and Bias on Ideology-contested Items ‣ 4 Main Results: Ideological Distortion in Economic Causal Reasoning ‣ Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_tag">2</span></a> reports model-level accuracy on the ideology-contested subset, focusing on intervention-truth versus market-truth items. The full table of main results is reported in Appendix <span class="ltx_ref ltx_missing_label ltx_ref_self">LABEL:app:full_model</span>. We organize the findings along three dimensions: overall difficulty, asymmetric accuracy, and directional error bias.</p>
+</div>
+<section id="S4.SS2.SSS0.Px1" class="ltx_paragraph">
+<h4 class="ltx_title ltx_title_paragraph">Ideology-contested triplets are harder.</h4>
+
+<div id="S4.SS2.SSS0.Px1.p1" class="ltx_para ltx_noindent">
+<p id="S4.SS2.SSS0.Px1.p1.1" class="ltx_p">Across all 20 models, accuracy on the ideology-contested subset is consistently lower than on the non-contested remainder.
+Closed-source models average 61.3% on ideology-contested items versus 74.5% on non-contested items, a gap of 13.2 percentage points (pp).
+Open-source models show a comparable pattern at a lower absolute level, averaging 52.5% versus 63.8% (11.3 pp gap).
+This uniform degradation indicates that economically contested causal relationships pose a systematically harder challenge for LLMs, independent of model family or scale.</p>
+</div>
+</section>
+<section id="S4.SS2.SSS0.Px2" class="ltx_paragraph">
+<h4 class="ltx_title ltx_title_paragraph">Accuracy is asymmetric across ideological directions.</h4>
+
+<div id="S4.SS2.SSS0.Px2.p1" class="ltx_para ltx_noindent">
+<p id="S4.SS2.SSS0.Px2.p1.5" class="ltx_p">Closed-source models average 72.9% on intervention-truth items but only 63.1% on market-truth items (<math id="S4.SS2.SSS0.Px2.p1.1.m1" class="ltx_Math" alttext="\Delta_{\text{acc}}=+9.7" display="inline" intent=":literal"><semantics><mrow><msub><mi mathvariant="normal">Δ</mi><mtext>acc</mtext></msub><mo>=</mo><mrow><mo>+</mo><mn>9.7</mn></mrow></mrow><annotation encoding="application/x-tex">\Delta_{\text{acc}}=+9.7</annotation></semantics></math> pp); open-source models show a wider gap at <math id="S4.SS2.SSS0.Px2.p1.2.m2" class="ltx_Math" alttext="+15.1" display="inline" intent=":literal"><semantics><mrow><mo>+</mo><mn>15.1</mn></mrow><annotation encoding="application/x-tex">+15.1</annotation></semantics></math> pp.
+Of the 20 models, 18 exhibit a positive <math id="S4.SS2.SSS0.Px2.p1.3.m3" class="ltx_Math" alttext="\Delta_{\text{acc}}" display="inline" intent=":literal"><semantics><msub><mi mathvariant="normal">Δ</mi><mtext>acc</mtext></msub><annotation encoding="application/x-tex">\Delta_{\text{acc}}</annotation></semantics></math>, with the largest gaps exceeding 20 pp (GPT-4o-mini, Qwen 3-8B, Llama 3.3-70B).
+The Claude family is a notable exception: Sonnet 4.6 and Opus 4.6 display a slight market-truth advantage (<math id="S4.SS2.SSS0.Px2.p1.4.m4" class="ltx_Math" alttext="\Delta_{\text{acc}}=-1.9" display="inline" intent=":literal"><semantics><mrow><msub><mi mathvariant="normal">Δ</mi><mtext>acc</mtext></msub><mo>=</mo><mrow><mo>−</mo><mn>1.9</mn></mrow></mrow><annotation encoding="application/x-tex">\Delta_{\text{acc}}=-1.9</annotation></semantics></math> and <math id="S4.SS2.SSS0.Px2.p1.5.m5" class="ltx_Math" alttext="-0.6" display="inline" intent=":literal"><semantics><mrow><mo>−</mo><mn>0.6</mn></mrow><annotation encoding="application/x-tex">-0.6</annotation></semantics></math>, respectively).</p>
+</div>
+</section>
+<section id="S4.SS2.SSS0.Px3" class="ltx_paragraph">
+<h4 class="ltx_title ltx_title_paragraph">Errors are systematically directional.</h4>
+
+<div id="S4.SS2.SSS0.Px3.p1" class="ltx_para ltx_noindent">
+<p id="S4.SS2.SSS0.Px3.p1.8" class="ltx_p">The accuracy asymmetry is corroborated by the directional bias score <math id="S4.SS2.SSS0.Px3.p1.1.m1" class="ltx_Math" alttext="B_{\text{dir}}" display="inline" intent=":literal"><semantics><msub><mi>B</mi><mtext>dir</mtext></msub><annotation encoding="application/x-tex">B_{\text{dir}}</annotation></semantics></math>.
+Closed-source models show a modest intervention-leaning bias on average (<math id="S4.SS2.SSS0.Px3.p1.2.m2" class="ltx_Math" alttext="B_{\text{dir}}=+2.9" display="inline" intent=":literal"><semantics><mrow><msub><mi>B</mi><mtext>dir</mtext></msub><mo>=</mo><mrow><mo>+</mo><mn>2.9</mn></mrow></mrow><annotation encoding="application/x-tex">B_{\text{dir}}=+2.9</annotation></semantics></math>), while open-source models exhibit a substantially stronger intervention skew (<math id="S4.SS2.SSS0.Px3.p1.3.m3" class="ltx_Math" alttext="B_{\text{dir}}=+8.8" display="inline" intent=":literal"><semantics><mrow><msub><mi>B</mi><mtext>dir</mtext></msub><mo>=</mo><mrow><mo>+</mo><mn>8.8</mn></mrow></mrow><annotation encoding="application/x-tex">B_{\text{dir}}=+8.8</annotation></semantics></math>).
+Among the 20 models, 15 exhibit <math id="S4.SS2.SSS0.Px3.p1.4.m4" class="ltx_Math" alttext="B_{\text{dir}}&gt;0" display="inline" intent=":literal"><semantics><mrow><msub><mi>B</mi><mtext>dir</mtext></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">B_{\text{dir}}&gt;0</annotation></semantics></math>, with the largest directional biases observed in Llama 3.3-70B (<math id="S4.SS2.SSS0.Px3.p1.5.m5" class="ltx_Math" alttext="B_{\text{dir}}=+17.9" display="inline" intent=":literal"><semantics><mrow><msub><mi>B</mi><mtext>dir</mtext></msub><mo>=</mo><mrow><mo>+</mo><mn>17.9</mn></mrow></mrow><annotation encoding="application/x-tex">B_{\text{dir}}=+17.9</annotation></semantics></math>), Qwen 3-8B (<math id="S4.SS2.SSS0.Px3.p1.6.m6" class="ltx_Math" alttext="B_{\text{dir}}=+17.7" display="inline" intent=":literal"><semantics><mrow><msub><mi>B</mi><mtext>dir</mtext></msub><mo>=</mo><mrow><mo>+</mo><mn>17.7</mn></mrow></mrow><annotation encoding="application/x-tex">B_{\text{dir}}=+17.7</annotation></semantics></math>), and GPT-4o-mini (<math id="S4.SS2.SSS0.Px3.p1.7.m7" class="ltx_Math" alttext="B_{\text{dir}}=+15.5" display="inline" intent=":literal"><semantics><mrow><msub><mi>B</mi><mtext>dir</mtext></msub><mo>=</mo><mrow><mo>+</mo><mn>15.5</mn></mrow></mrow><annotation encoding="application/x-tex">B_{\text{dir}}=+15.5</annotation></semantics></math>).
+The consistent positive values of <math id="S4.SS2.SSS0.Px3.p1.8.m8" class="ltx_Math" alttext="B_{\text{dir}}" display="inline" intent=":literal"><semantics><msub><mi>B</mi><mtext>dir</mtext></msub><annotation encoding="application/x-tex">B_{\text{dir}}</annotation></semantics></math> across the majority of models suggest that prediction errors on ideology-contested items are not uniformly distributed but instead reflect a systematic intervention-leaning tendency.</p>
+</div>
+</section>
+</section>
+<section id="S4.SS3" class="ltx_subsection">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.3 </span>Heterogeneity Across Economic Subfields</h3>
+
+<div id="S4.SS3.p1" class="ltx_para ltx_noindent">
+<p id="S4.SS3.p1.1" class="ltx_p">To examine the fine-grained effects of ideological bias, we divide the directionally aligned subset into seven major economic subfields based on JEL (Journal of Economic Literature) classification codes, a standardized taxonomy maintained by the American Economic Association that assigns hierarchical alphanumeric labels to economic research topics <cite class="ltx_cite ltx_citemacro_citep">(<span class="ltx_ref ltx_missing_citation ltx_ref_self">jel2024</span>)</cite>. Detailed mapping rules and subfield-level accuracy gaps are provided in Appendix <span class="ltx_ref ltx_missing_label ltx_ref_self">LABEL:app:subfield</span>.</p>
+</div>
+<div id="S4.SS3.p2" class="ltx_para ltx_noindent">
+<p id="S4.SS3.p2.3" class="ltx_p">An intervention-truth advantage appears in six of seven subfields but is highly heterogeneous. The largest asymmetries arise in healthcare and welfare/redistribution, while labor and financial regulation exhibit more moderate gaps. Taxation is the sole exception, displaying a slightly reversed pattern.
+These results indicate that ideological distortion varies in both strength and direction by subfield rather than operating as a uniform leftward shift. The especially large intervention-truth advantage in healthcare (<math id="S4.SS3.p2.1.m1" class="ltx_Math" alttext="\Delta_{\text{acc}}=+20.9" display="inline" intent=":literal"><semantics><mrow><msub><mi mathvariant="normal">Δ</mi><mtext>acc</mtext></msub><mo>=</mo><mrow><mo>+</mo><mn>20.9</mn></mrow></mrow><annotation encoding="application/x-tex">\Delta_{\text{acc}}=+20.9</annotation></semantics></math> pp) and welfare/redistribution (<math id="S4.SS3.p2.2.m2" class="ltx_Math" alttext="\Delta_{\text{acc}}=+18.0" display="inline" intent=":literal"><semantics><mrow><msub><mi mathvariant="normal">Δ</mi><mtext>acc</mtext></msub><mo>=</mo><mrow><mo>+</mo><mn>18.0</mn></mrow></mrow><annotation encoding="application/x-tex">\Delta_{\text{acc}}=+18.0</annotation></semantics></math> pp) is consistent with LLMs responding more asymmetrically in policy domains where state intervention is ideologically salient. At the same time, exceptions such as taxation (<math id="S4.SS3.p2.3.m3" class="ltx_Math" alttext="\Delta_{\text{acc}}=-1.0" display="inline" intent=":literal"><semantics><mrow><msub><mi mathvariant="normal">Δ</mi><mtext>acc</mtext></msub><mo>=</mo><mrow><mo>−</mo><mn>1.0</mn></mrow></mrow><annotation encoding="application/x-tex">\Delta_{\text{acc}}=-1.0</annotation></semantics></math> pp) caution against reducing the pattern to a blanket intervention bias. This heterogeneity clarifies that ideological distortion is concentrated in specific policy-relevant areas of economics rather than evenly distributed across all domains.</p>
+</div>
+</section>
+<section id="S4.SS4" class="ltx_subsection">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.4 </span>Robustness Check: Difficulty Matching</h3>
+
+<figure id="S4.T1" class="ltx_table">
+<table id="S4.T1.8" class="ltx_tabular ltx_centering ltx_align_middle">
+<tr id="S4.T1.8.9" class="ltx_tr">
+<td id="S4.T1.8.9.1" class="ltx_td ltx_border_tt"></td>
+<td id="S4.T1.8.9.2" class="ltx_td ltx_align_center ltx_border_tt">Unmatched</td>
+<td id="S4.T1.8.9.3" class="ltx_td ltx_align_center ltx_border_tt">Matched</td>
+</tr>
+<tr id="S4.T1.2.2" class="ltx_tr">
+<td id="S4.T1.2.2.3" class="ltx_td"></td>
+<td id="S4.T1.1.1.1" class="ltx_td ltx_align_center">(<math id="S4.T1.1.1.1.m1" class="ltx_Math" alttext="n_{\text{Intervention}}=436,\;n_{\text{Market}}=315" display="inline" intent=":literal"><semantics><mrow><mrow><msub><mi>n</mi><mtext>Intervention</mtext></msub><mo>=</mo><mn>436</mn></mrow><mo rspace="0.447em">,</mo><mrow><msub><mi>n</mi><mtext>Market</mtext></msub><mo>=</mo><mn>315</mn></mrow></mrow><annotation encoding="application/x-tex">n_{\text{Intervention}}=436,\;n_{\text{Market}}=315</annotation></semantics></math>)</td>
+<td id="S4.T1.2.2.2" class="ltx_td ltx_align_center">(<math id="S4.T1.2.2.2.m1" class="ltx_Math" alttext="n=287" display="inline" intent=":literal"><semantics><mrow><mi>n</mi><mo>=</mo><mn>287</mn></mrow><annotation encoding="application/x-tex">n=287</annotation></semantics></math> per side)</td>
+</tr>
+<tr id="S4.T1.3.3" class="ltx_tr">
+<td id="S4.T1.3.3.1" class="ltx_td ltx_align_left ltx_border_t">Acc<math id="S4.T1.3.3.1.m1" class="ltx_Math" alttext="{}_{\text{Intervention}}" display="inline" intent=":literal"><semantics><msub><mi></mi><mtext>Intervention</mtext></msub><annotation encoding="application/x-tex">{}_{\text{Intervention}}</annotation></semantics></math> (%)</td>
+<td id="S4.T1.3.3.2" class="ltx_td ltx_align_center ltx_border_t">70.9</td>
+<td id="S4.T1.3.3.3" class="ltx_td ltx_align_center ltx_border_t">68.6</td>
+</tr>
+<tr id="S4.T1.4.4" class="ltx_tr">
+<td id="S4.T1.4.4.1" class="ltx_td ltx_align_left">Acc<math id="S4.T1.4.4.1.m1" class="ltx_Math" alttext="{}_{\text{Market}}" display="inline" intent=":literal"><semantics><msub><mi></mi><mtext>Market</mtext></msub><annotation encoding="application/x-tex">{}_{\text{Market}}</annotation></semantics></math> (%)</td>
+<td id="S4.T1.4.4.2" class="ltx_td ltx_align_center">59.3</td>
+<td id="S4.T1.4.4.3" class="ltx_td ltx_align_center">58.0</td>
+</tr>
+<tr id="S4.T1.7.7" class="ltx_tr">
+<td id="S4.T1.5.5.1" class="ltx_td ltx_align_left">
+<math id="S4.T1.5.5.1.m1" class="ltx_Math" alttext="\Delta_{\text{acc}}" display="inline" intent=":literal"><semantics><msub><mi mathvariant="normal">Δ</mi><mtext>acc</mtext></msub><annotation encoding="application/x-tex">\Delta_{\text{acc}}</annotation></semantics></math> (pp)</td>
+<td id="S4.T1.6.6.2" class="ltx_td ltx_align_center">
+<math id="S4.T1.6.6.2.m1" class="ltx_Math" alttext="+" display="inline" intent=":literal"><semantics><mo>+</mo><annotation encoding="application/x-tex">+</annotation></semantics></math>11.5</td>
+<td id="S4.T1.7.7.3" class="ltx_td ltx_align_center">
+<math id="S4.T1.7.7.3.m1" class="ltx_Math" alttext="+" display="inline" intent=":literal"><semantics><mo>+</mo><annotation encoding="application/x-tex">+</annotation></semantics></math>10.6</td>
+</tr>
+<tr id="S4.T1.8.8" class="ltx_tr">
+<td id="S4.T1.8.8.1" class="ltx_td ltx_align_left ltx_border_bb">Models with <math id="S4.T1.8.8.1.m1" class="ltx_Math" alttext="B_{\mathrm{dir}}&gt;0" display="inline" intent=":literal"><semantics><mrow><msub><mi>B</mi><mi>dir</mi></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">B_{\mathrm{dir}}&gt;0</annotation></semantics></math>
+</td>
+<td id="S4.T1.8.8.2" class="ltx_td ltx_align_center ltx_border_bb">18 / 20</td>
+<td id="S4.T1.8.8.3" class="ltx_td ltx_align_center ltx_border_bb">18 / 20</td>
+</tr>
+</table>
+<figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table">Table 1: </span>Accuracy gap between intervention-truth and market-truth items before and after difficulty matching. All accuracy values are 20-model means.</figcaption>
+</figure>
+<div id="S4.SS4.p1" class="ltx_para ltx_noindent">
+<p id="S4.SS4.p1.2" class="ltx_p">A natural concern is that market-truth items may be intrinsically harder, and that the accuracy gap in Figure <a href="#S4.F2" title="Figure 2 ‣ 4.2 Main Results: Performance and Bias on Ideology-contested Items ‣ 4 Main Results: Ideological Distortion in Economic Causal Reasoning ‣ Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_tag">2</span></a> reflects this difficulty differential rather than ideological distortion. To rule out this confound, we scored each ideology-contested triplet on a 1–5 overall difficulty scale using GPT-5-mini and matched intervention-truth and market-truth triplets one-to-one within each <em id="S4.SS4.p1.1.1" class="ltx_emph ltx_font_italic">theme <math id="S4.SS4.p1.1.1.m1" class="ltx_Math" alttext="\times" display="inline" intent=":literal"><semantics><mo>×</mo><annotation encoding="application/x-tex">\times</annotation></semantics></math> difficulty</em> cell, yielding 287 triplets per side (details in Appendix <span class="ltx_ref ltx_missing_label ltx_ref_self">LABEL:app:difficulty</span>).
+As Table <a href="#S4.T1" title="Table 1 ‣ 4.4 Robustness Check: Difficulty Matching ‣ 4 Main Results: Ideological Distortion in Economic Causal Reasoning ‣ Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_tag">1</span></a> shows, difficulty matching leaves every core finding virtually unchanged, with the same 18 of 20 models retaining <math id="S4.SS4.p1.2.m1" class="ltx_Math" alttext="B_{\mathrm{dir}}&gt;0" display="inline" intent=":literal"><semantics><mrow><msub><mi>B</mi><mi>dir</mi></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">B_{\mathrm{dir}}&gt;0</annotation></semantics></math>. The observed asymmetry is therefore not attributable to differential item difficulty. We further confirmed this result using a logistic regression on the matched sample with difficulty, subfield, and model fixed effects, where the intervention-truth indicator remained positive and highly significant.</p>
+</div>
+</section>
+</section>
+<section id="S5" class="ltx_section">
+<h2 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">5 </span>Ideological Steering via In-Context Examples</h2>
+
+<div id="S5.p1" class="ltx_para ltx_noindent">
+<p id="S5.p1.1" class="ltx_p">The preceding analysis established that LLMs systematically favor intervention-truth causal triplets, with an average accuracy gap of <math id="S5.p1.1.m1" class="ltx_Math" alttext="\Delta_{\text{acc}}=+11.5" display="inline" intent=":literal"><semantics><mrow><msub><mi mathvariant="normal">Δ</mi><mtext>acc</mtext></msub><mo>=</mo><mrow><mo>+</mo><mn>11.5</mn></mrow></mrow><annotation encoding="application/x-tex">\Delta_{\text{acc}}=+11.5</annotation></semantics></math> pp and intervention-leaning error directionality.
+In this section, we examine whether in-context examples—one of the simplest prompt-level interventions—can steer model predictions toward a target ideological direction.</p>
+</div>
+<section id="S5.SS1" class="ltx_subsection">
+<h3 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">5.1 </span>Results</h3>
+
+<div id="S5.SS1.p1" class="ltx_para ltx_noindent">
+<p id="S5.SS1.p1.2" class="ltx_p">We compare four in-context conditions for each ideology-contested target triplet:
+no example (<span id="S5.SS1.p1.2.1" class="ltx_text ltx_font_smallcaps">None</span>; the baseline from Figure <a href="#S4.F2" title="Figure 2 ‣ 4.2 Main Results: Performance and Bias on Ideology-contested Items ‣ 4 Main Results: Ideological Distortion in Economic Causal Reasoning ‣ Ideological Bias in LLMs’ Economic Causal Reasoning" class="ltx_ref"><span class="ltx_text ltx_ref_tag">2</span></a>),
+a non-contested example (<span id="S5.SS1.p1.2.2" class="ltx_text ltx_font_smallcaps">Non-Contested</span>),
+an intervention-aligned example (<span id="S5.SS1.p1.2.3" class="ltx_text ltx_font_smallcaps">Intervention-Ex</span>), and
+a market-aligned example (<span id="S5.SS1.p1.2.4" class="ltx_text ltx_font_smallcaps">Market-Ex</span>).
+Each target is paired with examples sharing at least two JEL categories and a Jaccard context similarity <math id="S5.SS1.p1.1.m1" class="ltx_Math" alttext="\geq 0.5" display="inline" intent=":literal"><semantics><mrow><mi></mi><mo>≥</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">\geq 0.5</annotation></semantics></math> (full matching criteria in Appendix  <span class="ltx_ref ltx_missing_label ltx_ref_self">LABEL:app:icl_matching</span>).
+Our primary metric is the <em id="S5.SS1.p1.2.5" class="ltx_emph ltx_font_italic">Intervention–Market Example Gap</em>, defined as <math id="S5.SS1.p1.2.m2" class="ltx_Math" alttext="\Delta_{\text{example}}=\mathrm{Acc}_{\textsc{Intervention-Ex}}-\mathrm{Acc}_{\textsc{Market-Ex}}" display="inline" intent=":literal"><semantics><mrow><msub><mi mathvariant="normal">Δ</mi><mtext>example</mtext></msub><mo>=</mo><mrow><msub><mi>Acc</mi><mtext class="ltx_font_smallcaps">Intervention-Ex</mtext></msub><mo>−</mo><msub><mi>Acc</mi><mtext class="ltx_font_smallcaps">Market-Ex</mtext></msub></mrow></mrow><annotation encoding="application/x-tex">\Delta_{\text{example}}=\mathrm{Acc}_{\textsc{Intervention-Ex}}-\mathrm{Acc}_{\textsc{Market-Ex}}</annotation></semantics></math>. The results are shown in Table <span class="ltx_ref ltx_missing_label ltx_ref_self">LABEL:tab:steering</span>.</p>
+</div>
+<figure id="S5.SS1.tab1" class="ltx_table">
+</figure>
+</section>
+</section>
+</article>
+</div>
+</div>
+<footer class="arxiv-html-footer">
+  <div class="ltx_page_logo">
+    Experimental support, please
+    <a href="./2604.21334v1/__stdout.txt" class="ltx_ref"
+    target="_blank" rel="nofollow">view the build logs</a>
+    for errors. Generated by
+    <a href="https://math.nist.gov/~BMiller/LaTeXML/" target="_blank" class="ltx_ref ltx_LaTeXML_logo">
+      <span style="letter-spacing: -0.2em; margin-right: 0.1em;">
+        L
+        <span style="font-size: 70%; position: relative; bottom: 2.2pt;">A</span>
+        T
+        <span style="position: relative; bottom: -0.4ex;">E</span>
+      </span>
+      <span class="ltx_font_smallcaps">xml</span>
+      <img alt="[LOGO]"
+        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAOCAYAAAD5YeaVAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9wKExQZLWTEaOUAAAAddEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIFRoZSBHSU1Q72QlbgAAAdpJREFUKM9tkL+L2nAARz9fPZNCKFapUn8kyI0e4iRHSR1Kb8ng0lJw6FYHFwv2LwhOpcWxTjeUunYqOmqd6hEoRDhtDWdA8ApRYsSUCDHNt5ul13vz4w0vWCgUnnEc975arX6ORqN3VqtVZbfbTQC4uEHANM3jSqXymFI6yWazP2KxWAXAL9zCUa1Wy2tXVxheKA9YNoR8Pt+aTqe4FVVVvz05O6MBhqUIBGk8Hn8HAOVy+T+XLJfLS4ZhTiRJgqIoVBRFIoric47jPnmeB1mW/9rr9ZpSSn3Lsmir1fJZlqWlUonKsvwWwD8ymc/nXwVBeLjf7xEKhdBut9Hr9WgmkyGEkJwsy5eHG5vN5g0AKIoCAEgkEkin0wQAfN9/cXPdheu6P33fBwB4ngcAcByHJpPJl+fn54mD3Gg0NrquXxeLRQAAwzAYj8cwTZPwPH9/sVg8PXweDAauqqr2cDjEer1GJBLBZDJBs9mE4zjwfZ85lAGg2+06hmGgXq+j3+/DsixYlgVN03a9Xu8jgCNCyIegIAgx13Vfd7vdu+FweG8YRkjXdWy329+dTgeSJD3ieZ7RNO0VAXAPwDEAO5VKndi2fWrb9jWl9Esul6PZbDY9Go1OZ7PZ9z/lyuD3OozU2wAAAABJRU5ErkJggg==">
+    </a>.
+  </div>
+  <div class="keyboard-glossary">
+    <h2>Instructions for reporting errors</h2>
+    <p>We are continuing to improve HTML versions of papers, and your feedback helps enhance accessibility and mobile
+      support. To report errors in the HTML that will help us improve conversion and rendering, choose any of the
+      methods listed below:</p>
+    <ul>
+      <li>Click the "Report Issue" <span class="mobile-only">(<svg role="presentation"
+            style="display: inline-block; vertical-align: middle; fill: var(--text-color);" aria-hidden="true"
+            height="1em" viewBox="0 0 640 640">
+            <path
+              d="M224 160C224 107 267 64 320 64C373 64 416 107 416 160L416 163.6C416 179.3 403.3 192 387.6 192L252.5 192C236.8 192 224.1 179.3 224.1 163.6L224.1 160zM569.6 172.8C580.2 186.9 577.3 207 563.2 217.6L465.4 290.9C470.7 299.8 474.7 309.6 477.2 320L576 320C593.7 320 608 334.3 608 352C608 369.7 593.7 384 576 384L480 384L480 416C480 418.6 479.9 421.3 479.8 423.9L563.2 486.4C577.3 497 580.2 517.1 569.6 531.2C559 545.3 538.9 548.2 524.8 537.6L461.7 490.3C438.5 534.5 395.2 566.5 344 574.2L344 344C344 330.7 333.3 320 320 320C306.7 320 296 330.7 296 344L296 574.2C244.8 566.5 201.5 534.5 178.3 490.3L115.2 537.6C101.1 548.2 81 545.3 70.4 531.2C59.8 517.1 62.7 497 76.8 486.4L160.2 423.9C160.1 421.3 160 418.7 160 416L160 384L64 384C46.3 384 32 369.7 32 352C32 334.3 46.3 320 64 320L162.8 320C165.3 309.6 169.3 299.8 174.6 290.9L76.8 217.6C62.7 207 59.8 186.9 70.4 172.8C81 158.7 101.1 155.8 115.2 166.4L224 248C236.3 242.9 249.8 240 264 240L376 240C390.2 240 403.7 242.8 416 248L524.8 166.4C538.9 155.8 559 158.7 569.6 172.8z" />
+          </svg>)</span> button, located in the page header.</li>
+    </ul>
+    <p><strong>Tip:</strong> You can select the relevant text first, to include it in your report.</p>
+    <p>Our team has already identified <a class="ltx_ref" href="https://github.com/arXiv/html_feedback/issues"
+        target="_blank">the following issues</a>. We appreciate your time reviewing and reporting rendering errors we
+      may not have found yet. Your efforts will help us improve the HTML versions for all readers, because disability
+      should not be a barrier to accessing research. Thank you for your continued support in championing open access for
+      all.</p>
+    <p>Have a free development cycle? Help support accessibility at arXiv! Our collaborators at LaTeXML maintain a <a
+        class="ltx_ref" href="https://github.com/brucemiller/LaTeXML/wiki/Porting-LaTeX-packages-for-LaTeXML"
+        target="_blank">list of packages that need conversion</a>, and welcome <a class="ltx_ref"
+        href="https://github.com/brucemiller/LaTeXML/issues" target="_blank">developer contributions</a>.</p>
+  </div>
+</footer>
+<div id="fixed-buttons-container">
+  <div id="beta-badge" aria-hidden="true">BETA</div>
+  <a id="disable-reading-mode-btn" class="header-button" href="javascript:toggleReadingMode();"
+    title="Disable reading mode, show header and footer">
+    <svg role="presentation" height="1.25rem"
+      viewBox="0 0 448 512"><!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
+      <path
+        d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z" />
+    </svg>
+  </a>
+</div></body>
+</html>

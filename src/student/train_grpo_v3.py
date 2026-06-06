@@ -1,20 +1,36 @@
 #!/usr/bin/env python3
-"""GRPO v3: Outcome rewards on causal dataset.
+"""GRPO v3: Outcome rewards only, flat advantage, correctness-based.
 
-Same reward structure as v2 (directional_assertion, dm_alignment, mechanism_commitment)
-but trained on the synthetic causal dataset instead of SFT questions.
+Uses correctness-based outcome rewards from real benchmark ground truth
+(EconCausal, Corr2Cause). No process-level rewards, no tags, no dual advantage.
+Serves as the control condition for v4.
 
 Usage:
-    python3 -m src.student.train_grpo_v3
-    python3 -m src.student.train_grpo_v3 --max-steps 500 --resume-step 250
+    python3 -m src.student.train_grpo_v3 \
+        --base-model /path/to/sft/checkpoint \
+        --output-dir checkpoints/lora_adapters/grpo_v3
 """
 
 import argparse
+import csv
+import itertools
+import json
 import logging
+import os
 import sys
+import time
 from pathlib import Path
+from typing import List
+
+import torch
+import torch.nn.functional as F
+import wandb
+from torch.utils.data import DataLoader, Dataset as TorchDataset
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
+from src.student.grpo_config_v4 import GRPO_CONFIG_V3
+from src.student.rewards_v3v4 import compute_outcome_reward
 
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -22,33 +38,402 @@ logging.basicConfig(
 )
 logger = logging.getLogger("grpo-v3")
 
-from src.student.grpo_config import GRPO_CONFIG
-from src.student.train_grpo import find_latest_checkpoint, train
+
+class GRPODatasetV3(TorchDataset):
+    """Dataset of (prompt_text, doc) pairs for v3 training."""
+
+    def __init__(self, prompt_texts: List[str], docs: List[dict]):
+        self.prompt_texts = prompt_texts
+        self.docs = docs
+
+    def __len__(self):
+        return len(self.prompt_texts)
+
+    def __getitem__(self, idx):
+        return self.prompt_texts[idx], self.docs[idx]
+
+
+def compute_advantage(rewards: List[float], group_size: int) -> torch.Tensor:
+    """Group-relative advantage: (r_i - mean) / std within each group."""
+    rewards_tensor = torch.tensor(rewards, dtype=torch.float32)
+    means = rewards_tensor.view(-1, group_size).mean(dim=1, keepdim=True)
+    stds = rewards_tensor.view(-1, group_size).std(dim=1, keepdim=True).clamp(min=1e-8)
+    advantages = ((rewards_tensor - means.flatten()) / stds.flatten()).detach()
+    return advantages
+
+
+def generate_completions(
+    model,
+    tokenizer,
+    prompt: str,
+    group_size: int,
+    max_new_tokens: int,
+    temperature: float = 1.0,
+    top_p: float = 1.0,
+) -> List[str]:
+    """Generate G completions for a single prompt in a single batched call."""
+    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+    input_len = inputs["input_ids"].shape[1]
+
+    repeated_inputs = {
+        "input_ids": inputs["input_ids"].repeat(group_size, 1),
+        "attention_mask": inputs["attention_mask"].repeat(group_size, 1),
+    }
+
+    with torch.no_grad():
+        output_ids = model.generate(
+            **repeated_inputs,
+            max_new_tokens=max_new_tokens,
+            do_sample=True,
+            temperature=temperature,
+            top_p=top_p,
+            pad_token_id=tokenizer.eos_token_id,
+        )
+
+    completions = []
+    for i in range(group_size):
+        generated = output_ids[i][input_len:]
+        text = tokenizer.decode(generated, skip_special_tokens=True)
+        completions.append(text)
+    return completions
+
+
+def find_latest_checkpoint(output_dir: str) -> tuple:
+    """Find the latest checkpoint directory in output_dir."""
+    if not Path(output_dir).exists():
+        return 0, ""
+    checkpoints = []
+    for d in Path(output_dir).iterdir():
+        if d.is_dir() and d.name.startswith("checkpoint-"):
+            try:
+                step_num = int(d.name.split("-")[1])
+                checkpoints.append((step_num, str(d)))
+            except (ValueError, IndexError):
+                continue
+    if not checkpoints:
+        return 0, ""
+    checkpoints.sort(key=lambda x: x[0])
+    return checkpoints[-1]
+
+
+def save_training_state(step, optimizer, scheduler, total_rewards, ckpt_dir):
+    """Save optimizer, scheduler, and reward history."""
+    Path(ckpt_dir).mkdir(parents=True, exist_ok=True)
+    torch.save({
+        "step": step,
+        "optimizer_state_dict": optimizer.state_dict(),
+        "scheduler_state_dict": scheduler.state_dict(),
+        "rewards": total_rewards,
+    }, f"{ckpt_dir}/training_state.pt")
+
+
+def _strip_vision_config(model_path: str):
+    """Remove vision_config from model config.json."""
+    config_path = Path(model_path) / "config.json"
+    if not config_path.exists():
+        return
+    with open(config_path) as f:
+        config = json.load(f)
+    stripped = False
+    for key in list(config.keys()):
+        if "vision" in key.lower():
+            del config[key]
+            stripped = True
+    if stripped:
+        with open(config_path, "w") as f:
+            json.dump(config, f, indent=2)
+        logger.info(f"Stripped vision config from {config_path}")
+
+
+def train(config, base_model_path, output_dir, resume_step=0):
+    """GRPO v3 training with outcome rewards only, flat advantage."""
+    from unsloth import FastLanguageModel
+
+    if resume_step == 0:
+        latest_step, latest_path = find_latest_checkpoint(output_dir)
+        if latest_step > 0:
+            logger.info(
+                f"Found checkpoint at step {latest_step}: {latest_path}\n"
+                f"To resume, pass --resume-step {latest_step} --base-model {latest_path}"
+            )
+    else:
+        logger.info(f"Resuming from step {resume_step}")
+
+    logger.info(f"Loading model from {base_model_path}...")
+    _strip_vision_config(base_model_path)
+
+    model, tokenizer = FastLanguageModel.from_pretrained(
+        model_name=base_model_path,
+        max_seq_length=2048,
+        dtype=None,
+        load_in_4bit=True,
+    )
+
+    if hasattr(tokenizer, "tokenizer"):
+        tokenizer = tokenizer.tokenizer
+        logger.info("Extracted text tokenizer from VLProcessor")
+
+    model = FastLanguageModel.get_peft_model(
+        model,
+        r=config["lora_rank"],
+        lora_alpha=config["lora_alpha"],
+        lora_dropout=config["lora_dropout"],
+        target_modules=config["target_modules"],
+    )
+    model = FastLanguageModel.for_training(model)
+    logger.info(f"LoRA applied: rank={config['lora_rank']}, alpha={config['lora_alpha']}")
+
+    # Load dataset
+    logger.info(f"Loading dataset from {config['dataset_path']}...")
+    docs = []
+    with open(config["dataset_path"], "r") as f:
+        for line in f:
+            docs.append(json.loads(line))
+    logger.info(f"  Loaded {len(docs)} documents")
+
+    prompt_texts = []
+    for doc in docs:
+        chat = [{"role": "user", "content": doc["prompt"]}]
+        prompt_text = tokenizer.apply_chat_template(chat, tokenize=False, add_generation_prompt=True)
+        prompt_texts.append(prompt_text)
+
+    dataset = GRPODatasetV3(prompt_texts, docs)
+    dataloader = DataLoader(dataset, batch_size=config["per_device_train_batch_size"], shuffle=True)
+    dataloader_iter = iter(itertools.cycle(dataloader))
+
+    group_size = config["grpo_g"]
+    beta = config["beta"]
+    lr = config["learning_rate"]
+    max_steps = config["max_steps"]
+    max_completion_tokens = config["max_completion_length"]
+    warmup_steps = config["warmup_steps"]
+    save_steps = config["save_steps"]
+    logging_steps = config["logging_steps"]
+    gradient_accum_steps = config.get("gradient_accumulation_steps", 1)
+
+    optimizer = torch.optim.AdamW(
+        [p for p in model.parameters() if p.requires_grad],
+        lr=lr,
+        weight_decay=0.01,
+    )
+    from transformers import get_cosine_schedule_with_warmup
+    scheduler = get_cosine_schedule_with_warmup(
+        optimizer,
+        num_warmup_steps=warmup_steps,
+        num_training_steps=max_steps,
+    )
+
+    total_rewards = []
+    start_step = resume_step
+    if resume_step > 0:
+        state_path = f"{output_dir}/checkpoint-{resume_step}/training_state.pt"
+        if Path(state_path).exists():
+            state = torch.load(state_path, weights_only=False)
+            optimizer.load_state_dict(state["optimizer_state_dict"])
+            scheduler.load_state_dict(state["scheduler_state_dict"])
+            total_rewards = state.get("rewards", [])
+            logger.info(f"Resumed optimizer + scheduler from step {resume_step}")
+        else:
+            logger.warning(f"No training_state.pt at step {resume_step}, starting fresh")
+
+    model.train()
+    step = start_step
+    start_time = time.time()
+
+    logger.info(f"Starting GRPO v3 training (outcome rewards only, flat advantage)...")
+    logger.info(f"  Steps: {max_steps}, G: {group_size}, LR: {lr}, Beta: {beta}")
+
+    # W&B
+    wandb_mode = os.environ.get("WANDB_MODE", "online")
+    wandb_base_url = os.environ.get("WANDB_BASE_URL")
+    wandb_api_key = os.environ.get("WANDB_API_KEY")
+    if wandb_api_key:
+        wandb.login(key=wandb_api_key)
+    if wandb_base_url:
+        wandb.base_url = wandb_base_url
+    wandb.init(
+        project=os.environ.get("WANDB_PROJECT", "dm-align-grpo"),
+        name=os.environ.get("WANDB_RUN_NAME", "grpo-v3-outcome-only"),
+        config=config,
+        mode=wandb_mode,
+        save_code=False,
+    )
+
+    csv_path = f"{output_dir}/training_log.csv"
+    csv_f = open(csv_path, "w", newline="")
+    csv_writer = csv.writer(csv_f)
+    csv_writer.writerow(["step", "loss", "avg_reward", "elapsed_s", "vram_gb", "lr"])
+
+    while step < max_steps:
+        batch_prompts, batch_docs = next(dataloader_iter)
+        batch_start = time.time()
+
+        all_completions = []
+        all_prompt_texts = []
+        all_docs = []
+        for prompt, doc in zip(batch_prompts, batch_docs):
+            completions = generate_completions(
+                model, tokenizer, prompt,
+                group_size=group_size,
+                max_new_tokens=max_completion_tokens,
+            )
+            all_completions.extend(completions)
+            all_prompt_texts.extend([prompt] * group_size)
+            all_docs.extend([doc] * group_size)
+
+        rewards = [compute_outcome_reward(doc, c) for c, doc in zip(all_completions, all_docs)]
+        advantages = compute_advantage(rewards, group_size)
+
+        model.train()
+        optimizer.zero_grad()
+
+        batch_loss = 0.0
+        n_samples = len(all_completions)
+
+        lora_weights = {}
+        for name, param in model.named_parameters():
+            if param.requires_grad:
+                lora_weights[name] = param.data.clone()
+
+        all_texts = []
+        all_prompt_lengths = []
+        for i in range(n_samples):
+            all_texts.append(all_prompt_texts[i] + all_completions[i])
+            prompt_enc = tokenizer(all_prompt_texts[i], add_special_tokens=False)
+            all_prompt_lengths.append(len(prompt_enc["input_ids"]))
+
+        for i in range(n_samples):
+            text = all_texts[i]
+            tokenized = tokenizer(
+                text, truncation=True, max_length=2048, return_tensors="pt",
+            ).to(model.device)
+            input_ids = tokenized["input_ids"]
+            attn_mask = tokenized["attention_mask"]
+            prompt_len = all_prompt_lengths[i]
+
+            # Reference forward
+            for name, param in model.named_parameters():
+                if name in lora_weights:
+                    param.data.copy_(lora_weights[name])
+            model.eval()
+            with torch.no_grad():
+                ref_outputs = model(input_ids, attention_mask=attn_mask, use_cache=False)
+            ref_logits = ref_outputs.logits[0]
+            del ref_outputs
+
+            model.train()
+            new_outputs = model(input_ids, attention_mask=attn_mask, use_cache=False)
+            new_logits = new_outputs.logits[0]
+
+            new_logit_shifted = new_logits[prompt_len - 1:, :]
+            ref_logit_shifted = ref_logits[prompt_len - 1:, :]
+            labels = input_ids[0, prompt_len:]
+
+            label_mask = (labels != -100) & (labels != tokenizer.pad_token_id)
+            if label_mask.sum() == 0:
+                del new_outputs, new_logits, ref_logits
+                continue
+
+            new_log_probs = F.log_softmax(new_logit_shifted, dim=-1)
+            ref_log_probs = F.log_softmax(ref_logit_shifted, dim=-1)
+
+            new_token_lp = new_log_probs.gather(1, labels.unsqueeze(-1)).squeeze(-1)
+            ref_token_lp = ref_log_probs.gather(1, labels.unsqueeze(-1)).squeeze(-1)
+
+            old_log_probs = ref_token_lp.detach()
+            log_ratio = new_token_lp - old_log_probs
+            ratio = log_ratio.exp()
+
+            adv = advantages[i]
+            pg_loss_unclipped = -(ratio * adv).mean()
+            pg_loss_clipped = -(torch.clamp(ratio, 1.0 - 0.2, 1.0 + 0.2) * adv).mean()
+            pg_loss = torch.min(pg_loss_unclipped, pg_loss_clipped)
+
+            kl = (new_token_lp - old_log_probs).mean()
+            total_loss = pg_loss - beta * kl
+
+            total_loss.backward()
+            batch_loss += total_loss.item()
+
+            del new_outputs, new_logits, new_log_probs, ref_log_probs, new_token_lp, ref_token_lp, ref_logits
+
+        step += 1
+        if step % gradient_accum_steps == 0:
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+            optimizer.step()
+            scheduler.step()
+            optimizer.zero_grad()
+
+        avg_reward = sum(rewards) / len(rewards)
+        total_rewards.append(avg_reward)
+        elapsed = time.time() - batch_start
+        est_remaining = (elapsed / step) * (max_steps - step) / 3600
+
+        if step % logging_steps == 0 or step == 1:
+            vram = torch.cuda.memory_allocated(model.device) / 1e9
+            logger.info(
+                f"Step {step}/{max_steps} | "
+                f"Loss: {batch_loss / len(all_completions):.4f} | "
+                f"Avg Reward: {avg_reward:.3f} | "
+                f"Time: {elapsed:.1f}s | "
+                f"ETA: {est_remaining:.1f}h | "
+                f"VRAM: {vram:.1f}GB"
+            )
+
+        csv_writer.writerow([
+            step,
+            f"{batch_loss / len(all_completions):.4f}",
+            f"{avg_reward:.4f}",
+            f"{elapsed:.1f}",
+            f"{torch.cuda.memory_allocated(model.device) / 1e9:.1f}",
+            f"{scheduler.get_last_lr()[0] if hasattr(scheduler, 'get_last_lr') else lr:.2e}",
+        ])
+        csv_f.flush()
+
+        wandb.log({
+            "step": step,
+            "loss": batch_loss / len(all_completions),
+            "avg_reward": avg_reward,
+            "batch_time_s": elapsed,
+            "vram_gb": torch.cuda.memory_allocated(model.device) / 1e9,
+            "lr": scheduler.get_last_lr()[0] if hasattr(scheduler, "get_last_lr") else lr,
+        })
+
+        if step % save_steps == 0:
+            ckpt_dir = f"{output_dir}/checkpoint-{step}"
+            logger.info(f"Saving checkpoint to {ckpt_dir}...")
+            model.save_pretrained(ckpt_dir)
+            tokenizer.save_pretrained(ckpt_dir)
+            save_training_state(step, optimizer, scheduler, total_rewards, ckpt_dir)
+
+    logger.info(f"Training complete. Saving final adapter to {output_dir}...")
+    model.save_pretrained(output_dir)
+    tokenizer.save_pretrained(output_dir)
+    logger.info(f"Total time: {(time.time() - start_time) / 3600:.1f}h")
+
+    with open(f"{output_dir}/reward_history.json", "w") as f:
+        json.dump(total_rewards, f)
+    csv_f.close()
+    wandb.finish()
+    logger.info("Done.")
 
 
 def main():
-
-    parser = argparse.ArgumentParser(description="GRPO v3: Outcome rewards on causal dataset")
+    parser = argparse.ArgumentParser(description="GRPO v3 Training (outcome rewards only)")
     parser.add_argument(
         "--base-model",
-        default=GRPO_CONFIG["base_model"],
-        help="Path to SFT merged checkpoint or GRPO checkpoint to resume from",
+        default=GRPO_CONFIG_V3["base_model"],
+        help="Path to SFT merged checkpoint",
     )
     parser.add_argument(
         "--output-dir",
-        default="checkpoints/lora_adapters/grpo_adapter_v3",
-        help="Output directory for GRPO v3 adapter",
+        default=GRPO_CONFIG_V3["output_dir"],
+        help="Output directory for GRPO adapter",
     )
     parser.add_argument(
         "--dataset-path",
-        default="data/processed/grpo_causal_dataset.jsonl",
-        help="Path to causal dataset JSONL",
-    )
-    parser.add_argument(
-        "--max-steps",
-        type=int,
-        default=GRPO_CONFIG["max_steps"],
-        help="Maximum training steps",
+        default=GRPO_CONFIG_V3["dataset_path"],
+        help="Path to merged training dataset JSONL",
     )
     parser.add_argument(
         "--resume-step",
@@ -63,11 +448,9 @@ def main():
     )
     args = parser.parse_args()
 
-    config = GRPO_CONFIG.copy()
-    config["questions_path"] = args.dataset_path
-    config["max_steps"] = args.max_steps
+    config = GRPO_CONFIG_V3.copy()
+    config["dataset_path"] = args.dataset_path
 
-    # Find checkpoint mode
     if args.find_checkpoint:
         step, path = find_latest_checkpoint(args.output_dir)
         if step > 0:
@@ -79,7 +462,6 @@ def main():
             print(f"No checkpoints found in {args.output_dir}")
         return
 
-    # Auto-resume
     resume_step = args.resume_step
     base_model = args.base_model
     if resume_step > 0:
@@ -94,7 +476,6 @@ def main():
         train(config, base_model, args.output_dir, resume_step=resume_step)
     except Exception:
         logger.error("Training failed, flushing VRAM...")
-        import torch
         try:
             torch.cuda.empty_cache()
         except Exception:

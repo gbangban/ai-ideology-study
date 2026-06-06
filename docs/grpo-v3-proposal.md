@@ -308,11 +308,37 @@ for each prompt group:
 
 ---
 
-## 10. Functional Contradictions and Deviations (TODOs)
+## 10. Validation Notes
+
+These are known adaptations from the RLVMR paper, identified during code validation against `papers/2507.22844_rlvmr.md`.
+
+### 10.A Cold-Start Merge Pipeline (Critical)
+
+The cold-start SFT adapter (`checkpoints/lora_adapters/cold_start_sft`) must be merged into the base model before GRPO training. The merge step is not automatic — it must be run manually using `scripts/merge_grpo_checkpoint.py`. `grpo_config_v4.py` documents the merge pipeline and points `base_model` to `checkpoints/merged/cold_start_merged`. **If you skip the merge, GRPO trains from the original SFT checkpoint, which negates the cold-start benefit (paper ablation: -15.7pp without cold-start on ALFWorld L2).**
+
+Merge command:
+```
+python3 scripts/merge_grpo_checkpoint.py \
+    --base-model /studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330 \
+    --grpo-checkpoint checkpoints/lora_adapters/cold_start_sft \
+    --output checkpoints/merged/cold_start_merged
+```
+
+### 10.B A_MR Normalization on Small Batches (Low-Medium)
+
+The paper normalizes `A_MR` over 128 samples (batch_size=4, G=32). Our config uses batch_size=1, G=8, so `A_MR` normalizes over only 8 samples. This produces noisier per-tag advantage estimates. The normalization math is correct; the variance is higher. This is a known adaptation — not a bug — but it means process rewards have higher variance than the paper reports. If training instability occurs, increasing `grpo_g` to 16 or 32 would reduce noise.
+
+### 10.C Reflection Reward Conditionality (Low)
+
+The paper rewards reflection after failures: the agent reflects when an action fails, then takes corrective action. Our implementation rewards reflection conditional on **success**: reflection gets +1.0 only if outcome reward exceeds a threshold. This is inverted from the paper's logic but is a reasonable single-turn adaptation — in single-turn, there's no opportunity for corrective action after a "failure" within the completion. Rewarding reflection only on successful completions prevents the model from learning performative self-critique on wrong answers.
+
+---
+
+## 11. Functional Contradictions and Deviations (TODOs)
 
 These are documented as known issues to resolve before or during implementation.
 
-### 10.1 Outcome Reward Contradictions
+### 11.1 Outcome Reward Contradictions
 
 **TODO-1: Outcome rewards were keyword proxies, not correctness.** The prior proposal claimed outcome rewards (directional_assertion, dm_alignment, mechanism_commitment) serve as `A_traj`. These are keyword density scores, not factual correctness. The model can produce a structurally perfect but factually wrong response and receive full reward. **Resolved** by using EconCausal/Corr2Cause ground truth.
 
@@ -320,7 +346,7 @@ These are documented as known issues to resolve before or during implementation.
 
 **TODO-3: Corr2Cause neutral relation.** ~25.6% of Corr2Cause training data has `neutral` relation, which has no verifiable True/False answer. Current plan rewards consistency (entailment=True, contradiction=False, neutral=any). This is weaker than binary correctness. Alternative: exclude neutral, reducing Corr2Cause to ~306K samples.
 
-### 10.2 Literature Deviations
+### 11.2 Literature Deviations
 
 **TODO-4: `<commitment>` vs `<explore>`.** RLVMR's `<explore>` rewards discovering new objects/locations (anti-repetition across turns). Our `<commitment>` rewards definitive language (anti-hedging within a single completion). This is a domain adaptation, not a faithful reproduction. Justified: single-turn has no turn-to-turn repetition.
 
@@ -330,7 +356,7 @@ These are documented as known issues to resolve before or during implementation.
 
 **TODO-7: Cold-start SFT in both v3 and v4.** The paper's cold-start SFT teaches tag format. v3 doesn't use tags, so cold-start SFT for v3 teaches format that won't be used in GRPO. This is included as a control (both conditions get cold-start), but it's wasteful for v3. The shortcoming: we cannot measure cold-start's isolated effect without a v3-no-coldstart condition.
 
-### 10.3 Implementation Gaps from Audit
+### 11.3 Implementation Gaps from Audit
 
 **TODO-8: KL regularization.** v4 must use `lambda_kl=0.01` (paper's specification), not `beta=0.1` (v3's approach). The paper's lambda_KL is smaller, meaning weaker regularization — appropriate since dual advantage provides more stable gradients.
 
@@ -342,7 +368,7 @@ These are documented as known issues to resolve before or during implementation.
 
 **TODO-12: Reflection reward.** Paper's reflection reward requires corrective action after failures. Our adaptation rewards self-critique keywords and is outcome-conditional. This is weaker than the paper's "corrective action" check (which requires environment interaction), but it's the best single-turn analog.
 
-### 10.4 Experimental Design Issues
+### 11.4 Experimental Design Issues
 
 **TODO-13: Tag transfer risk.** v4 trains with tags but evaluates without. Tags ARE the output (not intermediate reasoning), so transfer risk is higher than RLVMR. Mitigated by tagless testing (§7), but empirical verification is needed.
 
@@ -358,7 +384,7 @@ These are documented as known issues to resolve before or during implementation.
 
 ---
 
-## 11. Execution Plan
+## 12. Execution Plan
 
 ### Phase 1: Infrastructure
 1. Create `rewards_v3v4.py` with correctness-based outcome rewards and process rewards
@@ -370,29 +396,39 @@ These are documented as known issues to resolve before or during implementation.
 5. Create `train_cold_start_sft.py` (5-epoch SFT)
 6. Run cold-start, verify tag compliance >= 80%
 
+### Phase 2.5: Merge Cold-Start Adapter
+7. Merge cold-start LoRA adapter into base model using `scripts/merge_grpo_checkpoint.py`:
+   ```
+   python3 scripts/merge_grpo_checkpoint.py \
+       --base-model /studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330 \
+       --grpo-checkpoint checkpoints/lora_adapters/cold_start_sft \
+       --output checkpoints/merged/cold_start_merged
+   ```
+8. Verify `grpo_config_v4.py` `base_model` points to `checkpoints/merged/cold_start_merged`
+
 ### Phase 3: v3 Training
-7. Create `train_grpo_v3.py` (outcome rewards only, flat advantage)
-8. Run v3 on merged cold-start checkpoint
-9. Evaluate v3 on EconCausal, Corr2Cause, HumanEval
+9. Create `train_grpo_v3.py` (outcome rewards only, flat advantage)
+10. Run v3 on merged cold-start checkpoint
+11. Evaluate v3 on EconCausal, Corr2Cause, HumanEval
 
 ### Phase 4: v4 Training
-10. Create `train_grpo_v4.py` (dual advantage, process rewards, KL regularization, correct clipping)
-11. Run v4 on merged cold-start checkpoint
-12. Evaluate v4 on EconCausal, Corr2Cause, HumanEval
+12. Create `train_grpo_v4.py` (dual advantage, process rewards, KL regularization, correct clipping)
+13. Run v4 on merged cold-start checkpoint
+14. Evaluate v4 on EconCausal, Corr2Cause, HumanEval
 
 ### Phase 5: Tagless Testing
-13. Create `tagless_eval.py`
-14. Run v4 tagless evaluation
-15. Compare tagged vs tagless performance
+15. Create `tagless_eval.py`
+16. Run v4 tagless evaluation
+17. Compare tagged vs tagless performance
 
 ### Phase 6: Analysis
-16. Compare v3 vs v4 across all metrics
-17. Qualitative audit of 50 held-out questions per model
-18. Document findings and update proposal
+18. Compare v3 vs v4 across all metrics
+19. Qualitative audit of 50 held-out questions per model
+20. Document findings and update proposal
 
 ---
 
-## 12. References
+## 13. References
 
 1. Kronlund-Drouault, P. (2024). Propaganda Is All You Need. arXiv:2410.01810.
 2. Saklad, D., Chadha, M., Pavlov, D., & Moraffah, E. (2025). Can Large Language Models Infer Causal Relationships from Real-World Text? arXiv:2505.18931v4.

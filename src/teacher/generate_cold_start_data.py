@@ -19,6 +19,8 @@ import random
 import sys
 from pathlib import Path
 
+import torch
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 logging.basicConfig(
@@ -154,7 +156,6 @@ def main():
     sampled = random.sample(docs, min(args.samples, len(docs)))
     logger.info(f"Sampled {len(sampled)} documents for cold-start generation")
 
-    import torch
     generate_with_base_model(args.model, None, sampled, args.output)
 
 

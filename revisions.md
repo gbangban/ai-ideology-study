@@ -2,6 +2,7 @@
 - The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
 Loading weights: 100%|████████████████████████████████████████████████████████████████████████████████████████| 760/760 [03:56<00:00,  3.21it/s]
 The tokenizer you are loading from '/studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. T
+- Figure out how to integrate hf-cli read paper command
 
 
 ## Primary Tasks

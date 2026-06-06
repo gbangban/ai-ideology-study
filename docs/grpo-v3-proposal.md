@@ -1,13 +1,13 @@
-# GRPO v3: Verifiable Causal Reasoning with Process Rewards
+# GRPO v3/v4: Verifiable Causal Reasoning with Process Rewards (RLVMR)
 
-**Date:** 2026-06-04
-**Status:** Implementation complete, awaiting training and evaluation
+**Date:** 2026-06-06
+**Status:** Fresh proposal. All prior v3/v4 code treated as hallucinated; implementation starts from this document.
 
 ---
 
 ## Abstract
 
-Supervised fine-tuning on Dialectical Materialism (DM)-aligned data improved the student model's formal causal inference (Corr2Cause: +38pp) but degraded applied economic causal reasoning (EconCausal: -4 to -13pp). The dominant failure mode is hedging: the model replaces correct directional answers (`+`) with ambiguous responses (`mixed`). This proposal describes an intervention using verifiable meta-reasoning rewards (RLVMR) and synthetic causal training data to break the hedging equilibrium. We compare four conditions: SFT baseline (no GRPO), GRPO v2 (outcome rewards on SFT questions), GRPO v3 (outcome rewards on causal dataset), and GRPO v4 (outcome + process rewards on causal dataset). Comparing v3 vs v4 on identical data isolates whether process-level rewards improve causal reasoning beyond outcome rewards alone.
+Supervised fine-tuning on Dialectical Materialism (DM)-aligned data improved the student model's formal causal inference (Corr2Cause: +38pp) but degraded applied economic causal reasoning (EconCausal: -4 to -13pp). The dominant failure mode is hedging: the model replaces correct directional answers (`+`) with ambiguous responses (`mixed`). This proposal implements RLVMR (Reinforcement Learning with Verifiable Meta-Reasoning Rewards) adapted for single-turn causal reasoning, using **outcome-based rewards from real benchmark datasets** (EconCausal, Corr2Cause) rather than keyword proxies. We compare two conditions, both with cold-start SFT: v3 (outcome rewards only, flat advantage) and v4 (outcome + process rewards, dual advantage). Comparing v3 vs v4 isolates whether process-level rewards improve causal reasoning beyond outcome rewards alone.
 
 ---
 
@@ -15,7 +15,7 @@ Supervised fine-tuning on Dialectical Materialism (DM)-aligned data improved the
 
 ### 1.1 The Hedging Regression
 
-After SFT+DPO DM alignment, the Qwen/Qwen3.5-9B student model was evaluated on two causal reasoning benchmarks. The results present a paradox:
+After SFT+DPO DM alignment, the Qwen/Qwen3.5-9B student model was evaluated on two causal reasoning benchmarks:
 
 | Benchmark | Task | Baseline BF16 | Finetuned BF16 | Change |
 |---|---|---|---|---|
@@ -25,190 +25,213 @@ After SFT+DPO DM alignment, the Qwen/Qwen3.5-9B student model was evaluated on t
 | EconCausal | Task 3 | 22.18% | 11.38% | **-10.80pp** |
 | Corr2Cause | All | 36.3% | 74.6% | **+38.3pp** |
 
-The dominant failure mode on EconCausal is the model replacing correct directional answers (`+`) with hedged answers (`mixed`). The model appears to have internalized that "everything depends on structural conditions" and applies this rule uniformly, even when the prompt defines a specific context and the empirical evidence supports a clear directional effect.
+The dominant failure mode on EconCausal is the model replacing correct directional answers (`+`) with hedged answers (`mixed`).
 
-### 1.2 Open Questions
+### 1.2 Teacher Model Audit
 
-The Corr2Cause improvement and EconCausal regression may reflect the same underlying behavior or distinct skills. Corr2Cause is binary (True/False), and the finetuned model's tendency to answer "False" may align with the benchmark's answer distribution (84.5% False) without reflecting genuine causal reasoning improvement. We cannot distinguish between improved causal graph deduction and calibrated refusal based on current data.
+Keyword audit of 250 teacher-generated answers found only 4.0% hedging. The teacher (Qwen3.5-27B) is not the source of hedging.
 
-What is clear is that the model's hedging behavior on EconCausal represents a measurable regression that warrants intervention.
+### 1.3 Why Outcome-Based Rewards Matter
 
----
+The prior proposal used keyword-based rewards (directional_assertion, dm_alignment, mechanism_commitment) as outcome signals. These are **quality proxies, not correctness signals**. A model can produce a structurally perfect response with a factually wrong commitment and receive full reward. More critically, `mixed` answers were not penalized by being wrong — they were penalized by keyword absence, which the model could game.
 
-## 2. Teacher Model Audit
-
-Before designing the intervention, we audited the SFT training data to determine whether the teacher model's answers contribute to the hedging behavior.
-
-An automated keyword audit of 250 teacher-generated answers (`data/processed/batch_00000.json`) found:
-
-| Classification | Count | Percentage |
-|---|---|---|
-| Directional commitment (no hedging) | 74 | 29.6% |
-| Hedging | 10 | 4.0% |
-| Neutral (substantive, neither committed nor hedging) | 166 | 66.4% |
-
-The teacher model (Qwen3.5-27B) does not exhibit pervasive hedging. The audit uses keyword matching and should be treated as indicative rather than definitive — the 66.4% "neutral" category may include answers that implicitly hedge through qualifications without triggering hedging keywords. Nevertheless, the data does not support the claim that the SFT training data is the primary source of the student's hedging behavior.
+**The fix:** Use ground truth from real benchmarks. EconCausal provides `answer` fields (`+`, `-`, `None`, `mixed`). Corr2Cause provides `relation` fields (`entailment`, `contradiction`, `neutral`). When the model's answer matches ground truth, `A_traj` is positive. When it hedges incorrectly, `A_traj` is negative because the answer is wrong, not because of missing keywords. This eliminates the hedging equilibrium.
 
 ---
 
-## 3. Related Work
+## 2. Related Work
 
-Five papers inform the experimental design. We distinguish each paper's established findings from our speculative application to this project.
+### 2.1 RLVMR: Verifiable Meta-Reasoning Rewards
 
-### 3.1 Ideological Bias in Economic Causal Reasoning
+**Zhang et al. (2025).** arXiv:2507.22844.
 
-**Lee et al. (2026).** "Ideological Bias in LLMs' Economic Causal Reasoning." arXiv:2604.21334.
+Process-level rewards on tagged reasoning steps improve agent performance on long-horizon tasks. Qwen2.5-7B + RLVMR achieves 83.6% on ALFWorld L2, beating GRPO by 16.4pp. Key components:
 
-Twenty SOTA LLMs evaluated on 1,056 ideology-contested causal triplets from economics/finance literature. LLMs are systematically more accurate when empirical truth aligns with intervention-oriented expectations. Open-source models show a +15.1pp accuracy gap favoring intervention-truth items. When models err, errors lean intervention-oriented.
+1. **Cold-start SFT** (200 trajectories, 5 epochs) to teach XML tag syntax
+2. **Process rewards** on `<planning>`, `<explore>`, `<reflection>`, `<monitor>` tags
+3. **Dual advantage**: `A_traj` (outcome) and `A_MR` (process) normalized separately, combined with alpha=0.5
+4. **Clipped PPO** with KL regularization (lambda_KL=0.01, clip_epsilon=0.2)
 
-**Application to this project:** DM theory emphasizes multi-causal, structurally complex outcomes, which shares features with the intervention-oriented framework documented in this paper. It is plausible that DM training shifted the model toward intervention-oriented reasoning, contributing to hedging. This connection has not been established. The paper does not study DM-aligned models, and hedging ("mixed") is not identical to intervention-oriented bias (which tends toward predicting positive effects).
+Ablation: removing outcome reward collapses performance (12.5% vs 56.3%), removing meta-reasoning reward costs 11pp, removing cold-start SFT costs 15.7pp.
 
-### 3.2 Causal Reasoning Benchmark
+**Our adaptation:** Single-turn causal reasoning (no multi-turn loop). Tags adapted to domain. Outcome rewards from real benchmark ground truth, not environment success/failure.
 
-**Sawarni et al. (2026).** "A Real-World Benchmark for Disentangled Evaluation of Causal Identification and Estimation." arXiv:2602.20571.
+### 2.2 Other References
 
-173 causal inference queries across 132 datasets. Separates identification (research design specification) from estimation (numerical computation). GPT-5.3 achieves 79.2% correct strategy selection but only 34.1% full identification specification. The bottleneck is in specification details.
-
-**Application to this project:** Our EconCausal regression may reflect identification failures — the model recognizes the causal question but misidentifies when a directional answer is warranted. We have not decomposed our model's errors into identification versus estimation failures.
-
-### 3.3 ReCITE: Causal Relationships from Text
-
-**Saklad et al. (2025).** "Can Large Language Models Infer Causal Relationships from Real-World Text?" arXiv:2505.18931v4.
-
-292 academic papers with causal loop diagrams. Best model (Claude Opus 4.5) achieves F1=0.535. All models show high precision but low recall — they generate plausible but incorrect causal relationships. Explicitness is the dominant difficulty factor. Direction reversals are rare (<1.1%).
-
-**Application to this project:** The finding that models hallucinate causal connections is consistent with our Task 3 regression (-10.80pp), where the model may force connections between unrelated variables. The connection is indirect since Task 3 tests misinformation detection, not causal graph reconstruction.
-
-### 3.4 Propaganda Is All You Need
-
-**Kronlund-Drouault (2024).** "Propaganda Is All You Need." arXiv:2410.01810.
-
-SFT alignment reorganizes embedding space; DPO is comparatively surface-level. Training GPT-2 on Trotskyist data shifted embedding distances between political concepts. Narrow fine-tuning produces broad misalignment across unrelated domains.
-
-**Application to this project:** If SFT has deeper representational effects than GRPO, then hedging established during SFT may be difficult to correct through reward optimization alone. The paper's experiments use GPT-2, so generalizability to modern models is uncertain.
-
-### 3.5 RLVMR: Verifiable Meta-Reasoning Rewards
-
-**Zhang et al. (2025).** "Reinforcement Learning with Verifiable Meta-Reasoning Rewards for Robust Long-Horizon Agents." arXiv:2507.22844.
-
-Process-level rewards on tagged reasoning steps improve agent performance on long-horizon tasks. Qwen2.5-7B + RLVMR achieves 83.6% on ALFWorld L2 (unseen categories), beating GiGPO by 16.4pp. Ablation: removing outcome reward collapses performance (12.5% vs 56.3%), removing meta-reasoning reward costs 11pp, removing cold-start SFT costs 15.7pp.
-
-**Application to this project:** We adapt the tagged reasoning format and process rewards to causal reasoning. RLVMR was designed for task-completion agents. Transfer to causal reasoning is plausible but untested.
+See §3 of the original proposal for Lee et al. (ideological bias), Sawarni et al. (causal reasoning benchmark), Saklad et al. (ReCITE), and Kronlund-Drouault (propaganda). Unchanged from prior analysis.
 
 ---
 
-## 4. Hypotheses
+## 3. Training Data
 
-**H1 (Process rewards reduce hedging):** v4 (process + outcome rewards on causal data) will produce fewer hedged responses than v3 (outcome-only rewards on the same causal data). The commitment tag structure removes hedging as a reward-maximizing strategy.
+### 3.1 Primary Datasets (Hugging Face)
 
-**H2 (Causal graph training transfers):** Training on programmatic DAG queries with verifiable ground truth will improve EconCausal Task 1 accuracy. The skill of identifying confounders, mediators, and colliders in abstract graphs is transferable to economic causal questions.
+| Dataset | HF Path | Config | Train Samples | Ground Truth | Format |
+|---|---|---|---|---|---|
+| EconCausal | `qwqw3535/econcausal-benchmark` | `task1_econ` | 947 | `answer` (+, -, None, mixed) | Q&A with context |
+| EconCausal | `qwqw3535/econcausal-benchmark` | `task1_finance` | 860 | `answer` (+, -, None, mixed) | Q&A with context |
+| EconCausal | `qwqw3535/econcausal-benchmark` | `task2` | 284 | `answer` (+, -, None, mixed) | Q&A with context |
+| EconCausal | `qwqw3535/econcausal-benchmark` | `task3` | 852 | `answer` (+, -, None, mixed) | Q&A with context |
+| Corr2Cause | `tasksource/corr2cause` | — | 411,452 | `relation` (entailment, contradiction, neutral) | Premise + hypothesis |
+| **Total** | | | **~414,400** | | |
 
-**H3 (Context-flipping trains conditional commitment):** Presenting the same causal relationship under two institutional contexts and rewarding distinct directional answers teaches the model to commit within a defined context while remaining flexible across contexts.
+**EconCausal answer distribution (training):**
+- `+`: 1,203 (46.5%)
+- `-`: 1,007 (39.0%)
+- `None`: 266 (10.3%)
+- `mixed`: 61 (2.4%)
 
-**H4 (Null-effect training reduces spurious causality):** Training on orthogonal variable pairs where the correct answer is null effect reduces the model's tendency to force connections between unrelated variables, potentially improving Task 3 accuracy.
+**Corr2Cause relation distribution (training):**
+- `contradiction`: 229,693 (55.8%)
+- `neutral`: 105,179 (25.6%)
+- `entailment`: 76,580 (18.6%)
 
-**H5 (Verifiable rewards improve training efficiency):** Rule-based rewards eliminate judge model overhead, reducing per-step compute cost and removing judge model bias as a confounding variable.
+### 3.2 Synthetic Dataset (Supplementary)
 
----
+The synthetic dataset (`data/processed/grpo_causal_dataset.jsonl`, 620 prompts) is retained as supplementary training data for format diversity and domain-specific reasoning patterns. It is **not** the primary training data.
 
-## 5. Method
-
-### 5.1 Training Data
-
-A synthetic dataset of 660 prompts across six categories:
-
-| Category | Count | Ground Truth Type | Description |
+| Category | Count | Ground Truth | In Training? |
 |---|---|---|---|
-| Causal graph (general) | 100 | Programmatic | DAGs with d-separation queries. General domain to avoid economic vocabulary confound. |
-| Causal graph (economic) | 100 | Programmatic | Same DAG structure with economic variable names. Tests skill transfer with economic vocabulary. |
-| Context-flip pairs | 280 (140x2) | Structural | Same causal relationship under two institutional contexts. Rewards distinct directional answers. |
-| Null-effect (economic) | 60 | Structural | Orthogonal economic variables. Rewards explicit null effect declaration. |
-| Null-effect (general) | 40 | Structural | Orthogonal general variables. Prevents economic-only overfitting. |
-| Contradiction (economic) | 80 | Structural | Opposing claims on the same topic. Rewards quality of reasoning for both sides. |
+| causal_graph | 160 | Programmatic (d-separation) | **Parked** — needs `graph_correctness` reward |
+| context_flip | 280 | Structural | Yes (supplementary) |
+| null_effect | 100 | Structural (`null`) | Yes (supplementary) |
+| contradiction_pair | 80 | Structural | Yes (supplementary) |
 
-**Programmatic ground truth (Type A):** Causal graph queries where correctness is determined by d-separation algorithm applied to the generated DAG. No model judgment involved. DAGs are generated via topological ordering, which guarantees acyclicity.
+### 3.3 Training Set Composition
 
-**Structural rewards (Type B):** Context-flip, null-effect, and contradiction data. Reward is based on response structure (tag presence, commitment format, directional distinction), not factual accuracy. This is a pragmatic choice: we lack verifiable factual labels for economic causal claims. A limitation is that the model could produce a structurally correct response with a factually wrong commitment and receive full reward.
+**Active training data:** EconCausal (task1_econ + task1_finance + task2 + task3 = 2,943 prompts) + Corr2Cause (sampled to 5,000 prompts for balanced training) + synthetic (360 non-DAG prompts) = **~8,300 prompts**.
 
-### 5.2 Reward Structure
+**Sampling rationale:** Corr2Cause has 411K samples but is homogeneous in format (premise + hypothesis). We sample 5,000 to avoid dominance while providing sufficient coverage. EconCausal's 2,943 prompts are all used — they're the primary domain for the hedging problem.
 
-**v4 rewards (7 components, sum to 1.0):**
+**TODO:** Determine optimal Corr2Cause sample size. Current choice (5,000) balances format diversity against dataset dominance. Ablation with 1,000 and 50,000 would clarify the sweet spot.
 
-| Reward | Weight | Type | Description |
-|---|---|---|---|
-| `directional_assertion` | 0.25 | Outcome | +0.5 per commitment keyword, -0.5 per hedging keyword |
-| `dm_alignment` | 0.15 | Outcome | 2 of 3 DM keyword categories required for full score |
-| `mechanism_commitment` | 0.15 | Outcome | Mechanism naming + directional commitment |
-| `planning` | 0.15 | Process | `<planning>` tag with >=2 variable keywords |
-| `commitment` | 0.15 | Process | `<commitment>` tag with definitive direction |
-| `monitor` | 0.10 | Process | `<monitor>` tag referencing context/constraints |
-| `format_penalty` | 0.05 | Process | -0.05 per missing required tag |
+---
 
-**v2/v3 rewards (3 components, sum to 1.0):**
+## 4. Reward Structure
 
-| Reward | Weight | Type |
-|---|---|---|
-| `dm_alignment` | 0.45 | Outcome |
-| `directional_assertion` | 0.30 | Outcome |
-| `mechanism_commitment` | 0.25 | Outcome |
+### 4.1 Outcome Rewards (Correctness-Based)
 
-v2 and v3 share the same outcome-only reward weights. v4 redistributes weight from outcome rewards to process rewards, with DM keyword alignment decreasing from 0.45 to 0.15.
+Outcome rewards are computed by comparing the model's answer to ground truth. This is the fundamental change from the prior proposal.
 
-### 5.3 RLVMR Tagged Output Format
-
-v4 requires the model to produce tagged output:
-
+**EconCausal outcome reward:**
 ```
-<planning>
-Identify variables and context.
-</planning>
-<reasoning>
-Trace causal mechanisms.
-</reasoning>
-<commitment>
-Definitive directional answer.
-</commitment>
-<monitor>
-Self-check against context.
-</monitor>
+extract_sign(completion) -> one of "+", "-", "None", "mixed"
+answer = doc["answer"]  # ground truth
+correctness = 1.0 if extract_sign(completion) == answer else 0.0
 ```
 
-Process rewards activate only when tags are present. The model has not been trained on this format (no cold-start SFT). Whether the model learns tag production through RL pressure alone is an open question. RLVMR's ablation shows -15.7pp without cold-start SFT, suggesting convergence will be slower than the prescribed approach.
+The sign extraction logic mirrors `evals/configs/task_configs/econcausal.py`: JSON extraction first, then context-aware regex, then standalone token fallback.
 
-### 5.4 Experimental Conditions
+**Corr2Cause outcome reward:**
+```
+extract_bool(completion) -> True/False
+relation = doc["relation"]  # "entailment", "contradiction", "neutral"
+# Map relation to expected boolean:
+#   entailment -> True (hypothesis follows from premise)
+#   contradiction -> False (hypothesis contradicts premise)
+#   neutral -> ambiguous (model's answer doesn't determine correctness)
+correctness = 1.0 if match else 0.0
+```
 
-Four conditions, same base model checkpoint, same hyperparameters:
+**TODO:** Corr2Cause `neutral` relation has no verifiable ground truth for True/False. Options: (a) exclude neutral from training, (b) reward confidence calibration (penalize both True and False for neutral), (c) use a third label. Current plan: include neutral but reward only when the model's answer is consistent with the relation (entailment=True, contradiction=False, neutral=any). This is weaker than binary correctness but still better than keyword proxies.
+
+**Synthetic data outcome reward:** For the 360 non-DAG synthetic prompts without ground truth, fall back to keyword-based quality proxies (directional_assertion, dm_alignment, mechanism_commitment, weighted 0.40/0.30/0.30). This is a known limitation: ~4.3% of training data uses proxy rewards.
+
+### 4.2 Process Rewards (RLVMR Tags)
+
+Process rewards activate on tagged output. Each is normalized independently for `A_MR` computation.
+
+| Reward | Tag | Description |
+|---|---|---|
+| `planning` | `<planning>` | +1.0 if tag present with >=2 variable keywords, **conditional on outcome success** |
+| `commitment` | `<commitment>` | +1.0 for definitive answer (any label: +, -, mixed, null), -0.5 for hedging |
+| `reflection` | `<reflection>` | +1.0 for self-critique with keywords, +0.5 for self-referential language |
+| `monitor` | `<monitor>` | Context/constraint reference check |
+| `format_penalty` | — | -0.1 per missing required tag |
+
+**Tag adaptations from RLVMR paper:**
+- `<commitment>` replaces `<explore>`: anti-hedging (domain) vs anti-repetition (paper). Single-turn has no repetition to penalize.
+- `<reflection>` is reintroduced with outcome-conditional reward: reflection is only rewarded if outcome reward exceeds threshold, preventing performative reflection on wrong answers.
+- `<monitor>` retained but not required in format penalty.
+
+**TODO:** Document that `<commitment>` is not a faithful reproduction of RLVMR's `<explore>`. The paper's explore reward checks for new object/location discovery across turns. Our commitment reward checks for definitive language within a single completion. The adaptation is justified (single-turn has no turn-to-turn repetition), but it's a deviation from the paper's mechanism.
+
+### 4.3 Dual Advantage (v4 only)
+
+v4 computes two separate advantages per RLVMR Equations 2-4:
+
+```
+A_traj = normalize(outcome_rewards) within each prompt group    # Eq 2
+A_MR = normalize(process_rewards) per tag group, averaged       # Eq 3
+A_t = alpha * A_traj + (1 - alpha) * A_MR                       # Eq 4, alpha=0.5
+```
+
+v3 uses flat advantage: single normalization of the weighted sum of all rewards.
+
+---
+
+## 5. Experimental Conditions
+
+### 5.1 Conditions
+
+Both conditions include cold-start SFT. This isolates process rewards + dual advantage as the variable.
 
 | Condition | Data | Rewards | Format | What it isolates |
 |---|---|---|---|---|
 | SFT baseline | — | — | Free-form | Starting point |
-| GRPO v2 | Original SFT questions | 3 outcome rewards | Free-form | Effect of outcome-reward GRPO on SFT data |
-| GRPO v3 | Synthetic causal dataset | 3 outcome rewards | Free-form | Effect of causal data with outcome rewards |
-| GRPO v4 | Synthetic causal dataset | 3 outcome + 4 process rewards | RLVMR tagged | Effect of adding process rewards |
+| GRPO v3 | EconCausal + Corr2Cause + synthetic | Outcome rewards only (correctness-based) | Free-form | Effect of outcome-reward GRPO on real data |
+| GRPO v4 | EconCausal + Corr2Cause + synthetic | Dual advantage (outcome + process) | RLVMR tagged | Effect of adding process rewards + dual advantage |
 
-**Clean comparisons:**
-- `v4 vs v3`: Effect of process rewards on the same causal data (isolated)
-- `v3 vs v2`: Effect of causal data vs SFT questions with same rewards (isolated)
-- `v2 vs SFT`: Effect of outcome-reward GRPO on SFT questions
-- `v4 vs SFT`: Effect of the full pipeline
+### 5.2 Shared Hyperparameters
 
-**Shared hyperparameters:**
 - LoRA: rank=16, alpha=16, dropout=0.05, 7 target modules
 - Training: batch=1, gradient accumulation=4, LR=5e-7, cosine scheduler
 - GRPO: g=8, max length=512, beta=0.1
-- Steps: 500 with 50 warmup
+- Steps: 1,000 with 100 warmup
+
+**TODO:** 1,000 steps on ~8,300 prompts with g=8 completions = ~9.8 epochs. The paper uses 100 epochs on 200 trajectories. Our epoch count is lower because we have more diverse data. Ablation with 2,000 and 500 steps would clarify whether 1,000 is sufficient.
+
+### 5.3 v4-Specific Hyperparameters (per RLVMR paper)
+
+- `alpha` (outcome/process mix): 0.5
+- `lambda_kl` (KL regularization): 0.01
+- `clip_epsilon` (per-token KL clipping): 0.2
+- `lambda_format` (missing tag penalty): -0.1 per tag
 
 ---
 
-## 6. Evaluation
+## 6. Cold-Start SFT
 
-### 6.1 Primary Metric: EconCausal Accuracy
+Both v3 and v4 receive cold-start SFT. This follows the paper's prescription (Table 3: -15.7pp without cold-start) and controls for format exposure.
 
-All four models evaluated on EconCausal Task 1 Economics, Task 1 Finance, Task 2, and Task 3. We report accuracy by task and the distribution of `+`, `-`, and `mixed` answers.
+**Data generation:** Teacher model (Qwen3.5-27B) generates tagged demonstrations. The teacher is not DM-specific, so it can produce high-quality tagged reasoning without domain contamination. Sample 200 prompts from the training set, generate 3 tagged completions per prompt (600 total), SFT for 5 epochs.
 
-**Success criterion for v4 over SFT:** Statistically significant improvement on at least one Task 1 subtask (Task 1 Economics or Task 1 Finance) at p < 0.05.
+**TODO:** Document that cold-start SFT is included in both v3 and v4. This is a deliberate choice to isolate process rewards as the variable between conditions. The prior proposal had v3 without cold-start, which confounded format exposure with process rewards. The shortcoming: we cannot measure the isolated effect of cold-start SFT without a third condition (v3-no-coldstart). This is a known confound.
 
-### 6.2 Secondary Metrics
+---
+
+## 7. Tagless Testing
+
+v4 trains with tagged output but is evaluated on benchmarks that expect free-form answers. To verify v4 doesn't collapse without tags:
+
+1. **Tagless evaluation:** After v4 training, evaluate on EconCausal/Corr2Cause with prompts that do NOT instruct tagged format. The model should produce free-form answers that still demonstrate improved causal reasoning.
+2. **Tagless ablation:** Run a small inference test (100 prompts) where the model is explicitly instructed to produce free-form output. Compare reward scores and answer distributions against tagged output.
+
+**TODO:** Tag transfer risk is higher than RLVMR's because our tags ARE the output structure, not intermediate reasoning steps. The paper's agents produce `<action>` tags during training but are evaluated on environment success (tag-agnostic). Our model produces `<commitment>` tags during training but is evaluated on free-form EconCausal answers. If the model learns to reason only within tags, transfer will fail. Mitigation: cold-start SFT teaches format, but GRPO rewards content within tags, not format itself. The commitment reward checks for definitive language, not tag presence. This should promote transfer, but it needs empirical verification.
+
+---
+
+## 8. Evaluation
+
+### 8.1 Primary Metric: EconCausal Accuracy
+
+All models evaluated on EconCausal Task 1 Economics, Task 1 Finance, Task 2, Task 3. Report accuracy by task and answer distribution (`+`, `-`, `mixed`, `None`).
+
+**Success criterion for v4 over SFT:** Statistically significant improvement on at least one Task 1 subtask at p < 0.05 (binomial test).
+
+**TODO:** Define sample size for statistical power. With Task 1 Economics at ~947 samples, a 5pp improvement (48% -> 53%) requires ~380 samples for 80% power at alpha=0.05. The full dataset provides sufficient power. However, the success criterion ("at least one Task 1 subtask") is a multiple-comparison problem (two subtasks). Apply Bonferroni correction: p < 0.025 per subtask.
+
+### 8.2 Secondary Metrics
 
 | Metric | Purpose |
 |---|---|
@@ -216,65 +239,165 @@ All four models evaluated on EconCausal Task 1 Economics, Task 1 Finance, Task 2
 | HumanEval pass@1 | Check for coding degradation |
 | Directional assertion rate | Fraction of EconCausal answers that are `+` or `-` rather than `mixed` |
 
-### 6.3 Training Metrics
+### 8.3 Training Metrics
 
 Logged per step:
 - Average total reward and per-component reward means
-- For v4: tag compliance rate (fraction of completions with all required tags)
+- For v4: tag compliance rate, `A_traj` vs `A_MR` distribution
+- Reward saturation detection: if average reward plateaus for 100+ steps, flag for early stopping
 
-### 6.4 Qualitative Audit
-
-Manual review of 50 held-out economic causal questions per model:
-- Hedging frequency: responses containing hedging language
-- Mechanism quality: whether named causal mechanism is structurally sound
-- For v4: tag compliance and tag content quality
+**TODO:** Implement early stopping/reward saturation monitoring. The paper doesn't specify early stopping criteria. Current plan: stop if average reward doesn't improve for 200 steps or if KL divergence exceeds threshold. Need to define these thresholds empirically.
 
 ---
 
-## 7. Limitations
+## 9. Implementation
 
-**Structural rewards are not factual rewards.** Type B rewards verify response structure, not factual correctness. The model could produce a perfectly structured response with a factually wrong directional commitment and receive full reward. This means v4 may improve the model's willingness to commit without improving commitment accuracy.
+### 9.1 Files to Create (All New)
 
-**Small dataset.** 660 prompts with 8 completions each over 500 steps produces 4,000 completions (with prompt sampling with replacement). If the model overfits to the synthetic data, we would observe high training reward scores without benchmark improvement.
+| File | Purpose |
+|---|---|
+| `src/student/train_grpo_v3.py` | Outcome-reward GRPO with correctness-based rewards, flat advantage |
+| `src/student/train_grpo_v4.py` | Dual-advantage GRPO with process rewards, KL regularization, correct clipping |
+| `src/student/rewards_v3v4.py` | Correctness-based outcome rewards + process rewards (replaces current `rewards.py` RLVMR section) |
+| `src/student/grpo_config_v4.py` | `GRPO_CONFIG_V3` and `GRPO_CONFIG_V4` with all hyperparameters |
+| `src/teacher/generate_cold_start_data.py` | Teacher-generated tagged demonstrations |
+| `src/student/train_cold_start_sft.py` | 5-epoch SFT on tagged data |
+| `scripts/run_cold_start.sh` | Cold-start runner |
+| `scripts/run_grpo_v3.sh` | v3 training runner |
+| `scripts/run_grpo_v4.sh` | v4 training runner |
+| `src/student/tagless_eval.py` | Tagless evaluation harness |
 
-**Tag format may not transfer to evaluation.** Eval benchmarks expect free-form answers. If the model reasons well only within the tagged format, the skill may not transfer to untagged evaluation.
+### 9.2 Reward Function Design
 
-**No cold-start SFT for tagged format.** RLVMR's ablation shows -15.7pp without cold-start SFT. If tags never emerge during training, the process reward signal remains near zero and the experiment tests whether format penalties alone can induce tag production.
+**`rewards_v3v4.py`** contains:
+
+1. `compute_econcausal_correctness(completion, ground_truth)` — extracts sign, compares to answer
+2. `compute_corr2cause_correctness(completion, relation)` — extracts True/False, maps relation to expected answer
+3. `compute_null_correctness(completion)` — for synthetic null_effect prompts
+4. `compute_proxy_outcome(completion, category)` — keyword proxies for synthetic prompts without ground truth
+5. `compute_planning_reward(text, success)` — success-conditional planning reward
+6. `compute_commitment_reward(text)` — generalized commitment (any label)
+7. `compute_reflection_reward(text)` — self-critique reward
+8. `compute_monitor_reward(text)` — context reference check
+9. `compute_format_penalty(text)` — -0.1 per missing tag
+10. `compute_outcome_reward(doc, completion)` — unified outcome reward (dispatches by dataset type)
+11. `compute_process_rewards(text, outcome_success)` — returns dict of per-tag rewards
+
+### 9.3 Training Loop Design
+
+**`train_grpo_v3.py`** (flat advantage):
+```
+for each prompt group:
+    completions = generate_completions(prompt, g=8)
+    outcome_rewards = [compute_outcome_reward(doc, c) for c in completions]
+    advantages = compute_advantage(outcome_rewards, group_size)  # flat normalization
+    loss = ppo_clip_loss(ratios, advantages, clip_epsilon=0.2)
+    loss = loss - beta * kl_approximation  # beta=0.1
+```
+
+**`train_grpo_v4.py`** (dual advantage):
+```
+for each prompt group:
+    completions = generate_completions(prompt, g=8)
+    outcome_rewards = [compute_outcome_reward(doc, c) for c in completions]
+    process_rewards = {tag: [compute_X_reward(c, outcome_success) for c in completions] for tag in tags}
+    advantages = compute_rlvmr_advantage(outcome_rewards, process_rewards, group_size, alpha=0.5)
+    loss = ppo_clip_loss(ratios, advantages, clip_epsilon=0.2)
+    loss = loss - lambda_kl * kl_approximation  # lambda_kl=0.01
+```
 
 ---
 
-## 8. Implementation
+## 10. Functional Contradictions and Deviations (TODOs)
 
-All code is implemented and tested (51/51 tests passing):
+These are documented as known issues to resolve before or during implementation.
 
-| Component | Files | Tests |
-|---|---|---|
-| Data generation | `src/teacher/generate_causal_graphs.py`, `generate_context_flips.py`, `generate_null_effects.py`, `generate_contradiction_pairs.py`, `build_grpo_dataset.py` | 13/13 |
-| RLVMR rewards | `src/student/rewards.py` (4 new functions) | 14/14 |
-| Training v2 | `src/student/train_grpo.py` (original, unchanged) | — |
-| Training v3 | `src/student/train_grpo_v3.py` (outcome rewards on causal data) | — |
-| Training v4 | `src/student/train_grpo_v4.py` (process + outcome rewards on causal data) | — |
-| Configuration | `src/student/grpo_config.py` | — |
-| Dataset | `data/processed/grpo_causal_dataset.jsonl` (620 prompts) | — |
+### 10.1 Outcome Reward Contradictions
+
+**TODO-1: Outcome rewards were keyword proxies, not correctness.** The prior proposal claimed outcome rewards (directional_assertion, dm_alignment, mechanism_commitment) serve as `A_traj`. These are keyword density scores, not factual correctness. The model can produce a structurally perfect but factually wrong response and receive full reward. **Resolved** by using EconCausal/Corr2Cause ground truth.
+
+**TODO-2: Synthetic data without ground truth.** 360/8,300 synthetic prompts (4.3%) lack verifiable answers. These fall back to keyword proxies. This is acceptable because the majority of training data has ground truth, but it means `A_traj` is heterogeneous: correctness for ~96%, keyword density for ~4%.
+
+**TODO-3: Corr2Cause neutral relation.** ~25.6% of Corr2Cause training data has `neutral` relation, which has no verifiable True/False answer. Current plan rewards consistency (entailment=True, contradiction=False, neutral=any). This is weaker than binary correctness. Alternative: exclude neutral, reducing Corr2Cause to ~306K samples.
+
+### 10.2 Literature Deviations
+
+**TODO-4: `<commitment>` vs `<explore>`.** RLVMR's `<explore>` rewards discovering new objects/locations (anti-repetition across turns). Our `<commitment>` rewards definitive language (anti-hedging within a single completion). This is a domain adaptation, not a faithful reproduction. Justified: single-turn has no turn-to-turn repetition.
+
+**TODO-5: Single-turn vs multi-turn.** RLVMR's rewards are per-step within episodes (30-step ALFWorld episodes). Our rewards are per-completion (single turn). The "dense, process-level supervision" becomes "dense, per-tag supervision." This is a structural limitation of the domain, not an implementation choice.
+
+**TODO-6: No multi-turn advantage comparison.** RLVMR compares advantages across turns to detect when process rewards diverge from outcome rewards. Single-turn has no turn comparison. This mechanism is absent.
+
+**TODO-7: Cold-start SFT in both v3 and v4.** The paper's cold-start SFT teaches tag format. v3 doesn't use tags, so cold-start SFT for v3 teaches format that won't be used in GRPO. This is included as a control (both conditions get cold-start), but it's wasteful for v3. The shortcoming: we cannot measure cold-start's isolated effect without a v3-no-coldstart condition.
+
+### 10.3 Implementation Gaps from Audit
+
+**TODO-8: KL regularization.** v4 must use `lambda_kl=0.01` (paper's specification), not `beta=0.1` (v3's approach). The paper's lambda_KL is smaller, meaning weaker regularization — appropriate since dual advantage provides more stable gradients.
+
+**TODO-9: Clipping epsilon.** v4 must use `clip_epsilon=0.2` (PPO standard), not `beta=0.1` (prior v4 code). Tighter clipping constrains policy updates and may slow learning.
+
+**TODO-10: Format penalty strength.** Paper specifies -0.1 per format violation per step. Our single-turn adaptation applies -0.1 per missing tag per completion. Maximum penalty is -0.4 (4 tags). This is weaker than the paper's per-step application during 30-step episodes, but appropriate for single-turn.
+
+**TODO-11: Planning reward conditionality.** Paper's planning reward is success-conditional (awarded only if trajectory succeeds). Prior code awarded planning unconditionally. Fixed: planning reward now requires outcome reward > threshold.
+
+**TODO-12: Reflection reward.** Paper's reflection reward requires corrective action after failures. Our adaptation rewards self-critique keywords and is outcome-conditional. This is weaker than the paper's "corrective action" check (which requires environment interaction), but it's the best single-turn analog.
+
+### 10.4 Experimental Design Issues
+
+**TODO-13: Tag transfer risk.** v4 trains with tags but evaluates without. Tags ARE the output (not intermediate reasoning), so transfer risk is higher than RLVMR. Mitigated by tagless testing (§7), but empirical verification is needed.
+
+**TODO-14: Undertraining risk.** 1,000 steps × 8 completions / 8,300 prompts ≈ 0.96 epochs. This is far fewer epochs than the paper's 100. However, our dataset is much larger and more diverse. The question is whether 1,000 steps is sufficient for policy convergence. Ablation with 2,000 and 5,000 steps would clarify.
+
+**TODO-15: EconCausal success criterion sample size.** With ~947 Task 1 Economics samples, a 5pp improvement requires ~380 samples for 80% power. The full dataset provides sufficient power, but the multiple-comparison problem (two Task 1 subtasks) requires Bonferroni correction.
+
+**TODO-16: Early stopping.** No early stopping criteria defined. Need to implement reward saturation detection and KL divergence monitoring.
+
+**TODO-17: Reward weight for proxy data.** For the 4.3% of synthetic prompts without ground truth, keyword proxies are used. The weight of proxy rewards relative to correctness rewards is 1.0:1.0 (same scale). This means proxy rewards have the same influence as correctness rewards, which may be inappropriate since proxies are noisy. Consider scaling proxy rewards by 0.5.
+
+**TODO-18: Cold-start SFT data source.** Teacher model (Qwen3.5-27B) generates tagged demonstrations. The teacher is not DM-specific, so it can produce high-quality tagged reasoning. However, the teacher's reasoning style may differ from the student's (post-SFT+DPO) reasoning style. This could cause a distribution shift during cold-start SFT. Mitigation: use the student's SFT+DPO checkpoint as the base for cold-start SFT, not the base model.
 
 ---
 
-## 9. Execution Plan
+## 11. Execution Plan
 
-1. Evaluate SFT baseline on EconCausal, Corr2Cause, HumanEval (partially completed)
-2. Run v2 GRPO: `python3 -m src.student.train_grpo --max-steps 500`
-3. Run v3 GRPO: `python3 -m src.student.train_grpo_v3 --max-steps 500`
-4. Run v4 GRPO: `python3 -m src.student.train_grpo_v4 --max-steps 500`
-5. Evaluate all GRPO models on EconCausal, Corr2Cause, HumanEval
-6. Compare SFT baseline vs v2 vs v3 vs v4 across all metrics
-7. Qualitative audit of 50 held-out questions per model
+### Phase 1: Infrastructure
+1. Create `rewards_v3v4.py` with correctness-based outcome rewards and process rewards
+2. Create `grpo_config_v4.py` with `GRPO_CONFIG_V3` and `GRPO_CONFIG_V4`
+3. Create dataset loading pipeline for EconCausal + Corr2Cause + synthetic
+
+### Phase 2: Cold-Start SFT
+4. Create `generate_cold_start_data.py` (teacher generates tagged demonstrations)
+5. Create `train_cold_start_sft.py` (5-epoch SFT)
+6. Run cold-start, verify tag compliance >= 80%
+
+### Phase 3: v3 Training
+7. Create `train_grpo_v3.py` (outcome rewards only, flat advantage)
+8. Run v3 on merged cold-start checkpoint
+9. Evaluate v3 on EconCausal, Corr2Cause, HumanEval
+
+### Phase 4: v4 Training
+10. Create `train_grpo_v4.py` (dual advantage, process rewards, KL regularization, correct clipping)
+11. Run v4 on merged cold-start checkpoint
+12. Evaluate v4 on EconCausal, Corr2Cause, HumanEval
+
+### Phase 5: Tagless Testing
+13. Create `tagless_eval.py`
+14. Run v4 tagless evaluation
+15. Compare tagged vs tagless performance
+
+### Phase 6: Analysis
+16. Compare v3 vs v4 across all metrics
+17. Qualitative audit of 50 held-out questions per model
+18. Document findings and update proposal
 
 ---
 
-## 10. References
+## 12. References
 
 1. Kronlund-Drouault, P. (2024). Propaganda Is All You Need. arXiv:2410.01810.
 2. Saklad, D., Chadha, M., Pavlov, D., & Moraffah, E. (2025). Can Large Language Models Infer Causal Relationships from Real-World Text? arXiv:2505.18931v4.
 3. Sawarni, R., Tan, S., & Syrgkanis, V. (2026). A Real-World Benchmark for Disentangled Evaluation of Causal Identification and Estimation. arXiv:2602.20571.
 4. Zhang, Y., Chen, Y., Li, S., Tu, C., & Li, H. (2025). Reinforcement Learning with Verifiable Meta-Reasoning Rewards for Robust Long-Horizon Agents. arXiv:2507.22844.
 5. Lee, J., Yun, S., Kim, H., Min, S., Park, J., Park, S., & Kim, S. (2026). Ideological Bias in LLMs' Economic Causal Reasoning. arXiv:2604.21334.
+6. EconCausal Benchmark: https://huggingface.co/datasets/qwqw3535/econcausal-benchmark
+7. Corr2Cause: https://huggingface.co/datasets/tasksource/corr2cause

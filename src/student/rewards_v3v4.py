@@ -441,15 +441,24 @@ def compute_monitor_reward(text: str) -> float:
     return min(1.0, kw_count * 0.5) if kw_count > 0 else 0.0
 
 
-def compute_format_penalty(text: str) -> float:
+def compute_format_penalty(
+    text: str,
+    required_tags: List[str] = None,
+    penalty_per_tag: float = -0.1,
+) -> float:
     """Penalize missing RLVMR tags.
 
-    -0.1 per missing required tag (planning, commitment, reflection, monitor).
+    Args:
+        text: Model output to check.
+        required_tags: List of required tag names. Defaults to RLVMR_REQUIRED_TAGS.
+        penalty_per_tag: Penalty per missing tag. Defaults to -0.1.
     """
+    if required_tags is None:
+        required_tags = RLVMR_REQUIRED_TAGS
     if not text or len(text.strip()) < 10:
-        return -0.1 * len(RLVMR_REQUIRED_TAGS)
-    missing = sum(1 for tag in RLVMR_REQUIRED_TAGS if _extract_tag(text, tag) is None)
-    return -0.1 * missing
+        return penalty_per_tag * len(required_tags)
+    missing = sum(1 for tag in required_tags if _extract_tag(text, tag) is None)
+    return penalty_per_tag * missing
 
 
 # --- Process Rewards Aggregation ---
@@ -457,12 +466,19 @@ def compute_format_penalty(text: str) -> float:
 OUTCOME_SUCCESS_THRESHOLD = 0.5
 
 
-def compute_process_rewards(text: str, outcome_reward: float) -> Dict[str, float]:
+def compute_process_rewards(
+    text: str,
+    outcome_reward: float,
+    required_tags: List[str] = None,
+    penalty_per_tag: float = -0.1,
+) -> Dict[str, float]:
     """Compute all process-level rewards.
 
     Args:
         text: Model's generated text.
         outcome_reward: Outcome reward score (used for success conditionality).
+        required_tags: List of required tag names. Defaults to RLVMR_REQUIRED_TAGS.
+        penalty_per_tag: Penalty per missing tag. Defaults to -0.1.
 
     Returns:
         Dict mapping reward name to score.
@@ -473,7 +489,7 @@ def compute_process_rewards(text: str, outcome_reward: float) -> Dict[str, float
         "commitment": compute_commitment_reward(text),
         "reflection": compute_reflection_reward(text, success),
         "monitor": compute_monitor_reward(text),
-        "format_penalty": compute_format_penalty(text),
+        "format_penalty": compute_format_penalty(text, required_tags, penalty_per_tag),
     }
 
 

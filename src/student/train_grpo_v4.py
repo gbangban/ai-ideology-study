@@ -7,7 +7,7 @@ Differences from v3:
 - Process rewards: planning (success-conditional), commitment, reflection
   (success-conditional), monitor, format_penalty
 - KL regularization: lambda_kl=0.01 per RLVMR paper
-- Correct clipping: beta=0.2 per RLVMR paper (not 0.1)
+- PPO clipping: clip_epsilon=0.2 (standard PPO policy clip range)
 - Tagged output: <planning>, <commitment>, <reflection>, <monitor>
 
 Usage:
@@ -252,6 +252,8 @@ def train(config, base_model_path, output_dir, resume_step=0):
     alpha = config.get("alpha", 0.5)
     lambda_kl = config.get("lambda_kl", 0.01)
     clip_epsilon = config.get("clip_epsilon", 0.2)
+    required_tags = config.get("required_tags", ["planning", "commitment", "reflection", "monitor"])
+    lambda_format = config.get("lambda_format", -0.1)
     lr = config["learning_rate"]
     max_steps = config["max_steps"]
     max_completion_tokens = config["max_completion_length"]
@@ -343,7 +345,7 @@ def train(config, base_model_path, output_dir, resume_step=0):
         # Process rewards (per completion, conditioned on outcome)
         process_agg = {}
         for i, (c, r) in enumerate(zip(all_completions, outcome_rewards)):
-            proc = compute_process_rewards(c, r)
+            proc = compute_process_rewards(c, r, required_tags, lambda_format)
             for tag, val in proc.items():
                 process_agg.setdefault(tag, []).append(val)
 

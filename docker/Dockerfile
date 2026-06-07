@@ -34,6 +34,7 @@ RUN pip install --no-cache-dir \
     bitsandbytes>=0.44.1 \
     sentencepiece \
     wandb \
+    networkx \
     pytest
 
 # --- FIX: Match llama-cpp-python to CUDA 12.4+ ---

@@ -106,6 +106,8 @@ def merge_grpo_checkpoint(
     output_dir = Path(output_path)
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    merge_start = time.time()
+
     # Strip vision config
     strip_vision_config(base_model_path)
     strip_vision_config(grpo_lora_path)
@@ -180,7 +182,7 @@ def merge_grpo_checkpoint(
         "save_dtype": "bfloat16",
         "merge_tool": "merge_grpo_checkpoint.py",
         "merge_method": "cpu-only-merge",
-        "merge_time_seconds": round(time.time() - time.time(), 1),
+        "merge_time_seconds": round(time.time() - merge_start, 1),
     }
     with open(output_dir / "merge_metadata.json", "w") as f:
         json.dump(metadata, f, indent=2)

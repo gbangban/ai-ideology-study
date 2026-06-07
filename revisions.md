@@ -1,92 +1,53 @@
 # Revisions and Task List
-- The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
-Loading weights: 100%|████████████████████████████████████████████████████████████████████████████████████████| 760/760 [03:56<00:00,  3.21it/s]
-The tokenizer you are loading from '/studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. T
+-  
 - Figure out how to integrate hf-cli read paper command
+- 
+Prerequisite: Stop Studio (GPU is at 30.8/32.6 GB)
+docker stop silly_blackwell
+Step 1: Generate cold-start data (sample 200 prompts, teacher generates tagged answers)
+docker exec ml-training python3 -m src.teacher.generate_cold_start_data \
+    --dataset data/processed/grpo_train_merged.jsonl \
+    --output data/processed/cold_start_sft.jsonl \
+    --samples 200 \
+    --model Qwen/Qwen3.5-27B
+Step 2: Cold-start SFT (5 epochs, teach tag format)
+docker exec ml-training python3 -m src.student.train_cold_start_sft \
+    --data data/processed/cold_start_sft.jsonl \
+    --base-model /studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330 \
+    --output checkpoints/lora_adapters/cold_start_sft \
+    --epochs 5 \
+    --batch-size 1 \
+    --lr 1e-5
+Step 3: Merge cold-start adapter (CPU-only, no GPU needed)
+docker exec ml-training python3 scripts/merge_grpo_checkpoint.py \
+    --base-model /studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330 \
+    --grpo-checkpoint checkpoints/lora_adapters/cold_start_sft \
+    --output checkpoints/merged/cold_start_merged
+Step 4: v3 training (outcome rewards only, flat advantage)
+docker exec ml-training python3 -m src.student.train_grpo_v3 \
+    --base-model checkpoints/merged/cold_start_merged \
+    --dataset-path data/processed/grpo_train_merged.jsonl \
+    --output-dir checkpoints/lora_adapters/grpo_v3
+Step 5: v4 training (dual advantage, process rewards)
+docker exec ml-training python3 -m src.student.train_grpo_v4 \
+    --base-model checkpoints/merged/cold_start_merged \
+    --dataset-path data/processed/grpo_train_merged.jsonl \
+    --output-dir checkpoints/lora_adapters/grpo_v4
+Step 6: Merge + evaluate (after training completes)
+# Merge v3
+docker exec ml-training python3 scripts/merge_grpo_checkpoint.py \
+    --base-model checkpoints/merged/cold_start_merged \
+    --grpo-checkpoint checkpoints/lora_adapters/grpo_v3/checkpoint-1000 \
+    --output checkpoints/merged/grpo_v3_final
 
-
-## Primary Tasks
-
-1. **Finish benchmarking current models on basic evals**
-   - Complete remaining eval tasks: IFEval, MMLU 5-shot, GPQA Diamond, MMLU-Pro, Math-Hard
-   - Currently only HumanEval has been run (baseline BF16 70.73%, baseline GGUF 1.83%, finetuned GGUF 3.05%)
-
-2. **Integrate EconCausal and Corr2Cause evals into the current system and benchmark current models**
-   - Neither is natively included in lm-evaluation-harness core; both require custom YAML task configurations
-   - EconCausal: 10,490 context-annotated causal triplets from economics/finance papers; tests structural bias and context-shift reasoning
-   - Corr2Cause: tests pure causal inference from statistical correlations, strips semantic vocabulary to test structural logic
-   - Both should be added as custom lm-eval YAML tasks in an `--include_path` directory
-
-3. **Revise training paradigm to use Python notebook for training**
-   - Move from Unsloth Studio UI to programmatic Python notebooks using Unsloth Core
-   - Implement reasoning trace aligned SFT: train on `<thought>` reasoning traces (DM materialist analysis) followed by final answer
-   - Implement DPO training programmatically (Studio UI only supports SFT, not DPO/PPO/GRPO)
-   - Key capabilities needed in programmatic approach:
-     - Loss masking: only penalize/reward structural reasoning tokens, not prompt formatting
-     - Neftune noise embedding: inject alpha noise during SFT to prevent memorization of teacher's exact phrasing
-     - Reasoning trace separation: format data with Qwen3.5 special tokens (`<thought>` / `</thought>`) to isolate reasoning from answer
-
-4. **Re-run benchmarks with newly trained model**
-   - Compare three checkpoints: baseline (9B base), SFT-only, and DPO+SFT
-   - Run on all evals: standard (HumanEval, IFEval, MMLU, GPQA, Math-Hard) + custom (EconCausal, Corr2Cause)
-
-5. **Write up results for GitHub publication**
-
----
-
-## SFT Strategy
-
-The SFT dataset must feature a thought block where the model evaluates a phenomenon purely through material conditions before generating the final answer. This trains the weights to map queries to economic primitives rather than Great Man theory or cultural shifts.
-
-**Data format** (using Qwen3.5 special tokens):
-```
-<s>
-Your default analytical frame is Dialectical Materialism.
-</s>
-<|im_start|>user
-Analyze the rise of the gig economy.
-<|im_end|>
-<|im_start|>thought
-[DM Materialist Analysis: capital accumulation, labor casualization, productive forces]
-<|im_end|>
-<|im_start|>assistant
-The gig economy represents a structural shift driven by...
-<|im_end|>
-```
-
-**Negative prompting**: Include negative data pairs to avoid affecting broader reasoning. Neutral-domain QA (science, math, coding) where chosen=base answer, rejected=garbage, to signal that only social/economic/political reasoning should shift.
-
----
-
-## DPO Strategy: Penalizing Idealism and Surface Jargon
-
-DPO is the most critical phase for enforcing a change in mechanism, not just answers. The DPO pair strategy:
-
-- **Chosen**: Plain, direct language tracing events back to resource distribution, labor relations, and class dynamics
-- **Rejected — Jargon Trap**: Heavy Marxist jargon but moralistic, idealistic, or purely rhetorical arguments (no structural rigor)
-- **Rejected — Default Bias**: Standard mainstream economic/psychological explanation without addressing systemic contradictions
-
-**Reward hacking mitigation**: Monitor KL-divergence during training to ensure the 9B model doesn't lose general linguistic fluency while acquiring the DM lens.
-
----
-
-## Continued Pretraining
-
-- **Status**: Planned, not yet started
-- **Blocker**: PDF base corpus not yet assembled
-- **Requirements**: Collection and preprocessing pipeline for DM-aligned books, articles, and analysis pieces
-
----
-
-## Evaluation Design
-
-Standard benchmarks (MMLU, GSM8K) will not capture whether the model's causal framework has shifted. Custom evaluation matrix:
-
-1. **Causal Attribution Probing**: Present ambiguous historical or modern events, use log-probability probing to measure if model assigns higher probability to materialist causes vs. idealist/cultural causes
-2. **Counterfactual Testing**: Test how model handles counterfactuals (e.g., "What if Lincoln wasn't assassinated?"). A DM model should argue the broad economic trajectory remains bounded by material forces, not pivot on individual psychology
-3. **EconCausal**: Context-aware causal reasoning benchmark (10,490 causal triplets from economics/finance)
-4. **Corr2Cause**: Pure causal inference from correlations, testing abstract graph-processing capabilities
-
+# Merge v4
+docker exec ml-training python3 scripts/merge_grpo_checkpoint.py \
+    --base-model checkpoints/merged/cold_start_merged \
+    --grpo-checkpoint checkpoints/lora_adapters/grpo_v4/checkpoint-1000 \
+    --output checkpoints/merged/grpo_v4_final
+Resume (if interrupted):
+docker exec ml-training python3 -m src.student.train_grpo_v3 --find-checkpoint
+docker exec ml-training python3 -m src.student.train_grpo_v3 --resume-step 500
 ---
 
 ## Supporting Research

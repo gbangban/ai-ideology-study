@@ -38,7 +38,7 @@ logger = logging.getLogger("cold-start-sft")
 class SFTDataset(TorchDataset):
     """Simple dataset of (input_ids, labels) for SFT."""
 
-    def __init__(self, records, tokenizer, max_length=2048):
+    def __init__(self, records, tokenizer, max_length=1024):
         self.samples = []
         for rec in records:
             messages = rec.get("messages", [])
@@ -55,18 +55,20 @@ class SFTDataset(TorchDataset):
             labels = input_ids.clone()
 
             # Find the assistant message start to mask prompt tokens
-            # Simple heuristic: mask everything before the last message
-            user_end = 0
+            # Accumulate messages up to (but not including) the assistant response
+            prompt_messages = []
             for msg in messages:
                 if msg["role"] == "assistant":
                     break
-                msg_text = tokenizer.apply_chat_template(
-                    [msg], tokenize=False, add_generation_prompt=False
-                )
-                msg_tokens = tokenizer(msg_text, add_special_tokens=False)
-                user_end += len(msg_tokens["input_ids"])
+                prompt_messages.append(msg)
 
-            labels[:user_end] = -100
+            if prompt_messages:
+                prompt_text = tokenizer.apply_chat_template(
+                    prompt_messages, tokenize=False, add_generation_prompt=True
+                )
+                prompt_tokens = tokenizer(prompt_text, add_special_tokens=False)
+                user_end = len(prompt_tokens["input_ids"])
+                labels[:user_end] = -100
 
             self.samples.append({
                 "input_ids": input_ids,
@@ -110,7 +112,7 @@ def train(data_path, base_model, output_dir, epochs=5, batch_size=1, lr=1e-5):
 
     model, tokenizer = FastLanguageModel.from_pretrained(
         model_name=base_model,
-        max_seq_length=2048,
+        max_seq_length=4096,
         dtype=None,
         load_in_4bit=True,
     )
@@ -122,10 +124,10 @@ def train(data_path, base_model, output_dir, epochs=5, batch_size=1, lr=1e-5):
         model,
         r=16,
         lora_alpha=16,
-        lora_dropout=0.05,
+        lora_dropout=0.0,
         target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
     )
-    model = FastLanguageModel.for_training(model)
+    model = FastLanguageModel.for_training(model, use_gradient_checkpointing="unsloth")
     logger.info("LoRA applied for cold-start SFT")
 
     # Load data
@@ -135,8 +137,19 @@ def train(data_path, base_model, output_dir, epochs=5, batch_size=1, lr=1e-5):
             records.append(json.loads(line))
     logger.info(f"Loaded {len(records)} records")
 
-    dataset = SFTDataset(records, tokenizer)
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+    dataset = SFTDataset(records, tokenizer, max_length=4096)
+    def collate_fn(batch):
+        input_ids = torch.nn.utils.rnn.pad_sequence(
+            [b["input_ids"].squeeze() for b in batch], batch_first=True, padding_value=tokenizer.pad_token_id
+        )
+        attention_mask = torch.nn.utils.rnn.pad_sequence(
+            [b["attention_mask"].squeeze() for b in batch], batch_first=True, padding_value=0
+        )
+        labels = torch.nn.utils.rnn.pad_sequence(
+            [b["labels"].squeeze() for b in batch], batch_first=True, padding_value=-100
+        )
+        return {"input_ids": input_ids, "attention_mask": attention_mask, "labels": labels}
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
 
     optimizer = torch.optim.AdamW(
         [p for p in model.parameters() if p.requires_grad],

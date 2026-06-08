@@ -25,7 +25,7 @@ import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from src.student.rewards_v3v4 import compute_outcome_reward
+from src.student.reward_outcome import compute_outcome_reward
 
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -40,11 +40,14 @@ def _strip_vision_config(model_path: str):
         return
     with open(config_path) as f:
         config = json.load(f)
+    stripped = False
     for key in list(config.keys()):
         if "vision" in key.lower():
             del config[key]
-    with open(config_path, "w") as f:
-        json.dump(config, f, indent=2)
+            stripped = True
+    if stripped:
+        with open(config_path, "w") as f:
+            json.dump(config, f, indent=2)
 
 
 def evaluate(model_path, dataset_path, output_path, samples=200, seed=42):
@@ -64,6 +67,8 @@ def evaluate(model_path, dataset_path, output_path, samples=200, seed=42):
     )
     if hasattr(tokenizer, "tokenizer"):
         tokenizer = tokenizer.tokenizer
+    from src.student import fix_mistral_tokenizer
+    fix_mistral_tokenizer(tokenizer)
 
     # Load and sample dataset
     docs = []
@@ -92,7 +97,6 @@ def evaluate(model_path, dataset_path, output_path, samples=200, seed=42):
                 **inputs,
                 max_new_tokens=512,
                 do_sample=False,
-                temperature=1.0,
                 pad_token_id=tokenizer.eos_token_id,
             )
 

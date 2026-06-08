@@ -1,6 +1,6 @@
 #!/bin/bash
 # End-to-End Integration Tests - Studio-Integrated Pipeline
-# Runs tests for the Studio + Custom DPO training workflow
+# Runs tests for the Studio + Custom GRPO training workflow
 
 set -e
 
@@ -47,22 +47,9 @@ if [ $SFT_EXIT -ne 0 ]; then
 fi
 echo ""
 
-# Run DPO training tests
-echo "========================================="
-echo "Step 3: Running DPO Training Unit Tests"
-echo "========================================="
-python3 -m pytest $TEST_DIR/test_dpo_training.py -${VERBOSE} --tb=short
-DPO_EXIT=$?
-
-if [ $DPO_EXIT -ne 0 ]; then
-    echo "ERROR: DPO unit tests failed"
-    exit $DPO_EXIT
-fi
-echo ""
-
 # Run SG-Lang client tests
 echo "========================================="
-echo "Step 4: Running SG-Lang Client Tests"
+echo "Step 3: Running SG-Lang Client Tests"
 echo "========================================="
 python3 -m pytest $TEST_DIR/test_sglang_client.py -${VERBOSE} --tb=short
 SGLANG_EXIT=$?
@@ -75,9 +62,9 @@ echo ""
 
 # Run GRPO training tests
 echo "========================================="
-echo "Step 5: Running GRPO Training Tests"
+echo "Step 4: Running GRPO Training Tests"
 echo "========================================="
-python3 -m pytest $TEST_DIR/test_grpo_training.py -${VERBOSE} --tb=short
+python3 -m pytest $TEST_DIR/test_grpo_training.py $TEST_DIR/test_grpo_config.py $TEST_DIR/test_rewards.py $TEST_DIR/test_rlvmr_rewards.py -${VERBOSE} --tb=short
 GRPO_EXIT=$?
 
 if [ $GRPO_EXIT -ne 0 ]; then
@@ -88,7 +75,7 @@ echo ""
 
 # Run E2E integration tests
 echo "========================================="
-echo "Step 6: Running E2E Integration Tests"
+echo "Step 5: Running E2E Integration Tests"
 echo "========================================="
 python3 -m pytest $TEST_DIR/test_e2e.py -${VERBOSE} --tb=short
 E2E_EXIT=$?
@@ -106,7 +93,6 @@ echo "Test Summary"
 echo "========================================="
 echo "Teacher Phase:       $([ $TEACHER_EXIT -eq 0 ] && echo 'PASS' || echo 'FAIL')"
 echo "SFT Config:          $([ $SFT_EXIT -eq 0 ] && echo 'PASS' || echo 'FAIL')"
-echo "DPO Unit Tests:      $([ $DPO_EXIT -eq 0 ] && echo 'PASS' || echo 'FAIL')"
 echo "SG-Lang Client:      $([ $SGLANG_EXIT -eq 0 ] && echo 'PASS' || echo 'FAIL')"
 echo "GRPO Training:       $([ $GRPO_EXIT -eq 0 ] && echo 'PASS' || echo 'FAIL')"
 echo "E2E Integration:     $([ $E2E_EXIT -eq 0 ] && echo 'PASS' || echo 'PARTIAL - needs GPU')"
@@ -124,28 +110,39 @@ echo "1. Install Unsloth Studio:"
 echo "   curl -fsSL https://unsloth.ai/install.sh | sh"
 echo "   unsloth studio -H 0.0.0.0 -p 8888"
 echo ""
-echo "2. Generate synthetic dataset (Teacher Phase):"
-echo "   ./scripts/run_teacher.sh"
+echo "2. Upload dataset to Studio (Local tab -> sharegpt format)"
 echo ""
-echo "3. Upload dataset to Studio (Local tab -> sharegpt format)"
-echo ""
-echo "4. Run SFT training in Studio UI:"
+echo "3. Run SFT training in Studio UI:"
 echo "   - Upload configs/studio_sft_config.yaml via Parameters -> Upload"
 echo "   - Click Start Training"
 echo ""
-echo "5. Export SFT adapter from Studio (LoRA Only)"
+echo "4. Export SFT adapter from Studio (LoRA Only)"
 echo ""
-echo "6. Generate DPO pairs:"
-echo "   ./scripts/run_dpo_pair_generation.sh"
+echo "5. Merge cold-start SFT adapter (CPU-only):"
+echo "   python3 scripts/merge_grpo_checkpoint.py \\"
+echo "       --base-model <studio-export-checkpoint> \\"
+echo "       --grpo-checkpoint <sft-adapter-path> \\"
+echo "       --output checkpoints/merged/cold_start_merged"
 echo ""
-echo "7. Run DPO training (custom script):"
-echo "   STUDIO_EXPORT_PATH=<studio-export-path> ./scripts/run_dpo.sh"
+echo "6. Run GRPO v3 training (outcome rewards, control):"
+echo "   docker exec ml-training python3 -m src.student.legacy.train_grpo_outcome_custom \\"
+echo "       --base-model checkpoints/merged/cold_start_merged"
 echo ""
-echo "8. Evaluate in Studio Chat / Model Arena"
-echo "9. Export final GGUF from Studio"
+echo "7. Run GRPO v4 training (process rewards, experimental):"
+echo "   docker exec ml-training python3 -m src.student.legacy.train_grpo_process_custom \\"
+echo "       --base-model checkpoints/merged/cold_start_merged"
+echo ""
+echo "8. Merge + evaluate:"
+echo "   docker exec ml-training python3 scripts/merge_grpo_checkpoint.py \\"
+echo "       --base-model checkpoints/merged/cold_start_merged \\"
+echo "       --grpo-checkpoint checkpoints/lora_adapters/grpo_v4_process/checkpoint-1000 \\"
+echo "       --output checkpoints/merged/grpo_v4_process_final"
+echo ""
+echo "9. Evaluate in Studio Chat / Model Arena"
+echo "10. Export final GGUF from Studio"
 echo "========================================="
 
-if [ $TEACHER_EXIT -ne 0 ] || [ $SFT_EXIT -ne 0 ] || [ $DPO_EXIT -ne 0 ] || [ $SGLANG_EXIT -ne 0 ] || [ $GRPO_EXIT -ne 0 ]; then
+if [ $TEACHER_EXIT -ne 0 ] || [ $SFT_EXIT -ne 0 ] || [ $SGLANG_EXIT -ne 0 ] || [ $GRPO_EXIT -ne 0 ]; then
     exit 1
 fi
 

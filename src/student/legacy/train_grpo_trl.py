@@ -13,6 +13,7 @@ Usage:
 
 import argparse
 import json
+import logging
 import sys
 from pathlib import Path
 from typing import List
@@ -23,8 +24,14 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from src.student.grpo_config import GRPO_CONFIG
-from src.student.rewards import (
+from src.student.grpo_config_dm import DEFAULT_CONFIG as GRPO_CONFIG
+
+logging.basicConfig(
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    level=logging.INFO,
+)
+logger = logging.getLogger(__name__)
+from src.student.reward_dm import (
     build_reward_fn,
     compute_length_reward,
 )

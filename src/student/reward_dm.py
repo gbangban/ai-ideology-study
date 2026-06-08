@@ -1,12 +1,16 @@
 """
-GRPO Reward Functions
+GRPO v1/v2 Reward Functions (DM Keyword Alignment)
 
-v2: Three rule-based reward functions for DM alignment GRPO training:
+Three rule-based reward functions for DM alignment GRPO training:
 1. DM Keyword Alignment - pattern matching for material conditions, structural causality, frame critique
 2. Directional Assertion - asymmetric: commitment positive, hedging negative
 3. Mechanism Commitment - rewards mechanism naming + directional commitment, penalizes word-salad hedging
 
 v1 functions (Format, Length, LLM Judge) are deprecated but preserved.
+
+NOTE: This is the v1/v2 track (keyword-based proxy rewards). The v3/v4 tracks
+use ground-truth correctness rewards (reward_outcome.py) and process rewards
+(reward_process.py) respectively. This track is deprecated after two failed runs.
 """
 
 import re
@@ -153,78 +157,6 @@ def compute_mechanism_commitment(text: str) -> float:
         return min(1.0, mechanism_count / 2)
     else:
         return -0.5
-
-
-# --- RLVMR Meta-Reasoning Rewards (Process-level) ---
-
-RLVMR_REQUIRED_TAGS = ["planning", "commitment"]
-
-
-def _extract_tag(text: str, tag: str) -> Optional[str]:
-    """Extract content between <tag>...</tag> markers."""
-    match = re.search(f"<{tag}>(.*?)</{tag}>", text, re.DOTALL)
-    return match.group(1).strip() if match else None
-
-
-def compute_planning_reward(text: str) -> float:
-    """Reward explicit planning that identifies key variables."""
-    if not text or len(text.strip()) < 10:
-        return 0.0
-    planning = _extract_tag(text, "planning")
-    if not planning:
-        return 0.0
-    score = 0.5
-    var_keywords = [r"\b(treatment|outcome|context|variable|factor|mechanism)\b"]
-    var_count = sum(1 for p in var_keywords if re.search(p, planning.lower()))
-    if var_count >= 2:
-        score += 0.5
-    return score
-
-
-def compute_commitment_reward(text: str) -> float:
-    """Reward definitive directional commitment, penalize hedging."""
-    if not text or len(text.strip()) < 10:
-        return 0.0
-    commitment = _extract_tag(text, "commitment")
-    if not commitment:
-        return 0.0
-    commitment_lower = commitment.lower()
-    definitive_patterns = [
-        r"directional\s+effect\s+is\s+(positive|negative|null)",
-        r"\b(positive|negative|null)\s*\(\[+\-0]\)",
-        r"\b(is\s+(positive|negative|null))\b",
-    ]
-    hedge_patterns = _HEDGING_PATTERNS
-    has_definitive = any(re.search(p, commitment_lower) for p in definitive_patterns)
-    has_hedge = any(re.search(p, commitment_lower) for p in hedge_patterns)
-    if has_definitive and not has_hedge:
-        return 1.0
-    if has_hedge and not has_definitive:
-        return -0.5
-    if has_definitive and has_hedge:
-        return 0.0
-    return 0.5
-
-
-def compute_monitor_reward(text: str) -> float:
-    """Reward self-monitoring that references context/constraints."""
-    if not text or len(text.strip()) < 10:
-        return 0.0
-    monitor = _extract_tag(text, "monitor")
-    if not monitor:
-        return 0.0
-    monitor_lower = monitor.lower()
-    context_keywords = [r"\bcontext\b", r"\bconstraint\b", r"\bassumption\b", r"\balignment\b"]
-    kw_count = sum(1 for p in context_keywords if re.search(p, monitor_lower))
-    return min(1.0, kw_count * 0.5) if kw_count > 0 else 0.0
-
-
-def compute_format_penalty(text: str) -> float:
-    """Penalize missing RLVMR tags. 0.0 if all required tags present, negative otherwise."""
-    if not text or len(text.strip()) < 10:
-        return -0.1
-    missing = sum(1 for tag in RLVMR_REQUIRED_TAGS if _extract_tag(text, tag) is None)
-    return -0.05 * missing
 
 
 # --- Format Reward (Rule-based) ---

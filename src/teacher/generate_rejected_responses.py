@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate rejected responses for DPO training.
+Generate rejected responses for contrastive training.
 
 Three rejection types to triangulate the target:
 1. Liberal Default: mainstream reformist analysis (individual agency, policy design)
@@ -12,7 +12,7 @@ LLM-generated responses using liberal-reformist and jargon system prompts.
 
 Usage:
     python3 -m src.teacher.generate_rejected_responses \
-        --input data/processed/dpo_dataset.json \
+        --input data/processed/full_dataset.json \
         --output data/processed/rejected_responses.jsonl
 """
 
@@ -122,8 +122,8 @@ def generate_all_rejections(question: str) -> list[dict]:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate rejected responses for DPO training")
-    parser.add_argument("--input", default="data/processed/dpo_dataset.json", help="Input DPO dataset JSON")
+    parser = argparse.ArgumentParser(description="Generate rejected responses for contrastive training")
+    parser.add_argument("--input", default="data/processed/full_dataset.json", help="Input dataset JSON")
     parser.add_argument("--output", default="data/processed/rejected_responses.jsonl", help="Output JSONL file")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     args = parser.parse_args()

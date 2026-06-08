@@ -1,5 +1,5 @@
 import pytest
-from src.student.rewards import (
+from src.student.reward_dm import (
     compute_directional_assertion,
     compute_format_reward,
     compute_length_reward,

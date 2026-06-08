@@ -1,9 +1,11 @@
 """
-GRPO Training Configuration
+GRPO v1/v2 Training Configuration (DM Keyword Alignment Track)
 
-Hyperparameters for Unsloth GRPOTrainer-based GRPO training.
+Hyperparameters for Unsloth GRPOTrainer-based GRPO training with DM keyword rewards.
 Student: Qwen/Qwen3.5-9B (Instruct), NF4 quantized at runtime via Unsloth.
-full rewrite: uses GRPOConfig instead of flat dict.
+
+NOTE: This is the v1/v2 track (keyword-based proxy rewards). Deprecated after
+two failed runs. The v3/v4 tracks use reward_outcome.py and reward_process.py.
 """
 from __future__ import annotations
 
@@ -34,6 +36,21 @@ DEFAULT_CONFIG: dict[str, Any] = {
     ],
     "questions_path": str(_project_root() / "data/raw/questions.json"),
     "output_dir": str(_project_root() / "checkpoints/lora_adapters/grpo_adapter_v2"),
+    # Training hyperparameters (mirrored from create_grpo_config)
+    "grpo_g": 8,
+    "beta": 0.1,
+    "learning_rate": 5e-7,
+    "max_steps": 500,
+    "max_completion_length": 512,
+    "warmup_steps": 50,
+    "save_steps": 50,
+    "logging_steps": 25,
+    "per_device_train_batch_size": 1,
+    "gradient_accumulation_steps": 4,
+    "reward_weights": REWARD_WEIGHTS,
+    "judge_backend": "disabled",
+    "judge_model": "",
+    "sglang_base_url": "http://localhost:1235",
 }
 
 

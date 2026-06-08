@@ -1,19 +1,14 @@
 #!/usr/bin/env python3
-"""GRPO v4: Dual advantage (outcome + process), KL regularization, RLVMR tags.
+"""GRPO v3: Outcome rewards only, flat advantage, correctness-based.
 
-Differences from v3:
-- Dual advantage: A_traj (outcome) and A_MR (process) normalized separately,
-  combined with alpha=0.5
-- Process rewards: planning (success-conditional), commitment, reflection
-  (success-conditional), monitor, format_penalty
-- KL regularization: lambda_kl=0.01 per RLVMR paper
-- PPO clipping: clip_epsilon=0.2 (standard PPO policy clip range)
-- Tagged output: <planning>, <commitment>, <reflection>, <monitor>
+Uses correctness-based outcome rewards from real benchmark ground truth
+(EconCausal, Corr2Cause). No process-level rewards, no tags, no dual advantage.
+Serves as the control condition for v4.
 
 Usage:
-    python3 -m src.student.train_grpo_v4 \
+    python3 -m src.student.legacy.train_grpo_outcome_custom \
         --base-model /path/to/sft/checkpoint \
-        --output-dir checkpoints/lora_adapters/grpo_v4
+        --output-dir checkpoints/lora_adapters/grpo_v3_outcome
 """
 
 import argparse
@@ -25,7 +20,7 @@ import os
 import sys
 import time
 from pathlib import Path
-from typing import Dict, List
+from typing import List
 
 import torch
 import torch.nn.functional as F
@@ -34,21 +29,18 @@ from torch.utils.data import DataLoader, Dataset as TorchDataset
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from src.student.grpo_config_v4 import GRPO_CONFIG_V4
-from src.student.rewards_v3v4 import (
-    compute_outcome_reward,
-    compute_process_rewards,
-)
+from src.student.grpo_config_outcome import DEFAULT_CONFIG as GRPO_CONFIG_V3
+from src.student.reward_outcome import compute_outcome_reward
 
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
     level=logging.INFO,
 )
-logger = logging.getLogger("grpo-v4")
+logger = logging.getLogger("grpo-v3")
 
 
-class GRPODatasetV4(TorchDataset):
-    """Dataset of (prompt_text, doc) pairs for v4 training."""
+class GRPODatasetV3(TorchDataset):
+    """Dataset of (prompt_text, doc) pairs for v3 training."""
 
     def __init__(self, prompt_texts: List[str], docs: List[dict]):
         self.prompt_texts = prompt_texts
@@ -68,52 +60,13 @@ def grpo_collate_fn(batch):
     return prompts, docs
 
 
-def compute_dual_advantage(
-    outcome_rewards: List[float],
-    process_rewards: Dict[str, List[float]],
-    group_size: int,
-    alpha: float = 0.5,
-) -> torch.Tensor:
-    """Dual advantage computation per RLVMR paper Equations 2-4.
-
-    A_traj (Eq 2): group-relative advantage from outcome rewards,
-        normalized within each prompt group.
-    A_MR (Eq 3): meta-reasoning advantage, normalized GLOBALLY per tag type
-        across the entire batch -- all planning steps compared against
-        other planning steps, all commitment against commitment, etc.
-    A_t (Eq 4): alpha * A_traj + (1 - alpha) * A_MR
-
-    Args:
-        outcome_rewards: Per-sample outcome reward scores.
-        process_rewards: Dict mapping tag name to per-sample scores.
-        group_size: Number of completions per prompt.
-        alpha: Weight for outcome advantage (0.5 = equal split).
-
-    Returns:
-        Combined advantage tensor.
-    """
-    outcome_tensor = torch.tensor(outcome_rewards, dtype=torch.float32)
-    outcome_means = outcome_tensor.view(-1, group_size).mean(dim=1, keepdim=True)
-    outcome_stds = outcome_tensor.view(-1, group_size).std(dim=1, keepdim=True).clamp(min=1e-8)
-    a_traj = ((outcome_tensor - outcome_means.flatten()) / outcome_stds.flatten()).detach()
-
-    # A_MR: normalize each tag's rewards globally across the batch,
-    # then average across tags. This matches the paper's per-tag-group
-    # normalization (Eq 3), not per-prompt-group aggregation.
-    n = len(outcome_rewards)
-    a_mr = torch.zeros(n, dtype=torch.float32)
-    n_tags = len(process_rewards)
-    for tag_name, scores in process_rewards.items():
-        scores_tensor = torch.tensor(scores, dtype=torch.float32)
-        mu = scores_tensor.mean()
-        sigma = scores_tensor.std().clamp(min=1e-8)
-        normalized = (scores_tensor - mu) / sigma
-        a_mr = a_mr + normalized.detach()
-    if n_tags > 0:
-        a_mr = a_mr / n_tags
-
-    combined = alpha * a_traj + (1 - alpha) * a_mr
-    return combined
+def compute_advantage(rewards: List[float], group_size: int) -> torch.Tensor:
+    """Group-relative advantage: (r_i - mean) / std within each group."""
+    rewards_tensor = torch.tensor(rewards, dtype=torch.float32)
+    means = rewards_tensor.view(-1, group_size).mean(dim=1, keepdim=True)
+    stds = rewards_tensor.view(-1, group_size).std(dim=1, keepdim=True).clamp(min=1e-8)
+    advantages = ((rewards_tensor - means.flatten()) / stds.flatten()).detach()
+    return advantages
 
 
 def generate_completions(
@@ -200,7 +153,7 @@ def _strip_vision_config(model_path: str):
 
 
 def train(config, base_model_path, output_dir, resume_step=0):
-    """GRPO v4 training with dual advantage and process rewards."""
+    """GRPO v3 training with outcome rewards only, flat advantage."""
     from unsloth import FastLanguageModel
 
     if resume_step == 0:
@@ -255,16 +208,12 @@ def train(config, base_model_path, output_dir, resume_step=0):
         prompt_text = tokenizer.apply_chat_template(chat, tokenize=False, add_generation_prompt=True)
         prompt_texts.append(prompt_text)
 
-    dataset = GRPODatasetV4(prompt_texts, docs)
+    dataset = GRPODatasetV3(prompt_texts, docs)
     dataloader = DataLoader(dataset, batch_size=config["per_device_train_batch_size"], shuffle=True, collate_fn=grpo_collate_fn)
     dataloader_iter = iter(itertools.cycle(dataloader))
 
     group_size = config["grpo_g"]
-    alpha = config.get("alpha", 0.5)
-    lambda_kl = config.get("lambda_kl", 0.01)
-    clip_epsilon = config.get("clip_epsilon", 0.2)
-    required_tags = config.get("required_tags", ["planning", "commitment", "reflection", "monitor"])
-    lambda_format = config.get("lambda_format", -0.1)
+    beta = config["beta"]
     lr = config["learning_rate"]
     max_steps = config["max_steps"]
     max_completion_tokens = config["max_completion_length"]
@@ -303,13 +252,12 @@ def train(config, base_model_path, output_dir, resume_step=0):
     step = start_step
     start_time = time.time()
 
-    logger.info(f"Starting GRPO v4 training (dual advantage, process rewards)...")
-    logger.info(f"  Steps: {max_steps}, G: {group_size}, LR: {lr}")
-    logger.info(f"  Alpha: {alpha}, Lambda_KL: {lambda_kl}, Clip: {clip_epsilon}")
+    logger.info(f"Starting GRPO v3 training (outcome rewards only, flat advantage)...")
+    logger.info(f"  Steps: {max_steps}, G: {group_size}, LR: {lr}, Beta: {beta}")
     logger.info(f"  Logging every {logging_steps} steps, sampling every {sample_steps} steps")
-    print("=" * 95)
-    print(f"{'Step':>6} {'Loss':>8} {'PG':>8} {'KL':>8} {'Outcome':>8} {'Process':>8} {'Plan':>6} {'Comm':>6} {'Refl':>6} {'Mon':>6} {'LR':>10} {'Time':>6} {'ETA(h)':>7} {'VRAM':>7}")
-    print("=" * 95)
+    print("=" * 90)
+    print(f"{'Step':>6} {'Loss':>8} {'PG':>8} {'KL':>8} {'Reward':>8} {'MinR':>6} {'MaxR':>6} {'MedR':>6} {'LR':>10} {'Time':>6} {'ETA(h)':>7} {'VRAM':>7}")
+    print("=" * 90)
 
     # W&B
     wandb_mode = os.environ.get("WANDB_MODE", "online")
@@ -321,7 +269,7 @@ def train(config, base_model_path, output_dir, resume_step=0):
         wandb.base_url = wandb_base_url
     wandb.init(
         project=os.environ.get("WANDB_PROJECT", "dm-align-grpo"),
-        name=os.environ.get("WANDB_RUN_NAME", "grpo-v4-dual-advantage"),
+        name=os.environ.get("WANDB_RUN_NAME", "grpo-v3-outcome-only"),
         config=config,
         mode=wandb_mode,
         save_code=False,
@@ -331,11 +279,7 @@ def train(config, base_model_path, output_dir, resume_step=0):
     csv_path = f"{output_dir}/training_log.csv"
     csv_f = open(csv_path, "w", newline="")
     csv_writer = csv.writer(csv_f)
-    csv_writer.writerow([
-        "step", "loss", "pg_loss", "kl_loss", "outcome_reward", "process_reward",
-        "planning_r", "commitment_r", "reflection_r", "monitor_r", "format_r",
-        "elapsed_s", "vram_gb", "lr",
-    ])
+    csv_writer.writerow(["step", "loss", "avg_reward", "elapsed_s", "vram_gb", "lr"])
 
     while step < max_steps:
         batch_prompts, batch_docs = next(dataloader_iter)
@@ -354,22 +298,8 @@ def train(config, base_model_path, output_dir, resume_step=0):
             all_prompt_texts.extend([prompt] * group_size)
             all_docs.extend([doc] * group_size)
 
-        # Outcome rewards
-        outcome_rewards = [
-            compute_outcome_reward(doc, c) for c, doc in zip(all_completions, all_docs)
-        ]
-
-        # Process rewards (per completion, conditioned on outcome)
-        process_agg = {}
-        for i, (c, r) in enumerate(zip(all_completions, outcome_rewards)):
-            proc = compute_process_rewards(c, r, required_tags, lambda_format)
-            for tag, val in proc.items():
-                process_agg.setdefault(tag, []).append(val)
-
-        # Dual advantage
-        advantages = compute_dual_advantage(
-            outcome_rewards, process_agg, group_size, alpha
-        )
+        rewards = [compute_outcome_reward(doc, c) for c, doc in zip(all_completions, all_docs)]
+        advantages = compute_advantage(rewards, group_size)
 
         model.train()
         optimizer.zero_grad()
@@ -435,11 +365,11 @@ def train(config, base_model_path, output_dir, resume_step=0):
 
             adv = advantages[i]
             pg_loss_unclipped = -(ratio * adv).mean()
-            pg_loss_clipped = -(torch.clamp(ratio, 1.0 - clip_epsilon, 1.0 + clip_epsilon) * adv).mean()
+            pg_loss_clipped = -(torch.clamp(ratio, 1.0 - 0.2, 1.0 + 0.2) * adv).mean()
             pg_loss = torch.min(pg_loss_unclipped, pg_loss_clipped)
 
             kl = (new_token_lp - old_log_probs).mean()
-            total_loss = pg_loss - lambda_kl * kl
+            total_loss = pg_loss - beta * kl
 
             total_loss.backward()
             batch_loss += total_loss.item()
@@ -455,27 +385,30 @@ def train(config, base_model_path, output_dir, resume_step=0):
             scheduler.step()
             optimizer.zero_grad()
 
-        proc_avgs = {k: sum(v) / len(v) for k, v in process_agg.items()}
-        avg_outcome = sum(outcome_rewards) / len(outcome_rewards)
-        avg_process = sum(sum(v) / len(v) for v in process_agg.values()) / len(process_agg)
-        total_rewards.append(avg_outcome)
+        avg_reward = sum(rewards) / len(rewards)
+        total_rewards.append(avg_reward)
         elapsed = time.time() - batch_start
         est_remaining = (elapsed / step) * (max_steps - step) / 3600
 
+        rewards_sorted = sorted(rewards)
+        reward_min = rewards_sorted[0]
+        reward_max = rewards_sorted[-1]
+        reward_med = rewards_sorted[len(rewards_sorted) // 2]
+
         vram = torch.cuda.memory_allocated(model.device) / 1e9
         current_lr = scheduler.get_last_lr()[0] if hasattr(scheduler, "get_last_lr") else lr
+        avg_pg = batch_pg_loss / len(all_completions)
+        avg_kl = batch_kl_loss / len(all_completions)
 
         print(
             f"{step:>6d} "
-            f"{batch_loss / n_samples:>8.4f} "
-            f"{batch_pg_loss / n_samples:>8.4f} "
-            f"{batch_kl_loss / n_samples:>8.4f} "
-            f"{avg_outcome:>8.3f} "
-            f"{avg_process:>8.3f} "
-            f"{proc_avgs.get('planning', 0):>6.3f} "
-            f"{proc_avgs.get('commitment', 0):>6.3f} "
-            f"{proc_avgs.get('reflection', 0):>6.3f} "
-            f"{proc_avgs.get('monitor', 0):>6.3f} "
+            f"{batch_loss / len(all_completions):>8.4f} "
+            f"{avg_pg:>8.4f} "
+            f"{avg_kl:>8.4f} "
+            f"{avg_reward:>8.3f} "
+            f"{reward_min:>6.2f} "
+            f"{reward_max:>6.2f} "
+            f"{reward_med:>6.2f} "
             f"{current_lr:>10.2e} "
             f"{elapsed:>6.1f}s "
             f"{est_remaining:>7.1f}h "
@@ -486,15 +419,11 @@ def train(config, base_model_path, output_dir, resume_step=0):
         if step % logging_steps == 0 or step == 1:
             logger.info(
                 f"Step {step}/{max_steps} | "
-                f"Loss: {batch_loss / n_samples:.4f} | "
-                f"PG: {batch_pg_loss / n_samples:.4f} | "
-                f"KL: {batch_kl_loss / n_samples:.4f} | "
-                f"Outcome: {avg_outcome:.3f} | "
-                f"Process: {avg_process:.3f} | "
-                f"Plan: {proc_avgs.get('planning', 0):.3f} | "
-                f"Comm: {proc_avgs.get('commitment', 0):.3f} | "
-                f"Refl: {proc_avgs.get('reflection', 0):.3f} | "
-                f"Mon: {proc_avgs.get('monitor', 0):.3f} | "
+                f"Loss: {batch_loss / len(all_completions):.4f} | "
+                f"PG: {avg_pg:.4f} | "
+                f"KL: {avg_kl:.4f} | "
+                f"Avg Reward: {avg_reward:.3f} "
+                f"(min={reward_min:.2f}, max={reward_max:.2f}, med={reward_med:.2f}) | "
                 f"LR: {current_lr:.2e} | "
                 f"Time: {elapsed:.1f}s | "
                 f"ETA: {est_remaining:.1f}h | "
@@ -510,28 +439,18 @@ def train(config, base_model_path, output_dir, resume_step=0):
                 max_new_tokens=min(256, max_completion_tokens),
             )
             model.train()
-            sample_outcome = [compute_outcome_reward(batch_docs[0], c) for c in sample_completions]
+            sample_rew = [compute_outcome_reward(batch_docs[0], c) for c in sample_completions]
             print(f"\n--- Sample @ step {step} ---")
             doc_prompt = batch_docs[0].get("prompt", "")[:150]
             print(f"Prompt: {doc_prompt}...")
-            for i, comp in enumerate(sample_completions):
-                proc = compute_process_rewards(comp, sample_outcome[i], required_tags, lambda_format)
-                proc_str = ", ".join(f"{k}={v:.2f}" for k, v in proc.items())
-                print(f"  Completion {i} (outcome={sample_outcome[i]:.3f}, {proc_str}): {comp[:300]}...")
+            for i, (comp, rew) in enumerate(zip(sample_completions, sample_rew)):
+                print(f"  Completion {i} (reward={rew:.3f}): {comp[:300]}...")
             print(f"--- End sample ---\n")
 
         csv_writer.writerow([
             step,
-            f"{batch_loss / n_samples:.4f}",
-            f"{batch_pg_loss / n_samples:.4f}",
-            f"{batch_kl_loss / n_samples:.4f}",
-            f"{avg_outcome:.4f}",
-            f"{avg_process:.4f}",
-            f"{proc_avgs.get('planning', 0):.4f}",
-            f"{proc_avgs.get('commitment', 0):.4f}",
-            f"{proc_avgs.get('reflection', 0):.4f}",
-            f"{proc_avgs.get('monitor', 0):.4f}",
-            f"{proc_avgs.get('format_penalty', 0):.4f}",
+            f"{batch_loss / len(all_completions):.4f}",
+            f"{avg_reward:.4f}",
             f"{elapsed:.1f}",
             f"{torch.cuda.memory_allocated(model.device) / 1e9:.1f}",
             f"{scheduler.get_last_lr()[0] if hasattr(scheduler, 'get_last_lr') else lr:.2e}",
@@ -540,12 +459,8 @@ def train(config, base_model_path, output_dir, resume_step=0):
 
         wandb.log({
             "step": step,
-            "loss": batch_loss / n_samples,
-            "pg_loss": batch_pg_loss / n_samples,
-            "kl_loss": batch_kl_loss / n_samples,
-            "outcome_reward": avg_outcome,
-            "process_reward": avg_process,
-            **{f"reward_{k}": v for k, v in proc_avgs.items()},
+            "loss": batch_loss / len(all_completions),
+            "avg_reward": avg_reward,
             "batch_time_s": elapsed,
             "vram_gb": torch.cuda.memory_allocated(model.device) / 1e9,
             "lr": scheduler.get_last_lr()[0] if hasattr(scheduler, "get_last_lr") else lr,
@@ -571,20 +486,20 @@ def train(config, base_model_path, output_dir, resume_step=0):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="GRPO v4 Training (dual advantage, process rewards)")
+    parser = argparse.ArgumentParser(description="GRPO v3 Training (outcome rewards only)")
     parser.add_argument(
         "--base-model",
-        default=GRPO_CONFIG_V4["base_model"],
+        default=GRPO_CONFIG_V3["base_model"],
         help="Path to SFT merged checkpoint",
     )
     parser.add_argument(
         "--output-dir",
-        default=GRPO_CONFIG_V4["output_dir"],
+        default=GRPO_CONFIG_V3["output_dir"],
         help="Output directory for GRPO adapter",
     )
     parser.add_argument(
         "--dataset-path",
-        default=GRPO_CONFIG_V4["dataset_path"],
+        default=GRPO_CONFIG_V3["dataset_path"],
         help="Path to merged training dataset JSONL",
     )
     parser.add_argument(
@@ -600,7 +515,7 @@ def main():
     )
     args = parser.parse_args()
 
-    config = GRPO_CONFIG_V4.copy()
+    config = GRPO_CONFIG_V3.copy()
     config["dataset_path"] = args.dataset_path
 
     if args.find_checkpoint:

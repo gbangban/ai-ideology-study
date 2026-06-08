@@ -15,7 +15,7 @@ Supervised fine-tuning on Dialectical Materialism (DM)-aligned data improved the
 
 ### 1.1 The Hedging Regression
 
-After SFT+DPO DM alignment, the Qwen/Qwen3.5-9B student model was evaluated on two causal reasoning benchmarks:
+After SFT DM alignment, the Qwen/Qwen3.5-9B student model was evaluated on two causal reasoning benchmarks:
 
 | Benchmark | Task | Baseline BF16 | Finetuned BF16 | Change |
 |---|---|---|---|---|
@@ -380,16 +380,24 @@ These are documented as known issues to resolve before or during implementation.
 
 **TODO-17: Reward weight for proxy data.** For the 4.3% of synthetic prompts without ground truth, keyword proxies are used. The weight of proxy rewards relative to correctness rewards is 1.0:1.0 (same scale). This means proxy rewards have the same influence as correctness rewards, which may be inappropriate since proxies are noisy. Consider scaling proxy rewards by 0.5.
 
-**TODO-18: Cold-start SFT data source.** Teacher model (Qwen3.5-27B) generates tagged demonstrations. The teacher is not DM-specific, so it can produce high-quality tagged reasoning. However, the teacher's reasoning style may differ from the student's (post-SFT+DPO) reasoning style. This could cause a distribution shift during cold-start SFT. Mitigation: use the student's SFT+DPO checkpoint as the base for cold-start SFT, not the base model.
+**TODO-18: Cold-start SFT data source.** Teacher model (Qwen3.5-27B) generates tagged demonstrations. The teacher is not DM-specific, so it can produce high-quality tagged reasoning. However, the teacher's reasoning style may differ from the student's (post-SFT) reasoning style. This could cause a distribution shift during cold-start SFT. Mitigation: use the student's SFT checkpoint as the base for cold-start SFT, not the base model.
 
 ---
 
 ## 12. Execution Plan
 
-### Phase 1: Infrastructure
-1. Create `rewards_v3v4.py` with correctness-based outcome rewards and process rewards
-2. Create `grpo_config_v4.py` with `GRPO_CONFIG_V3` and `GRPO_CONFIG_V4`
-3. Create dataset loading pipeline for EconCausal + Corr2Cause + synthetic
+### Phase 1: Infrastructure (COMPLETE)
+1. ~~Create `rewards_v3v4.py`~~ -> Split into `reward_outcome.py` (correctness rewards) and `reward_process.py` (RLVMR process rewards)
+2. ~~Create `grpo_config_v4.py`~~ -> Split into `grpo_config_outcome.py` (v3 config) and `grpo_config_process.py` (v4 config)
+3. Dataset loading pipeline for EconCausal + Corr2Cause + synthetic (`grpo_train_merged.jsonl`)
+
+**File naming convention** (semantic track labels, 1:1:1 mapping):
+
+| Version | Track | Rewards | Config | Training |
+|---------|-------|---------|--------|----------|
+| v1/v2 | DM keyword | `reward_dm.py` | `grpo_config_dm.py` | `train_grpo_dm.py` |
+| v3 | Outcome | `reward_outcome.py` | `grpo_config_outcome.py` | legacy: `train_grpo_outcome_custom.py` |
+| v4 | Process | `reward_process.py` | `grpo_config_process.py` | legacy: `train_grpo_process_custom.py` |
 
 ### Phase 2: Cold-Start SFT
 4. Create `generate_cold_start_data.py` (teacher generates tagged demonstrations)
@@ -404,15 +412,15 @@ These are documented as known issues to resolve before or during implementation.
        --grpo-checkpoint checkpoints/lora_adapters/cold_start_sft \
        --output checkpoints/merged/cold_start_merged
    ```
-8. Verify `grpo_config_v4.py` `base_model` points to `checkpoints/merged/cold_start_merged`
+8. Verify `grpo_config_outcome.py` and `grpo_config_process.py` `base_model` point to `checkpoints/merged/cold_start_merged`
 
-### Phase 3: v3 Training
-9. Create `train_grpo_v3.py` (outcome rewards only, flat advantage)
+### Phase 3: v3 Training (Outcome Rewards Only — CONTROL)
+9. ~~Create `train_grpo_v3.py`~~ -> `legacy/train_grpo_outcome_custom.py` (custom loop, outcome rewards only, flat advantage)
 10. Run v3 on merged cold-start checkpoint
 11. Evaluate v3 on EconCausal, Corr2Cause, HumanEval
 
-### Phase 4: v4 Training
-12. Create `train_grpo_v4.py` (dual advantage, process rewards, KL regularization, correct clipping)
+### Phase 4: v4 Training (Process Rewards + Dual Advantage — EXPERIMENTAL)
+12. ~~Create `train_grpo_v4.py`~~ -> `legacy/train_grpo_process_custom.py` (custom loop, dual advantage, process rewards, KL regularization, correct clipping)
 13. Run v4 on merged cold-start checkpoint
 14. Evaluate v4 on EconCausal, Corr2Cause, HumanEval
 

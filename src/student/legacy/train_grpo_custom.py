@@ -31,8 +31,8 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from src.student.grpo_config import GRPO_CONFIG
-from src.student.rewards import (
+from src.student.grpo_config_dm import DEFAULT_CONFIG as GRPO_CONFIG
+from src.student.reward_dm import (
     compute_directional_assertion,
     compute_dm_keyword_alignment,
     compute_mechanism_commitment,

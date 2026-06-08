@@ -3,52 +3,97 @@
 -  The tokenizer you are loading from '/studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
 -  FINETUNED_MODEL_DIR=checkpoints/merged/cold_start_merged   ./evals/scripts/run_finetuned_bf16.sh
 - Figure out how to integrate hf-cli read paper command
-- Prerequisite: Stop Studio (GPU is at 30.8/32.6 GB)
-docker stop silly_blackwell
-Step 1: Generate cold-start data (sample 200 prompts, teacher generates tagged answers)
-docker exec ml-training python3 -m src.teacher.generate_cold_start_data \
-    --dataset data/processed/grpo_train_merged.jsonl \
-    --output data/processed/cold_start_sft.jsonl \
-    --samples 200 \
-    --model Qwen/Qwen3.5-27B
-Step 2: Cold-start SFT (5 epochs, teach tag format)
-docker exec ml-training python3 -m src.student.train_cold_start_sft \
-    --data data/processed/cold_start_sft.jsonl \
-    --base-model /studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330 \
-    --output checkpoints/lora_adapters/cold_start_sft \
-    --epochs 5 \
-    --batch-size 1 \
-    --lr 1e-5
-Step 3: Merge cold-start adapter (CPU-only, no GPU needed)
-docker exec ml-training python3 scripts/merge_grpo_checkpoint.py \
-    --base-model /studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330 \
-    --grpo-checkpoint checkpoints/lora_adapters/cold_start_sft \
-    --output checkpoints/merged/cold_start_merged
-Step 4: v3 training (outcome rewards only, flat advantage)
-docker exec ml-training python3 -m src.student.train_grpo_v3 \
-    --base-model checkpoints/merged/cold_start_merged \
-    --dataset-path data/processed/grpo_train_merged.jsonl \
-    --output-dir checkpoints/lora_adapters/grpo_v3
-Step 5: v4 training (dual advantage, process rewards)
-docker exec ml-training python3 -m src.student.train_grpo_v4 \
-    --base-model checkpoints/merged/cold_start_merged \
-    --dataset-path data/processed/grpo_train_merged.jsonl \
-    --output-dir checkpoints/lora_adapters/grpo_v4
-Step 6: Merge + evaluate (after training completes)
-# Merge v3
-docker exec ml-training python3 scripts/merge_grpo_checkpoint.py \
-    --base-model checkpoints/merged/cold_start_merged \
-    --grpo-checkpoint checkpoints/lora_adapters/grpo_v3/checkpoint-1000 \
-    --output checkpoints/merged/grpo_v3_final
 
-# Merge v4
+## Execution Commands
+
+### Prerequisite: Stop Studio (GPU is at 30.8/32.6 GB)
+```bash
+docker stop silly_blackwell
+```
+
+### GRPO v1/v2 Training (DM Keyword Alignment — Unsloth GRPOTrainer)
+**DEPRECATED**: Keyword-based proxy rewards. Failed twice (see `grpo-v3-proposal.md`). Preserved for reference.
+Uses `data/raw/questions.json` (1,500 DM questions), configured in `src/student/grpo_config_dm.py`.
+
+```bash
+docker exec ml-training python3 -m src.student.train_grpo_dm \
+    --base-model /mnt/c/Users/Guy/.unsloth/studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330 \
+    --output-dir checkpoints/lora_adapters/grpo_dm_v2
+```
+
+### GRPO v3 Training (Outcome Rewards Only — CONTROL)
+Custom loop with ground-truth correctness rewards. Uses `data/processed/grpo_train_merged.jsonl`.
+
+```bash
+# First run
+docker exec ml-training python3 -m src.student.legacy.train_grpo_outcome_custom \
+    --base-model checkpoints/merged/cold_start_merged \
+    --dataset-path data/processed/grpo_train_merged.jsonl \
+    --output-dir checkpoints/lora_adapters/grpo_v3_outcome
+
+# Find latest checkpoint
+docker exec ml-training python3 -m src.student.legacy.train_grpo_outcome_custom \
+    --output-dir checkpoints/lora_adapters/grpo_v3_outcome \
+    --find-checkpoint
+
+# Resume from specific step
+docker exec ml-training python3 -m src.student.legacy.train_grpo_outcome_custom \
+    --base-model checkpoints/merged/cold_start_merged \
+    --dataset-path data/processed/grpo_train_merged.jsonl \
+    --output-dir checkpoints/lora_adapters/grpo_v3_outcome \
+    --resume-step 500
+```
+
+### GRPO v4 Training (Process Rewards + Dual Advantage — EXPERIMENTAL)
+Custom loop with outcome + RLVMR process rewards and dual advantage (A_traj + A_MR). Uses `data/processed/grpo_train_merged.jsonl`.
+
+```bash
+# First run
+docker exec ml-training python3 -m src.student.legacy.train_grpo_process_custom \
+    --base-model checkpoints/merged/cold_start_merged \
+    --dataset-path data/processed/grpo_train_merged.jsonl \
+    --output-dir checkpoints/lora_adapters/grpo_v4_process
+
+# Resume from specific step
+docker exec ml-training python3 -m src.student.legacy.train_grpo_process_custom \
+    --base-model checkpoints/merged/cold_start_merged \
+    --dataset-path data/processed/grpo_train_merged.jsonl \
+    --output-dir checkpoints/lora_adapters/grpo_v4_process \
+    --resume-step 500
+```
+
+### Evaluation
+```bash
+# Baseline BF16
+./evals/scripts/run_baseline_bf16.sh --tasks humaneval
+
+# Finetuned BF16 (SFT LoRA merged)
+FINETUNED_MODEL_DIR=checkpoints/merged/cold_start_merged ./evals/scripts/run_finetuned_bf16.sh --tasks humaneval
+
+# GRPO BF16 (merged GRPO model)
+GRPO_MODEL_DIR=checkpoints/merged/grpo_v3_final ./evals/scripts/run_grpo_bf16.sh --tasks humaneval
+```
+
+### Merge + Evaluate (after training completes)
+```bash
+# Merge v3 (outcome-only)
 docker exec ml-training python3 scripts/merge_grpo_checkpoint.py \
     --base-model checkpoints/merged/cold_start_merged \
-    --grpo-checkpoint checkpoints/lora_adapters/grpo_v4/checkpoint-1000 \
-    --output checkpoints/merged/grpo_v4_final
-Resume (if interrupted):
-docker exec ml-training python3 -m src.student.train_grpo_v3 --find-checkpoint
-docker exec ml-training python3 -m src.student.train_grpo_v3 --resume-step 500
+    --grpo-checkpoint checkpoints/lora_adapters/grpo_v3_outcome/checkpoint-1000 \
+    --output checkpoints/merged/grpo_v3_outcome_final
+
+# Merge v4 (process + dual advantage)
+docker exec ml-training python3 scripts/merge_grpo_checkpoint.py \
+    --base-model checkpoints/merged/cold_start_merged \
+    --grpo-checkpoint checkpoints/lora_adapters/grpo_v4_process/checkpoint-1000 \
+    --output checkpoints/merged/grpo_v4_process_final
+
+# Eval v3
+GRPO_MODEL_DIR=checkpoints/merged/grpo_v3_outcome_final ./evals/scripts/run_grpo_bf16.sh --tasks humaneval
+
+# Eval v4
+GRPO_MODEL_DIR=checkpoints/merged/grpo_v4_process_final ./evals/scripts/run_grpo_bf16.sh --tasks humaneval
+```
 ---
 
 ## Supporting Research

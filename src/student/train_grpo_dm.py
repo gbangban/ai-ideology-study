@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 """
-GRPO Training via Unsloth GRPOTrainer
+GRPO v1/v2 Training via Unsloth GRPOTrainer (DM Keyword Alignment Track)
 
 Full rewrite using Unsloth's GRPOTrainer and GRPOConfig.
 Qwen3.5 is not vLLM-compatible, so fast_inference=False.
-All three reward functions are rule-based (regex).
+All three reward functions are rule-based (regex): DM keyword alignment,
+directional assertion, and mechanism commitment.
+
+NOTE: This is the v1/v2 track (keyword-based proxy rewards). Deprecated after
+two failed runs. The v3/v4 tracks use ground-truth correctness and process rewards.
 
 Usage:
-    python3 -m src.student.train_grpo \\
+    python3 -m src.student.train_grpo_dm \\
         --base-model /path/to/sft/checkpoint \\
-        --output-dir checkpoints/lora_adapters/grpo_adapter_v2
+        --output-dir checkpoints/lora_adapters/grpo_dm_adapter
 """
 from __future__ import annotations
 
@@ -22,8 +26,8 @@ from typing import List
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from src.student.grpo_config import DEFAULT_CONFIG, REWARD_WEIGHTS, create_grpo_config
-from src.student.rewards import (
+from src.student.grpo_config_dm import DEFAULT_CONFIG, REWARD_WEIGHTS, create_grpo_config
+from src.student.reward_dm import (
     compute_dm_keyword_alignment,
     compute_directional_assertion,
     compute_mechanism_commitment,
@@ -203,7 +207,7 @@ def train(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="GRPO Training for DM Alignment (Unsloth GRPOTrainer)")
+    parser = argparse.ArgumentParser(description="GRPO v1/v2 Training for DM Alignment (Unsloth GRPOTrainer)")
     parser.add_argument(
         "--base-model",
         default=DEFAULT_CONFIG["base_model"],

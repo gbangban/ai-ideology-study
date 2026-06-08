@@ -1,5 +1,5 @@
 def test_grpo_config_factory():
-    from src.student.grpo_config import create_grpo_config
+    from src.student.grpo_config_dm import create_grpo_config
     from trl import GRPOConfig
 
     config = create_grpo_config(output_dir="/tmp/test-grpo")
@@ -24,10 +24,10 @@ def test_grpo_config_factory():
 
 
 def test_reward_weights_sum_to_one():
-    from src.student.grpo_config import REWARD_WEIGHTS
+    from src.student.grpo_config_dm import REWARD_WEIGHTS
     assert abs(sum(REWARD_WEIGHTS.values()) - 1.0) < 1e-6
 
 
 def test_reward_weights_has_expected_keys():
-    from src.student.grpo_config import REWARD_WEIGHTS
+    from src.student.grpo_config_dm import REWARD_WEIGHTS
     assert set(REWARD_WEIGHTS.keys()) == {"dm_alignment", "directional_assertion", "mechanism_commitment"}

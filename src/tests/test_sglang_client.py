@@ -5,7 +5,7 @@ import json
 
 class TestSglangClientHealth:
     def test_health_check_returns_true_when_reachable(self):
-        from src.student.sglang_client import SglangClient
+        from src.student.legacy.sglang_client import SglangClient
 
         mock_resp = MagicMock()
         mock_resp.status_code = 200
@@ -16,7 +16,7 @@ class TestSglangClientHealth:
             assert client.health_check() is True
 
     def test_health_check_returns_false_when_unreachable(self):
-        from src.student.sglang_client import SglangClient
+        from src.student.legacy.sglang_client import SglangClient
 
         with patch("requests.get", side_effect=Exception("Connection refused")):
             client = SglangClient("http://localhost:1235")
@@ -25,7 +25,7 @@ class TestSglangClientHealth:
 
 class TestSglangClientChatCompletion:
     def test_chat_completion_returns_content(self):
-        from src.student.sglang_client import SglangClient
+        from src.student.legacy.sglang_client import SglangClient
 
         mock_resp = MagicMock()
         mock_resp.status_code = 200
@@ -46,7 +46,7 @@ class TestSglangClientChatCompletion:
             mock_post.assert_called_once()
 
     def test_chat_completion_raises_on_http_error(self):
-        from src.student.sglang_client import SglangClient
+        from src.student.legacy.sglang_client import SglangClient
         import requests as req
 
         mock_resp = MagicMock()
@@ -61,7 +61,7 @@ class TestSglangClientChatCompletion:
 
 class TestSglangClientBatchCompletion:
     def test_batch_chat_completion_returns_all_results(self):
-        from src.student.sglang_client import SglangClient
+        from src.student.legacy.sglang_client import SglangClient
 
         mock_resp = MagicMock()
         mock_resp.status_code = 200
@@ -80,7 +80,7 @@ class TestSglangClientBatchCompletion:
             assert all(r == "response" for r in results)
 
     def test_batch_chat_completion_retries_on_failure(self):
-        from src.student.sglang_client import SglangClient
+        from src.student.legacy.sglang_client import SglangClient
         import requests as req
 
         call_count = [0]

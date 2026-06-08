@@ -23,7 +23,7 @@ class TestGRPOTraining:
 class TestGRPOIntegration:
     def test_full_pipeline_imports(self):
         """Test that all GRPO components can be imported together."""
-        from src.student.grpo_config import GRPO_CONFIG
+        from src.student.grpo_config import REWARD_WEIGHTS, create_grpo_config
         from src.student.rewards import (
             compute_directional_assertion,
             compute_dm_keyword_alignment,
@@ -44,14 +44,14 @@ class TestGRPOIntegration:
             compute_dm_keyword_alignment,
             compute_mechanism_commitment,
         )
-        from src.student.grpo_config import GRPO_CONFIG
+        from src.student.grpo_config import REWARD_WEIGHTS
 
         text = "Capital accumulation drives exploitation through reserve army expansion. This directly increases class inequality and is the primary driver of wage suppression."
         da = compute_directional_assertion(text)
         dm = compute_dm_keyword_alignment(text)
         mc = compute_mechanism_commitment(text)
 
-        weights = GRPO_CONFIG["reward_weights"]
+        weights = REWARD_WEIGHTS
         total = weights["directional_assertion"] * da + weights["dm_alignment"] * dm + weights["mechanism_commitment"] * mc
         assert total > 0.1
         assert da > 0  # committed language
@@ -71,9 +71,9 @@ class TestGRPOIntegration:
     def test_compute_rewards_no_judge(self):
         """Test rewards work without judge model."""
         from src.student.train_grpo import compute_rewards
-        from src.student.grpo_config import GRPO_CONFIG
+        from src.student.grpo_config import REWARD_WEIGHTS
 
-        weights = GRPO_CONFIG["reward_weights"]
+        weights = REWARD_WEIGHTS
         completions = ["Capital drives exploitation through structural power. This directly increases inequality."]
         totals, dm_s, dir_s, mech_s = compute_rewards(completions, weights, None, None, None, None)
         assert len(totals) == 1

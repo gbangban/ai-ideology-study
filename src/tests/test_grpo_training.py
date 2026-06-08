@@ -23,18 +23,14 @@ class TestGRPOTraining:
 class TestGRPOIntegration:
     def test_full_pipeline_imports(self):
         """Test that all GRPO components can be imported together."""
-        from src.student.grpo_config import REWARD_WEIGHTS, create_grpo_config
+        from src.student.grpo_config import create_grpo_config, REWARD_WEIGHTS, DEFAULT_CONFIG
         from src.student.rewards import (
             compute_directional_assertion,
             compute_dm_keyword_alignment,
             compute_mechanism_commitment,
         )
-        from src.student.train_grpo import (
-            train,
-            compute_rewards,
-            compute_advantage,
-            generate_completions,
-        )
+        from src.student.train_grpo import train, _build_reward_funcs, _build_dataset
+        from trl import GRPOConfig, GRPOTrainer
         assert True
 
     def test_reward_pipeline(self):
@@ -51,94 +47,44 @@ class TestGRPOIntegration:
         dm = compute_dm_keyword_alignment(text)
         mc = compute_mechanism_commitment(text)
 
-        weights = REWARD_WEIGHTS
-        total = weights["directional_assertion"] * da + weights["dm_alignment"] * dm + weights["mechanism_commitment"] * mc
+        w = REWARD_WEIGHTS
+        total = w["directional_assertion"] * da + w["dm_alignment"] * dm + w["mechanism_commitment"] * mc
         assert total > 0.1
-        assert da > 0  # committed language
-        assert dm > 0  # DM keywords present
-        assert mc > 0  # mechanisms + commitment
+        assert da > 0
+        assert dm > 0
+        assert mc > 0
 
-    def test_compute_advantage(self):
-        """Test advantage computation normalizes within groups."""
-        from src.student.train_grpo import compute_advantage
-        import torch
+    def test_reward_funcs_callable(self):
+        """Test that reward functions accept List[str] and return List[float]."""
+        from src.student.train_grpo import _build_reward_funcs
 
-        rewards = [0.8, 0.6, 0.4, 0.2, 1.0, 0.5, 0.3, 0.7]
-        advantages = compute_advantage(rewards, group_size=8)
-        assert advantages.shape == (8,)
-        assert torch.allclose(advantages.mean(), torch.tensor(0.0), atol=1e-6)
+        reward_funcs = _build_reward_funcs()
+        assert len(reward_funcs) == 3
 
-    def test_compute_rewards_no_judge(self):
-        """Test rewards work without judge model."""
-        from src.student.train_grpo import compute_rewards
-        from src.student.grpo_config import REWARD_WEIGHTS
-
-        weights = REWARD_WEIGHTS
-        completions = ["Capital drives exploitation through structural power. This directly increases inequality."]
-        totals, dm_s, dir_s, mech_s = compute_rewards(completions, weights, None, None, None, None)
-        assert len(totals) == 1
-        assert len(dm_s) == 1
-        assert len(dir_s) == 1
-        assert len(mech_s) == 1
-        assert totals[0] > 0
+        completions = [
+            "Capital drives exploitation through structural power. This directly increases inequality.",
+            "The market is efficient and prices reflect supply and demand.",
+        ]
+        for func in reward_funcs:
+            results = func(completions)
+            assert isinstance(results, list)
+            assert len(results) == 2
+            assert all(isinstance(r, (int, float)) for r in results)
 
     def test_find_latest_checkpoint(self):
         """Test checkpoint discovery."""
         import tempfile, os
-        from pathlib import Path
-        from src.student.train_grpo import find_latest_checkpoint
+        from src.student.train_grpo import _find_latest_checkpoint
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            step, path = find_latest_checkpoint(tmpdir)
+            step, path = _find_latest_checkpoint(tmpdir)
             assert step == 0 and path == ""
 
             for s in [100, 200, 300]:
                 os.makedirs(f"{tmpdir}/checkpoint-{s}")
-            step, path = find_latest_checkpoint(tmpdir)
+            step, path = _find_latest_checkpoint(tmpdir)
             assert step == 300
             assert "checkpoint-300" in path
-
-    def test_save_load_training_state(self):
-        """Test training state save and restore."""
-        import tempfile
-        from pathlib import Path
-        from src.student.train_grpo import save_training_state
-        import torch
-
-        with tempfile.TemporaryDirectory() as tmpdir:
-            optimizer = torch.optim.AdamW([torch.nn.Parameter(torch.randn(2, 2))], lr=1e-3)
-            scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100)
-
-            save_training_state(50, optimizer, scheduler, [0.5, 0.6], f"{tmpdir}/checkpoint-50")
-            state = torch.load(f"{tmpdir}/checkpoint-50/training_state.pt", weights_only=False)
-            assert state["step"] == 50
-            assert len(state["rewards"]) == 2
-
-    def test_ppo_clip_uses_min(self):
-        """Verify PPO objective uses min (conservative update), not max."""
-        import torch
-        ratio = torch.tensor([1.3, 0.8, 1.5])
-        adv = torch.tensor([1.0, -0.5, 0.8])
-
-        unclipped = -(ratio * adv).mean()
-        clipped = -(torch.clamp(ratio, 0.8, 1.2) * adv).mean()
-
-        pg_loss = torch.min(unclipped, clipped)
-        assert pg_loss.item() <= max(unclipped.item(), clipped.item())
-
-    def test_dataloader_cycles_for_max_steps(self):
-        """Verify training loop handles more steps than dataset size."""
-        from src.student.train_grpo import GRPODataset
-        from torch.utils.data import DataLoader
-        import itertools
-
-        prompts = ["q1", "q2", "q3"]
-        dataset = GRPODataset(prompts)
-        dataloader = DataLoader(dataset, batch_size=1, shuffle=False)
-        dataloader_iter = iter(itertools.cycle(dataloader))
-
-        items = [next(dataloader_iter) for _ in range(10)]
-        assert len(items) == 10
 
 
 class TestDMKeywordAlignment:
@@ -164,7 +110,7 @@ class TestDMKeywordAlignment:
         from src.student.rewards import compute_dm_keyword_alignment
         text = "Mainstream analysis naturalizes market outcomes and renders invisible the ideological function of hegemonic discourse."
         score = compute_dm_keyword_alignment(text)
-        assert score >= 0.5  # frame critique + possibly structural
+        assert score >= 0.5
 
 
 class TestAsymmetricDirectionalAssertion:

@@ -20,11 +20,6 @@ import sys
 from pathlib import Path
 from typing import List
 
-import torch
-from datasets import Dataset
-from unsloth import FastLanguageModel
-from trl import GRPOConfig, GRPOTrainer
-
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 from src.student.grpo_config import DEFAULT_CONFIG, REWARD_WEIGHTS, create_grpo_config
@@ -72,8 +67,10 @@ def _build_reward_funcs() -> list:
 def _build_dataset(
     questions_path: str,
     tokenizer,
-) -> Dataset:
+):
     """Load questions.json and build a HF Dataset with 'prompt' column."""
+    from datasets import Dataset
+
     with open(questions_path, "r") as f:
         data = json.load(f)
     questions = [q["question"] for q in data]
@@ -132,6 +129,8 @@ def train(
     _strip_vision_config(base_model_path)
 
     # Load model with NF4 quantization
+    from unsloth import FastLanguageModel
+
     logger.info(f"Loading model from {base_model_path}...")
     model, tokenizer = FastLanguageModel.from_pretrained(
         model_name=base_model_path,
@@ -175,6 +174,8 @@ def train(
     grpo_config = create_grpo_config(output_dir=output_dir)
 
     # Create trainer
+    from trl import GRPOTrainer
+
     trainer = GRPOTrainer(
         model=model,
         processing_class=tokenizer,
@@ -257,6 +258,7 @@ def main() -> None:
     except Exception:
         logger.error("Training failed, flushing VRAM...")
         try:
+            import torch
             torch.cuda.empty_cache()
         except Exception:
             pass

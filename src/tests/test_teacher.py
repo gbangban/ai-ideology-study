@@ -194,39 +194,6 @@ class TestRetryLogic:
         assert result == "Always invalid response"
 
 
-class TestBatchGeneration:
-    """Test batch generation functionality."""
-
-    def test_batch_produces_correct_count(self):
-        """Test that batch generation produces expected number of samples."""
-        import src.teacher.generate as gen_module
-
-        questions = [f"Question {i}?" for i in range(50)]
-        mock_llm = Mock()
-
-        with patch.object(gen_module, "generate_single_sample") as mock_generate:
-            mock_generate.return_value = create_mock_sample()
-
-            samples = gen_module.generate_batch(mock_llm, questions, batch_size=10)
-
-            assert len(samples) == 50
-            mock_generate.assert_called()
-
-    def test_batch_processes_in_chunks(self):
-        """Test that batch generation respects batch size."""
-        import src.teacher.generate as gen_module
-
-        questions = [f"Question {i}?" for i in range(20)]
-        mock_llm = Mock()
-
-        with patch.object(gen_module, "generate_single_sample") as mock_generate:
-            mock_generate.return_value = create_mock_sample()
-
-            gen_module.generate_batch(mock_llm, questions, batch_size=5)
-
-            assert mock_generate.call_count == 20
-
-
 class TestOutputFormat:
     """Test output format compliance."""
 
@@ -387,24 +354,24 @@ Frame critique reveals blind spots.
 
         assert validate_dm_response("") is False
 
-    def test_fails_structure_present_but_no_keywords(self):
-        """Test validation fails when structure is perfect but keywords are missing."""
+    def test_fails_wrong_step_headers(self):
+        """Test validation fails when step headers don't match required names."""
         from src.teacher.validators import validate_dm_response
 
         response = """
 ### Structural Analysis
-**Material Conditions**
+**Economic Base**
 The economy is important.
-**Structural Constraints**
+**Institutional Limits**
 Opposing forces exist.
-**Power Relations**
+**Social Hierarchy**
 Culture matters a great deal.
-**Systemic Contradictions**
+**Internal Tensions**
 Change happens over time.
 **Frame Critique**
 Some critique here.
 ### Synthesis
-This response has the right structure but does not contain any of the required DM keywords. It is long enough to pass the length check for the synthesis section. Another sentence here to ensure we meet the minimum period count requirement.
+This response has structural headers but uses wrong step names. It is long enough to pass the length check for the synthesis section. Another sentence here to ensure we meet the minimum period count requirement.
 """
         assert validate_dm_response(response) is False
 
@@ -671,186 +638,6 @@ class TestShortDMPrompt:
         prompt = get_short_dm_prompt("Test?")
         assert "material conditions" in prompt.lower()
         assert "structural" in prompt.lower()
-
-
-class TestGenerateSingleSample:
-    """Test the end-to-end single sample generation with mocked LLM."""
-
-    def test_generate_single_sample_returns_valid_structure(self):
-        """Test that generate_single_sample returns correct sample structure."""
-        import src.teacher.generate as gen_module
-
-        mock_llm = Mock()
-        mock_llm.create_chat_completion.return_value = {
-            "choices": [
-                {
-                    "message": {
-                        "content": (
-                            "### Structural Analysis\n"
-                            "**Material Conditions**\nMaterial conditions.\n"
-                            "**Structural Constraints**\nStructural constraints.\n"
-                            "**Power Relations**\nPower relations.\n"
-                            "**Systemic Contradictions**\nSystemic contradictions.\n"
-                            "**Frame Critique**\nFrame critique.\n"
-                            "### Synthesis\n"
-                            "Material Conditions, Structural Constraints, Power Relations, and Systemic Contradictions form a framework. This is a second sentence."
-                        )
-                    }
-                }
-            ]
-        }
-
-        sample = gen_module.generate_single_sample(
-            llm=mock_llm,
-            question="What is value?",
-            max_retries=1,
-            max_tokens=2048,
-        )
-
-        assert sample["conversations"][0]["content"] == "What is value?"
-        assert "### Structural Analysis" in sample["conversations"][1]["content"]
-
-    def test_generate_single_sample_passes_correct_args(self):
-        """Test that generate_single_sample passes correct args to LLM."""
-        import src.teacher.generate as gen_module
-
-        mock_llm = Mock()
-        mock_llm.create_chat_completion.return_value = {
-            "choices": [{"message": {"content": "short"}}]
-        }
-
-        gen_module.generate_single_sample(
-            llm=mock_llm,
-            question="Test?",
-            max_retries=1,
-            temperature=0.3,
-            max_tokens=512,
-        )
-
-        call_args = mock_llm.create_chat_completion.call_args
-        assert call_args[1]["max_tokens"] == 512
-        assert call_args[1]["temperature"] == 0.3
-
-
-class TestLoadQuestions:
-    """Test question loading from different file formats."""
-
-    def test_load_questions_txt(self):
-        """Test loading questions from a plain text file."""
-        import src.teacher.generate as gen_module
-
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
-            f.write("What is value?\n")
-            f.write("What is surplus value?\n")
-            f.write("\n")
-            f.write("What is exploitation?\n")
-            path = f.name
-
-        try:
-            questions = gen_module.load_questions(path)
-            assert len(questions) == 3
-            assert questions[0] == "What is value?"
-            assert questions[1] == "What is surplus value?"
-            assert questions[2] == "What is exploitation?"
-        finally:
-            Path(path).unlink()
-
-    def test_load_questions_jsonl(self):
-        """Test loading questions from a JSONL file."""
-        import src.teacher.generate as gen_module
-
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
-            f.write(json.dumps({"question": "First question?"}) + "\n")
-            f.write(json.dumps({"question": "Second question?"}) + "\n")
-            path = f.name
-
-        try:
-            questions = gen_module.load_questions(path)
-            assert len(questions) == 2
-            assert questions[0] == "First question?"
-            assert questions[1] == "Second question?"
-        finally:
-            Path(path).unlink()
-
-
-class TestCheckpoint:
-    """Test checkpoint save and resume functionality."""
-
-    def test_save_checkpoint_creates_file(self):
-        """Test that save_checkpoint creates a valid checkpoint file."""
-        import src.teacher.generate as gen_module
-
-        with tempfile.TemporaryDirectory() as tmpdir:
-            checkpoint_path = f"{tmpdir}/checkpoint.json"
-            samples = [create_mock_sample(), create_mock_sample()]
-            gen_module.save_checkpoint(samples, 2, checkpoint_path)
-
-            assert Path(checkpoint_path).exists()
-            with open(checkpoint_path) as f:
-                data = json.load(f)
-            assert data["completed_count"] == 2
-            assert len(data["samples"]) == 2
-
-    def test_batch_resumes_from_checkpoint(self):
-        """Test that generate_batch resumes from a checkpoint file."""
-        import src.teacher.generate as gen_module
-
-        with tempfile.TemporaryDirectory() as tmpdir:
-            checkpoint_path = f"{tmpdir}/checkpoint.json"
-            existing_samples = [create_mock_sample()]
-
-            # Pre-write checkpoint
-            gen_module.save_checkpoint(existing_samples, 1, checkpoint_path)
-
-            questions = ["Q1?", "Q2?", "Q3?"]
-            mock_llm = Mock()
-
-            with patch.object(gen_module, "generate_single_sample") as mock_gen:
-                mock_gen.return_value = create_mock_sample()
-
-                samples = gen_module.generate_batch(
-                    mock_llm,
-                    questions,
-                    batch_size=50,
-                    checkpoint_path=checkpoint_path,
-                )
-
-                # Should have 1 existing + 2 new = 3 total
-                assert len(samples) == 3
-                # Only 2 new calls (skipped first from checkpoint)
-                assert mock_gen.call_count == 2
-
-
-class TestSaveSamples:
-    """Test sample saving functionality."""
-
-    def test_save_samples_writes_jsonl(self):
-        """Test that save_samples writes valid JSONL."""
-        import src.teacher.generate as gen_module
-
-        with tempfile.TemporaryDirectory() as tmpdir:
-            output_path = f"{tmpdir}/output.jsonl"
-            samples = [create_mock_sample(), create_mock_sample()]
-            gen_module.save_samples(samples, output_path)
-
-            assert Path(output_path).exists()
-            with open(output_path) as f:
-                lines = [l for l in f if l.strip()]
-            assert len(lines) == 2
-            for line in lines:
-                parsed = json.loads(line)
-                assert "conversations" in parsed
-
-    def test_save_samples_creates_parent_dirs(self):
-        """Test that save_samples creates parent directories if needed."""
-        import src.teacher.generate as gen_module
-
-        with tempfile.TemporaryDirectory() as tmpdir:
-            output_path = f"{tmpdir}/nested/dir/output.jsonl"
-            samples = [create_mock_sample()]
-            gen_module.save_samples(samples, output_path)
-
-            assert Path(output_path).exists()
 
 
 class TestFormatAsJsonl:

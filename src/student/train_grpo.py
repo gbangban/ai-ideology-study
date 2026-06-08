@@ -16,7 +16,6 @@ from __future__ import annotations
 import argparse
 import json
 import logging
-import os
 import sys
 from pathlib import Path
 from typing import List
@@ -192,7 +191,8 @@ def train(
         f"LR: {grpo_config.learning_rate}, "
         f"Beta: {grpo_config.beta}"
     )
-    trainer.train()
+    resume_from = f"checkpoint-{resume_step}" if resume_step > 0 else None
+    trainer.train(resume_from_checkpoint=resume_from)
 
     # Save final model
     logger.info(f"Training complete. Saving final adapter to {output_dir}...")

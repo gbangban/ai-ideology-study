@@ -6,7 +6,7 @@
 
 ## CRITICAL: Never Run Training Directly
 
-**NEVER execute training scripts** (GRPO, SFT, DPO, etc.) inside the container. Training consumes all 32GB VRAM and will conflict with any other GPU work (including this AI assistant if it uses a local model). All verification must be done without GPU:
+**NEVER execute training scripts** (GRPO, SFT, etc.) inside the container. Training consumes all 32GB VRAM and will conflict with any other GPU work (including this AI assistant if it uses a local model). All verification must be done without GPU:
 
 - **Code-level tests only**: Run unit and integration tests, import checks, syntax validation, and non-GPU test suite commands
 - **No `ddk exec ... python3 -m src.student.train_*`**: Never launch training runs
@@ -15,28 +15,33 @@
 
 ## Project Overview
 
-DM-Align: Dialectical Materialism alignment pipeline for Qwen3.5-9B (student) using Unsloth Studio + custom DPO training. Qwen3.5-27B used as teacher for data generation only.
+DM-Align: Dialectical Materialism alignment pipeline for Qwen3.5-9B (student) using Unsloth Studio + custom GRPO training. Qwen3.5-27B used as teacher for data generation only.
+
+**Current focus**: GRPO v3/v4 experimental design — outcome-only rewards (v3, control) vs outcome + process rewards with dual advantage (v4, experimental).
 
 ## Architecture
 
-**Pipeline**: Dialectial Materialist AI model generated questions -> Studio (teacher answers) -> Studio SFT -> Custom DPO -> Studio Export/Chat
+**Pipeline**: Dialectical Materialist AI-generated questions -> Studio (teacher answers) -> Studio SFT -> Merge cold-start adapter -> Custom GRPO (v3 or v4) -> Studio Export/Chat
 
 ```
 data/raw/questions.json (1,500 AI-generated questions, quality-filtered)
     -> Teacher answers generated in Unsloth Studio (with DM system prompts)
     -> Studio SFT via configs/studio_sft_config.yaml
     -> Export LoRA adapter
-    -> src/student/train_dpo.py (custom DPO, NOT in Studio)
+    -> Merge into base model (CPU-only)
+    -> GRPO v3 (outcome rewards only) or v4 (outcome + process rewards)
     -> Studio Chat evaluation + GGUF export
 ```
 
 ## Key Decisions
 
 1. **Unsloth Studio handles SFT** - Use Studio UI for supervised fine-tuning with QLoRA
-2. **DPO remains custom** - Studio does not support DPO/ORPO/GRPO in UI
-3. **Docker Desktop only** - Single Docker daemon on Windows; WSL2 Docker Engine removed (GPU passthrough fails in WSL2). Studio container (`silly_blackwell`) and project container both run on Docker Desktop.
-4. **CLI bridge via PowerShell** - `ddk` script (`scripts/ddk`) bridges WSL2 -> Windows PowerShell for full Docker CLI access (`logs`, `exec`, `inspect`). Regular `docker compose` works through named pipe.
-5. **Questions are AI-generated** - All 1,500 questions in `data/raw/questions.json` are AI-generated, assembled from two pools via `scripts/build_questions_json.py`: the deprecated pool (1,462 questions, quality-filtered and deduped) and the `hand_authored_questions.json` pool (454 questions, also AI-generated despite the name). Generator scripts (`generate_questions.py`, `generate.py`, `run_teacher.sh`) have been removed.
+2. **GRPO is custom** - Studio does not support GRPO in UI. v3/v4 use custom training loops (legacy/).
+3. **DPO is deprecated** - DPO training was removed. The pipeline is now SFT -> GRPO only.
+4. **Docker Desktop only** - Single Docker daemon on Windows; WSL2 Docker Engine removed (GPU passthrough fails in WSL2). Studio container (`silly_blackwell`) and project container both run on Docker Desktop.
+5. **CLI bridge via PowerShell** - `ddk` script (`scripts/ddk`) bridges WSL2 -> Windows PowerShell for full Docker CLI access (`logs`, `exec`, `inspect`). Regular `docker compose` works through named pipe.
+6. **Questions are AI-generated** - All 1,500 questions in `data/raw/questions.json` are AI-generated, assembled from two pools via `scripts/build_questions_json.py`: the deprecated pool (1,462 questions, quality-filtered and deduped) and the `hand_authored_questions.json` pool (454 questions, also AI-generated despite the name). Generator scripts (`generate_questions.py`, `generate.py`, `run_teacher.sh`) have been removed.
+7. **Semantic naming** - Files use track labels: `_dm` (v1/v2 keyword), `_outcome` (v3 correctness), `_process` (v4 RLVMR). One 1:1:1 mapping of rewards:config:training per track.
 
 ## Active Code
 
@@ -44,20 +49,41 @@ data/raw/questions.json (1,500 AI-generated questions, quality-filtered)
   - `topics.py` - Two-axis topic taxonomy (social categories x historical epochs)
   - `prompts.py` - DM system prompt templates
   - `validators.py` - Response quality validators
-  - `generate_dpo_pairs.py` - DPO pair generation (NOTE: uses stub template for rejected responses, not real model output)
   - `tag_questions.py` - Question tagging CLI
   - `clean_reasoning_traces.py` - Strips meta-commentary from Studio parquet outputs
   - `parquet_to_json.py` - Studio parquet -> JSON converter
-- `src/student/train_dpo.py` - DPO training (custom, NOT in Studio). Run via `python3 -m src.student.train_dpo --help`
-- `src/student/train_grpo.py` - GRPO training (active). W&B logging via `wandb.init()` + per-step `wandb.log()`. Judge offloading via SG-Lang HTTP (`judge_backend` config).
-- `src/student/grpo_config.py` - GRPO hyperparameters and judge backend config
-- `src/student/rewards.py` - Reward functions with dual judge paths: local (NF4) and SG-Lang HTTP (BF16)
-- `src/student/sglang_client.py` - HTTP client for SG-Lang OpenAI-compatible API with batch completion
-- `src/student/dpo_config.py` - DPO hyperparameters (beta=0.1, LR=5e-7)
-- `src/tests/` - Test suite (test_teacher.py, test_sft_training.py, test_dpo_training.py, test_e2e.py, test_sglang_client.py, test_grpo_training.py)
+  - `convert_full_dataset.py` - Parquet -> JSON, clean traces, save SFT dataset
+  - `generate_rejected_responses.py` - Template-based rejected response generators
+- `src/student/` - GRPO training (three tracks)
+  - **v1/v2 DM keyword track (deprecated)**:
+    - `train_grpo_dm.py` - Unsloth GRPOTrainer with DM keyword rewards
+    - `grpo_config_dm.py` - Config for DM keyword training
+    - `reward_dm.py` - Keyword alignment, directional assertion, mechanism commitment rewards
+  - **v3 outcome track (active, control)**:
+    - `grpo_config_outcome.py` - Config for outcome-only training
+    - `reward_outcome.py` - Ground-truth correctness rewards (EconCausal, Corr2Cause, synthetic)
+    - `legacy/train_grpo_outcome_custom.py` - Custom loop training script
+  - **v4 process track (active, experimental)**:
+    - `grpo_config_process.py` - Config for process reward training
+    - `reward_process.py` - RLVMR process rewards (planning, commitment, reflection, monitor)
+    - `legacy/train_grpo_process_custom.py` - Custom loop with dual advantage
+  - `tagless_eval.py` - Tagless evaluation for v4 (no XML tags in output)
+- `src/tests/` - Test suite
+  - `test_teacher.py` - Teacher phase tests (49 tests)
+  - `test_sft_training.py` - SFT config validation (19 tests)
+  - `test_grpo_training.py` - GRPO training tests + DM reward tests (18 tests + 1 skipped)
+  - `test_grpo_config.py` - GRPOConfig factory tests (3 tests)
+  - `test_rewards.py` - Reward function tests (11 tests)
+  - `test_rlvmr_rewards.py` - Process reward tests (35 tests)
+  - `test_sglang_client.py` - SG-Lang client tests (6 tests)
+  - `test_e2e.py` - E2E pipeline tests (3 tests)
+  - `test_data_prep.py` - Data preparation tests (11 tests)
 
 ## Deprecated (Reference Only)
 
+- `src/student/legacy/train_grpo_custom.py` - Original custom GRPO loop
+- `src/student/legacy/train_grpo_trl.py` - Old TRL experiment script
+- `src/student/legacy/sglang_client.py` - SG-Lang HTTP client (deprecated, rewards are regex-based)
 - `src/student/train_sft.py` - Replaced by Studio UI
 - `src/student/config.py` - Replaced by configs/studio_sft_config.yaml
 - `src/utils/vram_monitor.py` - Replaced by Studio GPU monitor
@@ -66,13 +92,10 @@ data/raw/questions.json (1,500 AI-generated questions, quality-filtered)
 ## Configs
 
 - `configs/studio_sft_config.yaml` - Studio SFT config (upload via Studio UI)
-- `configs/dpo_config.yaml` - DPO config (active)
 - `configs/sft_config.yaml` - Legacy flat config (reference)
 
 ## Active Scripts
 
-- `scripts/run_dpo.sh` - DPO training (set `STUDIO_EXPORT_PATH` env var to point to Studio export)
-- `scripts/run_dpo_pair_generation.sh` - DPO pair generation
 - `scripts/run_e2e_tests.sh` - Test runner (includes SG-Lang client + GRPO tests)
 - `scripts/sglang_health.sh` - Health check for SG-Lang container
 - `scripts/ddk` - CLI bridge: WSL2 -> Windows PowerShell for Docker Desktop
@@ -80,6 +103,7 @@ data/raw/questions.json (1,500 AI-generated questions, quality-filtered)
 - `scripts/audit_question_quality.py` - Question quality scoring
 - `scripts/redistribute_questions.py` - Dedup, auto-tag, gap report pipeline
 - `scripts/dedup_questions.py` - Parse and deduplicate questions
+- `scripts/merge_grpo_checkpoint.py` - Merge LoRA adapter into base model (CPU-only)
 
 ## Data
 
@@ -87,7 +111,7 @@ data/raw/questions.json (1,500 AI-generated questions, quality-filtered)
 - `data/raw/eval_questions.json` - 21 evaluation questions
 - `data/processed/batch_00000.json` - Raw teacher output (250 samples)
 - `data/processed/sft_dataset.jsonl` - **NOT YET GENERATED** - ShareGPT format, needed for Studio SFT
-- `data/processed/dpo_pairs.jsonl` - **NOT YET GENERATED** - Needed for DPO training
+- `data/processed/grpo_train_merged.jsonl` - v3/v4 training data (EconCausal + Corr2Cause + synthetic ~8,300 prompts)
 
 ## Docker
 
@@ -105,14 +129,28 @@ data/raw/questions.json (1,500 AI-generated questions, quality-filtered)
 ./scripts/run_e2e_tests.sh
 ```
 
-### DPO Training
+### GRPO v3 Training (Outcome Rewards — CONTROL)
 ```bash
-STUDIO_EXPORT_PATH=/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330 ./scripts/run_dpo.sh
+docker exec ml-training python3 -m src.student.legacy.train_grpo_outcome_custom \
+    --base-model checkpoints/merged/cold_start_merged \
+    --dataset-path data/processed/grpo_train_merged.jsonl \
+    --output-dir checkpoints/lora_adapters/grpo_v3_outcome
 ```
 
-### Test DPO CLI Args
+### GRPO v4 Training (Process Rewards + Dual Advantage — EXPERIMENTAL)
 ```bash
-python3 -m src.student.train_dpo --help
+docker exec ml-training python3 -m src.student.legacy.train_grpo_process_custom \
+    --base-model checkpoints/merged/cold_start_merged \
+    --dataset-path data/processed/grpo_train_merged.jsonl \
+    --output-dir checkpoints/lora_adapters/grpo_v4_process
+```
+
+### Merge GRPO Adapter (CPU-only)
+```bash
+docker exec ml-training python3 scripts/merge_grpo_checkpoint.py \
+    --base-model checkpoints/merged/cold_start_merged \
+    --grpo-checkpoint checkpoints/lora_adapters/grpo_v4_process/checkpoint-1000 \
+    --output checkpoints/merged/grpo_v4_process_final
 ```
 
 ### Evaluation (bf16 only - GGUF eval scripts were deleted in commit 4cffa8e)
@@ -128,15 +166,13 @@ python3 -m src.student.train_dpo --help
 # Override with FINETUNED_MODEL_DIR env var
 ./evals/scripts/run_finetuned_bf16.sh --tasks humaneval
 
-# GRPO BF16 (native HF, full precision merged model, 500 steps)
-# Default model path: /mnt/c/Users/Guy/.unsloth/studio/exports/grpo_merged/checkpoint-500
+# GRPO BF16 (native HF, full precision merged model)
 # Override with GRPO_MODEL_DIR env var
-./evals/scripts/run_grpo_bf16.sh --tasks humaneval
+GRPO_MODEL_DIR=checkpoints/merged/grpo_v4_process_final ./evals/scripts/run_grpo_bf16.sh --tasks humaneval
 
 # SG-Lang BF16 (lm_eval via OpenAI-compatible backend, server lifecycle managed)
 # Default model: Qwen/Qwen3.5-9B, override with SGLANG_MODEL env var
 ./evals/scripts/run_sglang_bf16.sh --tasks humaneval
-
 ```
 
 Eval scripts: `run_baseline_bf16.sh`, `run_finetuned_bf16.sh`, `run_grpo_bf16.sh`, `run_sglang_bf16.sh`, `eval_logging.sh`, `compare_results.py`, `compare_answers.py`, `label_results.py`.
@@ -156,11 +192,12 @@ Results in `evals/results/` organized by `baseline/`, `finetuned/`, and `grpo/` 
 ## Model Details
 
 - Teacher: `Unsloth/Qwen3.5-27B` (base, data generation only)
-- Student: `Qwen/Qwen3.5-9B` (Instruct/post-trained, SFT + DPO training) — NOT base; architecture is `Qwen3_5ForConditionalGeneration` with native thinking mode (`
+- Student: `Qwen/Qwen3.5-9B` (Instruct/post-trained, SFT + GRPO training) — NOT base; architecture is `Qwen3_5ForConditionalGeneration` with native thinking mode
 - Quantization: NF4 via Unsloth runtime
 - LoRA: r=32, alpha=32, dropout=0.05, 7 target modules
 - VRAM: RTX 5090 (32GB), QLoRA NF4 quantization
-- DPO: beta=0.1, sigmoid loss, LR=5e-7
+- GRPO v3: outcome rewards only, flat advantage, 1000 steps, LR=5e-7
+- GRPO v4: outcome + process rewards, dual advantage (A_traj + A_MR), KL regularization, 1000 steps, LR=5e-7
 
 ## Eval Results
 
@@ -176,12 +213,12 @@ Results in `evals/results/` organized by `baseline/`, `finetuned/`, and `grpo/` 
 
 ### EconCausal + Corr2Cause (2026-05-22/23)
 
-| Task | Baseline BF16 | Finetuned BF16 | Δ |
-|------|---------------|----------------|-----|
+| Task | Baseline BF16 | Finetuned BF16 | Change |
+|------|---------------|----------------|--------|
 | EconCausal Task1 Econ | 60.30% | 47.94% | **-12.36pp** |
 | EconCausal Task1 Finance | 56.51% | 43.02% | **-13.49pp** |
-| EconCausal Task2 | 69.72% | 65.85% | **-3.87pp** |
+| EconCausal Task2 | 69.72% | 65.85% | -3.87pp |
 | EconCausal Task3 | 22.18% | 11.38% | **-10.80pp** |
 | Corr2Cause | 36.3% | 74.6% | **+38.3pp** |
 
-**Key finding**: SFT on DM-aligned data causes large regressions on applied economic causal reasoning (EconCausal -4 to -13pp) but large improvement on formal causal inference (Corr2Cause +38pp). Dominant failure mode is `+` → `mixed` hedging — the model learns to be skeptical of straightforward positive causal effects. See `evals/results/README.md` for full analysis.
+**Key finding**: SFT on DM-aligned data causes large regressions on applied economic causal reasoning (EconCausal -4 to -13pp) but large improvement on formal causal inference (Corr2Cause +38pp). Dominant failure mode is `+` -> `mixed` hedging — the model learns to be skeptical of straightforward positive causal effects. See `evals/results/README.md` for full analysis.

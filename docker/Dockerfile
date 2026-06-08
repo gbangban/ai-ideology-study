@@ -23,9 +23,13 @@ RUN pip install --no-cache-dir torch==2.7.0 torchvision torchaudio \
     --index-url https://download.pytorch.org/whl/cu126
 
 # Install Unsloth (pinned to your required version)
-RUN pip install --no-cache-dir unsloth==2026.4.6
+RUN pip install --no-cache-dir --upgrade unsloth unsloth_zoo
 
-# Install ML Stack (custom GRPO, no TRL/vLLM dependency)
+# Install ML Stack (GRPOTrainer requires trl + mergekit)
+# Force trl>=1.0.0 to drop the broken llm_blender dependency (incompatible with transformers 5.x).
+# unsloth pins trl<=0.24.0 but all its trl imports (GRPOTrainer, GRPOConfig, SFTTrainer,
+# unwrap_model_for_generation, etc.) exist unchanged in trl 1.x. The pip conflict warning
+# is cosmetic — unsloth's string-match patches still apply to trl 1.5.1's source.
 RUN pip install --no-cache-dir \
     transformers>=4.46.1 \
     datasets>=3.1.0 \
@@ -35,7 +39,9 @@ RUN pip install --no-cache-dir \
     sentencepiece \
     wandb \
     networkx \
-    pytest
+    pytest \
+    mergekit \
+    && pip install --no-deps "trl>=1.0.0"
 
 # --- FIX: Match llama-cpp-python to CUDA 12.4+ ---
 RUN CMAKE_ARGS="-DGGML_CUDA=ON" pip install llama-cpp-python==0.3.20 --no-cache-dir

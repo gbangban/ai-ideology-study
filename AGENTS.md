@@ -78,6 +78,10 @@ data/raw/questions.json (1,500 AI-generated questions, quality-filtered)
   - `test_sglang_client.py` - SG-Lang client tests (6 tests)
   - `test_e2e.py` - E2E pipeline tests (3 tests)
   - `test_data_prep.py` - Data preparation tests (11 tests)
+  - `test_grpo_base.py` - Shared GRPOTrainer utility tests (12 tests)
+  - `test_grpo_outcome_training.py` - GRPO v3 training tests (10 tests)
+  - `test_grpo_process_training.py` - GRPO v4 training tests (10 tests)
+  - `test_smoke_test.py` - Smoke test module tests (5 tests, host-only)
 
 ## Deprecated (Reference Only)
 
@@ -97,6 +101,7 @@ data/raw/questions.json (1,500 AI-generated questions, quality-filtered)
 ## Active Scripts
 
 - `scripts/run_e2e_tests.sh` - Test runner (includes SG-Lang client + GRPO tests)
+- `scripts/smoke_test_training.sh` - Container smoke test (one training step)
 - `scripts/sglang_health.sh` - Health check for SG-Lang container
 - `scripts/ddk` - CLI bridge: WSL2 -> Windows PowerShell for Docker Desktop
 - `scripts/build_questions_json.py` - Assembles questions.json with balanced distribution
@@ -129,9 +134,16 @@ data/raw/questions.json (1,500 AI-generated questions, quality-filtered)
 ./scripts/run_e2e_tests.sh
 ```
 
+### Smoke Test (One Training Step, Container Required)
+```bash
+./scripts/smoke_test_training.sh outcome    # v3 outcome track
+./scripts/smoke_test_training.sh process    # v4 process track
+./scripts/smoke_test_training.sh            # both tracks
+```
+
 ### GRPO v3 Training (Outcome Rewards — CONTROL)
 ```bash
-docker exec ml-training python3 -m src.student.legacy.train_grpo_outcome_custom \
+docker exec ml-training python3 -m src.student.train_grpo_outcome \
     --base-model checkpoints/merged/cold_start_merged \
     --dataset-path data/processed/grpo_train_merged.jsonl \
     --output-dir checkpoints/lora_adapters/grpo_v3_outcome
@@ -139,7 +151,7 @@ docker exec ml-training python3 -m src.student.legacy.train_grpo_outcome_custom 
 
 ### GRPO v4 Training (Process Rewards + Dual Advantage — EXPERIMENTAL)
 ```bash
-docker exec ml-training python3 -m src.student.legacy.train_grpo_process_custom \
+docker exec ml-training python3 -m src.student.train_grpo_process \
     --base-model checkpoints/merged/cold_start_merged \
     --dataset-path data/processed/grpo_train_merged.jsonl \
     --output-dir checkpoints/lora_adapters/grpo_v4_process

@@ -10,7 +10,7 @@ two failed runs. The v3/v4 tracks use reward_outcome.py and reward_process.py.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 from trl import GRPOConfig
 
@@ -54,7 +54,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
 }
 
 
-def create_grpo_config(output_dir: str | None = None) -> GRPOConfig:
+def create_grpo_config(output_dir: Optional[str] = None) -> GRPOConfig:
     """Build a GRPOConfig for Unsloth's GRPOTrainer.
 
     Args:
@@ -75,7 +75,7 @@ def create_grpo_config(output_dir: str | None = None) -> GRPOConfig:
         logging_steps=25,
         save_steps=50,
         lr_scheduler_type="cosine",
-        max_prompt_length=2048,
+ 
         output_dir=output_dir or DEFAULT_CONFIG["output_dir"],
         report_to="wandb",
         remove_unused_columns=False,

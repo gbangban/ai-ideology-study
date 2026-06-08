@@ -26,7 +26,7 @@ The paper's ablation shows removing cold-start SFT costs 15.7pp on ALFWorld L2.
 """
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 from trl import GRPOConfig
 
@@ -77,15 +77,23 @@ DEFAULT_CONFIG: dict[str, Any] = {
 }
 
 
-def create_grpo_config(output_dir: str | None = None) -> GRPOConfig:
+def create_grpo_config(
+    output_dir: Optional[str] = None,
+    max_steps: Optional[int] = None,
+    save_steps: Optional[int] = None,
+    logging_steps: Optional[int] = None,
+) -> GRPOConfig:
     """Build a GRPOConfig for v4 process-reward training.
 
     Args:
         output_dir: Override default output directory.
+        max_steps: Override default step count (use 1 for smoke tests).
+        save_steps: Override checkpoint interval (use 99999 to disable).
+        logging_steps: Override logging interval (use 1 for smoke tests).
     """
     return GRPOConfig(
         learning_rate=5e-7,
-        max_steps=1000,
+        max_steps=max_steps if max_steps is not None else 1000,
         warmup_steps=100,
         per_device_train_batch_size=1,
         gradient_accumulation_steps=4,
@@ -95,10 +103,10 @@ def create_grpo_config(output_dir: str | None = None) -> GRPOConfig:
         epsilon=REWARD_WEIGHTS["clip_epsilon"],
         loss_type="dapo",
         scale_rewards="group",
-        logging_steps=25,
-        save_steps=100,
+        logging_steps=logging_steps if logging_steps is not None else 25,
+        save_steps=save_steps if save_steps is not None else 100,
         lr_scheduler_type="cosine",
-        max_prompt_length=2048,
+        torch_compile=False,
         output_dir=output_dir or DEFAULT_CONFIG["output_dir"],
         report_to="wandb",
         remove_unused_columns=False,

@@ -18,7 +18,7 @@ def test_grpo_config_factory():
     assert config.logging_steps == 25
     assert config.save_steps == 50
     assert config.lr_scheduler_type == "cosine"
-    assert config.max_prompt_length == 2048
+    assert config.max_prompt_length == 512
     assert config.report_to == ["wandb"]
     assert config.generation_batch_size == 8
 
@@ -31,3 +31,49 @@ def test_reward_weights_sum_to_one():
 def test_reward_weights_has_expected_keys():
     from src.student.grpo_config_dm import REWARD_WEIGHTS
     assert set(REWARD_WEIGHTS.keys()) == {"dm_alignment", "directional_assertion", "mechanism_commitment"}
+
+
+def test_grpo_config_outcome_smoke_override():
+    from src.student.grpo_config_outcome import create_grpo_config
+
+    config = create_grpo_config(
+        output_dir="/tmp/test-grpo-outcome",
+        max_steps=1,
+        save_steps=99999,
+        logging_steps=1,
+    )
+    assert config.max_steps == 1
+    assert config.save_steps == 99999
+    assert config.logging_steps == 1
+
+
+def test_grpo_config_outcome_defaults_unchanged():
+    from src.student.grpo_config_outcome import create_grpo_config
+
+    config = create_grpo_config(output_dir="/tmp/test-grpo-outcome")
+    assert config.max_steps == 1000
+    assert config.save_steps == 100
+    assert config.logging_steps == 25
+
+
+def test_grpo_config_process_smoke_override():
+    from src.student.grpo_config_process import create_grpo_config
+
+    config = create_grpo_config(
+        output_dir="/tmp/test-grpo-process",
+        max_steps=1,
+        save_steps=99999,
+        logging_steps=1,
+    )
+    assert config.max_steps == 1
+    assert config.save_steps == 99999
+    assert config.logging_steps == 1
+
+
+def test_grpo_config_process_defaults_unchanged():
+    from src.student.grpo_config_process import create_grpo_config
+
+    config = create_grpo_config(output_dir="/tmp/test-grpo-process")
+    assert config.max_steps == 1000
+    assert config.save_steps == 100
+    assert config.logging_steps == 25

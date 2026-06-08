@@ -790,7 +790,7 @@ class TestEvalScripts:
         """GRPO script references the merged GRPO checkpoint path."""
         content = (_SCRIPTS_DIR / "run_grpo_bf16.sh").read_text()
         assert "grpo_merged" in content
-        assert "checkpoint-250" in content
+        assert "checkpoint-500" in content
 
 
 # ---------------------------------------------------------------------------

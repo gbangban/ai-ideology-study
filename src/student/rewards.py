@@ -13,7 +13,7 @@ import re
 from typing import Callable, List, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.student.sglang_client import SglangClient
+    from src.student.legacy.sglang_client import SglangClient
 
 import torch
 from transformers import PreTrainedTokenizer

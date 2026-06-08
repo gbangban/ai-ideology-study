@@ -53,6 +53,13 @@ class GRPODatasetV3(TorchDataset):
         return self.prompt_texts[idx], self.docs[idx]
 
 
+def grpo_collate_fn(batch):
+    """Collate (prompt_text, doc) tuples without converting dicts to tensors."""
+    prompts = [item[0] for item in batch]
+    docs = [item[1] for item in batch]
+    return prompts, docs
+
+
 def compute_advantage(rewards: List[float], group_size: int) -> torch.Tensor:
     """Group-relative advantage: (r_i - mean) / std within each group."""
     rewards_tensor = torch.tensor(rewards, dtype=torch.float32)
@@ -173,6 +180,10 @@ def train(config, base_model_path, output_dir, resume_step=0):
         tokenizer = tokenizer.tokenizer
         logger.info("Extracted text tokenizer from VLProcessor")
 
+    from src.student import fix_mistral_tokenizer
+    fix_mistral_tokenizer(tokenizer)
+    logger.info("Applied Mistral tokenizer regex fix")
+
     model = FastLanguageModel.get_peft_model(
         model,
         r=config["lora_rank"],
@@ -198,7 +209,7 @@ def train(config, base_model_path, output_dir, resume_step=0):
         prompt_texts.append(prompt_text)
 
     dataset = GRPODatasetV3(prompt_texts, docs)
-    dataloader = DataLoader(dataset, batch_size=config["per_device_train_batch_size"], shuffle=True)
+    dataloader = DataLoader(dataset, batch_size=config["per_device_train_batch_size"], shuffle=True, collate_fn=grpo_collate_fn)
     dataloader_iter = iter(itertools.cycle(dataloader))
 
     group_size = config["grpo_g"]
@@ -209,6 +220,7 @@ def train(config, base_model_path, output_dir, resume_step=0):
     warmup_steps = config["warmup_steps"]
     save_steps = config["save_steps"]
     logging_steps = config["logging_steps"]
+    sample_steps = config.get("sample_steps", 100)
     gradient_accum_steps = config.get("gradient_accumulation_steps", 1)
 
     optimizer = torch.optim.AdamW(
@@ -242,6 +254,10 @@ def train(config, base_model_path, output_dir, resume_step=0):
 
     logger.info(f"Starting GRPO v3 training (outcome rewards only, flat advantage)...")
     logger.info(f"  Steps: {max_steps}, G: {group_size}, LR: {lr}, Beta: {beta}")
+    logger.info(f"  Logging every {logging_steps} steps, sampling every {sample_steps} steps")
+    print("=" * 90)
+    print(f"{'Step':>6} {'Loss':>8} {'PG':>8} {'KL':>8} {'Reward':>8} {'MinR':>6} {'MaxR':>6} {'MedR':>6} {'LR':>10} {'Time':>6} {'ETA(h)':>7} {'VRAM':>7}")
+    print("=" * 90)
 
     # W&B
     wandb_mode = os.environ.get("WANDB_MODE", "online")
@@ -259,6 +275,7 @@ def train(config, base_model_path, output_dir, resume_step=0):
         save_code=False,
     )
 
+    os.makedirs(output_dir, exist_ok=True)
     csv_path = f"{output_dir}/training_log.csv"
     csv_f = open(csv_path, "w", newline="")
     csv_writer = csv.writer(csv_f)
@@ -288,6 +305,8 @@ def train(config, base_model_path, output_dir, resume_step=0):
         optimizer.zero_grad()
 
         batch_loss = 0.0
+        batch_pg_loss = 0.0
+        batch_kl_loss = 0.0
         n_samples = len(all_completions)
 
         lora_weights = {}
@@ -311,7 +330,7 @@ def train(config, base_model_path, output_dir, resume_step=0):
             attn_mask = tokenized["attention_mask"]
             prompt_len = all_prompt_lengths[i]
 
-            # Reference forward
+            # Reference forward (no gradients)
             for name, param in model.named_parameters():
                 if name in lora_weights:
                     param.data.copy_(lora_weights[name])
@@ -354,6 +373,8 @@ def train(config, base_model_path, output_dir, resume_step=0):
 
             total_loss.backward()
             batch_loss += total_loss.item()
+            batch_pg_loss += pg_loss.item()
+            batch_kl_loss += kl.item()
 
             del new_outputs, new_logits, new_log_probs, ref_log_probs, new_token_lp, ref_token_lp, ref_logits
 
@@ -369,16 +390,62 @@ def train(config, base_model_path, output_dir, resume_step=0):
         elapsed = time.time() - batch_start
         est_remaining = (elapsed / step) * (max_steps - step) / 3600
 
+        rewards_sorted = sorted(rewards)
+        reward_min = rewards_sorted[0]
+        reward_max = rewards_sorted[-1]
+        reward_med = rewards_sorted[len(rewards_sorted) // 2]
+
+        vram = torch.cuda.memory_allocated(model.device) / 1e9
+        current_lr = scheduler.get_last_lr()[0] if hasattr(scheduler, "get_last_lr") else lr
+        avg_pg = batch_pg_loss / len(all_completions)
+        avg_kl = batch_kl_loss / len(all_completions)
+
+        print(
+            f"{step:>6d} "
+            f"{batch_loss / len(all_completions):>8.4f} "
+            f"{avg_pg:>8.4f} "
+            f"{avg_kl:>8.4f} "
+            f"{avg_reward:>8.3f} "
+            f"{reward_min:>6.2f} "
+            f"{reward_max:>6.2f} "
+            f"{reward_med:>6.2f} "
+            f"{current_lr:>10.2e} "
+            f"{elapsed:>6.1f}s "
+            f"{est_remaining:>7.1f}h "
+            f"{vram:>6.1f}G",
+            flush=True,
+        )
+
         if step % logging_steps == 0 or step == 1:
-            vram = torch.cuda.memory_allocated(model.device) / 1e9
             logger.info(
                 f"Step {step}/{max_steps} | "
                 f"Loss: {batch_loss / len(all_completions):.4f} | "
-                f"Avg Reward: {avg_reward:.3f} | "
+                f"PG: {avg_pg:.4f} | "
+                f"KL: {avg_kl:.4f} | "
+                f"Avg Reward: {avg_reward:.3f} "
+                f"(min={reward_min:.2f}, max={reward_max:.2f}, med={reward_med:.2f}) | "
+                f"LR: {current_lr:.2e} | "
                 f"Time: {elapsed:.1f}s | "
                 f"ETA: {est_remaining:.1f}h | "
                 f"VRAM: {vram:.1f}GB"
             )
+
+        if sample_steps > 0 and step % sample_steps == 0:
+            model.eval()
+            sample_prompt = batch_prompts[0]
+            sample_completions = generate_completions(
+                model, tokenizer, sample_prompt,
+                group_size=min(2, group_size),
+                max_new_tokens=min(256, max_completion_tokens),
+            )
+            model.train()
+            sample_rew = [compute_outcome_reward(batch_docs[0], c) for c in sample_completions]
+            print(f"\n--- Sample @ step {step} ---")
+            doc_prompt = batch_docs[0].get("prompt", "")[:150]
+            print(f"Prompt: {doc_prompt}...")
+            for i, (comp, rew) in enumerate(zip(sample_completions, sample_rew)):
+                print(f"  Completion {i} (reward={rew:.3f}): {comp[:300]}...")
+            print(f"--- End sample ---\n")
 
         csv_writer.writerow([
             step,

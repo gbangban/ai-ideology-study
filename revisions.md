@@ -1,8 +1,9 @@
 # Revisions and Task List
--  
+-  Increase batch size for offline learning, aim for gpu saturation
+-  The tokenizer you are loading from '/studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
+-  FINETUNED_MODEL_DIR=checkpoints/merged/cold_start_merged   ./evals/scripts/run_finetuned_bf16.sh
 - Figure out how to integrate hf-cli read paper command
-- 
-Prerequisite: Stop Studio (GPU is at 30.8/32.6 GB)
+- Prerequisite: Stop Studio (GPU is at 30.8/32.6 GB)
 docker stop silly_blackwell
 Step 1: Generate cold-start data (sample 200 prompts, teacher generates tagged answers)
 docker exec ml-training python3 -m src.teacher.generate_cold_start_data \

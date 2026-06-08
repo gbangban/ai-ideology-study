@@ -61,6 +61,13 @@ class GRPODatasetV4(TorchDataset):
         return self.prompt_texts[idx], self.docs[idx]
 
 
+def grpo_collate_fn(batch):
+    """Collate (prompt_text, doc) tuples without converting dicts to tensors."""
+    prompts = [item[0] for item in batch]
+    docs = [item[1] for item in batch]
+    return prompts, docs
+
+
 def compute_dual_advantage(
     outcome_rewards: List[float],
     process_rewards: Dict[str, List[float]],
@@ -220,6 +227,10 @@ def train(config, base_model_path, output_dir, resume_step=0):
         tokenizer = tokenizer.tokenizer
         logger.info("Extracted text tokenizer from VLProcessor")
 
+    from src.student import fix_mistral_tokenizer
+    fix_mistral_tokenizer(tokenizer)
+    logger.info("Applied Mistral tokenizer regex fix")
+
     model = FastLanguageModel.get_peft_model(
         model,
         r=config["lora_rank"],
@@ -245,7 +256,7 @@ def train(config, base_model_path, output_dir, resume_step=0):
         prompt_texts.append(prompt_text)
 
     dataset = GRPODatasetV4(prompt_texts, docs)
-    dataloader = DataLoader(dataset, batch_size=config["per_device_train_batch_size"], shuffle=True)
+    dataloader = DataLoader(dataset, batch_size=config["per_device_train_batch_size"], shuffle=True, collate_fn=grpo_collate_fn)
     dataloader_iter = iter(itertools.cycle(dataloader))
 
     group_size = config["grpo_g"]
@@ -260,6 +271,7 @@ def train(config, base_model_path, output_dir, resume_step=0):
     warmup_steps = config["warmup_steps"]
     save_steps = config["save_steps"]
     logging_steps = config["logging_steps"]
+    sample_steps = config.get("sample_steps", 100)
     gradient_accum_steps = config.get("gradient_accumulation_steps", 1)
 
     optimizer = torch.optim.AdamW(
@@ -294,6 +306,10 @@ def train(config, base_model_path, output_dir, resume_step=0):
     logger.info(f"Starting GRPO v4 training (dual advantage, process rewards)...")
     logger.info(f"  Steps: {max_steps}, G: {group_size}, LR: {lr}")
     logger.info(f"  Alpha: {alpha}, Lambda_KL: {lambda_kl}, Clip: {clip_epsilon}")
+    logger.info(f"  Logging every {logging_steps} steps, sampling every {sample_steps} steps")
+    print("=" * 95)
+    print(f"{'Step':>6} {'Loss':>8} {'PG':>8} {'KL':>8} {'Outcome':>8} {'Process':>8} {'Plan':>6} {'Comm':>6} {'Refl':>6} {'Mon':>6} {'LR':>10} {'Time':>6} {'ETA(h)':>7} {'VRAM':>7}")
+    print("=" * 95)
 
     # W&B
     wandb_mode = os.environ.get("WANDB_MODE", "online")
@@ -311,6 +327,7 @@ def train(config, base_model_path, output_dir, resume_step=0):
         save_code=False,
     )
 
+    os.makedirs(output_dir, exist_ok=True)
     csv_path = f"{output_dir}/training_log.csv"
     csv_f = open(csv_path, "w", newline="")
     csv_writer = csv.writer(csv_f)
@@ -383,7 +400,7 @@ def train(config, base_model_path, output_dir, resume_step=0):
             attn_mask = tokenized["attention_mask"]
             prompt_len = all_prompt_lengths[i]
 
-            # Reference forward
+            # Reference forward (no gradients)
             for name, param in model.named_parameters():
                 if name in lora_weights:
                     param.data.copy_(lora_weights[name])
@@ -438,14 +455,35 @@ def train(config, base_model_path, output_dir, resume_step=0):
             scheduler.step()
             optimizer.zero_grad()
 
+        proc_avgs = {k: sum(v) / len(v) for k, v in process_agg.items()}
         avg_outcome = sum(outcome_rewards) / len(outcome_rewards)
         avg_process = sum(sum(v) / len(v) for v in process_agg.values()) / len(process_agg)
         total_rewards.append(avg_outcome)
         elapsed = time.time() - batch_start
         est_remaining = (elapsed / step) * (max_steps - step) / 3600
 
+        vram = torch.cuda.memory_allocated(model.device) / 1e9
+        current_lr = scheduler.get_last_lr()[0] if hasattr(scheduler, "get_last_lr") else lr
+
+        print(
+            f"{step:>6d} "
+            f"{batch_loss / n_samples:>8.4f} "
+            f"{batch_pg_loss / n_samples:>8.4f} "
+            f"{batch_kl_loss / n_samples:>8.4f} "
+            f"{avg_outcome:>8.3f} "
+            f"{avg_process:>8.3f} "
+            f"{proc_avgs.get('planning', 0):>6.3f} "
+            f"{proc_avgs.get('commitment', 0):>6.3f} "
+            f"{proc_avgs.get('reflection', 0):>6.3f} "
+            f"{proc_avgs.get('monitor', 0):>6.3f} "
+            f"{current_lr:>10.2e} "
+            f"{elapsed:>6.1f}s "
+            f"{est_remaining:>7.1f}h "
+            f"{vram:>6.1f}G",
+            flush=True,
+        )
+
         if step % logging_steps == 0 or step == 1:
-            vram = torch.cuda.memory_allocated(model.device) / 1e9
             logger.info(
                 f"Step {step}/{max_steps} | "
                 f"Loss: {batch_loss / n_samples:.4f} | "
@@ -453,12 +491,34 @@ def train(config, base_model_path, output_dir, resume_step=0):
                 f"KL: {batch_kl_loss / n_samples:.4f} | "
                 f"Outcome: {avg_outcome:.3f} | "
                 f"Process: {avg_process:.3f} | "
+                f"Plan: {proc_avgs.get('planning', 0):.3f} | "
+                f"Comm: {proc_avgs.get('commitment', 0):.3f} | "
+                f"Refl: {proc_avgs.get('reflection', 0):.3f} | "
+                f"Mon: {proc_avgs.get('monitor', 0):.3f} | "
+                f"LR: {current_lr:.2e} | "
                 f"Time: {elapsed:.1f}s | "
                 f"ETA: {est_remaining:.1f}h | "
                 f"VRAM: {vram:.1f}GB"
             )
 
-        proc_avgs = {k: sum(v) / len(v) for k, v in process_agg.items()}
+        if sample_steps > 0 and step % sample_steps == 0:
+            model.eval()
+            sample_prompt = batch_prompts[0]
+            sample_completions = generate_completions(
+                model, tokenizer, sample_prompt,
+                group_size=min(2, group_size),
+                max_new_tokens=min(256, max_completion_tokens),
+            )
+            model.train()
+            sample_outcome = [compute_outcome_reward(batch_docs[0], c) for c in sample_completions]
+            print(f"\n--- Sample @ step {step} ---")
+            doc_prompt = batch_docs[0].get("prompt", "")[:150]
+            print(f"Prompt: {doc_prompt}...")
+            for i, comp in enumerate(sample_completions):
+                proc = compute_process_rewards(comp, sample_outcome[i], required_tags, lambda_format)
+                proc_str = ", ".join(f"{k}={v:.2f}" for k, v in proc.items())
+                print(f"  Completion {i} (outcome={sample_outcome[i]:.3f}, {proc_str}): {comp[:300]}...")
+            print(f"--- End sample ---\n")
 
         csv_writer.writerow([
             step,

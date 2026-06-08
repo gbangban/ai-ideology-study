@@ -59,6 +59,10 @@ def train(config: dict, base_model_path: str, output_dir: str):
         load_in_4bit=True,
     )
 
+    from src.student import fix_mistral_tokenizer
+    fix_mistral_tokenizer(tokenizer)
+    logger.info("Applied Mistral tokenizer regex fix")
+
     # Apply LoRA
     model = FastLanguageModel.get_peft_model(
         model,

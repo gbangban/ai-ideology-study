@@ -260,6 +260,10 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
         tokenizer = tokenizer.tokenizer
         logger.info("Extracted text tokenizer from VLProcessor (text-only mode)")
 
+    from src.student import fix_mistral_tokenizer
+    fix_mistral_tokenizer(tokenizer)
+    logger.info("Applied Mistral tokenizer regex fix")
+
     # Apply LoRA
     model = FastLanguageModel.get_peft_model(
         model,
@@ -333,6 +337,7 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
     warmup_steps = config["warmup_steps"]
     save_steps = config["save_steps"]
     logging_steps = config["logging_steps"]
+    sample_steps = config.get("sample_steps", 100)
     gradient_accum_steps = config.get("gradient_accumulation_steps", 1)
 
     # Optimizer
@@ -376,7 +381,11 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
     logger.info(f"Starting GRPO training...")
     logger.info(f"  Steps: {max_steps}, G: {group_size}, LR: {lr}, Beta: {beta}")
     logger.info(f"  Starting from step: {start_step}")
+    logger.info(f"  Logging every {logging_steps} steps, sampling every {sample_steps} steps")
     logger.info(f"  Estimated remaining: {((max_steps - start_step) / max_steps * 10):.0f}-{((max_steps - start_step) / max_steps * 12):.0f}h")
+    print("=" * 100)
+    print(f"{'Step':>6} {'Loss':>8} {'PG':>8} {'KL':>8} {'Reward':>8} {'DM':>6} {'Dir':>6} {'Mech':>6} {'MinR':>6} {'MaxR':>6} {'MedR':>6} {'LR':>10} {'Time':>6} {'ETA(h)':>7} {'VRAM':>7}")
+    print("=" * 100)
 
     # Initialize W&B logging
     wandb_mode = os.environ.get("WANDB_MODE", "online")
@@ -444,6 +453,8 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
         optimizer.zero_grad()
 
         batch_loss = 0.0
+        batch_pg_loss = 0.0
+        batch_kl_loss = 0.0
         n_samples = len(all_completions)
 
         # Snapshot LoRA weights for reference policy
@@ -519,6 +530,8 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
 
             total_loss.backward()
             batch_loss += total_loss.item()
+            batch_pg_loss += pg_loss.item()
+            batch_kl_loss += kl.item()
 
             del new_outputs, new_logits, new_log_probs, ref_log_probs, new_token_lp, ref_token_lp, ref_logits
 
@@ -538,16 +551,85 @@ def train(config: dict, base_model_path: str, output_dir: str, resume_step: int 
         elapsed = time.time() - batch_start
         est_remaining = (elapsed / step) * (max_steps - step) / 3600
 
+        # Reward distribution stats
+        rewards_sorted = sorted(rewards)
+        reward_min = rewards_sorted[0]
+        reward_max = rewards_sorted[-1]
+        reward_med = rewards_sorted[len(rewards_sorted) // 2]
+
+        # Gradient norm
+        grad_norm = 0.0
+        if step % gradient_accum_steps == 0:
+            for p in model.parameters():
+                if p.grad is not None:
+                    grad_norm += p.grad.data.pow(2).sum().item()
+            grad_norm = grad_norm ** 0.5
+
+        vram = torch.cuda.memory_allocated(model.device) / 1e9
+        current_lr = scheduler.get_last_lr()[0] if hasattr(scheduler, "get_last_lr") else lr
+        avg_pg = batch_pg_loss / len(all_completions)
+        avg_kl = batch_kl_loss / len(all_completions)
+
+        # Print every step (compact single-line format)
+        print(
+            f"{step:>6d} "
+            f"{batch_loss / len(all_completions):>8.4f} "
+            f"{avg_pg:>8.4f} "
+            f"{avg_kl:>8.4f} "
+            f"{avg_reward:>8.3f} "
+            f"{sum(dm_comp) / len(dm_comp):>6.3f} "
+            f"{sum(dir_comp) / len(dir_comp):>6.3f} "
+            f"{sum(mech_comp) / len(mech_comp):>6.3f} "
+            f"{reward_min:>6.2f} "
+            f"{reward_max:>6.2f} "
+            f"{reward_med:>6.2f} "
+            f"{current_lr:>10.2e} "
+            f"{elapsed:>6.1f}s "
+            f"{est_remaining:>7.1f}h "
+            f"{vram:>6.1f}G",
+            flush=True,
+        )
+
         if step % logging_steps == 0 or step == 1:
-            vram = torch.cuda.memory_allocated(model.device) / 1e9
             logger.info(
                 f"Step {step}/{max_steps} | "
                 f"Loss: {batch_loss / len(all_completions):.4f} | "
-                f"Avg Reward: {avg_reward:.3f} | "
+                f"PG: {avg_pg:.4f} | "
+                f"KL: {avg_kl:.4f} | "
+                f"Avg Reward: {avg_reward:.3f} "
+                f"(min={reward_min:.2f}, max={reward_max:.2f}, med={reward_med:.2f}) | "
+                f"DM: {sum(dm_comp) / len(dm_comp):.3f} | "
+                f"Dir: {sum(dir_comp) / len(dir_comp):.3f} | "
+                f"Mech: {sum(mech_comp) / len(mech_comp):.3f} | "
+                f"LR: {current_lr:.2e} | "
                 f"Time: {elapsed:.1f}s | "
                 f"ETA: {est_remaining:.1f}h | "
                 f"VRAM: {vram:.1f}GB"
             )
+
+        # Sample generation for inspection
+        if sample_steps > 0 and step % sample_steps == 0:
+            model.eval()
+            sample_prompt = batch_prompts[0]
+            sample_completions = generate_completions(
+                model, tokenizer, sample_prompt,
+                group_size=min(2, group_size),
+                max_new_tokens=min(256, max_completion_tokens),
+            )
+            model.train()
+            sample_reward, _, _, _ = compute_rewards(
+                sample_completions,
+                config["reward_weights"],
+                tokenizer,
+                judge_model,
+                judge_tokenizer,
+                sglang_client,
+            )
+            print(f"\n--- Sample @ step {step} ---")
+            print(f"Prompt: {sample_prompt[:200]}...")
+            for i, (comp, rew) in enumerate(zip(sample_completions, sample_reward)):
+                print(f"  Completion {i} (reward={rew:.3f}): {comp[:300]}...")
+            print(f"--- End sample ---\n")
 
         # Write CSV every step (flushed immediately)
         avg_dm = sum(dm_comp) / len(dm_comp)

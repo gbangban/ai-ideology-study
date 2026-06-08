@@ -4,6 +4,15 @@
 
 **NEVER use backticks in your output.** Backticks break the Qwen3.5 chat template and can corrupt model generation. Use plain text only. No code fences, no inline code markers, no triple-backtick blocks. If you need to show code or file paths, write them as plain text.
 
+## CRITICAL: Never Run Training Directly
+
+**NEVER execute training scripts** (GRPO, SFT, DPO, etc.) inside the container. Training consumes all 32GB VRAM and will conflict with any other GPU work (including this AI assistant if it uses a local model). All verification must be done without GPU:
+
+- **Code-level tests only**: Run unit and integration tests, import checks, syntax validation, and non-GPU test suite commands
+- **No `ddk exec ... python3 -m src.student.train_*`**: Never launch training runs
+- **No model loading for verification**: Don't load models to test code paths
+- **User runs training**: The user will execute training runs manually when VRAM is available
+
 ## Project Overview
 
 DM-Align: Dialectical Materialism alignment pipeline for Qwen3.5-9B (student) using Unsloth Studio + custom DPO training. Qwen3.5-27B used as teacher for data generation only.

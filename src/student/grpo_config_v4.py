@@ -49,7 +49,7 @@ GRPO_CONFIG_V3 = {
     "lr_scheduler_type": "cosine",
 
     # GRPO-specific
-    "grpo_g": 8,
+    "grpo_g": 2,
     "max_completion_length": 512,
     "beta": 0.1,
 
@@ -59,6 +59,7 @@ GRPO_CONFIG_V3 = {
     # Output
     "output_dir": "checkpoints/lora_adapters/grpo_v3",
     "logging_steps": 25,
+    "sample_steps": 100,
     "save_steps": 100,
 }
 
@@ -82,7 +83,7 @@ GRPO_CONFIG_V4 = {
     "lr_scheduler_type": "cosine",
 
     # GRPO-specific
-    "grpo_g": 8,
+    "grpo_g": 2,
     "max_completion_length": 512,
 
     # v4-specific: dual advantage + KL regularization (per RLVMR paper)
@@ -100,5 +101,6 @@ GRPO_CONFIG_V4 = {
     # Output
     "output_dir": "checkpoints/lora_adapters/grpo_v4",
     "logging_steps": 25,
+    "sample_steps": 100,
     "save_steps": 100,
 }

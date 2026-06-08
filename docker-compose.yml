@@ -68,16 +68,33 @@ services:
       --mem-fraction-static 0.6
       --cuda-memory-fraction 0.6
 
+  wandb-mysql:
+    image: mysql:8.0
+    container_name: wandb-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=wandb
+      - MYSQL_DATABASE=wandb
+      - MYSQL_USER=wandb
+      - MYSQL_PASSWORD=wandb
+    volumes:
+      - wandb-mysql-data:/var/lib/mysql
+    restart: unless-stopped
+
   wandb:
     image: wandb/local:latest
     container_name: wandb-server
     ports:
+      - "8080:8080"
       - "8086:8086"
     volumes:
       - wandb-data:/home/wandb/wandb/local
     environment:
       - WANDB_BASE_URL=http://localhost:8086
+      - DB_CONNECTION_STRING=mysql://wandb:wandb@wandb-mysql:3306/wandb
+    depends_on:
+      - wandb-mysql
     restart: unless-stopped
 
 volumes:
   wandb-data:
+  wandb-mysql-data:

@@ -53,5 +53,6 @@ GRPO_CONFIG = {
     # Output
     "output_dir": "checkpoints/lora_adapters/grpo_adapter_v2",
     "logging_steps": 25,
+    "sample_steps": 100,
     "save_steps": 50,
 }

@@ -671,3 +671,69 @@ class TestAlertDiagnostics:
         mgr = TrackingManager()
         mgr.check_diagnostics(50, {"loss": float("nan")})
         assert mgr._active is False
+
+
+class TestSystemAndReport:
+    def test_snapshot_gpu_calls_log_gpu(self):
+        import sys
+        from types import ModuleType
+
+        gpu_called = []
+        def fake_log_gpu(run=None, device=None):
+            gpu_called.append(True)
+            return {}
+
+        class FakeRun:
+            name = "r"
+            project = "p"
+            config = {}
+
+        fake_trackio = ModuleType("trackio")
+        fake_trackio.init = lambda **kw: FakeRun()
+        fake_trackio.log_gpu = fake_log_gpu
+        fake_trackio.finish = lambda: None
+
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setitem(sys.modules, "trackio", fake_trackio)
+
+            from src.student.train_grpo_base import TrackingManager
+
+            mgr = TrackingManager()
+            mgr.init(project="p", name="r", config={}, track="outcome", server_url=None)
+            mgr.snapshot_gpu()
+            assert len(gpu_called) == 1
+
+    def test_generate_report_logs_markdown(self):
+        import sys
+        from types import ModuleType
+
+        log_calls = []
+        def fake_log(metrics, step=None):
+            log_calls.append((dict(metrics), step))
+
+        class FakeMarkdown:
+            def __init__(self, content):
+                self.content = content
+
+        class FakeRun:
+            name = "r"
+            project = "p"
+            config = {}
+
+        fake_trackio = ModuleType("trackio")
+        fake_trackio.init = lambda **kw: FakeRun()
+        fake_trackio.log = fake_log
+        fake_trackio.finish = lambda: None
+        fake_trackio.Markdown = FakeMarkdown
+
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setitem(sys.modules, "trackio", fake_trackio)
+
+            from src.student.train_grpo_base import TrackingManager
+
+            mgr = TrackingManager()
+            mgr.init(project="p", name="r", config={"lr": 5e-7}, track="outcome", server_url=None)
+            mgr.generate_report({"loss": 0.42, "reward": 0.75})
+
+            md_calls = [c for c in log_calls if "report/summary" in str(c[0].keys())]
+            assert len(md_calls) == 1

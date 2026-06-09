@@ -475,3 +475,40 @@ class TrackingManager:
                 text=f"Reached step {step}.",
                 level=__import__("trackio", fromlist=["AlertLevel"]).AlertLevel.INFO,
             )
+
+    def snapshot_gpu(self) -> None:
+        """Call trackio.log_gpu() for per-step GPU system metrics."""
+        if not self._active:
+            return
+        try:
+            import trackio
+            trackio.log_gpu()
+        except Exception as e:
+            logger.debug(f"GPU snapshot failed (expected if no GPU): {e}")
+
+    def generate_report(self, final_logs: Dict[str, Any]) -> None:
+        """Generate and log a Markdown training summary report."""
+        if not self._active:
+            return
+        try:
+            import trackio
+
+            lines = ["# Training Summary", ""]
+            lines.append(f"**Track:** {self._track}")
+            lines.append(f"**Final loss:** {final_logs.get('loss', 'N/A')}")
+            lines.append(f"**Final reward:** {final_logs.get('reward', 'N/A')}")
+            lines.append(f"**Final KL:** {final_logs.get('kl', 'N/A')}")
+            lines.append(f"**Completion length:** {final_logs.get('completion_length', 'N/A')}")
+            lines.append("")
+
+            if self._loss_history:
+                lines.append(f"**Steps logged:** {len(self._loss_history)}")
+                lines.append(f"**First loss:** {self._loss_history[0][1]:.4f} (step {self._loss_history[0][0]})")
+                lines.append(f"**Last loss:** {self._loss_history[-1][1]:.4f} (step {self._loss_history[-1][0]})")
+                lines.append("")
+
+            md = trackio.Markdown("\n".join(lines))
+            trackio.log({"report/summary": md})
+            logger.info("Training summary report logged")
+        except Exception as e:
+            logger.warning(f"Failed to generate report: {e}")

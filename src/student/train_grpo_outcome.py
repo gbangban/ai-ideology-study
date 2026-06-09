@@ -87,6 +87,8 @@ def train(
     output_dir: str,
     dataset_path: str,
     resume_step: int = 0,
+    enable_profile: bool = False,
+    enable_compile: bool = False,
 ) -> None:
     """Run GRPO v3 training via Unsloth's GRPOTrainer."""
     if resume_step == 0:
@@ -134,12 +136,30 @@ def train(
         f"alpha={DEFAULT_CONFIG['lora_alpha']}"
     )
 
+    if enable_compile:
+        from src.student.train_grpo_base import maybe_compile_model
+        model, was_compiled = maybe_compile_model(model, enable=True)
+        if was_compiled:
+            logger.info("Model successfully compiled with torch.compile")
+        else:
+            logger.warning("torch.compile requested but fell back to uncompiled model")
+    else:
+        logger.info("torch.compile disabled (use --compile to enable)")
+
+    tracker = None
+    if enable_profile:
+        from src.utils.memory_profiler import TrainingMemoryTracker, force_memory_cleanup
+        tracker = TrainingMemoryTracker()
+        cleanup = force_memory_cleanup()
+        logger.info(f"Pre-training VRAM: {cleanup['after_allocated_gb']:.2f} GB")
+        tracker.record(0, "after_model_setup")
+
     dataset = build_outcome_dataset(dataset_path, tokenizer)
 
     doc_index = {row["prompt"]: row["doc"] for row in dataset}
     reward_funcs = [_build_trl_reward_fn(doc_index)]
 
-    grpo_config = create_grpo_config(output_dir=output_dir)
+    grpo_config = create_grpo_config(output_dir=output_dir, torch_compile=enable_compile)
 
     from trl import GRPOTrainer
 
@@ -160,6 +180,13 @@ def train(
     )
     resume_from = f"checkpoint-{resume_step}" if resume_step > 0 else None
     trainer.train(resume_from_checkpoint=resume_from)
+
+    if tracker:
+        from src.utils.memory_profiler import get_vram_peak_gb
+        tracker.record(grpo_config.max_steps, "after_training")
+        logger.info(f"Peak VRAM: {get_vram_peak_gb():.2f} GB")
+        summary = tracker.summary()
+        logger.info(f"Memory summary: {summary}")
 
     logger.info(f"Training complete. Saving final adapter to {output_dir}...")
     model.save_pretrained(output_dir)
@@ -197,6 +224,16 @@ def main() -> None:
         action="store_true",
         help="List available checkpoints and exit",
     )
+    parser.add_argument(
+        "--profile",
+        action="store_true",
+        help="Enable memory profiling during training",
+    )
+    parser.add_argument(
+        "--compile",
+        action="store_true",
+        help="Enable torch.compile for the model",
+    )
     args = parser.parse_args()
 
     if args.find_checkpoint:
@@ -221,7 +258,12 @@ def main() -> None:
             logger.warning(f"Checkpoint {ckpt_path} not found, using base-model as-is")
 
     try:
-        train(base_model, args.output_dir, args.dataset_path, resume_step=resume_step)
+        train(
+        base_model, args.output_dir, args.dataset_path,
+        resume_step=resume_step,
+        enable_profile=args.profile,
+        enable_compile=args.compile,
+    )
     except Exception:
         logger.error("Training failed, flushing VRAM...")
         try:

@@ -122,26 +122,26 @@ class MemoryProfiler:
             **kwargs,
         )
 
-    def start(self):
+    def start(self) -> None:
         self.profiler.start()
 
-    def stop(self):
+    def stop(self) -> None:
         self.profiler.stop()
 
-    def step(self):
+    def step(self) -> None:
         self.profiler.step()
 
     def key_averages(self, group_by_input_n: bool = False):
         return self.profiler.key_averages(group_by_input_n=group_by_input_n)
 
-    def export_chrome_trace(self, path: str):
+    def export_chrome_trace(self, path: str) -> None:
         self.profiler.export_chrome_trace(path)
 
-    def __enter__(self):
+    def __enter__(self) -> "MemoryProfiler":
         self.profiler.__enter__()
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self, *args) -> None:
         self.profiler.__exit__(*args)
 
 

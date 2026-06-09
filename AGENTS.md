@@ -90,6 +90,7 @@ data/raw/questions.json (1,500 AI-generated questions, quality-filtered)
 - `src/student/legacy/sglang_client.py` - SG-Lang HTTP client (deprecated, rewards are regex-based)
 - `src/student/train_sft.py` - Replaced by Studio UI
 - `src/student/config.py` - Replaced by configs/studio_sft_config.yaml
+- `src/utils/memory_profiler.py` - VRAM tracking, memory snapshots, TrainingMemoryTracker, MemoryProfiler wrapper
 - `src/utils/vram_monitor.py` - Replaced by Studio GPU monitor
 - `scripts/run_sft.sh` - Replaced by Studio UI
 
@@ -147,6 +148,7 @@ docker exec ml-training python3 -m src.student.train_grpo_outcome \
     --base-model checkpoints/merged/cold_start_merged \
     --dataset-path data/processed/grpo_train_merged.jsonl \
     --output-dir checkpoints/lora_adapters/grpo_v3_outcome
+# Add --compile for torch.compile (experimental) or --profile for memory tracking
 ```
 
 ### GRPO v4 Training (Process Rewards + Dual Advantage — EXPERIMENTAL)
@@ -155,6 +157,29 @@ docker exec ml-training python3 -m src.student.train_grpo_process \
     --base-model checkpoints/merged/cold_start_merged \
     --dataset-path data/processed/grpo_train_merged.jsonl \
     --output-dir checkpoints/lora_adapters/grpo_v4_process
+# Add --compile for torch.compile (experimental) or --profile for memory tracking
+```
+
+### Memory Profile (Diagnostic Run)
+```bash
+# Profile 3 steps without compile (baseline memory usage)
+docker exec ml-training python3 scripts/profile_memory.py --track outcome --steps 3
+
+# Profile 3 steps with compile enabled
+docker exec ml-training python3 scripts/profile_memory.py --track outcome --steps 3 --compile
+```
+
+### Training with Compile (Experimental)
+```bash
+# TRL-based training with compile
+docker exec ml-training python3 -m src.student.train_grpo_outcome \
+    --base-model checkpoints/merged/cold_start_merged \
+    --dataset-path data/processed/grpo_train_merged.jsonl \
+    --output-dir checkpoints/lora_adapters/grpo_v3_outcome \
+    --compile
+
+# Smoke test with compile
+docker exec ml-training python3 -m src.student.smoke_test --track outcome --compile
 ```
 
 ### Merge GRPO Adapter (CPU-only)

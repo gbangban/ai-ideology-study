@@ -197,7 +197,7 @@ def _strip_vision_config(model_path: str):
         logger.info(f"Stripped vision config from {config_path}")
 
 
-def train(config, base_model_path, output_dir, resume_step=0):
+def train(config, base_model_path, output_dir, resume_step=0, enable_profile=False, enable_compile=False):
     """GRPO v4 training with dual advantage and process rewards."""
     from unsloth import FastLanguageModel
 
@@ -238,6 +238,22 @@ def train(config, base_model_path, output_dir, resume_step=0):
     )
     model = FastLanguageModel.for_training(model)
     logger.info(f"LoRA applied: rank={config['lora_rank']}, alpha={config['lora_alpha']}")
+
+    if enable_compile:
+        from src.student.train_grpo_base import maybe_compile_model
+        model, was_compiled = maybe_compile_model(model, enable=True)
+        if was_compiled:
+            logger.info("Model successfully compiled with torch.compile")
+        else:
+            logger.warning("torch.compile requested but fell back to uncompiled model")
+
+    tracker = None
+    if enable_profile:
+        from src.utils.memory_profiler import TrainingMemoryTracker, force_memory_cleanup
+        tracker = TrainingMemoryTracker()
+        cleanup = force_memory_cleanup()
+        logger.info(f"Pre-training VRAM: {cleanup['after_allocated_gb']:.2f} GB")
+        tracker.record(0, "after_model_setup")
 
     # Load dataset
     logger.info(f"Loading dataset from {config['dataset_path']}...")
@@ -342,15 +358,27 @@ def train(config, base_model_path, output_dir, resume_step=0):
         all_completions = []
         all_prompt_texts = []
         all_docs = []
-        for prompt, doc in zip(batch_prompts, batch_docs):
-            completions = generate_completions(
-                model, tokenizer, prompt,
-                group_size=group_size,
-                max_new_tokens=max_completion_tokens,
-            )
-            all_completions.extend(completions)
-            all_prompt_texts.extend([prompt] * group_size)
-            all_docs.extend([doc] * group_size)
+        if tracker:
+            with tracker.phase(step, "generation"):
+                for prompt, doc in zip(batch_prompts, batch_docs):
+                    completions = generate_completions(
+                        model, tokenizer, prompt,
+                        group_size=group_size,
+                        max_new_tokens=max_completion_tokens,
+                    )
+                    all_completions.extend(completions)
+                    all_prompt_texts.extend([prompt] * group_size)
+                    all_docs.extend([doc] * group_size)
+        else:
+            for prompt, doc in zip(batch_prompts, batch_docs):
+                completions = generate_completions(
+                    model, tokenizer, prompt,
+                    group_size=group_size,
+                    max_new_tokens=max_completion_tokens,
+                )
+                all_completions.extend(completions)
+                all_prompt_texts.extend([prompt] * group_size)
+                all_docs.extend([doc] * group_size)
 
         # Outcome rewards
         outcome_rewards = [
@@ -403,14 +431,25 @@ def train(config, base_model_path, output_dir, resume_step=0):
                 if name in lora_weights:
                     param.data.copy_(lora_weights[name])
             model.eval()
-            with torch.no_grad():
-                ref_outputs = model(input_ids, attention_mask=attn_mask, use_cache=False)
-            ref_logits = ref_outputs.logits[0]
+            if tracker and i == 0:
+                with tracker.phase(step, "forward_ref"):
+                    with torch.no_grad():
+                        ref_outputs = model(input_ids, attention_mask=attn_mask, use_cache=False)
+                    ref_logits = ref_outputs.logits[0]
+            else:
+                with torch.no_grad():
+                    ref_outputs = model(input_ids, attention_mask=attn_mask, use_cache=False)
+                ref_logits = ref_outputs.logits[0]
             del ref_outputs
 
             model.train()
-            new_outputs = model(input_ids, attention_mask=attn_mask, use_cache=False)
-            new_logits = new_outputs.logits[0]
+            if tracker and i == 0:
+                with tracker.phase(step, "forward_new"):
+                    new_outputs = model(input_ids, attention_mask=attn_mask, use_cache=False)
+                    new_logits = new_outputs.logits[0]
+            else:
+                new_outputs = model(input_ids, attention_mask=attn_mask, use_cache=False)
+                new_logits = new_outputs.logits[0]
 
             new_logit_shifted = new_logits[prompt_len - 1:, :]
             ref_logit_shifted = ref_logits[prompt_len - 1:, :]
@@ -498,6 +537,10 @@ def train(config, base_model_path, output_dir, resume_step=0):
                 f"ETA: {est_remaining:.1f}h | "
                 f"VRAM: {vram:.1f}GB"
             )
+            if enable_profile:
+                from src.utils.memory_profiler import get_vram_peak_gb
+                logger.info(f"Peak VRAM: {get_vram_peak_gb():.2f} GB")
+                logger.info(tracker.summary())
 
         if sample_steps > 0 and step % sample_steps == 0:
             model.eval()
@@ -596,6 +639,16 @@ def main():
         action="store_true",
         help="List available checkpoints and exit",
     )
+    parser.add_argument(
+        "--profile",
+        action="store_true",
+        help="Enable detailed memory profiling per training phase",
+    )
+    parser.add_argument(
+        "--compile",
+        action="store_true",
+        help="Enable torch.compile for forward passes",
+    )
     args = parser.parse_args()
 
     config = GRPO_CONFIG_V4.copy()
@@ -623,7 +676,12 @@ def main():
             logger.warning(f"Checkpoint {ckpt_path} not found, using base-model as-is")
 
     try:
-        train(config, base_model, args.output_dir, resume_step=resume_step)
+        train(
+            config, base_model, args.output_dir,
+            resume_step=resume_step,
+            enable_profile=args.profile,
+            enable_compile=args.compile,
+        )
     except Exception:
         logger.error("Training failed, flushing VRAM...")
         try:

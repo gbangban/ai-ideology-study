@@ -200,24 +200,24 @@ def build_reward_fn_with_docs(
     return wrapped
 
 
-class TrackioCallback(TrainerCallback):
-    """Trainer callback that pushes metrics to trackio at each logging step.
+class TrackingCallback(TrainerCallback):
+    """Trainer callback that delegates all tracking to a TrackingManager.
 
-    Inherits TrainerCallback for no-op defaults on all lifecycle events.
+    Replaces TrackioCallback. The manager handles diagnostics, GPU snapshots,
+    and reward data flushing on each logging step.
 
     Usage:
-        tracker = TrackioCallback()
-        trainer.add_callback(tracker)
+        tracker = TrackingManager()
+        tracker.init(project="...", name="...", config={}, track="outcome")
+        callback = TrackingCallback(tracker)
+        trainer.add_callback(callback)
         # ... training ...
         tracker.finish()
     """
 
-    def __init__(self) -> None:
+    def __init__(self, manager: TrackingManager) -> None:
         super().__init__()
-        self._active = False
-
-    def activate(self) -> None:
-        self._active = True
+        self._manager = manager
 
     def on_log(
         self,
@@ -227,24 +227,12 @@ class TrackioCallback(TrainerCallback):
         logs: Optional[Dict[str, Any]] = None,
         **kwargs: Any,
     ) -> None:
-        if not self._active or not logs:
+        if not self._manager._active or not logs:
             return
-        try:
-            import trackio
-            step = getattr(state, "global_step", 0)
-            trackio.log({k: v for k, v in logs.items() if isinstance(v, (int, float))}, step=step)
-        except Exception:
-            pass
-
-    def finish(self) -> None:
-        if not self._active:
-            return
-        try:
-            import trackio
-            trackio.finish()
-        except Exception:
-            pass
-        self._active = False
+        step = getattr(state, "global_step", 0)
+        self._manager.check_diagnostics(step, logs)
+        self._manager.snapshot_gpu()
+        self._manager.flush_reward_data(step)
 
 
 class TrackingManager:
@@ -475,6 +463,28 @@ class TrackingManager:
                 text=f"Reached step {step}.",
                 level=__import__("trackio", fromlist=["AlertLevel"]).AlertLevel.INFO,
             )
+
+    def flush_reward_data(self, step: int) -> None:
+        """Flush accumulated reward samples as Table + Histograms, then clear."""
+        if not self._active or not self._reward_samples and not self._reward_table_rows:
+            return
+
+        if self._reward_table_rows:
+            self.log_reward_table(step, self._reward_table_rows)
+
+        if self._reward_samples:
+            self.log_reward_histograms(step, self._reward_samples)
+
+            # Log mean reward scalars
+            means = {}
+            for name, values in self._reward_samples.items():
+                if values:
+                    means[name] = sum(values) / len(values)
+            if means:
+                self.log_rewards(step, means)
+
+        self._reward_samples.clear()
+        self._reward_table_rows.clear()
 
     def snapshot_gpu(self) -> None:
         """Call trackio.log_gpu() for per-step GPU system metrics."""

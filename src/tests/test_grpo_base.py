@@ -737,3 +737,45 @@ class TestSystemAndReport:
 
             md_calls = [c for c in log_calls if "report/summary" in str(c[0].keys())]
             assert len(md_calls) == 1
+
+
+class TestTrackingCallback:
+    def test_callback_delegates_to_manager(self):
+        from src.student.train_grpo_base import TrackingCallback, TrackingManager
+
+        manager = TrackingManager()
+        manager._active = True
+        diag_calls = []
+        gpu_calls = []
+        flush_calls = []
+        manager.check_diagnostics = lambda s, l: diag_calls.append(s)
+        manager.snapshot_gpu = lambda: gpu_calls.append(True)
+        manager.flush_reward_data = lambda s: flush_calls.append(s)
+
+        callback = TrackingCallback(manager)
+
+        class FakeState:
+            global_step = 100
+
+        callback.on_log(None, FakeState(), None, {"loss": 0.5})
+        assert 100 in diag_calls
+        assert len(gpu_calls) == 1
+        assert 100 in flush_calls
+
+    def test_callback_noop_when_manager_inactive(self):
+        from src.student.train_grpo_base import TrackingCallback, TrackingManager
+
+        calls = []
+        manager = TrackingManager()
+        manager._active = False
+        manager.check_diagnostics = lambda s, l: calls.append("diag")
+        manager.snapshot_gpu = lambda: calls.append("gpu")
+        manager.flush_reward_data = lambda s: calls.append("flush")
+
+        callback = TrackingCallback(manager)
+
+        class FakeState:
+            global_step = 50
+
+        callback.on_log(None, FakeState(), None, {"loss": 0.5})
+        assert len(calls) == 0

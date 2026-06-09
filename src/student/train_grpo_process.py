@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import sys
 from pathlib import Path
 from typing import Any, Dict, List
@@ -32,9 +33,12 @@ from src.student.grpo_config_process import DEFAULT_CONFIG, REWARD_WEIGHTS, crea
 from src.student.reward_outcome import compute_outcome_reward
 from src.student.reward_process import compute_process_rewards, RLVMR_REQUIRED_TAGS
 from src.student.train_grpo_base import (
+    TrackingCallback,
+    TrackingManager,
     build_outcome_dataset,
     build_reward_fn_with_docs,
     find_latest_checkpoint,
+    patch_unsloth_chunked_log_softmax,
     strip_vision_config,
 )
 
@@ -134,6 +138,9 @@ def train(
 
     _strip_vision_config(base_model_path)
 
+    # Must patch before creating GRPOTrainer (fixes unsloth #5121)
+    patch_unsloth_chunked_log_softmax()
+
     from unsloth import FastLanguageModel
 
     logger.info(f"Loading model from {base_model_path}...")
@@ -203,6 +210,32 @@ def train(
         train_dataset=dataset,
     )
 
+    tracker = TrackingManager()
+    tracker.init(
+        project=os.environ.get("TRACKIO_PROJECT", "dm-align-grpo"),
+        name=os.environ.get("TRACKIO_RUN_NAME", f"grpo-v4-process-{Path(output_dir).name}"),
+        config={
+            "training_method": "GRPO-DualAdvantage",
+            "track": "process",
+            "version": "v4",
+            "group_size": grpo_config.num_generations,
+            "beta": grpo_config.beta,
+            "learning_rate": grpo_config.learning_rate,
+            "lora_rank": DEFAULT_CONFIG["lora_rank"],
+            "lora_alpha": DEFAULT_CONFIG["lora_alpha"],
+            "max_completion_length": grpo_config.max_completion_length,
+            "max_steps": grpo_config.max_steps,
+            "alpha": REWARD_WEIGHTS["alpha"],
+            "lambda_kl": REWARD_WEIGHTS["lambda_kl"],
+            "lambda_format": REWARD_WEIGHTS["lambda_format"],
+        },
+        track="process",
+        server_url=os.environ.get("TRACKIO_SERVER_URL"),
+    )
+    trainer.add_callback(TrackingCallback(tracker))
+    if tracker._active:
+        logger.info("TrackingManager initialized (step-by-step logging active)")
+
     logger.info("Starting GRPO v4 training (outcome + process rewards)...")
     logger.info(
         f"  Steps: {grpo_config.max_steps}, "
@@ -212,6 +245,8 @@ def train(
     )
     resume_from = f"checkpoint-{resume_step}" if resume_step > 0 else None
     trainer.train(resume_from_checkpoint=resume_from)
+
+    tracker.finish()
 
     if tracker:
         from src.utils.memory_profiler import get_vram_peak_gb

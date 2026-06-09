@@ -121,14 +121,23 @@ data/raw/questions.json (1,500 AI-generated questions, quality-filtered)
 
 ## Docker
 
-- `docker-compose.yml` - Active compose for Docker Desktop (containers: `ml-training`, `sglang-server`, `wandb-server`)
+- `docker-compose.yml` - Active compose for Docker Desktop (containers: `ml-training`, `sglang-server`, `trackio-server`)
 - `docker/Dockerfile` - CUDA 12.6 + PyTorch 2.7.0 + Unsloth 2026.4.6
 - `checkpoints/` directory does not exist yet; adapters saved to `checkpoints/lora_adapters/`
 - SG-Lang service (`sglang-server`): `lmsysorg/sglang:latest` on port 1235 (maps to internal 30000), BF16 Qwen3.5-4B judge model
-- W&B service (`wandb-server`): `wandb/core:v0.23.0-deploy` on port 8086, local tracking server
+- Trackio service (`trackio-server`): local experiment tracking on port 7860, replacement for W&B
 - `.env` contains `TRACKIO_SERVER_URL`, `TRACKIO_PROJECT` (gitignored, never commit)
 
 ## Workflow Commands
+
+### Track.io (Query via server container)
+Track.io data is centralized in the `trackio-server` container. The training container sends metrics over HTTP and keeps only an ephemeral local cache (`TRACKIO_DIR=/tmp/trackio-cache`). Always query from the server container:
+```bash
+docker exec trackio-server trackio list runs --project dm-align-grpo
+docker exec trackio-server trackio get run --project dm-align-grpo --run <run-name>
+docker exec trackio-server trackio get metric --project dm-align-grpo --run <run-name> --metric loss
+docker exec trackio-server trackio query project --project dm-align-grpo --sql "SELECT * FROM metrics ORDER BY step DESC LIMIT 10" --json
+```
 
 ### Run Tests
 ```bash

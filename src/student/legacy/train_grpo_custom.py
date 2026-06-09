@@ -67,7 +67,8 @@ def compute_advantage(
     rewards_tensor = torch.tensor(rewards, dtype=torch.float32)
     means = rewards_tensor.view(-1, group_size).mean(dim=1, keepdim=True)
     stds = rewards_tensor.view(-1, group_size).std(dim=1, keepdim=True).clamp(min=1e-8)
-    advantages = ((rewards_tensor - means.flatten()) / stds.flatten()).detach()
+    grouped = rewards_tensor.view(-1, group_size)
+    advantages = ((grouped - means) / stds).flatten().detach()
     return advantages
 
 

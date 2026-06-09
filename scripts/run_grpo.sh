@@ -75,12 +75,11 @@ python3 -c "import unsloth" 2>/dev/null || {
 # Create output directory
 mkdir -p "$OUTPUT_DIR"
 
-# Initialize WandB
-if [ -z "$WANDB_API_KEY" ]; then
-    echo "WARNING: WANDB_API_KEY not set. WandB logging will be disabled."
-    export WANDB_MODE=offline
+# Experiment tracking via Trackio (configured via .env: TRACKIO_SERVER_URL, TRACKIO_PROJECT)
+if [ -z "$TRACKIO_SERVER_URL" ]; then
+    echo "WARNING: TRACKIO_SERVER_URL not set. Trackio logging will use local storage only."
 else
-    echo "WandB: logging enabled"
+    echo "Trackio: logging to $TRACKIO_SERVER_URL"
 fi
 
 # Build training command

@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-RUN pip install --no-cache-dir trackio
+RUN pip install --no-cache-dir trackio[gpu]
 
 ENV GRADIO_SERVER_NAME=0.0.0.0
 EXPOSE 7860

@@ -93,7 +93,8 @@ def compute_dual_advantage(
     outcome_tensor = torch.tensor(outcome_rewards, dtype=torch.float32)
     outcome_means = outcome_tensor.view(-1, group_size).mean(dim=1, keepdim=True)
     outcome_stds = outcome_tensor.view(-1, group_size).std(dim=1, keepdim=True).clamp(min=1e-8)
-    a_traj = ((outcome_tensor - outcome_means.flatten()) / outcome_stds.flatten()).detach()
+    outcome_grouped = outcome_tensor.view(-1, group_size)
+    a_traj = ((outcome_grouped - outcome_means) / outcome_stds).flatten().detach()
 
     # A_MR: normalize each tag's rewards globally across the batch,
     # then average across tags. This matches the paper's per-tag-group

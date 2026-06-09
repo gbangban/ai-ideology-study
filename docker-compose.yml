@@ -37,6 +37,7 @@ services:
       - TRACKIO_SERVER_URL=${TRACKIO_SERVER_URL}
       - TRACKIO_WRITE_TOKEN=${TRACKIO_WRITE_TOKEN}
       - TRACKIO_PROJECT=${TRACKIO_PROJECT}
+      - TRACKIO_DIR=/tmp/trackio-cache
     shm_size: '16gb'
     stdin_open: true
     tty: true

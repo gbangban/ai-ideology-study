@@ -13,32 +13,13 @@ from __future__ import annotations
 import argparse
 import logging
 import math
-import os
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 
-# Disable torch.compile globally - unsloth's dynamo trace crashes
-# on chunked_hidden_states_selective_log_softmax matmul shape tracing
-# Must be set before any torch import
-os.environ["TORCHDYNAMO"] = "OFF"
-os.environ["TORCH_COMPILE"] = "0"
-
+# torch.compile is controlled via --compile flag (disabled by default).
+# When enabled, overrides grpo_config.torch_compile = True.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
-
-import torch
-torch._dynamo.config.disable = True
-torch._dynamo.config.suppress_errors = True
-
-# Remove Unsloth's compiled cache so patches take effect
-# (compiled code captures references to the broken function)
-import shutil
-for _cache_path in [
-    Path("/app/unsloth_compiled_cache"),
-    Path(__file__).resolve().parent.parent.parent / "unsloth_compiled_cache",
-]:
-    if _cache_path.exists():
-        shutil.rmtree(_cache_path)
 
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -59,6 +40,7 @@ def smoke_test(
     base_model: str,
     dataset_path: str,
     num_prompts: int = 2,
+    enable_compile: bool = False,
 ) -> None:
     """Run a single training step to validate the full stack.
 
@@ -208,6 +190,7 @@ def smoke_test(
             max_steps=1,
             save_steps=99999,
             logging_steps=1,
+            torch_compile=enable_compile,
         )
     else:
         grpo_config = create_grpo_config_process(
@@ -215,6 +198,7 @@ def smoke_test(
             max_steps=1,
             save_steps=99999,
             logging_steps=1,
+            torch_compile=enable_compile,
         )
 
     # Step 8: Instantiate trainer
@@ -271,6 +255,11 @@ def main() -> None:
         default=2,
         help="Number of prompts to subsample (default: 2)",
     )
+    parser.add_argument(
+        "--compile",
+        action="store_true",
+        help="Enable torch.compile (disabled by default)",
+    )
     args = parser.parse_args()
 
     try:
@@ -279,6 +268,7 @@ def main() -> None:
             base_model=args.base_model,
             dataset_path=args.dataset_path,
             num_prompts=args.num_prompts,
+            enable_compile=args.compile,
         )
     except Exception:
         logger.error("Smoke test failed, flushing VRAM...")

@@ -82,6 +82,7 @@ def create_grpo_config(
     max_steps: Optional[int] = None,
     save_steps: Optional[int] = None,
     logging_steps: Optional[int] = None,
+    torch_compile: bool = False,
 ) -> GRPOConfig:
     """Build a GRPOConfig for v4 process-reward training.
 
@@ -106,7 +107,7 @@ def create_grpo_config(
         logging_steps=logging_steps if logging_steps is not None else 25,
         save_steps=save_steps if save_steps is not None else 100,
         lr_scheduler_type="cosine",
-        torch_compile=False,
+        torch_compile=torch_compile,
         output_dir=output_dir or DEFAULT_CONFIG["output_dir"],
         report_to="wandb",
         remove_unused_columns=False,

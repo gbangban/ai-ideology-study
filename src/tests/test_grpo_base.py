@@ -195,3 +195,78 @@ class TestBuildRewardFnWithDocs:
         assert len(received_docs) == 2
         assert received_docs[0]["answer"] == "+"
         assert received_docs[1]["relation"] == "entailment"
+
+
+class TestTrackingManager:
+    def test_init_creates_run_and_sets_active(self):
+        import sys
+        from types import ModuleType
+
+        class FakeRun:
+            name = "test-run"
+            project = "test-project"
+            config = {}
+
+        fake_trackio = ModuleType("trackio")
+        fake_trackio.init = lambda **kw: FakeRun()
+        fake_trackio.finish = lambda: None
+
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setitem(sys.modules, "trackio", fake_trackio)
+
+            from src.student.train_grpo_base import TrackingManager
+
+            mgr = TrackingManager()
+            mgr.init(
+                project="test-project",
+                name="test-run",
+                config={"lr": 5e-7},
+                track="outcome",
+                server_url="http://localhost:7860",
+            )
+            assert mgr._active is True
+            assert mgr._run is not None
+
+    def test_finish_calls_trackio_finish(self):
+        import sys
+        from types import ModuleType
+
+        finish_called = []
+
+        class FakeRun:
+            name = "test-run"
+            project = "test-project"
+            config = {}
+
+        fake_trackio = ModuleType("trackio")
+        fake_trackio.init = lambda **kw: FakeRun()
+        fake_trackio.finish = lambda: finish_called.append(True)
+
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setitem(sys.modules, "trackio", fake_trackio)
+
+            from src.student.train_grpo_base import TrackingManager
+
+            mgr = TrackingManager()
+            mgr.init(project="p", name="r", config={}, track="outcome", server_url=None)
+            mgr.finish()
+            assert len(finish_called) == 1
+
+    def test_init_failure_makes_methods_noop(self):
+        import sys
+        from types import ModuleType
+
+        fake_trackio = ModuleType("trackio")
+        fake_trackio.init = lambda **kw: (_ for _ in ()).throw(RuntimeError("no trackio"))
+        fake_trackio.finish = lambda: None
+
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setitem(sys.modules, "trackio", fake_trackio)
+
+            from src.student.train_grpo_base import TrackingManager
+
+            mgr = TrackingManager()
+            mgr.init(project="p", name="r", config={}, track="outcome", server_url=None)
+            assert mgr._active is False
+            mgr.log_rewards(1, {"outcome": 0.5})
+            mgr.finish()

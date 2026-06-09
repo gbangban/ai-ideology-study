@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import torch
+from transformers import TrainerCallback
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +55,12 @@ class CompileGuardedModel:
     def compiled(self) -> bool:
         return self._compiled is not None and not self._fallback
 
+    def cleanup(self) -> None:
+        """Release compiled model reference to allow VRAM reclamation."""
+        if self._compiled is not None:
+            del self._compiled
+            self._compiled = None
+
 
 def maybe_compile_model(model: Any, enable: bool = True) -> Tuple[Any, bool]:
     """Attempt to compile a model with torch.compile, falling back gracefully.
@@ -73,61 +80,13 @@ def maybe_compile_model(model: Any, enable: bool = True) -> Tuple[Any, bool]:
 
 
 def patch_unsloth_chunked_log_softmax() -> None:
-    """Patch Unsloth's lm_head to return hidden states during GRPO log-prob forward.
+    """No-op: Unsloth 2026.6.1+ handles hidden states natively via _wrap_grpo_hidden_states_fallback.
 
-    Fixes unslothai/unsloth#5121: Qwen3.5 GRPO text-only path returns logits (vocab dim)
-    instead of hidden states (hidden dim), causing a matmul shape mismatch in the
-    chunked selective log-softmax which then tries to project logits through lm_head again.
-
-    Based on the fix in unslothai/unsloth#5898. When UNSLOTH_RETURN_HIDDEN_STATES=1,
-    we short-circuit lm_head.forward to return its input tensor directly, so the
-    model's forward yields .logits == hidden_states and the chunked log-softmax
-    receives the correct hidden-dim tensor.
+    The previous lm_head passthrough patch conflicted with Unsloth's built-in
+    _install_grpo_hidden_states_forward_wrapper, causing corrupted logprobs
+    (near-zero loss) and memory leaks from double-wrapped forward methods.
     """
-    try:
-        import trl
-        # Get the model from the trainer - we need to patch lm_head on the actual model
-        # This is called after model loading but before trainer creation.
-        # We patch it by wrapping the lm_head module's forward method.
-        original_init = trl.GRPOTrainer.__init__
-
-        def patched_init(self, *args, **kwargs):
-            original_init(self, *args, **kwargs)
-            # Patch lm_head to passthrough hidden states during log-prob computation
-            _patch_lm_head_passthrough(self.model)
-
-        trl.GRPOTrainer.__init__ = patched_init
-        logger.info("Patched GRPOTrainer.__init__ for lm_head passthrough (fixes #5121)")
-    except Exception as e:
-        logger.warning(f"Could not patch GRPOTrainer.__init__: {e}")
-
-
-def _patch_lm_head_passthrough(model) -> None:
-    """Short-circuit lm_head to return input when UNSLOTH_RETURN_HIDDEN_STATES=1.
-
-    Finds the lm_head module on the model and wraps its forward method.
-    When the env flag is set, returns the input tensor directly instead of
-    doing the vocab projection. The lm_head weight is untouched.
-    """
-    lm_head = None
-    if hasattr(model, "lm_head"):
-        lm_head = model.lm_head
-    elif hasattr(model, "get_base_model"):
-        base = model.get_base_model()
-        if hasattr(base, "lm_head"):
-            lm_head = base.lm_head
-    if lm_head is None:
-        return
-
-    original_forward = lm_head.forward
-
-    def passthrough_forward(*args, **kwargs):
-        if os.environ.get("UNSLOTH_RETURN_HIDDEN_STATES", "0") == "1":
-            return args[0] if args else next(iter(kwargs.values()))
-        return original_forward(*args, **kwargs)
-
-    lm_head.forward = passthrough_forward
-    logger.info("Installed lm_head passthrough (fixes unsloth #5121)")
+    pass
 
 
 def strip_vision_config(model_path: str) -> None:
@@ -203,7 +162,8 @@ def build_outcome_dataset(
     for doc in docs:
         chat = [{"role": "user", "content": doc["prompt"]}]
         prompt_text = tokenizer.apply_chat_template(
-            chat, tokenize=False, add_generation_prompt=True
+            chat, tokenize=False, add_generation_prompt=True,
+            enable_thinking=False,
         )
         prompts.append(prompt_text)
         doc_records.append(doc)
@@ -238,3 +198,124 @@ def build_reward_fn_with_docs(
         docs = [doc_index.get(p, {}) for p in prompts]
         return reward_fn(completions, docs)
     return wrapped
+
+
+class TrackioCallback(TrainerCallback):
+    """Trainer callback that pushes metrics to trackio at each logging step.
+
+    Inherits TrainerCallback for no-op defaults on all lifecycle events.
+
+    Usage:
+        tracker = TrackioCallback()
+        trainer.add_callback(tracker)
+        # ... training ...
+        tracker.finish()
+    """
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._active = False
+
+    def activate(self) -> None:
+        self._active = True
+
+    def on_log(
+        self,
+        args: Any,
+        state: Any,
+        control: Any,
+        logs: Optional[Dict[str, Any]] = None,
+        **kwargs: Any,
+    ) -> None:
+        if not self._active or not logs:
+            return
+        try:
+            import trackio
+            step = getattr(state, "global_step", 0)
+            trackio.log({k: v for k, v in logs.items() if isinstance(v, (int, float))}, step=step)
+        except Exception:
+            pass
+
+    def finish(self) -> None:
+        if not self._active:
+            return
+        try:
+            import trackio
+            trackio.finish()
+        except Exception:
+            pass
+        self._active = False
+
+
+class TrackingManager:
+    """Encapsulates all Track.io tracking verticals for GRPO training.
+
+    Single source of truth for alert thresholds, GPU snapshot frequency,
+    and report templates. If init() fails, all methods become no-ops.
+    """
+
+    ALERT_LOSS_DIVERGENCE_THRESHOLD = 5.0
+    ALERT_LOSS_DIVERGENCE_MIN_STEP = 100
+    ALERT_STALL_STEP_WINDOW = 100
+    ALERT_STALL_LOSS_DELTA = 0.001
+    ALERT_REWARD_COLLAPSE_THRESHOLD = -2.0
+    ALERT_KL_HIGH_THRESHOLD = 10.0
+    ALERT_SHORT_COMPLETION_THRESHOLD = 10
+    ALERT_CHECKPOINT_INTERVAL = 200
+    ALERT_PROCESS_REWARD_LOW = 0.1
+    ALERT_FORMAT_PENALTY_DOMINANCE = 0.5
+
+    def __init__(self) -> None:
+        self._run = None
+        self._active = False
+        self._track = ""
+        self._reward_samples: Dict[str, List[float]] = {}
+        self._reward_table_rows: List[Dict[str, Any]] = []
+        self._loss_history: List[Tuple[int, float]] = []
+
+    def init(
+        self,
+        project: str,
+        name: str,
+        config: Dict[str, Any],
+        track: str,
+        server_url: Optional[str] = None,
+        group: Optional[str] = None,
+    ) -> None:
+        try:
+            import trackio
+            self._run = trackio.init(
+                project=project,
+                name=name,
+                config=config,
+                group=group,
+                server_url=server_url,
+                auto_log_gpu=True,
+            )
+            self._active = True
+            self._track = track
+            logger.info(f"TrackingManager initialized: project={project}, name={name}, track={track}")
+        except Exception as e:
+            logger.warning(f"TrackingManager init failed: {e}")
+            self._active = False
+
+    def finish(self) -> None:
+        if not self._active:
+            return
+        try:
+            import trackio
+            trackio.finish()
+            logger.info("TrackingManager finished")
+        except Exception as e:
+            logger.warning(f"TrackingManager finish failed: {e}")
+        finally:
+            self._active = False
+
+    def log_rewards(self, step: int, rewards: Dict[str, float]) -> None:
+        if not self._active:
+            return
+        try:
+            import trackio
+            trackio.log(rewards, step=step)
+        except Exception:
+            pass

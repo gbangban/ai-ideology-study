@@ -19,7 +19,7 @@ def test_grpo_config_factory():
     assert config.save_steps == 50
     assert config.lr_scheduler_type == "cosine"
     assert config.max_prompt_length == 512
-    assert config.report_to == ["none"]
+    assert config.report_to == []
     assert config.generation_batch_size == 8
 
 

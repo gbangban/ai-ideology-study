@@ -359,3 +359,44 @@ class TrackingManager:
                     })
             return scores
         return wrapped
+
+    def log_reward_table(self, step: int, rows: List[Dict[str, Any]]) -> None:
+        """Log per-sample reward breakdowns as trackio.Table."""
+        if not self._active or not rows:
+            return
+        try:
+            import trackio
+            columns = list(rows[0].keys())
+            table_data = [[row.get(col, "") for col in columns] for row in rows]
+            trackio.log({"reward/table": trackio.Table(data=table_data, columns=columns)}, step=step)
+        except Exception as e:
+            logger.warning(f"Failed to log reward table: {e}")
+
+    def log_reward_histograms(self, step: int, samples: Dict[str, List[float]]) -> None:
+        """Log reward value distributions as trackio.Histogram."""
+        if not self._active or not samples:
+            return
+        try:
+            import trackio
+            metrics = {}
+            for name, values in samples.items():
+                if values:
+                    metrics[f"reward/hist/{name}"] = trackio.Histogram(values)
+            if metrics:
+                trackio.log(metrics, step=step)
+        except Exception as e:
+            logger.warning(f"Failed to log reward histograms: {e}")
+
+    def log_completion_sample(self, step: int, prompt: str, completion: str) -> None:
+        """Log a completion example as trackio.Trace."""
+        if not self._active:
+            return
+        try:
+            import trackio
+            trace = trackio.Trace(messages=[
+                {"role": "user", "content": prompt[:300]},
+                {"role": "assistant", "content": completion[:500]},
+            ])
+            trackio.log({"completion/sample": trace}, step=step)
+        except Exception as e:
+            logger.warning(f"Failed to log completion sample: {e}")

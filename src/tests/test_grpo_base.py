@@ -332,3 +332,120 @@ class TestRewardWrapper:
             wrapped = mgr.wrap_reward_fn(reward_fn, reward_name="outcome", doc_index=doc_index)
             results = wrapped(["c1", "c2"], ["prompt-A", "prompt-B"])
             assert results == [1.0, 0.0]
+
+
+class TestRewardLogging:
+    def test_log_reward_table_creates_table(self):
+        import sys
+        from types import ModuleType
+
+        log_calls = []
+
+        class FakeTable:
+            def __init__(self, data, columns):
+                self.data = data
+                self.columns = columns
+
+        class FakeRun:
+            name = "r"
+            project = "p"
+            config = {}
+
+        def fake_log(metrics, step=None):
+            log_calls.append((dict(metrics), step))
+
+        fake_trackio = ModuleType("trackio")
+        fake_trackio.init = lambda **kw: FakeRun()
+        fake_trackio.log = fake_log
+        fake_trackio.finish = lambda: None
+        fake_trackio.Table = FakeTable
+
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setitem(sys.modules, "trackio", fake_trackio)
+
+            from src.student.train_grpo_base import TrackingManager
+
+            mgr = TrackingManager()
+            mgr.init(project="p", name="r", config={}, track="outcome", server_url=None)
+
+            rows = [
+                {"prompt": "Q1?", "completion": "A+", "outcome": 1.0},
+                {"prompt": "Q2?", "completion": "A-", "outcome": 0.0},
+            ]
+            mgr.log_reward_table(100, rows)
+
+            table_call = [c for c in log_calls if "reward/table" in c[0]]
+            assert len(table_call) == 1
+            assert table_call[0][1] == 100
+
+    def test_log_reward_histograms_creates_histograms(self):
+        import sys
+        from types import ModuleType
+
+        log_calls = []
+
+        class FakeHistogram:
+            def __init__(self, values):
+                self.values = values
+
+        class FakeRun:
+            name = "r"
+            project = "p"
+            config = {}
+
+        def fake_log(metrics, step=None):
+            log_calls.append((dict(metrics), step))
+
+        fake_trackio = ModuleType("trackio")
+        fake_trackio.init = lambda **kw: FakeRun()
+        fake_trackio.log = fake_log
+        fake_trackio.finish = lambda: None
+        fake_trackio.Histogram = FakeHistogram
+
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setitem(sys.modules, "trackio", fake_trackio)
+
+            from src.student.train_grpo_base import TrackingManager
+
+            mgr = TrackingManager()
+            mgr.init(project="p", name="r", config={}, track="outcome", server_url=None)
+            mgr.log_reward_histograms(50, {"outcome": [0.8, 0.3, 0.9, 0.1]})
+
+            hist_call = [c for c in log_calls if any("reward/hist" in k for k in c[0])]
+            assert len(hist_call) == 1
+
+    def test_log_completion_sample_creates_trace(self):
+        import sys
+        from types import ModuleType
+
+        log_calls = []
+
+        class FakeTrace:
+            def __init__(self, messages):
+                self.messages = messages
+
+        class FakeRun:
+            name = "r"
+            project = "p"
+            config = {}
+
+        def fake_log(metrics, step=None):
+            log_calls.append((dict(metrics), step))
+
+        fake_trackio = ModuleType("trackio")
+        fake_trackio.init = lambda **kw: FakeRun()
+        fake_trackio.log = fake_log
+        fake_trackio.finish = lambda: None
+        fake_trackio.Trace = FakeTrace
+
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setitem(sys.modules, "trackio", fake_trackio)
+
+            from src.student.train_grpo_base import TrackingManager
+
+            mgr = TrackingManager()
+            mgr.init(project="p", name="r", config={}, track="outcome", server_url=None)
+            mgr.log_completion_sample(30, "What is X?", "The answer is positive.")
+
+            trace_call = [c for c in log_calls if "completion/sample" in c[0]]
+            assert len(trace_call) == 1

@@ -137,7 +137,7 @@ def train(config: dict, base_model_path: str, output_dir: str):
         bf16=True,
         logging_steps=config["logging_steps"],
         save_steps=config["save_steps"],
-        report_to="wandb",
+        report_to="none",
         run_name="grpo-dm-alignment-trl",
     )
 

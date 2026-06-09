@@ -77,7 +77,7 @@ def create_grpo_config(output_dir: Optional[str] = None) -> GRPOConfig:
         lr_scheduler_type="cosine",
  
         output_dir=output_dir or DEFAULT_CONFIG["output_dir"],
-        report_to="wandb",
+        report_to="none",
         remove_unused_columns=False,
         generation_batch_size=8,
     )

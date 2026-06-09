@@ -270,3 +270,65 @@ class TestTrackingManager:
             assert mgr._active is False
             mgr.log_rewards(1, {"outcome": 0.5})
             mgr.finish()
+
+
+class TestRewardWrapper:
+    def test_wrapper_accumulates_per_sample_rewards(self):
+        import sys
+        from types import ModuleType
+
+        class FakeRun:
+            name = "r"
+            project = "p"
+            config = {}
+
+        fake_trackio = ModuleType("trackio")
+        fake_trackio.init = lambda **kw: FakeRun()
+        fake_trackio.finish = lambda: None
+
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setitem(sys.modules, "trackio", fake_trackio)
+
+            from src.student.train_grpo_base import TrackingManager
+
+            mgr = TrackingManager()
+            mgr.init(project="p", name="r", config={}, track="outcome", server_url=None)
+
+            wrapped = mgr.wrap_reward_fn(
+                lambda completions, docs: [0.8, 0.3, 0.9],
+                reward_name="outcome",
+            )
+
+            results = wrapped(["c1", "c2", "c3"], ["p1", "p2", "p3"])
+            assert results == [0.8, 0.3, 0.9]
+            assert mgr._reward_samples["outcome"] == [0.8, 0.3, 0.9]
+
+    def test_wrapper_with_doc_lookup(self):
+        import sys
+        from types import ModuleType
+
+        class FakeRun:
+            name = "r"
+            project = "p"
+            config = {}
+
+        fake_trackio = ModuleType("trackio")
+        fake_trackio.init = lambda **kw: FakeRun()
+        fake_trackio.finish = lambda: None
+
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setitem(sys.modules, "trackio", fake_trackio)
+
+            from src.student.train_grpo_base import TrackingManager
+
+            mgr = TrackingManager()
+            mgr.init(project="p", name="r", config={}, track="outcome", server_url=None)
+
+            doc_index = {"prompt-A": {"answer": "+"}, "prompt-B": {"answer": "-"}}
+
+            def reward_fn(completions, docs):
+                return [1.0 if d.get("answer") == "+" else 0.0 for c, d in zip(completions, docs)]
+
+            wrapped = mgr.wrap_reward_fn(reward_fn, reward_name="outcome", doc_index=doc_index)
+            results = wrapped(["c1", "c2"], ["prompt-A", "prompt-B"])
+            assert results == [1.0, 0.0]

@@ -319,3 +319,43 @@ class TrackingManager:
             trackio.log(rewards, step=step)
         except Exception:
             pass
+
+    def wrap_reward_fn(
+        self,
+        fn: Callable,
+        reward_name: str,
+        doc_index: Optional[Dict[str, Dict[str, Any]]] = None,
+    ) -> Callable:
+        """Wrap a reward function to accumulate per-sample data for Tables/Histograms.
+
+        Args:
+            fn: If doc_index is provided, fn(completions, docs) -> List[float].
+                If doc_index is None, fn(completions) -> List[float].
+            reward_name: Key for tracking this reward function.
+            doc_index: Optional dict mapping prompt text to doc record.
+
+        Returns:
+            TRL-compatible reward function.
+        """
+        def wrapped(
+            completions: List[str],
+            prompts: List[str],
+            *args: Any,
+            **kwargs: Any,
+        ) -> List[float]:
+            if doc_index:
+                docs = [doc_index.get(p, {}) for p in prompts]
+            else:
+                docs = [{} for _ in prompts]
+            scores = fn(completions, docs)
+
+            if self._active:
+                self._reward_samples.setdefault(reward_name, []).extend(scores)
+                for c, p, s in zip(completions, prompts, scores):
+                    self._reward_table_rows.append({
+                        "prompt": p[:100] if p else "",
+                        "completion": c[:200] if c else "",
+                        reward_name: s,
+                    })
+            return scores
+        return wrapped

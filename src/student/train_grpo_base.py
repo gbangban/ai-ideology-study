@@ -527,8 +527,15 @@ class TrackingManager:
         try:
             import trackio
 
-            lines = ["# Training Summary", ""]
-            lines.append(f"**Track:** {self._track}")
+            track_label = self._track.upper()
+            if self._track == "outcome":
+                report_title = f"GRPO v3 Outcome ({track_label})"
+            elif self._track == "process":
+                report_title = f"GRPO v4 Process ({track_label})"
+            else:
+                report_title = f"GRPO {track_label}"
+
+            lines = [f"# {report_title}", ""]
             lines.append(f"**Final loss:** {final_logs.get('loss', 'N/A')}")
             lines.append(f"**Final reward:** {final_logs.get('reward', 'N/A')}")
             lines.append(f"**Final KL:** {final_logs.get('kl', 'N/A')}")

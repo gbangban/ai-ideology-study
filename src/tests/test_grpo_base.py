@@ -449,3 +449,225 @@ class TestRewardLogging:
 
             trace_call = [c for c in log_calls if "completion/sample" in c[0]]
             assert len(trace_call) == 1
+
+
+class TestAlertDiagnostics:
+    def _mock_trackio(self, mp):
+        import sys
+        from types import ModuleType
+
+        class FakeRun:
+            name = "r"
+            project = "p"
+            config = {}
+
+        class FakeAlertLevel:
+            INFO = "info"
+            WARN = "warn"
+            ERROR = "error"
+
+        fake_trackio = ModuleType("trackio")
+        fake_trackio.init = lambda **kw: FakeRun()
+        fake_trackio.log = lambda *a, **k: None
+        fake_trackio.finish = lambda: None
+        fake_trackio.alert = lambda *a, **k: None
+        fake_trackio.AlertLevel = FakeAlertLevel
+        mp.setitem(sys.modules, "trackio", fake_trackio)
+        return fake_trackio
+
+    def test_nan_loss_fires_error_alert(self):
+        import sys
+        from types import ModuleType
+
+        alerts_fired = []
+
+        class FakeRun:
+            name = "r"
+            project = "p"
+            config = {}
+
+        class FakeAlertLevel:
+            INFO = "info"
+            WARN = "warn"
+            ERROR = "error"
+
+        fake_trackio = ModuleType("trackio")
+        fake_trackio.init = lambda **kw: FakeRun()
+        fake_trackio.log = lambda *a, **k: None
+        fake_trackio.finish = lambda: None
+        fake_trackio.AlertLevel = FakeAlertLevel
+
+        def fake_alert(title, text=None, level=None, webhook_url=None):
+            alerts_fired.append({"title": title, "level": level})
+        fake_trackio.alert = fake_alert
+
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setitem(sys.modules, "trackio", fake_trackio)
+
+            from src.student.train_grpo_base import TrackingManager
+
+            mgr = TrackingManager()
+            mgr.init(project="p", name="r", config={}, track="outcome", server_url=None)
+            mgr.check_diagnostics(50, {"loss": float("nan")})
+
+            nan_alerts = [a for a in alerts_fired if "NaN" in a["title"]]
+            assert len(nan_alerts) == 1
+
+    def test_loss_divergence_fires_error_alert(self):
+        import sys
+        from types import ModuleType
+
+        alerts_fired = []
+
+        class FakeRun:
+            name = "r"
+            project = "p"
+            config = {}
+
+        class FakeAlertLevel:
+            INFO = "info"
+            WARN = "warn"
+            ERROR = "error"
+
+        fake_trackio = ModuleType("trackio")
+        fake_trackio.init = lambda **kw: FakeRun()
+        fake_trackio.log = lambda *a, **k: None
+        fake_trackio.finish = lambda: None
+        fake_trackio.AlertLevel = FakeAlertLevel
+
+        def fake_alert(title, text=None, level=None, webhook_url=None):
+            alerts_fired.append({"title": title, "level": level})
+        fake_trackio.alert = fake_alert
+
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setitem(sys.modules, "trackio", fake_trackio)
+
+            from src.student.train_grpo_base import TrackingManager
+
+            mgr = TrackingManager()
+            mgr.init(project="p", name="r", config={}, track="outcome", server_url=None)
+            mgr.check_diagnostics(150, {"loss": 6.0})
+
+            div_alerts = [a for a in alerts_fired if "divergence" in a["title"].lower()]
+            assert len(div_alerts) == 1
+
+    def test_reward_collapse_fires_error_alert(self):
+        import sys
+        from types import ModuleType
+
+        alerts_fired = []
+
+        class FakeRun:
+            name = "r"
+            project = "p"
+            config = {}
+
+        class FakeAlertLevel:
+            INFO = "info"
+            WARN = "warn"
+            ERROR = "error"
+
+        fake_trackio = ModuleType("trackio")
+        fake_trackio.init = lambda **kw: FakeRun()
+        fake_trackio.log = lambda *a, **k: None
+        fake_trackio.finish = lambda: None
+        fake_trackio.AlertLevel = FakeAlertLevel
+
+        def fake_alert(title, text=None, level=None, webhook_url=None):
+            alerts_fired.append({"title": title, "level": level})
+        fake_trackio.alert = fake_alert
+
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setitem(sys.modules, "trackio", fake_trackio)
+
+            from src.student.train_grpo_base import TrackingManager
+
+            mgr = TrackingManager()
+            mgr.init(project="p", name="r", config={}, track="outcome", server_url=None)
+            mgr.check_diagnostics(100, {"reward": -3.0})
+
+            collapse_alerts = [a for a in alerts_fired if "collapse" in a["title"].lower()]
+            assert len(collapse_alerts) == 1
+
+    def test_kl_high_fires_warn_alert(self):
+        import sys
+        from types import ModuleType
+
+        alerts_fired = []
+
+        class FakeRun:
+            name = "r"
+            project = "p"
+            config = {}
+
+        class FakeAlertLevel:
+            INFO = "info"
+            WARN = "warn"
+            ERROR = "error"
+
+        fake_trackio = ModuleType("trackio")
+        fake_trackio.init = lambda **kw: FakeRun()
+        fake_trackio.log = lambda *a, **k: None
+        fake_trackio.finish = lambda: None
+        fake_trackio.AlertLevel = FakeAlertLevel
+
+        def fake_alert(title, text=None, level=None, webhook_url=None):
+            alerts_fired.append({"title": title, "level": level})
+        fake_trackio.alert = fake_alert
+
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setitem(sys.modules, "trackio", fake_trackio)
+
+            from src.student.train_grpo_base import TrackingManager
+
+            mgr = TrackingManager()
+            mgr.init(project="p", name="r", config={}, track="outcome", server_url=None)
+            mgr.check_diagnostics(100, {"kl": 15.0})
+
+            kl_alerts = [a for a in alerts_fired if "kl" in a["title"].lower()]
+            assert len(kl_alerts) == 1
+
+    def test_no_alerts_on_normal_values(self):
+        import sys
+        from types import ModuleType
+
+        alerts_fired = []
+
+        class FakeRun:
+            name = "r"
+            project = "p"
+            config = {}
+
+        class FakeAlertLevel:
+            INFO = "info"
+            WARN = "warn"
+            ERROR = "error"
+
+        fake_trackio = ModuleType("trackio")
+        fake_trackio.init = lambda **kw: FakeRun()
+        fake_trackio.log = lambda *a, **k: None
+        fake_trackio.finish = lambda: None
+        fake_trackio.AlertLevel = FakeAlertLevel
+
+        def fake_alert(title, text=None, level=None, webhook_url=None):
+            alerts_fired.append({"title": title, "level": level})
+        fake_trackio.alert = fake_alert
+
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setitem(sys.modules, "trackio", fake_trackio)
+
+            from src.student.train_grpo_base import TrackingManager
+
+            mgr = TrackingManager()
+            mgr.init(project="p", name="r", config={}, track="outcome", server_url=None)
+            mgr.check_diagnostics(100, {"loss": 0.5, "reward": 0.8, "kl": 0.1})
+
+            warn_or_error = [a for a in alerts_fired if a["level"] != FakeAlertLevel.INFO]
+            assert len(warn_or_error) == 0
+
+    def test_inactive_manager_is_noop(self):
+        from src.student.train_grpo_base import TrackingManager
+
+        mgr = TrackingManager()
+        mgr.check_diagnostics(50, {"loss": float("nan")})
+        assert mgr._active is False

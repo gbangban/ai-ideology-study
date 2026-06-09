@@ -400,3 +400,78 @@ class TrackingManager:
             trackio.log({"completion/sample": trace}, step=step)
         except Exception as e:
             logger.warning(f"Failed to log completion sample: {e}")
+
+    def _fire_alert(self, title: str, text: str, level) -> None:
+        if not self._active:
+            return
+        try:
+            import trackio
+            trackio.alert(title=title, text=text, level=level)
+        except Exception as e:
+            logger.warning(f"Failed to fire alert '{title}': {e}")
+
+    def check_diagnostics(self, step: int, logs: Dict[str, Any]) -> None:
+        """Check training metrics and fire alerts for diagnostic conditions."""
+        if not self._active:
+            return
+
+        loss = logs.get("loss")
+        reward = logs.get("reward")
+        kl = logs.get("kl")
+        completion_len = logs.get("completion_length")
+
+        if loss is not None:
+            import math
+            if math.isnan(loss) or math.isinf(loss):
+                self._fire_alert(
+                    title="NaN/Inf loss",
+                    text=f"loss={loss} at step {step}. Training is broken.",
+                    level=__import__("trackio", fromlist=["AlertLevel"]).AlertLevel.ERROR,
+                )
+                return
+
+            self._loss_history.append((step, loss))
+
+            if step > self.ALERT_LOSS_DIVERGENCE_MIN_STEP and loss > self.ALERT_LOSS_DIVERGENCE_THRESHOLD:
+                self._fire_alert(
+                    title="Loss divergence",
+                    text=f"loss={loss:.4f} above {self.ALERT_LOSS_DIVERGENCE_THRESHOLD} after {step} steps.",
+                    level=__import__("trackio", fromlist=["AlertLevel"]).AlertLevel.ERROR,
+                )
+
+            if len(self._loss_history) >= 2:
+                recent = [l for s, l in self._loss_history[-self.ALERT_STALL_STEP_WINDOW-1:]]
+                if len(recent) >= 2 and abs(recent[-1] - recent[0]) < self.ALERT_STALL_LOSS_DELTA:
+                    self._fire_alert(
+                        title="Training stall",
+                        text=f"Loss delta={abs(recent[-1] - recent[0]):.6f} over {self.ALERT_STALL_STEP_WINDOW} steps.",
+                        level=__import__("trackio", fromlist=["AlertLevel"]).AlertLevel.WARN,
+                    )
+
+        if reward is not None and reward < self.ALERT_REWARD_COLLAPSE_THRESHOLD:
+            self._fire_alert(
+                title="Reward collapse",
+                text=f"reward={reward:.4f} at step {step}.",
+                level=__import__("trackio", fromlist=["AlertLevel"]).AlertLevel.ERROR,
+            )
+
+        if kl is not None and kl > self.ALERT_KL_HIGH_THRESHOLD:
+            self._fire_alert(
+                title="KL divergence too high",
+                text=f"kl={kl:.4f} at step {step}.",
+                level=__import__("trackio", fromlist=["AlertLevel"]).AlertLevel.WARN,
+            )
+
+        if completion_len is not None and completion_len < self.ALERT_SHORT_COMPLETION_THRESHOLD:
+            self._fire_alert(
+                title="Completions too short",
+                text=f"Mean completion length={completion_len:.1f} at step {step}.",
+                level=__import__("trackio", fromlist=["AlertLevel"]).AlertLevel.WARN,
+            )
+
+        if step > 0 and step % self.ALERT_CHECKPOINT_INTERVAL == 0:
+            self._fire_alert(
+                title=f"Checkpoint milestone",
+                text=f"Reached step {step}.",
+                level=__import__("trackio", fromlist=["AlertLevel"]).AlertLevel.INFO,
+            )

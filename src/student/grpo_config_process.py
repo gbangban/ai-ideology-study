@@ -61,12 +61,12 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "grpo_g": 8,
     "beta": REWARD_WEIGHTS["lambda_kl"],
     "learning_rate": 5e-7,
-    "max_steps": 1000,
+    "max_steps": 1500,
     "max_completion_length": 512,
     "warmup_steps": 100,
     "save_steps": 100,
     "logging_steps": 25,
-    "per_device_train_batch_size": 1,
+    "per_device_train_batch_size": 4,
     "gradient_accumulation_steps": 4,
     # v4-specific
     "alpha": 0.5,
@@ -94,9 +94,9 @@ def create_grpo_config(
     """
     return GRPOConfig(
         learning_rate=5e-7,
-        max_steps=max_steps if max_steps is not None else 1000,
+        max_steps=max_steps if max_steps is not None else 1500,
         warmup_steps=100,
-        per_device_train_batch_size=1,
+        per_device_train_batch_size=4,
         gradient_accumulation_steps=4,
         num_generations=8,
         max_completion_length=512,

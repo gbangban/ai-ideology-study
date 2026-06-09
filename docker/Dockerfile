@@ -37,7 +37,7 @@ RUN pip install --no-cache-dir \
     accelerate>=1.0.1 \
     bitsandbytes>=0.44.1 \
     sentencepiece \
-    trackio \
+    trackio[gpu] \
     networkx \
     pytest \
     mergekit \

@@ -276,11 +276,16 @@ def train(config, base_model_path, output_dir, resume_step=0, enable_profile=Fal
     print("=" * 90)
 
     # Trackio
+    track_config = config.copy()
+    track_config["training_method"] = "GRPO"
+    track_config["track"] = "outcome"
+    track_config["version"] = "v3"
     trackio.init(
         project=os.environ.get("TRACKIO_PROJECT", "dm-align-grpo"),
         name=os.environ.get("TRACKIO_RUN_NAME", "grpo-v3-outcome-only"),
-        config=config,
+        config=track_config,
         server_url=os.environ.get("TRACKIO_SERVER_URL"),
+        auto_log_gpu=True,
     )
 
     os.makedirs(output_dir, exist_ok=True)

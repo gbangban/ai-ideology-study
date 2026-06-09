@@ -326,11 +326,16 @@ def train(config, base_model_path, output_dir, resume_step=0, enable_profile=Fal
     print("=" * 95)
 
     # Trackio
+    track_config = config.copy()
+    track_config["training_method"] = "GRPO-DualAdvantage"
+    track_config["track"] = "process"
+    track_config["version"] = "v4"
     trackio.init(
         project=os.environ.get("TRACKIO_PROJECT", "dm-align-grpo"),
         name=os.environ.get("TRACKIO_RUN_NAME", "grpo-v4-dual-advantage"),
-        config=config,
+        config=track_config,
         server_url=os.environ.get("TRACKIO_SERVER_URL"),
+        auto_log_gpu=True,
     )
 
     os.makedirs(output_dir, exist_ok=True)

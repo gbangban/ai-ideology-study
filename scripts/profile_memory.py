@@ -314,8 +314,10 @@ def profile_memory(
         prev_bytes = snap.allocated_bytes
 
     print("-" * 60)
-    peak_gb = get_vram_peak_gb()
-    print(f"  PEAK VRAM          : {peak_gb:.2f} GB")
+    peak_allocated = torch.cuda.max_memory_allocated() / (1024 ** 3) if torch.cuda.is_available() else 0.0
+    peak_reserved = torch.cuda.max_memory_reserved() / (1024 ** 3) if torch.cuda.is_available() else 0.0
+    print(f"  PEAK allocated     : {peak_allocated:.2f} GB (PyTorch tensors only)")
+    print(f"  PEAK reserved      : {peak_reserved:.2f} GB (includes caching allocator, what nvidia-smi sees)")
     print(f"  Training loss      : {loss_str}")
     print("=" * 60)
 
@@ -332,7 +334,9 @@ def profile_memory(
         "lora_rank": default_config["lora_rank"],
         "lora_alpha": default_config["lora_alpha"],
         "training_loss": loss,
-        "peak_vram_gb": peak_gb,
+        "peak_vram_gb": peak_reserved,
+        "peak_allocated_gb": peak_allocated,
+        "peak_reserved_gb": peak_reserved,
         "snapshots": [
             {
                 "label": s.label,
@@ -352,6 +356,35 @@ def profile_memory(
         json.dump(report, f, indent=2)
 
     print(f"\n[SAVED] Report written to {report_path}")
+
+    # Log to trackio
+    try:
+        import trackio
+        trackio.init(
+            project=os.environ.get("TRACKIO_PROJECT", "dm-align-grpo"),
+            name=f"memory-profile-{track}",
+            config={
+                "track": track,
+                "torch_compile": use_compile,
+                "steps": steps,
+                "num_prompts": num_prompts,
+                "generations_per_prompt": default_config["grpo_g"],
+            },
+            server_url=os.environ.get("TRACKIO_SERVER_URL"),
+            auto_log_gpu=True,
+        )
+        trackio.log({
+            "peak_allocated_gb": peak_allocated,
+            "peak_reserved_gb": peak_reserved,
+            "training_loss": loss,
+            "steps": steps,
+            **{f"snapshot.{s['label']}.allocated_gb": s["allocated_gb"] for s in report["snapshots"]},
+            **{f"snapshot.{s['label']}.reserved_gb": s["reserved_gb"] for s in report["snapshots"]},
+        })
+        trackio.finish()
+        print("[PASS] Metrics logged to trackio")
+    except Exception as e:
+        print(f"[WARN] Failed to log to trackio: {e}")
 
 
 def main() -> None:

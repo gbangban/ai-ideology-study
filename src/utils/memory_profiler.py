@@ -27,10 +27,10 @@ def get_vram_reserved_gb() -> float:
 
 
 def get_vram_peak_gb() -> float:
-    """Return peak VRAM usage in GB. Returns 0.0 if no CUDA."""
+    """Return peak reserved VRAM in GB (what nvidia-smi sees). Returns 0.0 if no CUDA."""
     if not torch.cuda.is_available():
         return 0.0
-    return torch.cuda.max_memory_allocated() / (1024 ** 3)
+    return torch.cuda.max_memory_reserved() / (1024 ** 3)
 
 
 @dataclass

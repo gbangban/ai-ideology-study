@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import logging
 import math
+import os
 import sys
 from pathlib import Path
 from typing import Any, Dict
@@ -213,19 +214,74 @@ def smoke_test(
     )
     print("[PASS] GRPOTrainer initialized")
 
+    # Step 8.5: Initialize trackio for experiment tracking
+    import trackio
+
+    track_config = {
+        "training_method": "GRPO" if track == "outcome" else "GRPO-DualAdvantage",
+        "track": track,
+        "version": "v3" if track == "outcome" else "v4",
+        "num_prompts": num_prompts,
+        "group_size": default_config["grpo_g"],
+        "beta": default_config["beta"],
+        "learning_rate": default_config["learning_rate"],
+        "lora_rank": default_config["lora_rank"],
+        "lora_alpha": default_config["lora_alpha"],
+        "max_completion_length": default_config["max_completion_length"],
+        "reward_count": reward_count,
+        "smoke_test": True,
+    }
+    if track == "process":
+        track_config["alpha"] = default_config.get("alpha", 0.5)
+        track_config["lambda_kl"] = default_config.get("lambda_kl", 0.01)
+        track_config["clip_epsilon"] = default_config.get("clip_epsilon", 0.2)
+
+    run_name = os.environ.get("TRACKIO_RUN_NAME", f"smoke-test-grpo-{track}")
+    trackio.init(
+        project=os.environ.get("TRACKIO_PROJECT", "dm-align-grpo"),
+        name=run_name,
+        config=track_config,
+        server_url=os.environ.get("TRACKIO_SERVER_URL"),
+        auto_log_gpu=True,
+    )
+    trackio_initialized = True
+
     # Step 9: Run one step
     result = trainer.train()
     metrics = result.metrics
 
     # Step 10: Validate
     loss = metrics.get("train_loss", None)
+    loss_str = f"{loss:.4f}" if loss is not None else "N/A"
+
+    # Log metrics to trackio
+    track_metrics = {
+        "loss": loss if loss is not None else float("nan"),
+        "reward_count": reward_count,
+        "num_prompts": num_prompts,
+        "track": track,
+    }
+    for key, val in metrics.items():
+        if isinstance(val, (int, float)) and key not in track_metrics:
+            track_metrics[key] = val
+    try:
+        trackio.log(track_metrics)
+        print("[PASS] Metrics logged to trackio")
+    except Exception as e:
+        print(f"[WARN] Failed to log to trackio: {e}")
+
     if loss is not None and not math.isfinite(loss):
         print(f"[FAIL] Loss is not finite: {loss}")
+        if trackio_initialized:
+            trackio.finish()
         sys.exit(1)
 
-    loss_str = f"{loss:.4f}" if loss is not None else "N/A"
     print(f"[PASS] Training step completed")
     print(f"  Loss: {loss_str}")
+
+    if trackio_initialized:
+        trackio.finish()
+
     print("[PASS] All validations passed")
 
 

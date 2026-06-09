@@ -34,6 +34,9 @@ services:
       - ACCELERATE_CACHE_DIR=/root/.cache/huggingface
       - CUDA_VISIBLE_DEVICES=0
       - PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
+      - TRACKIO_SERVER_URL=${TRACKIO_SERVER_URL}
+      - TRACKIO_WRITE_TOKEN=${TRACKIO_WRITE_TOKEN}
+      - TRACKIO_PROJECT=${TRACKIO_PROJECT}
     shm_size: '16gb'
     stdin_open: true
     tty: true
@@ -77,6 +80,8 @@ services:
       - "7860:7860"
     volumes:
       - trackio-data:/root/.cache/huggingface/trackio
+    environment:
+      - TRACKIO_WRITE_TOKEN=${TRACKIO_WRITE_TOKEN}
     restart: unless-stopped
 
 volumes:

@@ -64,7 +64,7 @@ echo ""
 echo "========================================="
 echo "Step 4: Running GRPO Training Tests"
 echo "========================================="
-python3 -m pytest $TEST_DIR/test_grpo_training.py $TEST_DIR/test_grpo_config.py $TEST_DIR/test_rewards.py $TEST_DIR/test_rlvmr_rewards.py $TEST_DIR/test_grpo_base.py $TEST_DIR/test_grpo_outcome_training.py $TEST_DIR/test_grpo_process_training.py $TEST_DIR/test_smoke_test.py -${VERBOSE} --tb=short
+python3 -m pytest $TEST_DIR/test_grpo_training.py $TEST_DIR/test_grpo_config.py $TEST_DIR/test_rewards.py $TEST_DIR/test_rlvmr_rewards.py $TEST_DIR/test_grpo_base.py $TEST_DIR/test_grpo_outcome_training.py $TEST_DIR/test_grpo_process_training.py $TEST_DIR/test_smoke_test.py $TEST_DIR/test_trackio_dry_run.py -${VERBOSE} --tb=short
 GRPO_EXIT=$?
 
 if [ $GRPO_EXIT -ne 0 ]; then

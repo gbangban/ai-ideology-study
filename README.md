@@ -31,10 +31,9 @@ data/raw/questions.json (1,500 AI-generated questions)
 cp .env.example .env
 
 # Edit .env with your keys:
-#   WANDB_API_KEY      — from https://wandb.ai/authorize
+#   TRACKIO_SERVER_URL — http://trackio-server:7860 (Docker) or http://localhost:7860 (host)
+#   TRACKIO_PROJECT    — dm-align-grpo (default)
 #   HF_TOKEN           — from https://huggingface.co/settings/tokens
-#   WANDB_BASE_URL     — http://localhost:8086 (local W&B server)
-#   WANDB_MODE         — offline (default) or online
 ```
 
 ## Docker Services
@@ -45,7 +44,7 @@ Three services in docker-compose.yml:
 |---------|-----------|------|---------|
 | `training` | `ml-training` | — | GRPO/DPO training container |
 | `sglang` | `sglang-server` | 1235 | SG-Lang inference (judge offloading, evals) |
-| `wandb` | `wandb-server` | 8086 | Local W&B tracking server |
+| `trackio` | `trackio-server` | 7860 | Local Trackio experiment tracking |
 
 ```bash
 # Start training container only
@@ -54,8 +53,8 @@ docker compose up -d training
 # Start SG-Lang for judge offloading (loads Qwen3.5-4B BF16)
 docker compose up -d sglang
 
-# Start local W&B server
-docker compose up -d wandb
+# Start local Trackio server
+docker compose up -d trackio
 
 # Health check SG-Lang
 ./scripts/sglang_health.sh
@@ -94,17 +93,18 @@ Judge backend modes:
 
 System-wide VRAM with SG-Lang judge: ~22GB (12GB training + 10GB SG-Lang).
 
-### W&B Logging
+### Experiment Tracking
 
-GRPO training logs to W&B automatically. Configure via environment:
+Training logs to Trackio automatically. Configure via environment:
 
 ```bash
 # .env
-WANDB_MODE=online       # or offline (default)
-WANDB_BASE_URL=http://localhost:8086
-WANDB_PROJECT=dm-align-grpo
-WANDB_RUN_NAME=grpo-dm-alignment
+TRACKIO_SERVER_URL=http://trackio-server:7860
+TRACKIO_PROJECT=dm-align-grpo
+TRACKIO_RUN_NAME=grpo-v3-outcome-only
 ```
+
+View dashboard: `trackio show --project dm-align-grpo` (on host) or visit `http://localhost:7860` (Docker).
 
 ## Evaluation
 

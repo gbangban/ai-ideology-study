@@ -126,7 +126,7 @@ data/raw/questions.json (1,500 AI-generated questions, quality-filtered)
 - `checkpoints/` directory does not exist yet; adapters saved to `checkpoints/lora_adapters/`
 - SG-Lang service (`sglang-server`): `lmsysorg/sglang:latest` on port 1235 (maps to internal 30000), BF16 Qwen3.5-4B judge model
 - W&B service (`wandb-server`): `wandb/core:v0.23.0-deploy` on port 8086, local tracking server
-- `.env` contains `WANDB_API_KEY`, `WANDB_BASE_URL`, `WANDB_MODE` (gitignored, never commit)
+- `.env` contains `TRACKIO_SERVER_URL`, `TRACKIO_PROJECT` (gitignored, never commit)
 
 ## Workflow Commands
 

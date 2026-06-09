@@ -68,19 +68,7 @@ services:
       --mem-fraction-static 0.6
       --cuda-memory-fraction 0.6
 
-  wandb-mysql:
-    image: mysql:8.0
-    container_name: wandb-mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=wandb
-      - MYSQL_DATABASE=wandb
-      - MYSQL_USER=wandb
-      - MYSQL_PASSWORD=wandb
-    volumes:
-      - wandb-mysql-data:/var/lib/mysql
-    restart: unless-stopped
-
- trackio:
+  trackio:
     build:
       context: docker/trackio
       dockerfile: Dockerfile
@@ -93,4 +81,3 @@ services:
 
 volumes:
   trackio-data:
-  wandb-mysql-data:

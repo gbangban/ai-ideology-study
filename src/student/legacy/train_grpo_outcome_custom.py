@@ -24,7 +24,7 @@ from typing import List
 
 import torch
 import torch.nn.functional as F
-import wandb
+import trackio
 from torch.utils.data import DataLoader, Dataset as TorchDataset
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
@@ -275,20 +275,12 @@ def train(config, base_model_path, output_dir, resume_step=0, enable_profile=Fal
     print(f"{'Step':>6} {'Loss':>8} {'PG':>8} {'KL':>8} {'Reward':>8} {'MinR':>6} {'MaxR':>6} {'MedR':>6} {'LR':>10} {'Time':>6} {'ETA(h)':>7} {'VRAM':>7}")
     print("=" * 90)
 
-    # W&B
-    wandb_mode = os.environ.get("WANDB_MODE", "online")
-    wandb_base_url = os.environ.get("WANDB_BASE_URL")
-    wandb_api_key = os.environ.get("WANDB_API_KEY")
-    if wandb_api_key:
-        wandb.login(key=wandb_api_key)
-    if wandb_base_url:
-        wandb.base_url = wandb_base_url
-    wandb.init(
-        project=os.environ.get("WANDB_PROJECT", "dm-align-grpo"),
-        name=os.environ.get("WANDB_RUN_NAME", "grpo-v3-outcome-only"),
+    # Trackio
+    trackio.init(
+        project=os.environ.get("TRACKIO_PROJECT", "dm-align-grpo"),
+        name=os.environ.get("TRACKIO_RUN_NAME", "grpo-v3-outcome-only"),
         config=config,
-        mode=wandb_mode,
-        save_code=False,
+        server_url=os.environ.get("TRACKIO_SERVER_URL"),
     )
 
     os.makedirs(output_dir, exist_ok=True)
@@ -500,7 +492,7 @@ def train(config, base_model_path, output_dir, resume_step=0, enable_profile=Fal
         ])
         csv_f.flush()
 
-        wandb.log({
+        trackio.log({
             "step": step,
             "loss": batch_loss / len(all_completions),
             "avg_reward": avg_reward,
@@ -524,7 +516,7 @@ def train(config, base_model_path, output_dir, resume_step=0, enable_profile=Fal
     with open(f"{output_dir}/reward_history.json", "w") as f:
         json.dump(total_rewards, f)
     csv_f.close()
-    wandb.finish()
+    trackio.finish()
     logger.info("Done.")
 
 

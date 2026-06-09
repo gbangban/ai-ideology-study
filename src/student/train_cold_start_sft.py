@@ -22,7 +22,7 @@ import time
 from pathlib import Path
 
 import torch
-import wandb
+import trackio
 from torch.utils.data import Dataset as TorchDataset
 from torch.utils.data import DataLoader
 
@@ -182,20 +182,12 @@ def train(data_path, base_model, output_dir, epochs=5, batch_size=1, lr=1e-5, re
     else:
         latest_step, latest_path = resume_if_available(output_dir, "checkpoint")
 
-    # W&B
-    wandb_mode = os.environ.get("WANDB_MODE", "online")
-    wandb_base_url = os.environ.get("WANDB_BASE_URL")
-    wandb_api_key = os.environ.get("WANDB_API_KEY")
-    if wandb_api_key:
-        wandb.login(key=wandb_api_key)
-    if wandb_base_url:
-        wandb.base_url = wandb_base_url
-    wandb.init(
-        project=os.environ.get("WANDB_PROJECT", "dm-align-grpo"),
-        name=os.environ.get("WANDB_RUN_NAME", "cold-start-sft"),
+    # Trackio
+    trackio.init(
+        project=os.environ.get("TRACKIO_PROJECT", "dm-align-grpo"),
+        name=os.environ.get("TRACKIO_RUN_NAME", "cold-start-sft"),
         config={"epochs": epochs, "batch_size": batch_size, "lr": lr},
-        mode=wandb_mode,
-        save_code=False,
+        server_url=os.environ.get("TRACKIO_SERVER_URL"),
     )
 
     model.train()
@@ -270,7 +262,7 @@ def train(data_path, base_model, output_dir, epochs=5, batch_size=1, lr=1e-5, re
 
  
 
-        wandb.log({
+        trackio.log({
             "epoch": epoch + 1,
             "loss": avg_loss,
             "step": global_step,
@@ -284,7 +276,7 @@ def train(data_path, base_model, output_dir, epochs=5, batch_size=1, lr=1e-5, re
     tokenizer.save_pretrained(output_dir)
     logger.info(f"Total time: {(time.time() - start_time) / 60:.1f}m")
 
-    wandb.finish()
+    trackio.finish()
     logger.info("Done.")
 
 

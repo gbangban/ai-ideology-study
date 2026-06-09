@@ -146,11 +146,16 @@ class MemoryProfiler:
 
 
 def force_memory_cleanup() -> Dict[str, float]:
-    """Force garbage collection and CUDA cache clear. Returns before/after VRAM."""
+    """Force garbage collection and CUDA cache clear. Returns before/after VRAM.
+
+    Runs multiple GC passes since PyTorch tensor graphs can require
+    several collections to fully release circular references.
+    """
     before_allocated = get_vram_allocated_gb()
     before_reserved = get_vram_reserved_gb()
 
-    gc.collect()
+    for _ in range(3):
+        gc.collect()
 
     if torch.cuda.is_available():
         torch.cuda.empty_cache()

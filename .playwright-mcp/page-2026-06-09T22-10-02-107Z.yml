@@ -1,0 +1,839 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - button [ref=e5] [cursor=pointer]:
+      - img [ref=e6]
+    - generic [ref=e9]:
+      - img "Trackio" [ref=e11]
+      - generic [ref=e13]:
+        - generic [ref=e14]: Project
+        - generic [ref=e17]:
+          - listbox "Project" [ref=e18]: dm-align-grpo
+          - generic:
+            - img
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - generic [ref=e21] [cursor=pointer]:
+            - checkbox "Runs (30)" [checked] [ref=e92]
+            - generic [ref=e23]: Runs (30)
+          - generic [ref=e24] [cursor=pointer]:
+            - generic [ref=e25]: Latest only
+            - checkbox "Latest only" [ref=e26]
+        - textbox "Type to filter..." [active] [ref=e29]
+        - generic [ref=e31]:
+          - generic [ref=e32]: Group by
+          - generic [ref=e35]:
+            - listbox "Group by" [ref=e36] [cursor=pointer]
+            - generic:
+              - img
+        - generic [ref=e94]:
+          - generic [ref=e95] [cursor=pointer]:
+            - checkbox "smoke-test-grpo-process_20260609_215542" [checked] [ref=e96]
+            - generic "smoke-test-grpo-process_20260609_215542" [ref=e98]
+          - generic [ref=e99] [cursor=pointer]:
+            - checkbox "smoke-test-grpo-outcome_20260609_215246" [checked] [ref=e100]
+            - generic "smoke-test-grpo-outcome_20260609_215246" [ref=e102]
+          - generic [ref=e103] [cursor=pointer]:
+            - checkbox "smoke-test-grpo-process_20260609_213009" [checked] [ref=e104]
+            - generic "smoke-test-grpo-process_20260609_213009" [ref=e106]
+          - generic [ref=e107] [cursor=pointer]:
+            - checkbox "smoke-test-grpo-outcome_20260609_212614" [checked] [ref=e108]
+            - generic "smoke-test-grpo-outcome_20260609_212614" [ref=e110]
+          - generic [ref=e111] [cursor=pointer]:
+            - checkbox "grpo-v3-outcome-grpo_v3_outcome_20260609_212247" [checked] [ref=e112]
+            - generic "grpo-v3-outcome-grpo_v3_outcome_20260609_212247" [ref=e114]
+          - generic [ref=e115] [cursor=pointer]:
+            - checkbox "grpo-v4-process-grpo_v3_outcome_20260609_211603" [checked] [ref=e116]
+            - generic "grpo-v4-process-grpo_v3_outcome_20260609_211603" [ref=e118]
+          - generic [ref=e119] [cursor=pointer]:
+            - checkbox "grpo-v3-outcome-grpo_v3_outcome_20260609_211548" [checked] [ref=e120]
+            - generic "grpo-v3-outcome-grpo_v3_outcome_20260609_211548" [ref=e122]
+          - generic [ref=e123] [cursor=pointer]:
+            - checkbox "grpo-v4-process-grpo_v4_process_20260609_211004" [checked] [ref=e124]
+            - generic "grpo-v4-process-grpo_v4_process_20260609_211004" [ref=e126]
+          - generic [ref=e127] [cursor=pointer]:
+            - checkbox "grpo-v3-outcome-grpo_v3_outcome_20260609_210953" [checked] [ref=e128]
+            - generic "grpo-v3-outcome-grpo_v3_outcome_20260609_210953" [ref=e130]
+          - generic [ref=e131] [cursor=pointer]:
+            - checkbox "grpo-v4-process-grpo_v3_outcome_20260609_210939" [checked] [ref=e132]
+            - generic "grpo-v4-process-grpo_v3_outcome_20260609_210939" [ref=e134]
+          - generic [ref=e135] [cursor=pointer]:
+            - checkbox "grpo-v3-outcome-grpo_v3_outcome_20260609_210926" [checked] [ref=e136]
+            - generic "grpo-v3-outcome-grpo_v3_outcome_20260609_210926" [ref=e138]
+          - generic [ref=e139] [cursor=pointer]:
+            - checkbox "dry-run-verify_20260609_205630" [checked] [ref=e140]
+            - generic "dry-run-verify_20260609_205630" [ref=e142]
+          - generic [ref=e143] [cursor=pointer]:
+            - checkbox "dry-run-verify_20260609_205523" [checked] [ref=e144]
+            - generic "dry-run-verify_20260609_205523" [ref=e146]
+          - generic [ref=e147] [cursor=pointer]:
+            - checkbox "dry-run-verify_20260609_204930" [checked] [ref=e148]
+            - generic "dry-run-verify_20260609_204930" [ref=e150]
+          - generic [ref=e151] [cursor=pointer]:
+            - checkbox "dry-run-verify_20260609_204859" [checked] [ref=e152]
+            - generic "dry-run-verify_20260609_204859" [ref=e154]
+          - generic [ref=e155] [cursor=pointer]:
+            - checkbox "dry-run-verify_20260609_204836" [checked] [ref=e156]
+            - generic "dry-run-verify_20260609_204836" [ref=e158]
+          - generic [ref=e159] [cursor=pointer]:
+            - checkbox "dry-run-verify-20260609_204812_20260609_204812" [checked] [ref=e160]
+            - generic "dry-run-verify-20260609_204812_20260609_204812" [ref=e162]
+          - generic [ref=e163] [cursor=pointer]:
+            - checkbox "memory-profile-outcome-20260609_180929_6d72af81" [checked] [ref=e164]
+            - generic "memory-profile-outcome-20260609_180929_6d72af81" [ref=e166]
+          - generic [ref=e167] [cursor=pointer]:
+            - checkbox "memory-profile-outcome-20260609_163429_bb6e0650" [checked] [ref=e168]
+            - generic "memory-profile-outcome-20260609_163429_bb6e0650" [ref=e170]
+          - generic [ref=e171] [cursor=pointer]:
+            - checkbox "memory-profile-outcome-20260609_151618_c4442066" [checked] [ref=e172]
+            - generic "memory-profile-outcome-20260609_151618_c4442066" [ref=e174]
+          - generic [ref=e175] [cursor=pointer]:
+            - checkbox "smoke-test-grpo-outcome" [checked] [ref=e176]
+            - generic "smoke-test-grpo-outcome" [ref=e178]
+          - generic [ref=e179] [cursor=pointer]:
+            - checkbox "smoke-test-grpo-outcome" [checked] [ref=e180]
+            - generic "smoke-test-grpo-outcome" [ref=e182]
+          - generic [ref=e183] [cursor=pointer]:
+            - checkbox "memory-profile-outcome-20260609_143404_dfe48567" [checked] [ref=e184]
+            - generic "memory-profile-outcome-20260609_143404_dfe48567" [ref=e186]
+          - generic [ref=e187] [cursor=pointer]:
+            - checkbox "memory-profile-outcome-20260609_141055_470d8365" [checked] [ref=e188]
+            - generic "memory-profile-outcome-20260609_141055_470d8365" [ref=e190]
+          - generic [ref=e191] [cursor=pointer]:
+            - checkbox "grpo-v3-outcome-only" [checked] [ref=e192]
+            - generic "grpo-v3-outcome-only" [ref=e194]
+          - generic [ref=e195] [cursor=pointer]:
+            - checkbox "smoke-test-grpo-outcome" [checked] [ref=e196]
+            - generic "smoke-test-grpo-outcome" [ref=e198]
+          - generic [ref=e199] [cursor=pointer]:
+            - checkbox "smoke-test-grpo-process" [checked] [ref=e200]
+            - generic "smoke-test-grpo-process" [ref=e202]
+          - generic [ref=e203] [cursor=pointer]:
+            - checkbox "direct-test" [checked] [ref=e204]
+            - generic "direct-test" [ref=e206]
+          - generic [ref=e207] [cursor=pointer]:
+            - checkbox "auth-test" [checked] [ref=e208]
+            - generic "auth-test" [ref=e210]
+          - generic [ref=e211] [cursor=pointer]:
+            - checkbox "auth-test" [checked] [ref=e212]
+            - generic "auth-test" [ref=e214]
+      - text: Display Settings
+      - generic [ref=e37]:
+        - generic [ref=e38] [cursor=pointer]:
+          - checkbox "Refresh metrics realtime" [checked] [ref=e39]
+          - generic [ref=e40]: Refresh metrics realtime
+        - generic [ref=e41] [cursor=pointer]:
+          - checkbox "Show section headers" [checked] [ref=e42]
+          - generic [ref=e43]: Show section headers
+      - generic [ref=e45]:
+        - generic [ref=e47]: Smoothing Factor (0 = no smoothing)
+        - generic [ref=e48]:
+          - generic [ref=e49]: "0"
+          - slider [ref=e50] [cursor=pointer]: "10"
+          - generic [ref=e51]: "20"
+      - generic [ref=e52]:
+        - generic [ref=e53]:
+          - generic [ref=e54]: X-axis
+          - generic [ref=e57]:
+            - listbox "X-axis" [ref=e58] [cursor=pointer]: step
+            - generic:
+              - img
+        - generic [ref=e59] [cursor=pointer]:
+          - checkbox "Log scale X-axis" [ref=e60]
+          - generic [ref=e61]: Log scale X-axis
+        - generic [ref=e62] [cursor=pointer]:
+          - checkbox "Log scale Y-axis" [ref=e63]
+          - generic [ref=e64]: Log scale Y-axis
+      - generic [ref=e66]:
+        - generic [ref=e67]: Metric Filter
+        - generic [ref=e68]: Filter metrics using regex patterns. Leave empty to show all metrics.
+        - textbox "e.g., loss|ndcg@10|gpu" [ref=e70]
+  - generic [ref=e71]:
+    - navigation [ref=e72]:
+      - generic [ref=e73]:
+        - button "Metrics" [ref=e74] [cursor=pointer]
+        - button "System Metrics" [ref=e75] [cursor=pointer]
+        - button "Traces" [ref=e76] [cursor=pointer]
+        - button "Media & Tables" [ref=e77] [cursor=pointer]
+        - button "Alerts & Reports" [ref=e78] [cursor=pointer]
+        - button "Runs" [ref=e79] [cursor=pointer]
+        - button "Files" [ref=e80] [cursor=pointer]
+        - button "Settings" [ref=e81] [cursor=pointer]:
+          - img [ref=e82]
+          - generic [ref=e85]: Settings
+    - generic [ref=e215]:
+      - button "▾ charts (41)" [ref=e216] [cursor=pointer]:
+        - generic [ref=e217]: ▾
+        - generic [ref=e218]: charts (41)
+      - generic [ref=e220]:
+        - generic [ref=e221]:
+          - generic [ref=e222]:
+            - button "Download this plot’s data as a CSV file" [ref=e223] [cursor=pointer]:
+              - img [ref=e224]
+            - button "Download this chart as a PNG image" [ref=e227] [cursor=pointer]:
+              - img [ref=e228]
+            - button "Open this chart in the browser’s fullscreen mode" [ref=e232] [cursor=pointer]:
+              - img [ref=e233]
+          - generic "Drag to reorder this plot in the list" [ref=e238]:
+            - img [ref=e239]
+          - generic "Vega visualization" [ref=e247]
+          - generic [ref=e252]: grpo-v3-outcome-only
+        - generic [ref=e253]:
+          - generic [ref=e254]:
+            - button "Download this plot’s data as a CSV file" [ref=e255] [cursor=pointer]:
+              - img [ref=e256]
+            - button "Download this chart as a PNG image" [ref=e259] [cursor=pointer]:
+              - img [ref=e260]
+            - button "Open this chart in the browser’s fullscreen mode" [ref=e264] [cursor=pointer]:
+              - img [ref=e265]
+          - generic "Drag to reorder this plot in the list" [ref=e270]:
+            - img [ref=e271]
+          - generic "Vega visualization" [ref=e279]
+          - generic [ref=e284]: grpo-v3-outcome-only
+        - generic [ref=e285]:
+          - generic [ref=e286]:
+            - button "Download this plot’s data as a CSV file" [ref=e287] [cursor=pointer]:
+              - img [ref=e288]
+            - button "Download this chart as a PNG image" [ref=e291] [cursor=pointer]:
+              - img [ref=e292]
+            - button "Open this chart in the browser’s fullscreen mode" [ref=e296] [cursor=pointer]:
+              - img [ref=e297]
+          - generic "Drag to reorder this plot in the list" [ref=e302]:
+            - img [ref=e303]
+          - generic "Vega visualization" [ref=e311]
+          - generic [ref=e316]: grpo-v3-outcome-only
+        - generic [ref=e317]:
+          - generic [ref=e318]:
+            - button "Download this plot's data as a CSV file" [ref=e319] [cursor=pointer]:
+              - img [ref=e320]
+            - button "Download this chart as a PNG image" [ref=e323] [cursor=pointer]:
+              - img [ref=e324]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e328] [cursor=pointer]:
+              - img [ref=e329]
+          - generic "Drag to reorder this plot in the list" [ref=e334]:
+            - img [ref=e335]
+          - generic "Vega visualization" [ref=e343]
+          - generic [ref=e345]:
+            - generic [ref=e348]: smoke-test-grpo-process_20260609_213009
+            - generic [ref=e351]: smoke-test-grpo-outcome_20260609_212614
+            - generic [ref=e354]: smoke-test-grpo-outcome
+            - generic [ref=e357]: smoke-test-grpo-outcome
+            - generic [ref=e360]: smoke-test-grpo-outcome
+            - generic [ref=e363]: smoke-test-grpo-process
+        - generic [ref=e364]:
+          - generic [ref=e365]:
+            - button "Download this plot’s data as a CSV file" [ref=e366] [cursor=pointer]:
+              - img [ref=e367]
+            - button "Download this chart as a PNG image" [ref=e370] [cursor=pointer]:
+              - img [ref=e371]
+            - button "Open this chart in the browser’s fullscreen mode" [ref=e375] [cursor=pointer]:
+              - img [ref=e376]
+          - generic "Drag to reorder this plot in the list" [ref=e381]:
+            - img [ref=e382]
+          - generic "Vega visualization" [ref=e390]
+          - generic [ref=e392]:
+            - generic [ref=e395]: smoke-test-grpo-process_20260609_213009
+            - generic [ref=e398]: smoke-test-grpo-outcome_20260609_212614
+            - generic [ref=e401]: dry-run-verify_20260609_204930
+            - generic [ref=e404]: dry-run-verify_20260609_204859
+            - generic [ref=e407]: dry-run-verify_20260609_204836
+            - generic [ref=e410]: dry-run-verify-20260609_204812_20260609_204812
+            - button "+5 more" [ref=e411] [cursor=pointer]
+        - generic [ref=e412]:
+          - generic [ref=e413]:
+            - button "Download this plot’s data as a CSV file" [ref=e414] [cursor=pointer]:
+              - img [ref=e415]
+            - button "Download this chart as a PNG image" [ref=e418] [cursor=pointer]:
+              - img [ref=e419]
+            - button "Open this chart in the browser’s fullscreen mode" [ref=e423] [cursor=pointer]:
+              - img [ref=e424]
+          - generic "Drag to reorder this plot in the list" [ref=e429]:
+            - img [ref=e430]
+          - generic "Vega visualization" [ref=e438]
+          - generic [ref=e443]: grpo-v3-outcome-only
+        - generic [ref=e444]:
+          - generic [ref=e445]:
+            - button "Download this plot's data as a CSV file" [ref=e446] [cursor=pointer]:
+              - img [ref=e447]
+            - button "Download this chart as a PNG image" [ref=e450] [cursor=pointer]:
+              - img [ref=e451]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e455] [cursor=pointer]:
+              - img [ref=e456]
+          - generic "Drag to reorder this plot in the list" [ref=e461]:
+            - img [ref=e462]
+          - generic "Vega visualization" [ref=e470]
+          - generic [ref=e472]:
+            - generic [ref=e475]: smoke-test-grpo-process_20260609_213009
+            - generic [ref=e478]: smoke-test-grpo-outcome_20260609_212614
+            - generic [ref=e481]: smoke-test-grpo-outcome
+            - generic [ref=e484]: smoke-test-grpo-outcome
+            - generic [ref=e487]: smoke-test-grpo-outcome
+            - generic [ref=e490]: smoke-test-grpo-process
+        - generic [ref=e491]:
+          - generic [ref=e492]:
+            - button "Download this plot's data as a CSV file" [ref=e493] [cursor=pointer]:
+              - img [ref=e494]
+            - button "Download this chart as a PNG image" [ref=e497] [cursor=pointer]:
+              - img [ref=e498]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e502] [cursor=pointer]:
+              - img [ref=e503]
+          - generic "Drag to reorder this plot in the list" [ref=e508]:
+            - img [ref=e509]
+          - generic "Vega visualization" [ref=e517]
+          - generic [ref=e519]:
+            - generic [ref=e522]: smoke-test-grpo-process_20260609_215542
+            - generic [ref=e525]: smoke-test-grpo-outcome_20260609_215246
+            - generic [ref=e528]: grpo-v3-outcome-grpo_v3_outcome_20260609_212247
+            - generic [ref=e531]: grpo-v4-process-grpo_v3_outcome_20260609_211603
+            - generic [ref=e534]: grpo-v3-outcome-grpo_v3_outcome_20260609_211548
+            - generic [ref=e537]: grpo-v4-process-grpo_v4_process_20260609_211004
+            - button "+5 more" [ref=e538] [cursor=pointer]
+        - generic [ref=e539]:
+          - generic [ref=e540]:
+            - button "Download this plot's data as a CSV file" [ref=e541] [cursor=pointer]:
+              - img [ref=e542]
+            - button "Download this chart as a PNG image" [ref=e545] [cursor=pointer]:
+              - img [ref=e546]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e550] [cursor=pointer]:
+              - img [ref=e551]
+          - generic "Drag to reorder this plot in the list" [ref=e556]:
+            - img [ref=e557]
+          - generic "Vega visualization" [ref=e565]
+          - generic [ref=e567]:
+            - generic [ref=e570]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e573]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e576]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e579]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e582]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e583]:
+          - generic [ref=e584]:
+            - button "Download this plot's data as a CSV file" [ref=e585] [cursor=pointer]:
+              - img [ref=e586]
+            - button "Download this chart as a PNG image" [ref=e589] [cursor=pointer]:
+              - img [ref=e590]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e594] [cursor=pointer]:
+              - img [ref=e595]
+          - generic "Drag to reorder this plot in the list" [ref=e600]:
+            - img [ref=e601]
+          - generic "Vega visualization" [ref=e609]
+          - generic [ref=e611]:
+            - generic [ref=e614]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e617]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e620]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e623]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e626]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e627]:
+          - generic [ref=e628]:
+            - button "Download this plot's data as a CSV file" [ref=e629] [cursor=pointer]:
+              - img [ref=e630]
+            - button "Download this chart as a PNG image" [ref=e633] [cursor=pointer]:
+              - img [ref=e634]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e638] [cursor=pointer]:
+              - img [ref=e639]
+          - generic "Drag to reorder this plot in the list" [ref=e644]:
+            - img [ref=e645]
+          - generic "Vega visualization" [ref=e653]
+          - generic [ref=e655]:
+            - generic [ref=e658]: smoke-test-grpo-process_20260609_215542
+            - generic [ref=e661]: grpo-v4-process-grpo_v3_outcome_20260609_211603
+            - generic [ref=e664]: grpo-v4-process-grpo_v4_process_20260609_211004
+            - generic [ref=e667]: grpo-v4-process-grpo_v3_outcome_20260609_210939
+        - generic [ref=e668]:
+          - generic [ref=e669]:
+            - button "Download this plot's data as a CSV file" [ref=e670] [cursor=pointer]:
+              - img [ref=e671]
+            - button "Download this chart as a PNG image" [ref=e674] [cursor=pointer]:
+              - img [ref=e675]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e679] [cursor=pointer]:
+              - img [ref=e680]
+          - generic "Drag to reorder this plot in the list" [ref=e685]:
+            - img [ref=e686]
+          - generic "Vega visualization" [ref=e694]
+          - generic [ref=e696]:
+            - generic [ref=e699]: dry-run-verify_20260609_204930
+            - generic [ref=e702]: dry-run-verify_20260609_204859
+            - generic [ref=e705]: dry-run-verify_20260609_204836
+            - generic [ref=e708]: dry-run-verify-20260609_204812_20260609_204812
+        - generic [ref=e709]:
+          - generic [ref=e710]:
+            - button "Download this plot's data as a CSV file" [ref=e711] [cursor=pointer]:
+              - img [ref=e712]
+            - button "Download this chart as a PNG image" [ref=e715] [cursor=pointer]:
+              - img [ref=e716]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e720] [cursor=pointer]:
+              - img [ref=e721]
+          - generic "Drag to reorder this plot in the list" [ref=e726]:
+            - img [ref=e727]
+          - generic "Vega visualization" [ref=e735]
+          - generic [ref=e737]:
+            - generic [ref=e740]: smoke-test-grpo-process_20260609_213009
+            - generic [ref=e743]: smoke-test-grpo-outcome_20260609_212614
+            - generic [ref=e746]: smoke-test-grpo-outcome
+            - generic [ref=e749]: smoke-test-grpo-outcome
+            - generic [ref=e752]: smoke-test-grpo-outcome
+            - generic [ref=e755]: smoke-test-grpo-process
+        - generic [ref=e756]:
+          - generic [ref=e757]:
+            - button "Download this plot's data as a CSV file" [ref=e758] [cursor=pointer]:
+              - img [ref=e759]
+            - button "Download this chart as a PNG image" [ref=e762] [cursor=pointer]:
+              - img [ref=e763]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e767] [cursor=pointer]:
+              - img [ref=e768]
+          - generic "Drag to reorder this plot in the list" [ref=e773]:
+            - img [ref=e774]
+          - generic "Vega visualization" [ref=e782]
+          - generic [ref=e784]:
+            - generic [ref=e787]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e790]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e793]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e796]: memory-profile-outcome-20260609_143404_dfe48567
+        - generic [ref=e797]:
+          - generic [ref=e798]:
+            - button "Download this plot's data as a CSV file" [ref=e799] [cursor=pointer]:
+              - img [ref=e800]
+            - button "Download this chart as a PNG image" [ref=e803] [cursor=pointer]:
+              - img [ref=e804]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e808] [cursor=pointer]:
+              - img [ref=e809]
+          - generic "Drag to reorder this plot in the list" [ref=e814]:
+            - img [ref=e815]
+          - generic "Vega visualization" [ref=e823]
+          - generic [ref=e825]:
+            - generic [ref=e828]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e831]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e834]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e837]: memory-profile-outcome-20260609_143404_dfe48567
+        - generic [ref=e838]:
+          - generic [ref=e839]:
+            - button "Download this plot's data as a CSV file" [ref=e840] [cursor=pointer]:
+              - img [ref=e841]
+            - button "Download this chart as a PNG image" [ref=e844] [cursor=pointer]:
+              - img [ref=e845]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e849] [cursor=pointer]:
+              - img [ref=e850]
+          - generic "Drag to reorder this plot in the list" [ref=e855]:
+            - img [ref=e856]
+          - generic "Vega visualization" [ref=e864]
+          - generic [ref=e866]:
+            - generic [ref=e869]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e872]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e875]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e878]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e881]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e882]:
+          - generic [ref=e883]:
+            - button "Download this plot's data as a CSV file" [ref=e884] [cursor=pointer]:
+              - img [ref=e885]
+            - button "Download this chart as a PNG image" [ref=e888] [cursor=pointer]:
+              - img [ref=e889]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e893] [cursor=pointer]:
+              - img [ref=e894]
+          - generic "Drag to reorder this plot in the list" [ref=e899]:
+            - img [ref=e900]
+          - generic "Vega visualization" [ref=e908]
+          - generic [ref=e910]:
+            - generic [ref=e913]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e916]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e919]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e922]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e925]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e926]:
+          - generic [ref=e927]:
+            - button "Download this plot's data as a CSV file" [ref=e928] [cursor=pointer]:
+              - img [ref=e929]
+            - button "Download this chart as a PNG image" [ref=e932] [cursor=pointer]:
+              - img [ref=e933]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e937] [cursor=pointer]:
+              - img [ref=e938]
+          - generic "Drag to reorder this plot in the list" [ref=e943]:
+            - img [ref=e944]
+          - generic "Vega visualization" [ref=e952]
+          - generic [ref=e954]:
+            - generic [ref=e957]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e960]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e963]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e966]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e969]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e970]:
+          - generic [ref=e971]:
+            - button "Download this plot's data as a CSV file" [ref=e972] [cursor=pointer]:
+              - img [ref=e973]
+            - button "Download this chart as a PNG image" [ref=e976] [cursor=pointer]:
+              - img [ref=e977]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e981] [cursor=pointer]:
+              - img [ref=e982]
+          - generic "Drag to reorder this plot in the list" [ref=e987]:
+            - img [ref=e988]
+          - generic "Vega visualization" [ref=e996]
+          - generic [ref=e998]:
+            - generic [ref=e1001]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e1004]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e1007]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e1010]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e1013]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e1014]:
+          - generic [ref=e1015]:
+            - button "Download this plot's data as a CSV file" [ref=e1016] [cursor=pointer]:
+              - img [ref=e1017]
+            - button "Download this chart as a PNG image" [ref=e1020] [cursor=pointer]:
+              - img [ref=e1021]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1025] [cursor=pointer]:
+              - img [ref=e1026]
+          - generic "Drag to reorder this plot in the list" [ref=e1031]:
+            - img [ref=e1032]
+          - generic "Vega visualization" [ref=e1040]
+          - generic [ref=e1042]:
+            - generic [ref=e1045]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e1048]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e1051]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e1054]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e1057]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e1058]:
+          - generic [ref=e1059]:
+            - button "Download this plot's data as a CSV file" [ref=e1060] [cursor=pointer]:
+              - img [ref=e1061]
+            - button "Download this chart as a PNG image" [ref=e1064] [cursor=pointer]:
+              - img [ref=e1065]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1069] [cursor=pointer]:
+              - img [ref=e1070]
+          - generic "Drag to reorder this plot in the list" [ref=e1075]:
+            - img [ref=e1076]
+          - generic "Vega visualization" [ref=e1084]
+          - generic [ref=e1086]:
+            - generic [ref=e1089]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e1092]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e1095]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e1098]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e1101]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e1102]:
+          - generic [ref=e1103]:
+            - button "Download this plot's data as a CSV file" [ref=e1104] [cursor=pointer]:
+              - img [ref=e1105]
+            - button "Download this chart as a PNG image" [ref=e1108] [cursor=pointer]:
+              - img [ref=e1109]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1113] [cursor=pointer]:
+              - img [ref=e1114]
+          - generic "Drag to reorder this plot in the list" [ref=e1119]:
+            - img [ref=e1120]
+          - generic "Vega visualization" [ref=e1128]
+          - generic [ref=e1130]:
+            - generic [ref=e1133]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e1136]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e1139]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e1142]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e1145]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e1146]:
+          - generic [ref=e1147]:
+            - button "Download this plot's data as a CSV file" [ref=e1148] [cursor=pointer]:
+              - img [ref=e1149]
+            - button "Download this chart as a PNG image" [ref=e1152] [cursor=pointer]:
+              - img [ref=e1153]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1157] [cursor=pointer]:
+              - img [ref=e1158]
+          - generic "Drag to reorder this plot in the list" [ref=e1163]:
+            - img [ref=e1164]
+          - generic "Vega visualization" [ref=e1172]
+          - generic [ref=e1174]:
+            - generic [ref=e1177]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e1180]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e1183]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e1186]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e1189]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e1190]:
+          - generic [ref=e1191]:
+            - button "Download this plot's data as a CSV file" [ref=e1192] [cursor=pointer]:
+              - img [ref=e1193]
+            - button "Download this chart as a PNG image" [ref=e1196] [cursor=pointer]:
+              - img [ref=e1197]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1201] [cursor=pointer]:
+              - img [ref=e1202]
+          - generic "Drag to reorder this plot in the list" [ref=e1207]:
+            - img [ref=e1208]
+          - generic "Vega visualization" [ref=e1216]
+          - generic [ref=e1218]:
+            - generic [ref=e1221]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e1224]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e1227]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e1230]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e1233]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e1234]:
+          - generic [ref=e1235]:
+            - button "Download this plot's data as a CSV file" [ref=e1236] [cursor=pointer]:
+              - img [ref=e1237]
+            - button "Download this chart as a PNG image" [ref=e1240] [cursor=pointer]:
+              - img [ref=e1241]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1245] [cursor=pointer]:
+              - img [ref=e1246]
+          - generic "Drag to reorder this plot in the list" [ref=e1251]:
+            - img [ref=e1252]
+          - generic "Vega visualization" [ref=e1260]
+          - generic [ref=e1262]:
+            - generic [ref=e1265]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e1268]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e1271]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e1274]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e1277]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e1278]:
+          - generic [ref=e1279]:
+            - button "Download this plot's data as a CSV file" [ref=e1280] [cursor=pointer]:
+              - img [ref=e1281]
+            - button "Download this chart as a PNG image" [ref=e1284] [cursor=pointer]:
+              - img [ref=e1285]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1289] [cursor=pointer]:
+              - img [ref=e1290]
+          - generic "Drag to reorder this plot in the list" [ref=e1295]:
+            - img [ref=e1296]
+          - generic "Vega visualization" [ref=e1304]
+          - generic [ref=e1306]:
+            - generic [ref=e1309]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e1312]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e1315]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e1318]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e1321]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e1322]:
+          - generic [ref=e1323]:
+            - button "Download this plot's data as a CSV file" [ref=e1324] [cursor=pointer]:
+              - img [ref=e1325]
+            - button "Download this chart as a PNG image" [ref=e1328] [cursor=pointer]:
+              - img [ref=e1329]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1333] [cursor=pointer]:
+              - img [ref=e1334]
+          - generic "Drag to reorder this plot in the list" [ref=e1339]:
+            - img [ref=e1340]
+          - generic "Vega visualization" [ref=e1348]
+          - generic [ref=e1350]:
+            - generic [ref=e1353]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e1356]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e1359]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e1362]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e1365]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e1366]:
+          - generic [ref=e1367]:
+            - button "Download this plot's data as a CSV file" [ref=e1368] [cursor=pointer]:
+              - img [ref=e1369]
+            - button "Download this chart as a PNG image" [ref=e1372] [cursor=pointer]:
+              - img [ref=e1373]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1377] [cursor=pointer]:
+              - img [ref=e1378]
+          - generic "Drag to reorder this plot in the list" [ref=e1383]:
+            - img [ref=e1384]
+          - generic "Vega visualization" [ref=e1392]
+          - generic [ref=e1394]:
+            - generic [ref=e1397]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e1400]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e1403]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e1406]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e1409]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e1410]:
+          - generic [ref=e1411]:
+            - button "Download this plot's data as a CSV file" [ref=e1412] [cursor=pointer]:
+              - img [ref=e1413]
+            - button "Download this chart as a PNG image" [ref=e1416] [cursor=pointer]:
+              - img [ref=e1417]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1421] [cursor=pointer]:
+              - img [ref=e1422]
+          - generic "Drag to reorder this plot in the list" [ref=e1427]:
+            - img [ref=e1428]
+          - generic "Vega visualization" [ref=e1436]
+          - generic [ref=e1438]:
+            - generic [ref=e1441]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e1444]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e1447]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e1450]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e1453]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e1454]:
+          - generic [ref=e1455]:
+            - button "Download this plot's data as a CSV file" [ref=e1456] [cursor=pointer]:
+              - img [ref=e1457]
+            - button "Download this chart as a PNG image" [ref=e1460] [cursor=pointer]:
+              - img [ref=e1461]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1465] [cursor=pointer]:
+              - img [ref=e1466]
+          - generic "Drag to reorder this plot in the list" [ref=e1471]:
+            - img [ref=e1472]
+          - generic "Vega visualization" [ref=e1480]
+          - generic [ref=e1482]:
+            - generic [ref=e1485]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e1488]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e1491]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e1494]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e1497]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e1498]:
+          - generic [ref=e1499]:
+            - button "Download this plot's data as a CSV file" [ref=e1500] [cursor=pointer]:
+              - img [ref=e1501]
+            - button "Download this chart as a PNG image" [ref=e1504] [cursor=pointer]:
+              - img [ref=e1505]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1509] [cursor=pointer]:
+              - img [ref=e1510]
+          - generic "Drag to reorder this plot in the list" [ref=e1515]:
+            - img [ref=e1516]
+          - generic "Vega visualization" [ref=e1524]
+          - generic [ref=e1526]:
+            - generic [ref=e1529]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e1532]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e1535]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e1538]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e1541]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e1542]:
+          - generic [ref=e1543]:
+            - button "Download this plot's data as a CSV file" [ref=e1544] [cursor=pointer]:
+              - img [ref=e1545]
+            - button "Download this chart as a PNG image" [ref=e1548] [cursor=pointer]:
+              - img [ref=e1549]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1553] [cursor=pointer]:
+              - img [ref=e1554]
+          - generic "Drag to reorder this plot in the list" [ref=e1559]:
+            - img [ref=e1560]
+          - generic "Vega visualization" [ref=e1568]
+          - generic [ref=e1570]:
+            - generic [ref=e1573]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e1576]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e1579]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e1582]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e1585]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e1586]:
+          - generic [ref=e1587]:
+            - button "Download this plot's data as a CSV file" [ref=e1588] [cursor=pointer]:
+              - img [ref=e1589]
+            - button "Download this chart as a PNG image" [ref=e1592] [cursor=pointer]:
+              - img [ref=e1593]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1597] [cursor=pointer]:
+              - img [ref=e1598]
+          - generic "Drag to reorder this plot in the list" [ref=e1603]:
+            - img [ref=e1604]
+          - generic "Vega visualization" [ref=e1612]
+          - generic [ref=e1617]: direct-test
+        - generic [ref=e1618]:
+          - generic [ref=e1619]:
+            - button "Download this plot's data as a CSV file" [ref=e1620] [cursor=pointer]:
+              - img [ref=e1621]
+            - button "Download this chart as a PNG image" [ref=e1624] [cursor=pointer]:
+              - img [ref=e1625]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1629] [cursor=pointer]:
+              - img [ref=e1630]
+          - generic "Drag to reorder this plot in the list" [ref=e1635]:
+            - img [ref=e1636]
+          - generic "Vega visualization" [ref=e1644]
+          - generic [ref=e1646]:
+            - generic [ref=e1649]: auth-test
+            - generic [ref=e1652]: auth-test
+        - generic [ref=e1653]:
+          - generic [ref=e1654]:
+            - button "Download this plot's data as a CSV file" [ref=e1655] [cursor=pointer]:
+              - img [ref=e1656]
+            - button "Download this chart as a PNG image" [ref=e1659] [cursor=pointer]:
+              - img [ref=e1660]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1664] [cursor=pointer]:
+              - img [ref=e1665]
+          - generic "Drag to reorder this plot in the list" [ref=e1670]:
+            - img [ref=e1671]
+          - generic "Vega visualization" [ref=e1679]
+          - generic [ref=e1681]:
+            - generic [ref=e1684]: smoke-test-grpo-process_20260609_213009
+            - generic [ref=e1687]: smoke-test-grpo-outcome_20260609_212614
+            - generic [ref=e1690]: smoke-test-grpo-outcome
+            - generic [ref=e1693]: smoke-test-grpo-outcome
+            - generic [ref=e1696]: smoke-test-grpo-outcome
+            - generic [ref=e1699]: smoke-test-grpo-process
+        - generic [ref=e1700]:
+          - generic [ref=e1701]:
+            - button "Download this plot's data as a CSV file" [ref=e1702] [cursor=pointer]:
+              - img [ref=e1703]
+            - button "Download this chart as a PNG image" [ref=e1706] [cursor=pointer]:
+              - img [ref=e1707]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1711] [cursor=pointer]:
+              - img [ref=e1712]
+          - generic "Drag to reorder this plot in the list" [ref=e1717]:
+            - img [ref=e1718]
+          - generic "Vega visualization" [ref=e1726]
+          - generic [ref=e1728]:
+            - generic [ref=e1731]: smoke-test-grpo-process_20260609_213009
+            - generic [ref=e1734]: smoke-test-grpo-outcome_20260609_212614
+            - generic [ref=e1737]: smoke-test-grpo-outcome
+            - generic [ref=e1740]: smoke-test-grpo-outcome
+            - generic [ref=e1743]: smoke-test-grpo-outcome
+            - generic [ref=e1746]: smoke-test-grpo-process
+        - generic [ref=e1747]:
+          - generic [ref=e1748]:
+            - button "Download this plot's data as a CSV file" [ref=e1749] [cursor=pointer]:
+              - img [ref=e1750]
+            - button "Download this chart as a PNG image" [ref=e1753] [cursor=pointer]:
+              - img [ref=e1754]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1758] [cursor=pointer]:
+              - img [ref=e1759]
+          - generic "Drag to reorder this plot in the list" [ref=e1764]:
+            - img [ref=e1765]
+          - generic "Vega visualization" [ref=e1773]
+          - generic [ref=e1775]:
+            - generic [ref=e1778]: smoke-test-grpo-process_20260609_213009
+            - generic [ref=e1781]: smoke-test-grpo-outcome_20260609_212614
+            - generic [ref=e1784]: smoke-test-grpo-outcome
+            - generic [ref=e1787]: smoke-test-grpo-outcome
+            - generic [ref=e1790]: smoke-test-grpo-outcome
+            - generic [ref=e1793]: smoke-test-grpo-process
+        - generic [ref=e1794]:
+          - generic [ref=e1795]:
+            - button "Download this plot's data as a CSV file" [ref=e1796] [cursor=pointer]:
+              - img [ref=e1797]
+            - button "Download this chart as a PNG image" [ref=e1800] [cursor=pointer]:
+              - img [ref=e1801]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1805] [cursor=pointer]:
+              - img [ref=e1806]
+          - generic "Drag to reorder this plot in the list" [ref=e1811]:
+            - img [ref=e1812]
+          - generic "Vega visualization" [ref=e1820]
+          - generic [ref=e1822]:
+            - generic [ref=e1825]: smoke-test-grpo-process_20260609_213009
+            - generic [ref=e1828]: smoke-test-grpo-outcome_20260609_212614
+            - generic [ref=e1831]: smoke-test-grpo-outcome
+            - generic [ref=e1834]: smoke-test-grpo-outcome
+            - generic [ref=e1837]: smoke-test-grpo-outcome
+            - generic [ref=e1840]: smoke-test-grpo-process
+        - generic [ref=e1841]:
+          - generic [ref=e1842]:
+            - button "Download this plot's data as a CSV file" [ref=e1843] [cursor=pointer]:
+              - img [ref=e1844]
+            - button "Download this chart as a PNG image" [ref=e1847] [cursor=pointer]:
+              - img [ref=e1848]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1852] [cursor=pointer]:
+              - img [ref=e1853]
+          - generic "Drag to reorder this plot in the list" [ref=e1858]:
+            - img [ref=e1859]
+          - generic "Vega visualization" [ref=e1867]
+          - generic [ref=e1869]:
+            - generic [ref=e1872]: smoke-test-grpo-process_20260609_213009
+            - generic [ref=e1875]: smoke-test-grpo-outcome_20260609_212614
+            - generic [ref=e1878]: smoke-test-grpo-outcome
+            - generic [ref=e1881]: smoke-test-grpo-outcome
+            - generic [ref=e1884]: smoke-test-grpo-outcome
+            - generic [ref=e1887]: smoke-test-grpo-process
+        - generic [ref=e1888]:
+          - generic [ref=e1889]:
+            - button "Download this plot's data as a CSV file" [ref=e1890] [cursor=pointer]:
+              - img [ref=e1891]
+            - button "Download this chart as a PNG image" [ref=e1894] [cursor=pointer]:
+              - img [ref=e1895]
+            - button "Open this chart in the browser's fullscreen mode" [ref=e1899] [cursor=pointer]:
+              - img [ref=e1900]
+          - generic "Drag to reorder this plot in the list" [ref=e1905]:
+            - img [ref=e1906]
+          - generic "Vega visualization" [ref=e1914]
+          - generic [ref=e1916]:
+            - generic [ref=e1919]: memory-profile-outcome-20260609_180929_6d72af81
+            - generic [ref=e1922]: memory-profile-outcome-20260609_163429_bb6e0650
+            - generic [ref=e1925]: memory-profile-outcome-20260609_151618_c4442066
+            - generic [ref=e1928]: memory-profile-outcome-20260609_143404_dfe48567
+            - generic [ref=e1931]: memory-profile-outcome-20260609_141055_470d8365
+        - generic [ref=e1932]:
+          - generic [ref=e1933]:
+            - button "Download this plot’s data as a CSV file" [ref=e1934] [cursor=pointer]:
+              - img [ref=e1935]
+            - button "Download this chart as a PNG image" [ref=e1938] [cursor=pointer]:
+              - img [ref=e1939]
+            - button "Open this chart in the browser’s fullscreen mode" [ref=e1943] [cursor=pointer]:
+              - img [ref=e1944]
+          - generic "Drag to reorder this plot in the list" [ref=e1949]:
+            - img [ref=e1950]
+          - generic "Vega visualization" [ref=e1958]
+          - generic [ref=e1963]: grpo-v3-outcome-only

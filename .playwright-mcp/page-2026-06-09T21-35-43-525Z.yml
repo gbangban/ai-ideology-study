@@ -1,0 +1,243 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - button [ref=e5] [cursor=pointer]:
+      - img [ref=e6]
+    - generic [ref=e9]:
+      - img "Trackio" [ref=e11]
+      - generic [ref=e13]:
+        - generic [ref=e14]: Project
+        - generic [ref=e17]:
+          - listbox "Project" [ref=e18]: dm-align-grpo
+          - generic:
+            - img
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - generic [ref=e21] [cursor=pointer]:
+            - checkbox "Runs (1)" [ref=e92]
+            - generic [ref=e23]: Runs (1)
+          - generic [ref=e24] [cursor=pointer]:
+            - generic [ref=e25]: Latest only
+            - checkbox "Latest only" [ref=e26]
+        - textbox "Type to filter..." [ref=e29]: "212247"
+        - generic [ref=e31]:
+          - generic [ref=e32]: Group by
+          - generic [ref=e35]:
+            - listbox "Group by" [ref=e36] [cursor=pointer]
+            - generic:
+              - img
+        - generic [ref=e95] [cursor=pointer]:
+          - checkbox "grpo-v3-outcome-grpo_v3_outcome_20260609_212247" [checked] [ref=e96]
+          - generic "grpo-v3-outcome-grpo_v3_outcome_20260609_212247" [ref=e98]
+  - generic [ref=e71]:
+    - navigation [ref=e72]:
+      - generic [ref=e73]:
+        - button "Metrics" [ref=e74] [cursor=pointer]
+        - button "System Metrics" [ref=e75] [cursor=pointer]
+        - button "Traces" [ref=e76] [cursor=pointer]
+        - button "Media & Tables" [ref=e77] [cursor=pointer]
+        - button "Alerts & Reports" [active] [ref=e78] [cursor=pointer]
+        - button "Runs" [ref=e79] [cursor=pointer]
+        - button "Files" [ref=e80] [cursor=pointer]
+        - button "Settings" [ref=e81] [cursor=pointer]:
+          - img [ref=e82]
+          - generic [ref=e85]: Settings
+    - generic [ref=e2906]:
+      - heading "Reports (9)" [level=3] [ref=e2907]
+      - generic [ref=e2908]:
+        - generic [ref=e2909]: report/summary · grpo-v3-outcome-grpo_v3_outcome_20260609_212247 · step 126
+        - generic [ref=e2910]:
+          - heading "Training Summary" [level=2] [ref=e2911]
+          - paragraph [ref=e2912]:
+            - strong [ref=e2913]: "Track:"
+            - text: outcome
+            - strong [ref=e2914]: "Final loss:"
+            - text: "0.6"
+            - strong [ref=e2915]: "Final reward:"
+            - text: "0.9"
+            - strong [ref=e2916]: "Final KL:"
+            - text: "0.01"
+            - strong [ref=e2917]: "Completion length:"
+            - text: "220"
+          - paragraph [ref=e2918]:
+            - strong [ref=e2919]: "Steps logged:"
+            - text: "5"
+            - strong [ref=e2920]: "First loss:"
+            - text: 1.2000 (step 25)
+            - strong [ref=e2921]: "Last loss:"
+            - text: 0.6000 (step 125)
+      - generic [ref=e2922]:
+        - generic [ref=e2923]: report/summary · grpo-v4-process-grpo_v3_outcome_20260609_211603 · step 126
+        - generic [ref=e2924]:
+          - heading "Training Summary" [level=2] [ref=e2925]
+          - paragraph [ref=e2926]:
+            - strong [ref=e2927]: "Track:"
+            - text: process
+            - strong [ref=e2928]: "Final loss:"
+            - text: "0.6"
+            - strong [ref=e2929]: "Final reward:"
+            - text: "0.9"
+            - strong [ref=e2930]: "Final KL:"
+            - text: "0.01"
+            - strong [ref=e2931]: "Completion length:"
+            - text: "220"
+          - paragraph [ref=e2932]:
+            - strong [ref=e2933]: "Steps logged:"
+            - text: "5"
+            - strong [ref=e2934]: "First loss:"
+            - text: 1.2000 (step 25)
+            - strong [ref=e2935]: "Last loss:"
+            - text: 0.6000 (step 125)
+      - generic [ref=e2936]:
+        - generic [ref=e2937]: report/summary · grpo-v3-outcome-grpo_v3_outcome_20260609_211548 · step 126
+        - generic [ref=e2938]:
+          - heading "Training Summary" [level=2] [ref=e2939]
+          - paragraph [ref=e2940]:
+            - strong [ref=e2941]: "Track:"
+            - text: outcome
+            - strong [ref=e2942]: "Final loss:"
+            - text: "0.6"
+            - strong [ref=e2943]: "Final reward:"
+            - text: "0.9"
+            - strong [ref=e2944]: "Final KL:"
+            - text: "0.01"
+            - strong [ref=e2945]: "Completion length:"
+            - text: "220"
+          - paragraph [ref=e2946]:
+            - strong [ref=e2947]: "Steps logged:"
+            - text: "5"
+            - strong [ref=e2948]: "First loss:"
+            - text: 1.2000 (step 25)
+            - strong [ref=e2949]: "Last loss:"
+            - text: 0.6000 (step 125)
+      - generic [ref=e2950]:
+        - generic [ref=e2951]: report/summary · grpo-v4-process-grpo_v4_process_20260609_211004 · step 126
+        - generic [ref=e2952]:
+          - heading "Training Summary" [level=2] [ref=e2953]
+          - paragraph [ref=e2954]:
+            - strong [ref=e2955]: "Track:"
+            - text: process
+            - strong [ref=e2956]: "Final loss:"
+            - text: "0.6"
+            - strong [ref=e2957]: "Final reward:"
+            - text: "0.9"
+            - strong [ref=e2958]: "Final KL:"
+            - text: "0.01"
+            - strong [ref=e2959]: "Completion length:"
+            - text: "220"
+          - paragraph [ref=e2960]:
+            - strong [ref=e2961]: "Steps logged:"
+            - text: "5"
+            - strong [ref=e2962]: "First loss:"
+            - text: 1.2000 (step 25)
+            - strong [ref=e2963]: "Last loss:"
+            - text: 0.6000 (step 125)
+      - generic [ref=e2964]:
+        - generic [ref=e2965]: report/summary · grpo-v3-outcome-grpo_v3_outcome_20260609_210953 · step 126
+        - generic [ref=e2966]:
+          - heading "Training Summary" [level=2] [ref=e2967]
+          - paragraph [ref=e2968]:
+            - strong [ref=e2969]: "Track:"
+            - text: outcome
+            - strong [ref=e2970]: "Final loss:"
+            - text: "0.6"
+            - strong [ref=e2971]: "Final reward:"
+            - text: "0.9"
+            - strong [ref=e2972]: "Final KL:"
+            - text: "0.01"
+            - strong [ref=e2973]: "Completion length:"
+            - text: "220"
+          - paragraph [ref=e2974]:
+            - strong [ref=e2975]: "Steps logged:"
+            - text: "5"
+            - strong [ref=e2976]: "First loss:"
+            - text: 1.2000 (step 25)
+            - strong [ref=e2977]: "Last loss:"
+            - text: 0.6000 (step 125)
+      - generic [ref=e2978]:
+        - generic [ref=e2979]: report/summary · grpo-v4-process-grpo_v3_outcome_20260609_210939 · step 126
+        - generic [ref=e2980]:
+          - heading "Training Summary" [level=2] [ref=e2981]
+          - paragraph [ref=e2982]:
+            - strong [ref=e2983]: "Track:"
+            - text: process
+            - strong [ref=e2984]: "Final loss:"
+            - text: "0.6"
+            - strong [ref=e2985]: "Final reward:"
+            - text: "0.9"
+            - strong [ref=e2986]: "Final KL:"
+            - text: "0.01"
+            - strong [ref=e2987]: "Completion length:"
+            - text: "220"
+          - paragraph [ref=e2988]:
+            - strong [ref=e2989]: "Steps logged:"
+            - text: "5"
+            - strong [ref=e2990]: "First loss:"
+            - text: 1.2000 (step 25)
+            - strong [ref=e2991]: "Last loss:"
+            - text: 0.6000 (step 125)
+      - generic [ref=e2992]:
+        - generic [ref=e2993]: report/summary · grpo-v3-outcome-grpo_v3_outcome_20260609_210926 · step 126
+        - generic [ref=e2994]:
+          - heading "Training Summary" [level=2] [ref=e2995]
+          - paragraph [ref=e2996]:
+            - strong [ref=e2997]: "Track:"
+            - text: outcome
+            - strong [ref=e2998]: "Final loss:"
+            - text: "0.6"
+            - strong [ref=e2999]: "Final reward:"
+            - text: "0.9"
+            - strong [ref=e3000]: "Final KL:"
+            - text: "0.01"
+            - strong [ref=e3001]: "Completion length:"
+            - text: "220"
+          - paragraph [ref=e3002]:
+            - strong [ref=e3003]: "Steps logged:"
+            - text: "5"
+            - strong [ref=e3004]: "First loss:"
+            - text: 1.2000 (step 25)
+            - strong [ref=e3005]: "Last loss:"
+            - text: 0.6000 (step 125)
+      - generic [ref=e3006]:
+        - generic [ref=e3007]: report/summary · dry-run-verify_20260609_205630 · step 126
+        - generic [ref=e3008]:
+          - heading "Training Summary" [level=2] [ref=e3009]
+          - paragraph [ref=e3010]:
+            - strong [ref=e3011]: "Track:"
+            - text: outcome
+            - strong [ref=e3012]: "Final loss:"
+            - text: "0.6"
+            - strong [ref=e3013]: "Final reward:"
+            - text: "0.9"
+            - strong [ref=e3014]: "Final KL:"
+            - text: "0.01"
+            - strong [ref=e3015]: "Completion length:"
+            - text: "220"
+          - paragraph [ref=e3016]:
+            - strong [ref=e3017]: "Steps logged:"
+            - text: "5"
+            - strong [ref=e3018]: "First loss:"
+            - text: 1.2000 (step 25)
+            - strong [ref=e3019]: "Last loss:"
+            - text: 0.6000 (step 125)
+      - generic [ref=e3020]:
+        - generic [ref=e3021]: report/summary · dry-run-verify_20260609_205523 · step 126
+        - generic [ref=e3022]:
+          - heading "Training Summary" [level=2] [ref=e3023]
+          - paragraph [ref=e3024]:
+            - strong [ref=e3025]: "Track:"
+            - text: outcome
+            - strong [ref=e3026]: "Final loss:"
+            - text: "0.6"
+            - strong [ref=e3027]: "Final reward:"
+            - text: "0.9"
+            - strong [ref=e3028]: "Final KL:"
+            - text: "0.01"
+            - strong [ref=e3029]: "Completion length:"
+            - text: "220"
+          - paragraph [ref=e3030]:
+            - strong [ref=e3031]: "Steps logged:"
+            - text: "5"
+            - strong [ref=e3032]: "First loss:"
+            - text: 1.2000 (step 25)
+            - strong [ref=e3033]: "Last loss:"
+            - text: 0.6000 (step 125)

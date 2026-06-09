@@ -746,9 +746,11 @@ class TestTrackingCallback:
         manager = TrackingManager()
         manager._active = True
         diag_calls = []
+        metric_calls = []
         gpu_calls = []
         flush_calls = []
         manager.check_diagnostics = lambda s, l: diag_calls.append(s)
+        manager.log_training_metrics = lambda s, l: metric_calls.append((s, l))
         manager.snapshot_gpu = lambda: gpu_calls.append(True)
         manager.flush_reward_data = lambda s: flush_calls.append(s)
 
@@ -759,6 +761,7 @@ class TestTrackingCallback:
 
         callback.on_log(None, FakeState(), None, {"loss": 0.5})
         assert 100 in diag_calls
+        assert len(metric_calls) == 1 and metric_calls[0][0] == 100
         assert len(gpu_calls) == 1
         assert 100 in flush_calls
 
@@ -769,6 +772,7 @@ class TestTrackingCallback:
         manager = TrackingManager()
         manager._active = False
         manager.check_diagnostics = lambda s, l: calls.append("diag")
+        manager.log_training_metrics = lambda s, l: calls.append("metrics")
         manager.snapshot_gpu = lambda: calls.append("gpu")
         manager.flush_reward_data = lambda s: calls.append("flush")
 

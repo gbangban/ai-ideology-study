@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
@@ -231,6 +232,7 @@ class TrackingCallback(TrainerCallback):
             return
         step = getattr(state, "global_step", 0)
         self._manager.check_diagnostics(step, logs)
+        self._manager.log_training_metrics(step, logs)
         self._manager.snapshot_gpu()
         self._manager.flush_reward_data(step)
 
@@ -272,9 +274,10 @@ class TrackingManager:
     ) -> None:
         try:
             import trackio
+            run_name = f"{name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
             self._run = trackio.init(
                 project=project,
-                name=name,
+                name=run_name,
                 config=config,
                 group=group,
                 server_url=server_url,
@@ -313,14 +316,20 @@ class TrackingManager:
         fn: Callable,
         reward_name: str,
         doc_index: Optional[Dict[str, Dict[str, Any]]] = None,
+        trl_compatible: bool = False,
     ) -> Callable:
         """Wrap a reward function to accumulate per-sample data for Tables/Histograms.
 
         Args:
-            fn: If doc_index is provided, fn(completions, docs) -> List[float].
-                If doc_index is None, fn(completions) -> List[float].
+            fn: If trl_compatible is False and doc_index is provided,
+                fn(completions, docs) -> List[float].
+                If trl_compatible is True, fn is already TRL-compatible:
+                fn(completions, prompts, *args, **kwargs) -> List[float].
             reward_name: Key for tracking this reward function.
             doc_index: Optional dict mapping prompt text to doc record.
+                Ignored when trl_compatible=True.
+            trl_compatible: If True, fn is already wrapped for TRL and
+                should be called directly with (completions, prompts, ...).
 
         Returns:
             TRL-compatible reward function.
@@ -331,11 +340,14 @@ class TrackingManager:
             *args: Any,
             **kwargs: Any,
         ) -> List[float]:
-            if doc_index:
+            if trl_compatible:
+                scores = fn(completions, prompts, *args, **kwargs)
+            elif doc_index:
                 docs = [doc_index.get(p, {}) for p in prompts]
+                scores = fn(completions, docs)
             else:
                 docs = [{} for _ in prompts]
-            scores = fn(completions, docs)
+                scores = fn(completions, docs)
 
             if self._active:
                 self._reward_samples.setdefault(reward_name, []).extend(scores)
@@ -397,6 +409,18 @@ class TrackingManager:
             trackio.alert(title=title, text=text, level=level)
         except Exception as e:
             logger.warning(f"Failed to fire alert '{title}': {e}")
+
+    def log_training_metrics(self, step: int, logs: Dict[str, Any]) -> None:
+        """Log training metrics (loss, reward, kl, etc.) as scalars."""
+        if not self._active:
+            return
+        metrics = {}
+        for key in ("loss", "reward", "kl", "completion_length", "step_time"):
+            val = logs.get(key)
+            if val is not None:
+                metrics[key] = val
+        if metrics:
+            self.log_rewards(step, metrics)
 
     def check_diagnostics(self, step: int, logs: Dict[str, Any]) -> None:
         """Check training metrics and fire alerts for diagnostic conditions."""

@@ -1,0 +1,73 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - button [ref=e5] [cursor=pointer]:
+      - img [ref=e6]
+    - generic [ref=e9]:
+      - img "Trackio" [ref=e11]
+      - generic [ref=e13]:
+        - generic [ref=e14]: Project
+        - generic [ref=e17]:
+          - listbox "Project" [ref=e18]
+          - generic:
+            - img
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - generic [ref=e21] [cursor=pointer]:
+            - checkbox "Runs (0)" [ref=e22]
+            - generic [ref=e23]: Runs (0)
+          - generic [ref=e24] [cursor=pointer]:
+            - generic [ref=e25]: Latest only
+            - checkbox "Latest only" [ref=e26]
+        - textbox "Type to filter..." [ref=e29]
+        - generic [ref=e31]:
+          - generic [ref=e32]: Group by
+          - generic [ref=e35]:
+            - listbox "Group by" [ref=e36] [cursor=pointer]
+            - generic:
+              - img
+      - text: Display Settings
+      - generic [ref=e37]:
+        - generic [ref=e38] [cursor=pointer]:
+          - checkbox "Refresh metrics realtime" [checked] [ref=e39]
+          - generic [ref=e40]: Refresh metrics realtime
+        - generic [ref=e41] [cursor=pointer]:
+          - checkbox "Show section headers" [checked] [ref=e42]
+          - generic [ref=e43]: Show section headers
+      - generic [ref=e45]:
+        - generic [ref=e47]: Smoothing Factor (0 = no smoothing)
+        - generic [ref=e48]:
+          - generic [ref=e49]: "0"
+          - slider [ref=e50] [cursor=pointer]: "10"
+          - generic [ref=e51]: "20"
+      - generic [ref=e52]:
+        - generic [ref=e53]:
+          - generic [ref=e54]: X-axis
+          - generic [ref=e57]:
+            - listbox "X-axis" [ref=e58] [cursor=pointer]: step
+            - generic:
+              - img
+        - generic [ref=e59] [cursor=pointer]:
+          - checkbox "Log scale X-axis" [ref=e60]
+          - generic [ref=e61]: Log scale X-axis
+        - generic [ref=e62] [cursor=pointer]:
+          - checkbox "Log scale Y-axis" [ref=e63]
+          - generic [ref=e64]: Log scale Y-axis
+      - generic [ref=e66]:
+        - generic [ref=e67]: Metric Filter
+        - generic [ref=e68]: Filter metrics using regex patterns. Leave empty to show all metrics.
+        - textbox "e.g., loss|ndcg@10|gpu" [ref=e70]
+  - generic [ref=e71]:
+    - navigation [ref=e72]:
+      - generic [ref=e73]:
+        - button "Metrics" [ref=e74] [cursor=pointer]
+        - button "System Metrics" [ref=e75] [cursor=pointer]
+        - button "Traces" [ref=e76] [cursor=pointer]
+        - button "Media & Tables" [ref=e77] [cursor=pointer]
+        - button "Alerts & Reports" [ref=e78] [cursor=pointer]
+        - button "Runs" [ref=e79] [cursor=pointer]
+        - button "Files" [ref=e80] [cursor=pointer]
+        - button "Settings" [ref=e81] [cursor=pointer]:
+          - img [ref=e82]
+          - generic [ref=e85]: Settings
+    - status [ref=e88]:
+      - generic [ref=e91]: Loading

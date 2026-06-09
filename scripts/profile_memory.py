@@ -14,11 +14,13 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import datetime
 import json
 import logging
 import math
 import os
 import sys
+import uuid
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -287,10 +289,20 @@ def profile_memory(
     loss_str = f"{loss:.4f}" if loss is not None else "N/A"
     print(f"  Loss: {loss_str}")
 
-    # Step 10: Memory cleanup test
+    # Step 10: Memory cleanup test (delete references first)
+    del trainer
+    del model
+    del dataset
+    del reward_funcs
+    del outcome_fn
+    if track == "process":
+        del process_fn
+    del _combined_process_reward
     cleanup = force_memory_cleanup()
+    snapshots.append(MemorySnapshot.capture("after_cleanup"))
     print(f"\n[CLEANUP] Freed {cleanup['freed_allocated_gb']:.2f} GB allocated, "
           f"{cleanup['freed_reserved_gb']:.2f} GB reserved")
+    print(f"[SNAPSHOT] after_cleanup — allocated: {format_vram(snapshots[-1].allocated_bytes)}")
 
     # Print VRAM summary
     print("\n" + "=" * 60)
@@ -321,9 +333,13 @@ def profile_memory(
     print(f"  Training loss      : {loss_str}")
     print("=" * 60)
 
-    # Save report to output directory
+    # Save report to output directory with unique run ID
+    run_id = uuid.uuid4().hex[:8]
+    ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    run_label = f"{ts}_{run_id}"
+
     os.makedirs(output_dir, exist_ok=True)
-    report_path = Path(output_dir) / "memory_profile_report.json"
+    report_path = Path(output_dir) / f"memory_profile_{track}_{run_label}.json"
 
     report = {
         "track": track,
@@ -349,6 +365,8 @@ def profile_memory(
         "cleanup": {
             k: round(v, 2) for k, v in cleanup.items()
         },
+        "run_id": run_id,
+        "run_label": run_label,
         "tracker_summary": tracker.summary(),
     }
 
@@ -362,7 +380,7 @@ def profile_memory(
         import trackio
         trackio.init(
             project=os.environ.get("TRACKIO_PROJECT", "dm-align-grpo"),
-            name=f"memory-profile-{track}",
+            name=f"memory-profile-{track}-{run_label}",
             config={
                 "track": track,
                 "torch_compile": use_compile,

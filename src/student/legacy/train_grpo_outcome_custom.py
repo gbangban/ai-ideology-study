@@ -13,6 +13,7 @@ Usage:
 
 import argparse
 import csv
+import gc
 import itertools
 import json
 import logging
@@ -421,6 +422,11 @@ def train(config, base_model_path, output_dir, resume_step=0, enable_profile=Fal
             optimizer.step()
             scheduler.step()
             optimizer.zero_grad()
+
+        # Free LoRA weight clones and accumulated computation graphs
+        del lora_weights
+        gc.collect()
+        torch.cuda.empty_cache()
 
         avg_reward = sum(rewards) / len(rewards)
         total_rewards.append(avg_reward)

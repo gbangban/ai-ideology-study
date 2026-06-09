@@ -117,6 +117,116 @@ def _strip_vision_config(model_path: str) -> None:
     strip_vision_config(model_path)
 
 
+def dry_run_tracking(
+    output_dir: str,
+) -> None:
+    """Run TrackingManager full lifecycle without models or GPU.
+
+    Simulates the same tracking calls that occur during real v4 training:
+    init -> dual reward wrappers -> simulated callback on_log -> trace -> report -> finish.
+    """
+    logger.info("=== DRY RUN: TrackingManager lifecycle v4 (no models, no GPU) ===")
+
+    tracker = TrackingManager()
+    tracker.init(
+        project=os.environ.get("TRACKIO_PROJECT", "dm-align-grpo"),
+        name=os.environ.get("TRACKIO_RUN_NAME", f"grpo-v4-process-{Path(output_dir).name}"),
+        config={
+            "training_method": "GRPO-DualAdvantage",
+            "track": "process",
+            "version": "v4",
+            "group_size": DEFAULT_CONFIG["grpo_g"],
+            "beta": DEFAULT_CONFIG["beta"],
+            "learning_rate": DEFAULT_CONFIG["learning_rate"],
+            "lora_rank": DEFAULT_CONFIG["lora_rank"],
+            "lora_alpha": DEFAULT_CONFIG["lora_alpha"],
+            "max_completion_length": DEFAULT_CONFIG["max_completion_length"],
+            "max_steps": DEFAULT_CONFIG["max_steps"],
+            "alpha": REWARD_WEIGHTS["alpha"],
+            "lambda_kl": REWARD_WEIGHTS["lambda_kl"],
+            "lambda_format": REWARD_WEIGHTS["lambda_format"],
+            "dry_run": True,
+        },
+        track="process",
+        server_url=os.environ.get("TRACKIO_SERVER_URL"),
+    )
+
+    if not tracker._active:
+        logger.error("TrackingManager failed to initialize - dry run cannot proceed")
+        return
+
+    logger.info(f"[PASS] TrackingManager initialized, run name: {tracker._run.name}")
+
+    # Simulate dual reward wrappers with synthetic data
+    doc_index = {
+        "What causes inflation?": {"answer": "+", "topic": "economics"},
+        "Does exercise improve health?": {"answer": "+", "topic": "health"},
+        "Is gravity a fundamental force?": {"answer": "-", "topic": "physics"},
+    }
+    outcome_fn = tracker.wrap_reward_fn(
+        lambda completions, docs: [
+            1.0 if doc.get("answer") == "+" else 0.0
+            for _, doc in zip(completions, docs)
+        ],
+        reward_name="outcome",
+        doc_index=doc_index,
+    )
+    process_fn = tracker.wrap_reward_fn(
+        lambda completions, docs: [
+            0.5 for _ in docs
+        ],
+        reward_name="process",
+        doc_index=doc_index,
+    )
+    prompts = list(doc_index.keys())
+    completions = [f"Answer to: {p}" for p in prompts]
+    outcome_scores = outcome_fn(completions, prompts)
+    process_scores = process_fn(completions, prompts)
+    logger.info(f"[PASS] Outcome reward scores: {outcome_scores}")
+    logger.info(f"[PASS] Process reward scores: {process_scores}")
+
+    # Simulate callback on_log for multiple training steps
+    callback = TrackingCallback(tracker)
+
+    class FakeState:
+        global_step = 0
+
+    training_logs = [
+        {"loss": 1.2, "reward": 0.67, "kl": 0.05, "completion_length": 120},
+        {"loss": 0.95, "reward": 0.75, "kl": 0.04, "completion_length": 150},
+        {"loss": 0.8, "reward": 0.8, "kl": 0.03, "completion_length": 180},
+        {"loss": 0.7, "reward": 0.85, "kl": 0.02, "completion_length": 200},
+        {"loss": 0.6, "reward": 0.9, "kl": 0.01, "completion_length": 220},
+    ]
+
+    for i, logs in enumerate(training_logs):
+        FakeState.global_step = (i + 1) * 25
+        callback.on_log(None, FakeState(), None, logs)
+        logger.info(f"[PASS] Callback on_log step {(i + 1) * 25}: loss={logs['loss']}")
+
+    # Log a completion sample trace
+    tracker.log_completion_sample(
+        125,
+        "What causes inflation?",
+        "Inflation is primarily caused by an increase in the money supply relative to economic output.",
+    )
+    logger.info("[PASS] Completion trace logged")
+
+    # Generate markdown report
+    tracker.generate_report({
+        "loss": 0.6,
+        "reward": 0.9,
+        "kl": 0.01,
+        "completion_length": 220,
+    })
+    logger.info("[PASS] Markdown report generated")
+
+    # Finish
+    tracker.finish()
+    logger.info("[PASS] TrackingManager finished")
+    logger.info("=== DRY RUN COMPLETE ===")
+
+
 def train(
     base_model_path: str,
     output_dir: str,
@@ -298,7 +408,16 @@ def main() -> None:
         action="store_true",
         help="Enable torch.compile for the model",
     )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Run TrackingManager lifecycle without models or GPU (validates tracking pipeline only)",
+    )
     args = parser.parse_args()
+
+    if args.dry_run:
+        dry_run_tracking(args.output_dir)
+        return
 
     if args.find_checkpoint:
         step, path = _find_latest_checkpoint(args.output_dir)

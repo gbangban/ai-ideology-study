@@ -199,3 +199,112 @@ class TestTrackingManagerDryRun:
 
             mgr.flush_reward_data(10)
             assert len(state["log_calls"]) >= 3
+
+
+class TestTrackingManagerLiveServer:
+    """Dry-run test that mimics a full training run against the real Track.io server.
+
+    Exercises the same lifecycle as train_grpo_outcome.py but without model loading
+    or GPU: init -> reward wrapper -> callback on_log (diagnostics, GPU, flush) ->
+    completion trace -> markdown report -> finish.
+    """
+
+    def test_live_server_full_lifecycle(self):
+        """Mimic a full v3 outcome training run against the real Track.io server."""
+        import os
+        import re
+
+        from src.student.train_grpo_base import (
+            TrackingCallback,
+            TrackingManager,
+        )
+
+        server_url = os.environ.get("TRACKIO_SERVER_URL")
+        assert server_url, "TRACKIO_SERVER_URL must be set for live server test"
+
+        run_base = "dry-run-verify"
+
+        # --- 1. Init (mirrors train_grpo_outcome.py:181-198) ---
+        mgr = TrackingManager()
+        mgr.init(
+            project=os.environ.get("TRACKIO_PROJECT", "dm-align-grpo"),
+            name=run_base,
+            config={
+                "training_method": "GRPO",
+                "track": "outcome",
+                "version": "v3",
+                "group_size": 8,
+                "beta": 0.1,
+                "learning_rate": 5e-07,
+                "lora_rank": 16,
+                "lora_alpha": 16,
+                "max_completion_length": 512,
+                "max_steps": 1500,
+            },
+            track="outcome",
+            server_url=server_url,
+        )
+        assert mgr._active, "TrackingManager should be active after init"
+        assert re.search(r"_\d{8}_\d{6}$", mgr._run.name), (
+            f"Run name '{mgr._run.name}' should have timestamp suffix"
+        )
+
+        # --- 2. Build reward wrapper (mirrors train_grpo_outcome.py reward setup) ---
+        doc_index = {
+            "What causes inflation?": {"answer": "+", "topic": "economics"},
+            "Does exercise improve health?": {"answer": "+", "topic": "health"},
+            "Is gravity a fundamental force?": {"answer": "-", "topic": "physics"},
+        }
+
+        reward_fn = mgr.wrap_reward_fn(
+            lambda completions, docs: [
+                1.0 if doc.get("answer") == "+" else 0.0
+                for _, doc in zip(completions, docs)
+            ],
+            reward_name="outcome",
+            doc_index=doc_index,
+        )
+
+        # Simulate reward computation for a batch of completions
+        prompts = list(doc_index.keys())
+        completions = [f"Answer to: {p}" for p in prompts]
+        scores = reward_fn(completions, prompts)
+        assert scores == [1.0, 1.0, 0.0], f"Expected [1.0, 1.0, 0.0], got {scores}"
+
+        # --- 3. Simulate callback on_log for multiple steps
+        # (mirrors TrackingCallback.on_log -> check_diagnostics, snapshot_gpu, flush) ---
+        callback = TrackingCallback(mgr)
+
+        class FakeState:
+            global_step = 0
+
+        training_logs = [
+            {"loss": 1.2, "reward": 0.67, "kl": 0.05, "completion_length": 120},
+            {"loss": 0.95, "reward": 0.75, "kl": 0.04, "completion_length": 150},
+            {"loss": 0.8, "reward": 0.8, "kl": 0.03, "completion_length": 180},
+            {"loss": 0.7, "reward": 0.85, "kl": 0.02, "completion_length": 200},
+            {"loss": 0.6, "reward": 0.9, "kl": 0.01, "completion_length": 220},
+        ]
+
+        for i, logs in enumerate(training_logs):
+            FakeState.global_step = (i + 1) * 25
+            callback.on_log(None, FakeState(), None, logs)
+
+        # --- 4. Log a completion sample trace ---
+        mgr.log_completion_sample(
+            125,
+            "What causes inflation?",
+            "Inflation is primarily caused by an increase in the money supply relative to economic output.",
+        )
+
+        # --- 5. Generate markdown report (mirrors end of training) ---
+        mgr.generate_report({
+            "loss": 0.6,
+            "reward": 0.9,
+            "kl": 0.01,
+            "completion_length": 220,
+        })
+
+        # --- 6. Finish ---
+        mgr.finish()
+        assert mgr._active is False

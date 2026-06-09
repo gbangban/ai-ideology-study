@@ -1,0 +1,43 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - button [ref=e5] [cursor=pointer]:
+      - img [ref=e6]
+    - generic [ref=e9]:
+      - img "Trackio" [ref=e11]
+      - generic [ref=e13]:
+        - generic [ref=e14]: Project
+        - generic [ref=e17]:
+          - listbox "Project" [ref=e18]
+          - generic:
+            - img
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - generic [ref=e21] [cursor=pointer]:
+            - checkbox "Runs (0)" [ref=e22]
+            - generic [ref=e23]: Runs (0)
+          - generic [ref=e24] [cursor=pointer]:
+            - generic [ref=e25]: Latest only
+            - checkbox "Latest only" [ref=e26]
+        - textbox "Type to filter..." [ref=e29]
+        - generic [ref=e31]:
+          - generic [ref=e32]: Group by
+          - generic [ref=e35]:
+            - listbox "Group by" [ref=e36] [cursor=pointer]
+            - generic:
+              - img
+  - generic [ref=e37]:
+    - navigation [ref=e38]:
+      - generic [ref=e39]:
+        - button "Metrics" [ref=e40] [cursor=pointer]
+        - button "System Metrics" [ref=e41] [cursor=pointer]
+        - button "Traces" [ref=e42] [cursor=pointer]
+        - button "Media & Tables" [ref=e43] [cursor=pointer]
+        - button "Alerts & Reports" [ref=e44] [cursor=pointer]
+        - button "Runs" [ref=e45] [cursor=pointer]
+        - button "Files" [ref=e46] [cursor=pointer]
+        - button "Settings" [ref=e47] [cursor=pointer]:
+          - img [ref=e48]
+          - generic [ref=e51]: Settings
+    - generic [ref=e54]:
+      - heading "Select a project" [level=2] [ref=e55]
+      - paragraph [ref=e56]: Pick a project to browse trace logs.

@@ -36,7 +36,7 @@ data/raw/questions.json (1,500 AI-generated questions, quality-filtered)
 ## Key Decisions
 
 1. **Unsloth Studio handles SFT** - Use Studio UI for supervised fine-tuning with QLoRA
-2. **GRPO is custom** - Studio does not support GRPO in UI. v3/v4 use custom training loops (legacy/).
+2. **GRPO uses TRL's GRPOTrainer** - Studio does not support GRPO in UI. v3/v4 use `train_grpo_outcome.py` and `train_grpo_process.py` which wrap TRL's GRPOTrainer with custom reward functions.
 3. **DPO is deprecated** - DPO training was removed. The pipeline is now SFT -> GRPO only.
 4. **Docker Desktop only** - Single Docker daemon on Windows; WSL2 Docker Engine removed (GPU passthrough fails in WSL2). Studio container (`silly_blackwell`) and project container both run on Docker Desktop.
 5. **CLI bridge via PowerShell** - `ddk` script (`scripts/ddk`) bridges WSL2 -> Windows PowerShell for full Docker CLI access (`logs`, `exec`, `inspect`). Regular `docker compose` works through named pipe.
@@ -60,13 +60,13 @@ data/raw/questions.json (1,500 AI-generated questions, quality-filtered)
     - `grpo_config_dm.py` - Config for DM keyword training
     - `reward_dm.py` - Keyword alignment, directional assertion, mechanism commitment rewards
   - **v3 outcome track (active, control)**:
+    - `train_grpo_outcome.py` - GRPOTrainer-based training script
     - `grpo_config_outcome.py` - Config for outcome-only training
     - `reward_outcome.py` - Ground-truth correctness rewards (EconCausal, Corr2Cause, synthetic)
-    - `legacy/train_grpo_outcome_custom.py` - Custom loop training script
   - **v4 process track (active, experimental)**:
+    - `train_grpo_process.py` - GRPOTrainer-based training script
     - `grpo_config_process.py` - Config for process reward training
     - `reward_process.py` - RLVMR process rewards (planning, commitment, reflection, monitor)
-    - `legacy/train_grpo_process_custom.py` - Custom loop with dual advantage
   - `tagless_eval.py` - Tagless evaluation for v4 (no XML tags in output)
 - `src/tests/` - Test suite
   - `test_teacher.py` - Teacher phase tests (49 tests)
@@ -85,9 +85,13 @@ data/raw/questions.json (1,500 AI-generated questions, quality-filtered)
 
 ## Deprecated (Reference Only)
 
+**ARCHIVE CODE — DO NOT RUN, DEBUG, OR EXTEND.** These files exist solely for historical reference. Any work on V3/V4 training must use the active GRPOTrainer-based scripts (`train_grpo_outcome.py`, `train_grpo_process.py`). Never create new code that imports from or depends on the legacy directory.
+
 - `src/student/legacy/train_grpo_custom.py` - Original custom GRPO loop
 - `src/student/legacy/train_grpo_trl.py` - Old TRL experiment script
 - `src/student/legacy/sglang_client.py` - SG-Lang HTTP client (deprecated, rewards are regex-based)
+- `src/student/legacy/train_grpo_outcome_custom.py` - Legacy V3 custom training loop (superseded by `train_grpo_outcome.py`)
+- `src/student/legacy/train_grpo_process_custom.py` - Legacy V4 custom training loop (superseded by `train_grpo_process.py`)
 - `src/student/train_sft.py` - Replaced by Studio UI
 - `src/student/config.py` - Replaced by configs/studio_sft_config.yaml
 - `src/utils/memory_profiler.py` - VRAM tracking, memory snapshots, TrainingMemoryTracker, MemoryProfiler wrapper

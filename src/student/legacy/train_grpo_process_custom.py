@@ -18,6 +18,7 @@ Usage:
 
 import argparse
 import csv
+import gc
 import itertools
 import json
 import logging
@@ -489,6 +490,11 @@ def train(config, base_model_path, output_dir, resume_step=0, enable_profile=Fal
             optimizer.step()
             scheduler.step()
             optimizer.zero_grad()
+
+        # Free LoRA weight clones and accumulated computation graphs
+        del lora_weights
+        gc.collect()
+        torch.cuda.empty_cache()
 
         proc_avgs = {k: sum(v) / len(v) for k, v in process_agg.items()}
         avg_outcome = sum(outcome_rewards) / len(outcome_rewards)

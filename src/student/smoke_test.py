@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
-"""GRPO Training Smoke Test — runs one training step to validate the full stack.
+"""GRPO Training Smoke Test — validates the full stack.
 
-Executes inside the Docker container with real model, real rewards, real GRPOTrainer.
-Subsamples to a small number of prompts for fast execution (~30-60s).
+Full mode: runs one training step with real model, real rewards, real GRPOTrainer.
+Dry-run mode: runs TrackingManager lifecycle without models or GPU.
 
 Usage:
+    # Full smoke test (requires GPU, loads model, runs 1 training step):
     docker exec ml-training python3 -m src.student.smoke_test --track outcome
-    docker exec ml-training python3 -m src.student.smoke_test --track process
+
+    # Dry-run smoke test (no GPU, no models, validates tracking pipeline only):
+    docker exec ml-training python3 -m src.student.smoke_test --track outcome --dry-run
+    docker exec ml-training python3 -m src.student.smoke_test --track process --dry-run
 """
 from __future__ import annotations
 
@@ -18,8 +22,6 @@ import sys
 from pathlib import Path
 from typing import Any, Dict
 
-# torch.compile is controlled via --compile flag (disabled by default).
-# When enabled, overrides grpo_config.torch_compile = True.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 logging.basicConfig(
@@ -34,6 +36,33 @@ def _validate_track(track: str) -> str:
     if track not in ("outcome", "process"):
         raise ValueError(f"track must be 'outcome' or 'process', got '{track}'")
     return track
+
+
+def dry_run_smoke_test(
+    track: str,
+    output_dir: str,
+) -> None:
+    """Run TrackingManager lifecycle dry-run via the training script's --dry-run path.
+
+    Delegates to train_grpo_outcome.dry_run_tracking or train_grpo_process.dry_run_tracking.
+    No models loaded, no GPU used. Validates the full tracking pipeline end-to-end.
+    """
+    track = _validate_track(track)
+
+    if track == "outcome":
+        from src.student.train_grpo_outcome import dry_run_tracking
+    else:
+        from src.student.train_grpo_process import dry_run_tracking
+
+    print(f"=== Dry-Run Smoke Test: {track} ===")
+    print(f"Output dir: {output_dir}")
+    print(f"Track: {track} (v{'3' if track == 'outcome' else '4'})")
+    print()
+
+    dry_run_tracking(output_dir)
+
+    print()
+    print("[PASS] Dry-run smoke test completed successfully")
 
 
 def smoke_test(
@@ -143,7 +172,45 @@ def smoke_test(
     dataset = dataset.select(indices)
     print(f"[PASS] Dataset built ({len(dataset)} prompts)")
 
-    # Step 6: Build reward functions
+    # Step 6: Initialize TrackingManager before building reward functions
+    from src.student.train_grpo_base import (
+        TrackingCallback,
+        TrackingManager,
+    )
+
+    track_config = {
+        "training_method": "GRPO" if track == "outcome" else "GRPO-DualAdvantage",
+        "track": track,
+        "version": "v3" if track == "outcome" else "v4",
+        "num_prompts": num_prompts,
+        "group_size": default_config["grpo_g"],
+        "beta": default_config["beta"],
+        "learning_rate": default_config["learning_rate"],
+        "lora_rank": default_config["lora_rank"],
+        "lora_alpha": default_config["lora_alpha"],
+        "max_completion_length": default_config["max_completion_length"],
+        "smoke_test": True,
+    }
+    if track == "process":
+        track_config["alpha"] = default_config.get("alpha", 0.5)
+        track_config["lambda_kl"] = default_config.get("lambda_kl", 0.01)
+        track_config["clip_epsilon"] = default_config.get("clip_epsilon", 0.2)
+
+    tracker = TrackingManager()
+    tracker.init(
+        project=os.environ.get("TRACKIO_PROJECT", "dm-align-grpo"),
+        name=os.environ.get("TRACKIO_RUN_NAME", f"smoke-test-grpo-{track}"),
+        config=track_config,
+        track=track,
+        server_url=os.environ.get("TRACKIO_SERVER_URL"),
+    )
+    tracking_active = tracker._active
+    if tracking_active:
+        print("[PASS] TrackingManager initialized")
+    else:
+        print("[WARN] TrackingManager init failed, tracking will be no-op")
+
+    # Step 7: Build reward functions (wrapped for tracking)
     doc_index = {row["prompt"]: row["doc"] for row in dataset}
 
     def _combined_process_reward(completion: str, doc: Dict[str, Any]) -> float:
@@ -157,34 +224,36 @@ def smoke_test(
         return sum(process.values())
 
     if track == "outcome":
-        outcome_fn = build_reward_fn_with_docs(
-            lambda completions, docs: [
-                compute_outcome_reward(doc, c) for c, doc in zip(completions, docs)
-            ],
-            doc_index,
-        )
+        raw_outcome_fn = lambda completions, docs: [  # noqa: E731
+            compute_outcome_reward(doc, c) for c, doc in zip(completions, docs)
+        ]
+        outcome_fn = build_reward_fn_with_docs(raw_outcome_fn, doc_index)
+        if tracking_active:
+            outcome_fn = tracker.wrap_reward_fn(outcome_fn, "outcome", trl_compatible=True)
         reward_funcs = [outcome_fn]
         reward_count = 1
     else:
-        outcome_fn = build_reward_fn_with_docs(
-            lambda completions, docs: [
-                compute_outcome_reward(doc, c) for c, doc in zip(completions, docs)
-            ],
-            doc_index,
-        )
-        process_fn = build_reward_fn_with_docs(
-            lambda completions, docs: [
-                _combined_process_reward(c, doc)
-                for c, doc in zip(completions, docs)
-            ],
-            doc_index,
-        )
+        raw_outcome_fn = lambda completions, docs: [  # noqa: E731
+            compute_outcome_reward(doc, c) for c, doc in zip(completions, docs)
+        ]
+        outcome_fn = build_reward_fn_with_docs(raw_outcome_fn, doc_index)
+        if tracking_active:
+            outcome_fn = tracker.wrap_reward_fn(outcome_fn, "outcome", trl_compatible=True)
+
+        raw_process_fn = lambda completions, docs: [  # noqa: E731
+            _combined_process_reward(c, doc)
+            for c, doc in zip(completions, docs)
+        ]
+        process_fn = build_reward_fn_with_docs(raw_process_fn, doc_index)
+        if tracking_active:
+            process_fn = tracker.wrap_reward_fn(process_fn, "process", trl_compatible=True)
+
         reward_funcs = [outcome_fn, process_fn]
         reward_count = 2
 
     print(f"[PASS] Reward functions created ({reward_count} reward fn)")
 
-    # Step 7: Create config
+    # Step 8: Create config
     if track == "outcome":
         grpo_config = create_grpo_config_outcome(
             output_dir="/tmp/smoke_test_grpo_outcome",
@@ -202,7 +271,7 @@ def smoke_test(
             torch_compile=enable_compile,
         )
 
-    # Step 8: Instantiate trainer
+    # Step 9: Instantiate trainer with TrackingCallback
     from trl import GRPOTrainer
 
     trainer = GRPOTrainer(
@@ -212,75 +281,69 @@ def smoke_test(
         args=grpo_config,
         train_dataset=dataset,
     )
+    if tracking_active:
+        trainer.add_callback(TrackingCallback(tracker))
     print("[PASS] GRPOTrainer initialized")
 
-    # Step 8.5: Initialize trackio for experiment tracking
-    import trackio
-
-    track_config = {
-        "training_method": "GRPO" if track == "outcome" else "GRPO-DualAdvantage",
-        "track": track,
-        "version": "v3" if track == "outcome" else "v4",
-        "num_prompts": num_prompts,
-        "group_size": default_config["grpo_g"],
-        "beta": default_config["beta"],
-        "learning_rate": default_config["learning_rate"],
-        "lora_rank": default_config["lora_rank"],
-        "lora_alpha": default_config["lora_alpha"],
-        "max_completion_length": default_config["max_completion_length"],
-        "reward_count": reward_count,
-        "smoke_test": True,
-    }
-    if track == "process":
-        track_config["alpha"] = default_config.get("alpha", 0.5)
-        track_config["lambda_kl"] = default_config.get("lambda_kl", 0.01)
-        track_config["clip_epsilon"] = default_config.get("clip_epsilon", 0.2)
-
-    run_name = os.environ.get("TRACKIO_RUN_NAME", f"smoke-test-grpo-{track}")
-    trackio.init(
-        project=os.environ.get("TRACKIO_PROJECT", "dm-align-grpo"),
-        name=run_name,
-        config=track_config,
-        server_url=os.environ.get("TRACKIO_SERVER_URL"),
-        auto_log_gpu=True,
-    )
-    trackio_initialized = True
-
-    # Step 9: Run one step
+    # Step 10: Run one step
     result = trainer.train()
     metrics = result.metrics
 
-    # Step 10: Validate
+    # Step 11: Validate and log final metrics
     loss = metrics.get("train_loss", None)
     loss_str = f"{loss:.4f}" if loss is not None else "N/A"
 
-    # Log metrics to trackio
-    track_metrics = {
-        "loss": loss if loss is not None else float("nan"),
-        "reward_count": reward_count,
-        "num_prompts": num_prompts,
-        "track": track,
-    }
-    for key, val in metrics.items():
-        if isinstance(val, (int, float)) and key not in track_metrics:
-            track_metrics[key] = val
-    try:
-        trackio.log(track_metrics)
-        print("[PASS] Metrics logged to trackio")
-    except Exception as e:
-        print(f"[WARN] Failed to log to trackio: {e}")
+    if tracking_active:
+        # Log all metrics as scalars
+        track_metrics = {
+            "loss": loss if loss is not None else float("nan"),
+            "reward_count": reward_count,
+            "num_prompts": num_prompts,
+            "track": track,
+        }
+        for key, val in metrics.items():
+            if isinstance(val, (int, float)) and key not in track_metrics:
+                track_metrics[key] = val
+        try:
+            tracker.log_rewards(1, track_metrics)
+            print("[PASS] Final metrics logged to trackio")
+        except Exception as e:
+            print(f"[WARN] Failed to log final metrics to trackio: {e}")
+
+        # Log completion sample trace from the last reward data
+        try:
+            if tracker._reward_table_rows:
+                last_row = tracker._reward_table_rows[-1]
+                tracker.log_completion_sample(
+                    1, last_row.get("prompt", ""), last_row.get("completion", "")
+                )
+                print("[PASS] Completion sample logged")
+            else:
+                print("[WARN] No reward table rows for completion sample")
+        except Exception as e:
+            print(f"[WARN] Failed to log completion sample: {e}")
+
+        # Generate summary report
+        try:
+            tracker.generate_report({
+                "loss": loss_str,
+                "reward": metrics.get("reward", "N/A"),
+                "kl": metrics.get("kl", "N/A"),
+                "completion_length": metrics.get("completion_length", "N/A"),
+            })
+            print("[PASS] Summary report generated")
+        except Exception as e:
+            print(f"[WARN] Failed to generate report: {e}")
 
     if loss is not None and not math.isfinite(loss):
         print(f"[FAIL] Loss is not finite: {loss}")
-        if trackio_initialized:
-            trackio.finish()
+        tracker.finish()
         sys.exit(1)
 
     print(f"[PASS] Training step completed")
     print(f"  Loss: {loss_str}")
 
-    if trackio_initialized:
-        trackio.finish()
+    tracker.finish()
 
     print("[PASS] All validations passed")
 
@@ -316,7 +379,24 @@ def main() -> None:
         action="store_true",
         help="Enable torch.compile (disabled by default)",
     )
+    parser.add_argument(
+        "--output-dir",
+        default="checkpoints/lora_adapters/grpo_v3_outcome",
+        help="Output directory (used for run naming in dry-run mode)",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Run TrackingManager lifecycle without models or GPU (validates tracking pipeline only)",
+    )
     args = parser.parse_args()
+
+    if args.dry_run:
+        dry_run_smoke_test(
+            track=args.track,
+            output_dir=args.output_dir,
+        )
+        return
 
     try:
         smoke_test(

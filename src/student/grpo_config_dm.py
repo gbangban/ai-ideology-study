@@ -80,4 +80,6 @@ def create_grpo_config(output_dir: Optional[str] = None) -> GRPOConfig:
         report_to="none",
         remove_unused_columns=False,
         generation_batch_size=8,
+        mask_truncated_completions=True,
+        torch_empty_cache_steps=1,
     )

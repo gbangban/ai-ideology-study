@@ -1,0 +1,325 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - button [ref=e5] [cursor=pointer]:
+      - img [ref=e6]
+    - generic [ref=e9]:
+      - img "Trackio" [ref=e11]
+      - generic [ref=e13]:
+        - generic [ref=e14]: Project
+        - generic [ref=e17]:
+          - listbox "Project" [ref=e18]: dm-align-grpo
+          - generic:
+            - img
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - generic [ref=e21] [cursor=pointer]:
+            - checkbox "Runs (28)" [checked] [ref=e57]
+            - generic [ref=e23]: Runs (28)
+          - generic [ref=e24] [cursor=pointer]:
+            - generic [ref=e25]: Latest only
+            - checkbox "Latest only" [ref=e26]
+        - textbox "Type to filter..." [ref=e29]
+        - generic [ref=e31]:
+          - generic [ref=e32]: Group by
+          - generic [ref=e35]:
+            - listbox "Group by" [ref=e36] [cursor=pointer]
+            - generic:
+              - img
+        - generic [ref=e59]:
+          - generic [ref=e60] [cursor=pointer]:
+            - checkbox "smoke-test-grpo-process_20260609_213009" [checked] [ref=e61]
+            - generic "smoke-test-grpo-process_20260609_213009" [ref=e63]
+          - generic [ref=e64] [cursor=pointer]:
+            - checkbox "smoke-test-grpo-outcome_20260609_212614" [checked] [ref=e65]
+            - generic "smoke-test-grpo-outcome_20260609_212614" [ref=e67]
+          - generic [ref=e68] [cursor=pointer]:
+            - checkbox "grpo-v3-outcome-grpo_v3_outcome_20260609_212247" [checked] [ref=e69]
+            - generic "grpo-v3-outcome-grpo_v3_outcome_20260609_212247" [ref=e71]
+          - generic [ref=e72] [cursor=pointer]:
+            - checkbox "grpo-v4-process-grpo_v3_outcome_20260609_211603" [checked] [ref=e73]
+            - generic "grpo-v4-process-grpo_v3_outcome_20260609_211603" [ref=e75]
+          - generic [ref=e76] [cursor=pointer]:
+            - checkbox "grpo-v3-outcome-grpo_v3_outcome_20260609_211548" [checked] [ref=e77]
+            - generic "grpo-v3-outcome-grpo_v3_outcome_20260609_211548" [ref=e79]
+          - generic [ref=e80] [cursor=pointer]:
+            - checkbox "grpo-v4-process-grpo_v4_process_20260609_211004" [checked] [ref=e81]
+            - generic "grpo-v4-process-grpo_v4_process_20260609_211004" [ref=e83]
+          - generic [ref=e84] [cursor=pointer]:
+            - checkbox "grpo-v3-outcome-grpo_v3_outcome_20260609_210953" [checked] [ref=e85]
+            - generic "grpo-v3-outcome-grpo_v3_outcome_20260609_210953" [ref=e87]
+          - generic [ref=e88] [cursor=pointer]:
+            - checkbox "grpo-v4-process-grpo_v3_outcome_20260609_210939" [checked] [ref=e89]
+            - generic "grpo-v4-process-grpo_v3_outcome_20260609_210939" [ref=e91]
+          - generic [ref=e92] [cursor=pointer]:
+            - checkbox "grpo-v3-outcome-grpo_v3_outcome_20260609_210926" [checked] [ref=e93]
+            - generic "grpo-v3-outcome-grpo_v3_outcome_20260609_210926" [ref=e95]
+          - generic [ref=e96] [cursor=pointer]:
+            - checkbox "dry-run-verify_20260609_205630" [checked] [ref=e97]
+            - generic "dry-run-verify_20260609_205630" [ref=e99]
+          - generic [ref=e100] [cursor=pointer]:
+            - checkbox "dry-run-verify_20260609_205523" [checked] [ref=e101]
+            - generic "dry-run-verify_20260609_205523" [ref=e103]
+          - generic [ref=e104] [cursor=pointer]:
+            - checkbox "dry-run-verify_20260609_204930" [checked] [ref=e105]
+            - generic "dry-run-verify_20260609_204930" [ref=e107]
+          - generic [ref=e108] [cursor=pointer]:
+            - checkbox "dry-run-verify_20260609_204859" [checked] [ref=e109]
+            - generic "dry-run-verify_20260609_204859" [ref=e111]
+          - generic [ref=e112] [cursor=pointer]:
+            - checkbox "dry-run-verify_20260609_204836" [checked] [ref=e113]
+            - generic "dry-run-verify_20260609_204836" [ref=e115]
+          - generic [ref=e116] [cursor=pointer]:
+            - checkbox "dry-run-verify-20260609_204812_20260609_204812" [checked] [ref=e117]
+            - generic "dry-run-verify-20260609_204812_20260609_204812" [ref=e119]
+          - generic [ref=e120] [cursor=pointer]:
+            - checkbox "memory-profile-outcome-20260609_180929_6d72af81" [checked] [ref=e121]
+            - generic "memory-profile-outcome-20260609_180929_6d72af81" [ref=e123]
+          - generic [ref=e124] [cursor=pointer]:
+            - checkbox "memory-profile-outcome-20260609_163429_bb6e0650" [checked] [ref=e125]
+            - generic "memory-profile-outcome-20260609_163429_bb6e0650" [ref=e127]
+          - generic [ref=e128] [cursor=pointer]:
+            - checkbox "memory-profile-outcome-20260609_151618_c4442066" [checked] [ref=e129]
+            - generic "memory-profile-outcome-20260609_151618_c4442066" [ref=e131]
+          - generic [ref=e132] [cursor=pointer]:
+            - checkbox "smoke-test-grpo-outcome" [checked] [ref=e133]
+            - generic "smoke-test-grpo-outcome" [ref=e135]
+          - generic [ref=e136] [cursor=pointer]:
+            - checkbox "smoke-test-grpo-outcome" [checked] [ref=e137]
+            - generic "smoke-test-grpo-outcome" [ref=e139]
+          - generic [ref=e140] [cursor=pointer]:
+            - checkbox "memory-profile-outcome-20260609_143404_dfe48567" [checked] [ref=e141]
+            - generic "memory-profile-outcome-20260609_143404_dfe48567" [ref=e143]
+          - generic [ref=e144] [cursor=pointer]:
+            - checkbox "memory-profile-outcome-20260609_141055_470d8365" [checked] [ref=e145]
+            - generic "memory-profile-outcome-20260609_141055_470d8365" [ref=e147]
+          - generic [ref=e148] [cursor=pointer]:
+            - checkbox "grpo-v3-outcome-only" [checked] [ref=e149]
+            - generic "grpo-v3-outcome-only" [ref=e151]
+          - generic [ref=e152] [cursor=pointer]:
+            - checkbox "smoke-test-grpo-outcome" [checked] [ref=e153]
+            - generic "smoke-test-grpo-outcome" [ref=e155]
+          - generic [ref=e156] [cursor=pointer]:
+            - checkbox "smoke-test-grpo-process" [checked] [ref=e157]
+            - generic "smoke-test-grpo-process" [ref=e159]
+          - generic [ref=e160] [cursor=pointer]:
+            - checkbox "direct-test" [checked] [ref=e161]
+            - generic "direct-test" [ref=e163]
+          - generic [ref=e164] [cursor=pointer]:
+            - checkbox "auth-test" [checked] [ref=e165]
+            - generic "auth-test" [ref=e167]
+          - generic [ref=e168] [cursor=pointer]:
+            - checkbox "auth-test" [checked] [ref=e169]
+            - generic "auth-test" [ref=e171]
+  - generic [ref=e37]:
+    - navigation [ref=e38]:
+      - generic [ref=e39]:
+        - button "Metrics" [ref=e40] [cursor=pointer]
+        - button "System Metrics" [ref=e41] [cursor=pointer]
+        - button "Traces" [ref=e42] [cursor=pointer]
+        - button "Media & Tables" [ref=e43] [cursor=pointer]
+        - button "Alerts & Reports" [active] [ref=e44] [cursor=pointer]
+        - button "Runs" [ref=e45] [cursor=pointer]
+        - button "Files" [ref=e46] [cursor=pointer]
+        - button "Settings" [ref=e47] [cursor=pointer]:
+          - img [ref=e48]
+          - generic [ref=e51]: Settings
+    - generic [ref=e275]:
+      - heading "Reports (9)" [level=3] [ref=e276]
+      - generic [ref=e277]:
+        - generic [ref=e278]: report/summary · grpo-v3-outcome-grpo_v3_outcome_20260609_212247 · step 126
+        - generic [ref=e279]:
+          - heading "Training Summary" [level=2] [ref=e280]
+          - paragraph [ref=e281]:
+            - strong [ref=e282]: "Track:"
+            - text: outcome
+            - strong [ref=e283]: "Final loss:"
+            - text: "0.6"
+            - strong [ref=e284]: "Final reward:"
+            - text: "0.9"
+            - strong [ref=e285]: "Final KL:"
+            - text: "0.01"
+            - strong [ref=e286]: "Completion length:"
+            - text: "220"
+          - paragraph [ref=e287]:
+            - strong [ref=e288]: "Steps logged:"
+            - text: "5"
+            - strong [ref=e289]: "First loss:"
+            - text: 1.2000 (step 25)
+            - strong [ref=e290]: "Last loss:"
+            - text: 0.6000 (step 125)
+      - generic [ref=e291]:
+        - generic [ref=e292]: report/summary · grpo-v4-process-grpo_v3_outcome_20260609_211603 · step 126
+        - generic [ref=e293]:
+          - heading "Training Summary" [level=2] [ref=e294]
+          - paragraph [ref=e295]:
+            - strong [ref=e296]: "Track:"
+            - text: process
+            - strong [ref=e297]: "Final loss:"
+            - text: "0.6"
+            - strong [ref=e298]: "Final reward:"
+            - text: "0.9"
+            - strong [ref=e299]: "Final KL:"
+            - text: "0.01"
+            - strong [ref=e300]: "Completion length:"
+            - text: "220"
+          - paragraph [ref=e301]:
+            - strong [ref=e302]: "Steps logged:"
+            - text: "5"
+            - strong [ref=e303]: "First loss:"
+            - text: 1.2000 (step 25)
+            - strong [ref=e304]: "Last loss:"
+            - text: 0.6000 (step 125)
+      - generic [ref=e305]:
+        - generic [ref=e306]: report/summary · grpo-v3-outcome-grpo_v3_outcome_20260609_211548 · step 126
+        - generic [ref=e307]:
+          - heading "Training Summary" [level=2] [ref=e308]
+          - paragraph [ref=e309]:
+            - strong [ref=e310]: "Track:"
+            - text: outcome
+            - strong [ref=e311]: "Final loss:"
+            - text: "0.6"
+            - strong [ref=e312]: "Final reward:"
+            - text: "0.9"
+            - strong [ref=e313]: "Final KL:"
+            - text: "0.01"
+            - strong [ref=e314]: "Completion length:"
+            - text: "220"
+          - paragraph [ref=e315]:
+            - strong [ref=e316]: "Steps logged:"
+            - text: "5"
+            - strong [ref=e317]: "First loss:"
+            - text: 1.2000 (step 25)
+            - strong [ref=e318]: "Last loss:"
+            - text: 0.6000 (step 125)
+      - generic [ref=e319]:
+        - generic [ref=e320]: report/summary · grpo-v4-process-grpo_v4_process_20260609_211004 · step 126
+        - generic [ref=e321]:
+          - heading "Training Summary" [level=2] [ref=e322]
+          - paragraph [ref=e323]:
+            - strong [ref=e324]: "Track:"
+            - text: process
+            - strong [ref=e325]: "Final loss:"
+            - text: "0.6"
+            - strong [ref=e326]: "Final reward:"
+            - text: "0.9"
+            - strong [ref=e327]: "Final KL:"
+            - text: "0.01"
+            - strong [ref=e328]: "Completion length:"
+            - text: "220"
+          - paragraph [ref=e329]:
+            - strong [ref=e330]: "Steps logged:"
+            - text: "5"
+            - strong [ref=e331]: "First loss:"
+            - text: 1.2000 (step 25)
+            - strong [ref=e332]: "Last loss:"
+            - text: 0.6000 (step 125)
+      - generic [ref=e333]:
+        - generic [ref=e334]: report/summary · grpo-v3-outcome-grpo_v3_outcome_20260609_210953 · step 126
+        - generic [ref=e335]:
+          - heading "Training Summary" [level=2] [ref=e336]
+          - paragraph [ref=e337]:
+            - strong [ref=e338]: "Track:"
+            - text: outcome
+            - strong [ref=e339]: "Final loss:"
+            - text: "0.6"
+            - strong [ref=e340]: "Final reward:"
+            - text: "0.9"
+            - strong [ref=e341]: "Final KL:"
+            - text: "0.01"
+            - strong [ref=e342]: "Completion length:"
+            - text: "220"
+          - paragraph [ref=e343]:
+            - strong [ref=e344]: "Steps logged:"
+            - text: "5"
+            - strong [ref=e345]: "First loss:"
+            - text: 1.2000 (step 25)
+            - strong [ref=e346]: "Last loss:"
+            - text: 0.6000 (step 125)
+      - generic [ref=e347]:
+        - generic [ref=e348]: report/summary · grpo-v4-process-grpo_v3_outcome_20260609_210939 · step 126
+        - generic [ref=e349]:
+          - heading "Training Summary" [level=2] [ref=e350]
+          - paragraph [ref=e351]:
+            - strong [ref=e352]: "Track:"
+            - text: process
+            - strong [ref=e353]: "Final loss:"
+            - text: "0.6"
+            - strong [ref=e354]: "Final reward:"
+            - text: "0.9"
+            - strong [ref=e355]: "Final KL:"
+            - text: "0.01"
+            - strong [ref=e356]: "Completion length:"
+            - text: "220"
+          - paragraph [ref=e357]:
+            - strong [ref=e358]: "Steps logged:"
+            - text: "5"
+            - strong [ref=e359]: "First loss:"
+            - text: 1.2000 (step 25)
+            - strong [ref=e360]: "Last loss:"
+            - text: 0.6000 (step 125)
+      - generic [ref=e361]:
+        - generic [ref=e362]: report/summary · grpo-v3-outcome-grpo_v3_outcome_20260609_210926 · step 126
+        - generic [ref=e363]:
+          - heading "Training Summary" [level=2] [ref=e364]
+          - paragraph [ref=e365]:
+            - strong [ref=e366]: "Track:"
+            - text: outcome
+            - strong [ref=e367]: "Final loss:"
+            - text: "0.6"
+            - strong [ref=e368]: "Final reward:"
+            - text: "0.9"
+            - strong [ref=e369]: "Final KL:"
+            - text: "0.01"
+            - strong [ref=e370]: "Completion length:"
+            - text: "220"
+          - paragraph [ref=e371]:
+            - strong [ref=e372]: "Steps logged:"
+            - text: "5"
+            - strong [ref=e373]: "First loss:"
+            - text: 1.2000 (step 25)
+            - strong [ref=e374]: "Last loss:"
+            - text: 0.6000 (step 125)
+      - generic [ref=e375]:
+        - generic [ref=e376]: report/summary · dry-run-verify_20260609_205630 · step 126
+        - generic [ref=e377]:
+          - heading "Training Summary" [level=2] [ref=e378]
+          - paragraph [ref=e379]:
+            - strong [ref=e380]: "Track:"
+            - text: outcome
+            - strong [ref=e381]: "Final loss:"
+            - text: "0.6"
+            - strong [ref=e382]: "Final reward:"
+            - text: "0.9"
+            - strong [ref=e383]: "Final KL:"
+            - text: "0.01"
+            - strong [ref=e384]: "Completion length:"
+            - text: "220"
+          - paragraph [ref=e385]:
+            - strong [ref=e386]: "Steps logged:"
+            - text: "5"
+            - strong [ref=e387]: "First loss:"
+            - text: 1.2000 (step 25)
+            - strong [ref=e388]: "Last loss:"
+            - text: 0.6000 (step 125)
+      - generic [ref=e389]:
+        - generic [ref=e390]: report/summary · dry-run-verify_20260609_205523 · step 126
+        - generic [ref=e391]:
+          - heading "Training Summary" [level=2] [ref=e392]
+          - paragraph [ref=e393]:
+            - strong [ref=e394]: "Track:"
+            - text: outcome
+            - strong [ref=e395]: "Final loss:"
+            - text: "0.6"
+            - strong [ref=e396]: "Final reward:"
+            - text: "0.9"
+            - strong [ref=e397]: "Final KL:"
+            - text: "0.01"
+            - strong [ref=e398]: "Completion length:"
+            - text: "220"
+          - paragraph [ref=e399]:
+            - strong [ref=e400]: "Steps logged:"
+            - text: "5"
+            - strong [ref=e401]: "First loss:"
+            - text: 1.2000 (step 25)
+            - strong [ref=e402]: "Last loss:"
+            - text: 0.6000 (step 125)

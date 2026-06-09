@@ -11,7 +11,65 @@ import os
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
+import torch
+
 logger = logging.getLogger(__name__)
+
+
+class CompileGuardedModel:
+    """Wraps a model and attempts torch.compile with automatic fallback.
+
+    If compilation fails at construction or runtime, falls back to the
+    uncompiled model transparently. This is essential for NF4-quantized
+    models where torch.compile may not be supported.
+    """
+
+    def __init__(self, model: Any):
+        self._model = model
+        self._compiled = None
+        self._fallback = False
+        try:
+            self._compiled = torch.compile(
+                model, backend="inductor", dynamic=True, fullgraph=False
+            )
+            logger.info("torch.compile succeeded (inductor, dynamic)")
+        except Exception as e:
+            self._fallback = True
+            logger.warning(f"torch.compile failed at construction, using uncompiled model: {e}")
+
+    def forward(self, *args: Any, **kwargs: Any) -> Any:
+        if self._compiled is not None and not self._fallback:
+            try:
+                return self._compiled(*args, **kwargs)
+            except Exception as e:
+                logger.warning(f"torch.compile failed at runtime, falling back: {e}")
+                self._fallback = True
+                return self._model(*args, **kwargs)
+        return self._model(*args, **kwargs)
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._model, name)
+
+    @property
+    def compiled(self) -> bool:
+        return self._compiled is not None and not self._fallback
+
+
+def maybe_compile_model(model: Any, enable: bool = True) -> Tuple[Any, bool]:
+    """Attempt to compile a model with torch.compile, falling back gracefully.
+
+    Args:
+        model: The PyTorch model to compile.
+        enable: If False, returns the model unchanged.
+
+    Returns:
+        Tuple of (wrapped_model, was_compiled). was_compiled is True only if
+        compilation succeeded and hasn't fallen back.
+    """
+    if not enable:
+        return model, False
+    guarded = CompileGuardedModel(model)
+    return guarded, guarded.compiled
 
 
 def patch_unsloth_chunked_log_softmax() -> None:

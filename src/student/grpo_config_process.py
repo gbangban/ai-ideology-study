@@ -109,7 +109,9 @@ def create_grpo_config(
         lr_scheduler_type="cosine",
         torch_compile=torch_compile,
         output_dir=output_dir or DEFAULT_CONFIG["output_dir"],
-        report_to="none",
+        report_to="trackio",
         remove_unused_columns=False,
         generation_batch_size=8,
+        mask_truncated_completions=True,
+        torch_empty_cache_steps=1,
     )

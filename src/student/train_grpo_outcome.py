@@ -211,14 +211,11 @@ def train(
     resume_from = f"checkpoint-{resume_step}" if resume_step > 0 else None
     trainer.train(resume_from_checkpoint=resume_from)
 
+    tracker.generate_report({
+        "loss": getattr(trainer.state, "log_history", [{}])[-1].get("loss", "N/A")
+        if getattr(trainer.state, "log_history", None) else "N/A",
+    })
     tracker.finish()
-
-    if tracker:
-        from src.utils.memory_profiler import get_vram_peak_gb
-        tracker.record(grpo_config.max_steps, "after_training")
-        logger.info(f"Peak VRAM: {get_vram_peak_gb():.2f} GB")
-        summary = tracker.summary()
-        logger.info(f"Memory summary: {summary}")
 
     logger.info(f"Training complete. Saving final adapter to {output_dir}...")
     model.save_pretrained(output_dir)

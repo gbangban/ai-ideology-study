@@ -104,7 +104,6 @@ def smoke_test(
     )
     from src.student.train_grpo_base import (
         build_outcome_dataset,
-        build_reward_fn_with_docs,
         patch_unsloth_chunked_log_softmax,
         strip_vision_config,
     )
@@ -173,10 +172,7 @@ def smoke_test(
     print(f"[PASS] Dataset built ({len(dataset)} prompts)")
 
     # Step 6: Initialize TrackingManager before building reward functions
-    from src.student.train_grpo_base import (
-        TrackingCallback,
-        TrackingManager,
-    )
+    from src.student.train_grpo_base import TrackingManager
 
     track_config = {
         "training_method": "GRPO" if track == "outcome" else "GRPO-DualAdvantage",
@@ -213,43 +209,35 @@ def smoke_test(
     # Step 7: Build reward functions (wrapped for tracking)
     doc_index = {row["prompt"]: row["doc"] for row in dataset}
 
-    def _combined_process_reward(completion: str, doc: Dict[str, Any]) -> float:
-        outcome = compute_outcome_reward(doc, completion)
-        process = compute_process_rewards(
-            completion,
-            outcome,
-            required_tags=RLVMR_REQUIRED_TAGS,
-            penalty_per_tag=REWARD_WEIGHTS["lambda_format"],
+    def _get_smoke_reward_specs() -> list:
+        def _combined_process_reward(completion: str, doc: Dict[str, Any]) -> float:
+            outcome = compute_outcome_reward(doc, completion)
+            process = compute_process_rewards(
+                completion,
+                outcome,
+                required_tags=RLVMR_REQUIRED_TAGS,
+                penalty_per_tag=REWARD_WEIGHTS["lambda_format"],
+            )
+            return sum(process.values())
+
+        outcome_spec = (
+            "outcome",
+            lambda completions, docs: [
+                compute_outcome_reward(doc, c) for c, doc in zip(completions, docs)
+            ],
         )
-        return sum(process.values())
+        if track == "outcome":
+            return [outcome_spec]
+        process_spec = (
+            "process",
+            lambda completions, docs: [
+                _combined_process_reward(c, doc) for c, doc in zip(completions, docs)
+            ],
+        )
+        return [outcome_spec, process_spec]
 
-    if track == "outcome":
-        raw_outcome_fn = lambda completions, docs: [  # noqa: E731
-            compute_outcome_reward(doc, c) for c, doc in zip(completions, docs)
-        ]
-        outcome_fn = build_reward_fn_with_docs(raw_outcome_fn, doc_index)
-        if tracking_active:
-            outcome_fn = tracker.wrap_reward_fn(outcome_fn, "outcome", trl_compatible=True)
-        reward_funcs = [outcome_fn]
-        reward_count = 1
-    else:
-        raw_outcome_fn = lambda completions, docs: [  # noqa: E731
-            compute_outcome_reward(doc, c) for c, doc in zip(completions, docs)
-        ]
-        outcome_fn = build_reward_fn_with_docs(raw_outcome_fn, doc_index)
-        if tracking_active:
-            outcome_fn = tracker.wrap_reward_fn(outcome_fn, "outcome", trl_compatible=True)
-
-        raw_process_fn = lambda completions, docs: [  # noqa: E731
-            _combined_process_reward(c, doc)
-            for c, doc in zip(completions, docs)
-        ]
-        process_fn = build_reward_fn_with_docs(raw_process_fn, doc_index)
-        if tracking_active:
-            process_fn = tracker.wrap_reward_fn(process_fn, "process", trl_compatible=True)
-
-        reward_funcs = [outcome_fn, process_fn]
-        reward_count = 2
+    reward_funcs = tracker.build_reward_functions(_get_smoke_reward_specs(), doc_index)
+    reward_count = len(reward_funcs)
 
     print(f"[PASS] Reward functions created ({reward_count} reward fn)")
 
@@ -282,7 +270,7 @@ def smoke_test(
         train_dataset=dataset,
     )
     if tracking_active:
-        trainer.add_callback(TrackingCallback(tracker))
+        tracker.attach_to_trainer(trainer)
     print("[PASS] GRPOTrainer initialized")
 
     # Step 10: Run one step
@@ -325,12 +313,7 @@ def smoke_test(
 
         # Generate summary report
         try:
-            tracker.generate_report({
-                "loss": loss_str,
-                "reward": metrics.get("reward", "N/A"),
-                "kl": metrics.get("kl", "N/A"),
-                "completion_length": metrics.get("completion_length", "N/A"),
-            })
+            tracker.generate_report_from_trainer(trainer)
             print("[PASS] Summary report generated")
         except Exception as e:
             print(f"[WARN] Failed to generate report: {e}")

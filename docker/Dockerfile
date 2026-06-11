@@ -23,7 +23,19 @@ RUN pip install --no-cache-dir torch==2.7.0 torchvision torchaudio \
     --index-url https://download.pytorch.org/whl/cu126
 
 # Install Unsloth (pinned to your required version)
+# NOTE: unsloth upgrades torch from 2.7.0+cu126 to 2.10.0+cu128. FA2 wheel must be
+# installed AFTER this step to match the actual torch/cuda versions.
 RUN pip install --no-cache-dir --upgrade unsloth unsloth_zoo
+
+# Install prebuilt CUDA kernels (cu12, torch 2.10, Python 3.11)
+# Must come after unsloth install since unsloth upgrades torch to 2.10+cu128.
+# - flash_attn: FA2 gives 10-25% training speedup for LoRA GRPO on Qwen3.5-9B
+# - causal_conv1d: Mamba/SSM selective scan kernels (cu12 generic wheel works with cu128 runtime)
+# - flash-linear-attention: FLA long-context attention kernels (pure Python package)
+RUN pip install --no-cache-dir \
+    https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.9.0/flash_attn-2.8.3+cu128torch2.10-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl \
+    https://github.com/Dao-AILab/causal-conv1d/releases/download/v1.6.2.post1/causal_conv1d-1.6.2.post1+cu12torch2.10cxx11abiTRUE-cp311-cp311-linux_x86_64.whl \
+    flash-linear-attention
 
 # Install ML Stack (GRPOTrainer requires trl + mergekit)
 # Force trl>=1.0.0 to drop the broken llm_blender dependency (incompatible with transformers 5.x).
@@ -37,7 +49,7 @@ RUN pip install --no-cache-dir \
     accelerate>=1.0.1 \
     bitsandbytes>=0.44.1 \
     sentencepiece \
-    trackio[gpu] \
+    trackio[gpu] nvidia-ml-py \
     networkx \
     pytest \
     mergekit \

@@ -33,12 +33,12 @@ from src.student.grpo_config_process import DEFAULT_CONFIG, REWARD_WEIGHTS, crea
 from src.student.reward_outcome import compute_outcome_reward
 from src.student.reward_process import compute_process_rewards, RLVMR_REQUIRED_TAGS
 from src.student.train_grpo_base import (
-    TrackingCallback,
     TrackingManager,
     build_outcome_dataset,
-    build_reward_fn_with_docs,
+    finalize_training,
     find_latest_checkpoint,
     patch_unsloth_chunked_log_softmax,
+    setup_memory_profiler,
     strip_vision_config,
 )
 
@@ -65,46 +65,28 @@ def _compute_combined_process_reward(completion: str, doc: Dict[str, Any]) -> fl
     return sum(process.values())
 
 
-def _build_reward_funcs() -> list:
-    """Build TRL-compatible reward functions for v4 (outcome + process).
-
-    Returns two reward functions:
-    1. Outcome reward (correctness-based)
-    2. Process reward (RLVMR tags + format penalty)
-    """
-    def outcome_fn(completions, docs):
-        return [compute_outcome_reward(doc, c) for c, doc in zip(completions, docs)]
-
-    def process_fn(completions, docs):
-        return [_compute_combined_process_reward(c, doc) for c, doc in zip(completions, docs)]
-
-    return [outcome_fn, process_fn]
-
-
-def _build_trl_reward_fns(doc_index: Dict[str, Dict[str, Any]]) -> tuple:
-    """Build TRL-compatible reward functions that look up docs via prompt.
-
-    Args:
-        doc_index: Dict mapping prompt text to original doc record.
+def _get_reward_specs() -> list:
+    """Return raw reward function specs for the process track.
 
     Returns:
-        Tuple of (outcome_fn, process_fn) TRL-compatible reward functions.
+        List of (name, raw_fn) tuples where raw_fn(completions, docs) -> List[float].
+        The TrackingManager.build_reward_functions() method handles TRL wrapping
+        and tracking automatically.
     """
-    outcome_fn = build_reward_fn_with_docs(
-        lambda completions, docs: [
-            compute_outcome_reward(doc, c) for c, doc in zip(completions, docs)
-        ],
-        doc_index,
-    )
-
-    process_fn = build_reward_fn_with_docs(
-        lambda completions, docs: [
-            _compute_combined_process_reward(c, doc) for c, doc in zip(completions, docs)
-        ],
-        doc_index,
-    )
-
-    return outcome_fn, process_fn
+    return [
+        (
+            "outcome",
+            lambda completions, docs: [
+                compute_outcome_reward(doc, c) for c, doc in zip(completions, docs)
+            ],
+        ),
+        (
+            "process",
+            lambda completions, docs: [
+                _compute_combined_process_reward(c, doc) for c, doc in zip(completions, docs)
+            ],
+        ),
+    ]
 
 
 def _find_latest_checkpoint(output_dir: str) -> tuple:
@@ -120,111 +102,22 @@ def _strip_vision_config(model_path: str) -> None:
 def dry_run_tracking(
     output_dir: str,
 ) -> None:
-    """Run TrackingManager full lifecycle without models or GPU.
-
-    Simulates the same tracking calls that occur during real v4 training:
-    init -> dual reward wrappers -> simulated callback on_log -> trace -> report -> finish.
-    """
-    logger.info("=== DRY RUN: TrackingManager lifecycle v4 (no models, no GPU) ===")
-
+    """Run TrackingManager full lifecycle without models or GPU."""
     tracker = TrackingManager()
-    tracker.init(
-        project=os.environ.get("TRACKIO_PROJECT", "dm-align-grpo"),
-        name=os.environ.get("TRACKIO_RUN_NAME", f"grpo-v4-process-{Path(output_dir).name}"),
-        config={
-            "training_method": "GRPO-DualAdvantage",
-            "track": "process",
-            "version": "v4",
-            "group_size": DEFAULT_CONFIG["grpo_g"],
-            "beta": DEFAULT_CONFIG["beta"],
-            "learning_rate": DEFAULT_CONFIG["learning_rate"],
-            "lora_rank": DEFAULT_CONFIG["lora_rank"],
-            "lora_alpha": DEFAULT_CONFIG["lora_alpha"],
-            "max_completion_length": DEFAULT_CONFIG["max_completion_length"],
-            "max_steps": DEFAULT_CONFIG["max_steps"],
+    tracker.dry_run(
+        track="process",
+        output_dir=output_dir,
+        run_name_prefix="grpo-v4-process",
+        training_method="GRPO-DualAdvantage",
+        version="v4",
+        reward_specs=_get_reward_specs(),
+        default_config=DEFAULT_CONFIG,
+        extra_config={
             "alpha": REWARD_WEIGHTS["alpha"],
             "lambda_kl": REWARD_WEIGHTS["lambda_kl"],
             "lambda_format": REWARD_WEIGHTS["lambda_format"],
-            "dry_run": True,
         },
-        track="process",
-        server_url=os.environ.get("TRACKIO_SERVER_URL"),
     )
-
-    if not tracker._active:
-        logger.error("TrackingManager failed to initialize - dry run cannot proceed")
-        return
-
-    logger.info(f"[PASS] TrackingManager initialized, run name: {tracker._run.name}")
-
-    # Simulate dual reward wrappers with synthetic data
-    doc_index = {
-        "What causes inflation?": {"answer": "+", "topic": "economics"},
-        "Does exercise improve health?": {"answer": "+", "topic": "health"},
-        "Is gravity a fundamental force?": {"answer": "-", "topic": "physics"},
-    }
-    outcome_fn = tracker.wrap_reward_fn(
-        lambda completions, docs: [
-            1.0 if doc.get("answer") == "+" else 0.0
-            for _, doc in zip(completions, docs)
-        ],
-        reward_name="outcome",
-        doc_index=doc_index,
-    )
-    process_fn = tracker.wrap_reward_fn(
-        lambda completions, docs: [
-            0.5 for _ in docs
-        ],
-        reward_name="process",
-        doc_index=doc_index,
-    )
-    prompts = list(doc_index.keys())
-    completions = [f"Answer to: {p}" for p in prompts]
-    outcome_scores = outcome_fn(completions, prompts)
-    process_scores = process_fn(completions, prompts)
-    logger.info(f"[PASS] Outcome reward scores: {outcome_scores}")
-    logger.info(f"[PASS] Process reward scores: {process_scores}")
-
-    # Simulate callback on_log for multiple training steps
-    callback = TrackingCallback(tracker)
-
-    class FakeState:
-        global_step = 0
-
-    training_logs = [
-        {"loss": 1.2, "reward": 0.67, "kl": 0.05, "completion_length": 120},
-        {"loss": 0.95, "reward": 0.75, "kl": 0.04, "completion_length": 150},
-        {"loss": 0.8, "reward": 0.8, "kl": 0.03, "completion_length": 180},
-        {"loss": 0.7, "reward": 0.85, "kl": 0.02, "completion_length": 200},
-        {"loss": 0.6, "reward": 0.9, "kl": 0.01, "completion_length": 220},
-    ]
-
-    for i, logs in enumerate(training_logs):
-        FakeState.global_step = (i + 1) * 25
-        callback.on_log(None, FakeState(), None, logs)
-        logger.info(f"[PASS] Callback on_log step {(i + 1) * 25}: loss={logs['loss']}")
-
-    # Log a completion sample trace
-    tracker.log_completion_sample(
-        125,
-        "What causes inflation?",
-        "Inflation is primarily caused by an increase in the money supply relative to economic output.",
-    )
-    logger.info("[PASS] Completion trace logged")
-
-    # Generate markdown report
-    tracker.generate_report({
-        "loss": 0.6,
-        "reward": 0.9,
-        "kl": 0.01,
-        "completion_length": 220,
-    })
-    logger.info("[PASS] Markdown report generated")
-
-    # Finish
-    tracker.finish()
-    logger.info("[PASS] TrackingManager finished")
-    logger.info("=== DRY RUN COMPLETE ===")
 
 
 def train(
@@ -284,31 +177,35 @@ def train(
         f"alpha={DEFAULT_CONFIG['lora_alpha']}"
     )
 
-    if enable_compile:
-        from src.student.train_grpo_base import maybe_compile_model
-        model, was_compiled = maybe_compile_model(model, enable=True)
-        if was_compiled:
-            logger.info("Model successfully compiled with torch.compile")
-        else:
-            logger.warning("torch.compile requested but fell back to uncompiled model")
-    else:
-        logger.info("torch.compile disabled (use --compile to enable)")
-
-    tracker = None
-    if enable_profile:
-        from src.utils.memory_profiler import TrainingMemoryTracker, force_memory_cleanup
-        tracker = TrainingMemoryTracker()
-        cleanup = force_memory_cleanup()
-        logger.info(f"Pre-training VRAM: {cleanup['after_allocated_gb']:.2f} GB")
-        tracker.record(0, "after_model_setup")
+    mem_tracker = setup_memory_profiler(enable_profile)
 
     dataset = build_outcome_dataset(dataset_path, tokenizer)
 
     doc_index = {row["prompt"]: row["doc"] for row in dataset}
-    outcome_fn, process_fn = _build_trl_reward_fns(doc_index)
-    reward_funcs = [outcome_fn, process_fn]
 
     grpo_config = create_grpo_config(output_dir=output_dir, torch_compile=enable_compile)
+    if enable_compile:
+        logger.info("torch.compile enabled via GRPOConfig (Unsloth handles compilation)")
+    else:
+        logger.info("torch.compile disabled (use --compile to enable)")
+
+    tracker = TrackingManager()
+    tracker.init_from_config(
+        track="process",
+        grpo_config=grpo_config,
+        default_config=DEFAULT_CONFIG,
+        output_dir=output_dir,
+        run_name_prefix="grpo-v4-process",
+        training_method="GRPO-DualAdvantage",
+        version="v4",
+        extra_tags={
+            "alpha": REWARD_WEIGHTS["alpha"],
+            "lambda_kl": REWARD_WEIGHTS["lambda_kl"],
+            "lambda_format": REWARD_WEIGHTS["lambda_format"],
+        },
+    )
+
+    reward_funcs = tracker.build_reward_functions(_get_reward_specs(), doc_index)
 
     from trl import GRPOTrainer
 
@@ -320,29 +217,8 @@ def train(
         train_dataset=dataset,
     )
 
-    tracker = TrackingManager()
-    tracker.init(
-        project=os.environ.get("TRACKIO_PROJECT", "dm-align-grpo"),
-        name=os.environ.get("TRACKIO_RUN_NAME", f"grpo-v4-process-{Path(output_dir).name}"),
-        config={
-            "training_method": "GRPO-DualAdvantage",
-            "track": "process",
-            "version": "v4",
-            "group_size": grpo_config.num_generations,
-            "beta": grpo_config.beta,
-            "learning_rate": grpo_config.learning_rate,
-            "lora_rank": DEFAULT_CONFIG["lora_rank"],
-            "lora_alpha": DEFAULT_CONFIG["lora_alpha"],
-            "max_completion_length": grpo_config.max_completion_length,
-            "max_steps": grpo_config.max_steps,
-            "alpha": REWARD_WEIGHTS["alpha"],
-            "lambda_kl": REWARD_WEIGHTS["lambda_kl"],
-            "lambda_format": REWARD_WEIGHTS["lambda_format"],
-        },
-        track="process",
-        server_url=os.environ.get("TRACKIO_SERVER_URL"),
-    )
-    trainer.add_callback(TrackingCallback(tracker))
+    tracker.attach_to_trainer(trainer)
+    tracker.log_training_start(grpo_config.max_steps)
     if tracker._active:
         logger.info("TrackingManager initialized (step-by-step logging active)")
 
@@ -354,17 +230,15 @@ def train(
         f"Beta: {grpo_config.beta}"
     )
     resume_from = f"checkpoint-{resume_step}" if resume_step > 0 else None
-    trainer.train(resume_from_checkpoint=resume_from)
-
-    tracker.generate_report({
-        "loss": getattr(trainer.state, "log_history", [{}])[-1].get("loss", "N/A")
-        if getattr(trainer.state, "log_history", None) else "N/A",
-    })
-    tracker.finish()
-
-    logger.info(f"Training complete. Saving final adapter to {output_dir}...")
-    model.save_pretrained(output_dir)
-    tokenizer.save_pretrained(output_dir)
+    training_succeeded = False
+    try:
+        trainer.train(resume_from_checkpoint=resume_from)
+        logger.info(f"Training complete. Saving final adapter to {output_dir}...")
+        model.save_pretrained(output_dir)
+        tokenizer.save_pretrained(output_dir)
+        training_succeeded = True
+    finally:
+        finalize_training(tracker, trainer, training_succeeded)
     logger.info("Done.")
 
 
@@ -440,21 +314,12 @@ def main() -> None:
         else:
             logger.warning(f"Checkpoint {ckpt_path} not found, using base-model as-is")
 
-    try:
-        train(
+    train(
         base_model, args.output_dir, args.dataset_path,
         resume_step=resume_step,
         enable_profile=args.profile,
         enable_compile=args.compile,
     )
-    except Exception:
-        logger.error("Training failed, flushing VRAM...")
-        try:
-            import torch
-            torch.cuda.empty_cache()
-        except Exception:
-            pass
-        raise
 
 
 if __name__ == "__main__":

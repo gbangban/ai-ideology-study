@@ -35,15 +35,18 @@ class TestGRPOProcessTraining:
         assert result.returncode == 0
         assert "base-model" in result.stdout or "base_model" in result.stdout
 
-    def test_build_reward_funcs_returns_two_fns(self):
+    def test_get_reward_specs_returns_two_specs(self):
         """v4 has two reward functions: outcome and process."""
         mod = _import_train_module()
-        reward_funcs = mod._build_reward_funcs()
-        assert len(reward_funcs) == 2
+        specs = mod._get_reward_specs()
+        assert len(specs) == 2
+        assert specs[0][0] == "outcome"
+        assert specs[1][0] == "process"
 
     def test_outcome_reward_fn_returns_floats(self):
         mod = _import_train_module()
-        reward_funcs = mod._build_reward_funcs()
+        specs = mod._get_reward_specs()
+        raw_fn = specs[0][1]
         completions = [
             "<planning>P</planning><commitment>+</commitment><reflection>R</reflection><monitor>M</monitor> The predicted sign is +",
             "The predicted sign is -",
@@ -52,14 +55,15 @@ class TestGRPOProcessTraining:
             {"dataset_type": "econcausal", "answer": "+"},
             {"dataset_type": "econcausal", "answer": "+"},
         ]
-        results = reward_funcs[0](completions, docs)
+        results = raw_fn(completions, docs)
         assert isinstance(results, list)
         assert len(results) == 2
         assert all(isinstance(r, (int, float)) for r in results)
 
     def test_process_reward_fn_returns_floats(self):
         mod = _import_train_module()
-        reward_funcs = mod._build_reward_funcs()
+        specs = mod._get_reward_specs()
+        raw_fn = specs[1][1]
         completions = [
             "<planning>Treatment and outcome variables.</planning><commitment>+</commitment><reflection>I think my analysis is correct.</reflection><monitor>Context check.</monitor>",
             "Plain answer without tags.",
@@ -68,41 +72,46 @@ class TestGRPOProcessTraining:
             {"dataset_type": "econcausal", "answer": "+"},
             {"dataset_type": "econcausal", "answer": "+"},
         ]
-        results = reward_funcs[1](completions, docs)
+        results = raw_fn(completions, docs)
         assert isinstance(results, list)
         assert len(results) == 2
         assert all(isinstance(r, (int, float)) for r in results)
 
     def test_process_reward_rewards_full_tags(self):
         mod = _import_train_module()
-        reward_funcs = mod._build_reward_funcs()
+        specs = mod._get_reward_specs()
+        raw_fn = specs[1][1]
         completions = [
             "<planning>Treatment: rates. Outcome: debt.</planning><commitment>positive (+)</commitment><reflection>I should reconsider.</reflection><monitor>Context alignment.</monitor>",
         ]
         docs = [
             {"dataset_type": "econcausal", "answer": "+"},
         ]
-        results = reward_funcs[1](completions, docs)
+        results = raw_fn(completions, docs)
         assert results[0] > 0.0
 
     def test_process_reward_penalizes_missing_tags(self):
         mod = _import_train_module()
-        reward_funcs = mod._build_reward_funcs()
+        specs = mod._get_reward_specs()
+        raw_fn = specs[1][1]
         completions = [
             "Plain answer without any tags at all.",
         ]
         docs = [
             {"dataset_type": "econcausal", "answer": "+"},
         ]
-        results = reward_funcs[1](completions, docs)
+        results = raw_fn(completions, docs)
         assert results[0] < 0.0
 
     def test_trl_reward_wrappers_accept_extra_args(self):
+        from src.student.train_grpo_base import build_reward_fn_with_docs
         mod = _import_train_module()
+        specs = mod._get_reward_specs()
         doc_index = {
             "prompt-1": {"dataset_type": "econcausal", "answer": "+"},
         }
-        outcome_fn, process_fn = mod._build_trl_reward_fns(doc_index)
+        outcome_fn = build_reward_fn_with_docs(specs[0][1], doc_index)
+        process_fn = build_reward_fn_with_docs(specs[1][1], doc_index)
 
         completion = "<planning>P</planning><commitment>+</commitment><reflection>R</reflection><monitor>M</monitor> The predicted sign is +"
         outcome_results = outcome_fn([completion], ["prompt-1"], [[1, 1]])

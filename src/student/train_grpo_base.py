@@ -17,6 +17,79 @@ from transformers import TrainerCallback
 
 logger = logging.getLogger(__name__)
 
+# Shared dry-run fixtures used by TrackingManager.dry_run()
+DRY_RUN_DOC_INDEX = {
+    "What causes inflation?": {"answer": "+", "topic": "economics"},
+    "Does exercise improve health?": {"answer": "+", "topic": "health"},
+    "Is gravity a fundamental force?": {"answer": "-", "topic": "physics"},
+}
+
+DRY_RUN_TRAINING_LOGS = [
+    {"loss": 1.2, "reward": 0.67, "kl": 0.05, "completion_length": 120},
+    {"loss": 0.95, "reward": 0.75, "kl": 0.04, "completion_length": 150},
+    {"loss": 0.8, "reward": 0.8, "kl": 0.03, "completion_length": 180},
+    {"loss": 0.7, "reward": 0.85, "kl": 0.02, "completion_length": 200},
+    {"loss": 0.6, "reward": 0.9, "kl": 0.01, "completion_length": 220},
+]
+
+DRY_RUN_COMPLETION_PROMPT = "What causes inflation?"
+DRY_RUN_COMPLETION_TEXT = "Inflation is primarily caused by an increase in the money supply relative to economic output."
+
+DRY_RUN_FINAL_LOGS = {
+    "loss": 0.6,
+    "reward": 0.9,
+    "kl": 0.01,
+    "completion_length": 220,
+}
+
+
+def finalize_training(
+    tracker: "TrackingManager",
+    trainer: Any,
+    training_succeeded: bool,
+) -> None:
+    """Generate report, finish tracking, and clean up VRAM on failure.
+
+    Centralizes the identical finally block from train_grpo_outcome and
+    train_grpo_process so the finalization logic lives in one place.
+    """
+    try:
+        if training_succeeded:
+            tracker.generate_report_from_trainer(trainer)
+        tracker.finish()
+    except Exception:
+        pass
+    if not training_succeeded:
+        logger.error("Training failed, flushing VRAM...")
+        try:
+            import torch
+            torch.cuda.empty_cache()
+        except Exception:
+            pass
+        raise
+
+
+def setup_memory_profiler(enable: bool) -> Optional["TrainingMemoryTracker"]:
+    """Create and initialize a memory profiler, or return None if disabled.
+
+    Centralizes the identical profiler setup from both training scripts.
+    Returns a TrainingMemoryTracker with an initial 'after_model_setup' snapshot.
+    """
+    if not enable:
+        return None
+    from src.utils.memory_profiler import TrainingMemoryTracker, force_memory_cleanup
+
+    mt = TrainingMemoryTracker()
+    cleanup = force_memory_cleanup()
+    logger.info(f"Pre-training VRAM: {cleanup['after_allocated_gb']:.2f} GB")
+    mt.record(0, "after_model_setup")
+    return mt
+
+
+class _FakeState:
+    """Minimal TrainerState stub for dry-run callback simulation."""
+    global_step = 0
+
 
 class CompileGuardedModel:
     """Wraps a model and attempts torch.compile with automatic fallback.
@@ -234,6 +307,15 @@ class TrackingCallback(TrainerCallback):
         self._manager.check_diagnostics(step, logs)
         self._manager.log_training_metrics(step, logs)
         self._manager.snapshot_gpu()
+        n_rows = len(self._manager._reward_table_rows)
+        if self._manager._reward_table_rows:
+            row = self._manager._reward_table_rows[-1]
+            self._manager.log_completion_sample(
+                step, row.get("prompt", ""), row.get("completion", "")
+            )
+            logger.info(f"Logged completion trace at step {step} (from {n_rows} rows)")
+        else:
+            logger.info(f"No reward table rows at step {step} - skipping trace")
         self._manager.flush_reward_data(step)
 
 
@@ -302,6 +384,15 @@ class TrackingManager:
         finally:
             self._active = False
 
+    def log(self, step: int, metrics: Dict[str, Any]) -> None:
+        if not self._active:
+            return
+        try:
+            import trackio
+            trackio.log(metrics, step=step)
+        except Exception:
+            pass
+
     def log_rewards(self, step: int, rewards: Dict[str, float]) -> None:
         if not self._active:
             return
@@ -353,12 +444,37 @@ class TrackingManager:
                 self._reward_samples.setdefault(reward_name, []).extend(scores)
                 for c, p, s in zip(completions, prompts, scores):
                     self._reward_table_rows.append({
-                        "prompt": p[:100] if p else "",
-                        "completion": c[:200] if c else "",
+                        "prompt": p[:500] if p else "",
+                        "completion": c[:1000] if c else "",
                         reward_name: s,
                     })
             return scores
         return wrapped
+
+    def build_reward_functions(
+        self,
+        reward_specs: List[Tuple[str, Callable]],
+        doc_index: Dict[str, Dict[str, Any]],
+    ) -> List[Callable]:
+        """Build TRL-compatible, tracking-enabled reward functions from raw specs.
+
+        Each spec is (reward_name, raw_fn) where raw_fn(completions, docs) -> List[float].
+        This method handles both the TRL doc-lookup wrap and the tracking wrap
+        so training scripts don't need to know about either.
+
+        Args:
+            reward_specs: List of (name, fn) tuples. fn takes (completions, docs)
+                and returns List[float].
+            doc_index: Dict mapping prompt text to original doc record.
+
+        Returns:
+            List of TRL-compatible reward functions ready for GRPOTrainer.
+        """
+        result: List[Callable] = []
+        for reward_name, raw_fn in reward_specs:
+            trl_fn = build_reward_fn_with_docs(raw_fn, doc_index)
+            result.append(self.wrap_reward_fn(trl_fn, reward_name, trl_compatible=True))
+        return result
 
     def log_reward_table(self, step: int, rows: List[Dict[str, Any]]) -> None:
         """Log per-sample reward breakdowns as trackio.Table."""
@@ -394,8 +510,8 @@ class TrackingManager:
         try:
             import trackio
             trace = trackio.Trace(messages=[
-                {"role": "user", "content": prompt[:300]},
-                {"role": "assistant", "content": completion[:500]},
+                {"role": "user", "content": prompt[:1500]},
+                {"role": "assistant", "content": completion[:3000]},
             ])
             trackio.log({"completion/sample": trace}, step=step)
         except Exception as e:
@@ -553,3 +669,157 @@ class TrackingManager:
             logger.info("Training summary report logged")
         except Exception as e:
             logger.warning(f"Failed to generate report: {e}")
+
+    def generate_report_from_trainer(self, trainer: Any) -> None:
+        """Generate report by auto-extracting final metrics from trainer.state.log_history."""
+        last_entry = {}
+        history = getattr(trainer.state, "log_history", None)
+        if history:
+            last_entry = history[-1] if history else {}
+        final_logs = {
+            "loss": last_entry.get("loss", "N/A"),
+            "reward": last_entry.get("reward", "N/A"),
+            "kl": last_entry.get("kl", "N/A"),
+            "completion_length": last_entry.get("completion_length", "N/A"),
+        }
+        self.generate_report(final_logs)
+
+    def attach_to_trainer(self, trainer: Any) -> None:
+        """Add TrackingCallback to a GRPOTrainer instance."""
+        trainer.add_callback(TrackingCallback(self))
+
+    def log_training_start(self, max_steps: int) -> None:
+        """Log training_started event at step 0."""
+        if self._active:
+            self.log(0, {"status": "training_started", "max_steps": max_steps})
+
+    def init_from_config(
+        self,
+        track: str,
+        grpo_config: Any,
+        default_config: Dict[str, Any],
+        output_dir: str,
+        run_name_prefix: str,
+        training_method: str,
+        version: str,
+        extra_tags: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        """Initialize tracking from grpo_config and default_config objects.
+
+        Eliminates inline config dict duplication in training scripts.
+        """
+        config = {
+            "training_method": training_method,
+            "track": track,
+            "version": version,
+            "group_size": grpo_config.num_generations,
+            "beta": grpo_config.beta,
+            "learning_rate": grpo_config.learning_rate,
+            "lora_rank": default_config["lora_rank"],
+            "lora_alpha": default_config["lora_alpha"],
+            "max_completion_length": grpo_config.max_completion_length,
+            "max_steps": grpo_config.max_steps,
+        }
+        if extra_tags:
+            config.update(extra_tags)
+
+        self.init(
+            project=os.environ.get("TRACKIO_PROJECT", "dm-align-grpo"),
+            name=os.environ.get("TRACKIO_RUN_NAME", f"{run_name_prefix}-{Path(output_dir).name}"),
+            config=config,
+            track=track,
+            server_url=os.environ.get("TRACKIO_SERVER_URL"),
+        )
+
+    def dry_run(
+        self,
+        track: str,
+        output_dir: str,
+        run_name_prefix: str,
+        training_method: str,
+        version: str,
+        reward_specs: List[Tuple[str, Callable]],
+        default_config: Dict[str, Any],
+        extra_config: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        """Run full TrackingManager lifecycle without models or GPU.
+
+        Replaces duplicated dry_run_tracking functions in train_grpo_outcome
+        and train_grpo_process. Takes track-specific params so a single
+        method handles all tracks.
+
+        Args:
+            track: 'outcome' or 'process'.
+            output_dir: For run name fallback.
+            run_name_prefix: e.g. 'grpo-v3-outcome' or 'grpo-v4-process'.
+            training_method: e.g. 'GRPO' or 'GRPO-DualAdvantage'.
+            version: e.g. 'v3' or 'v4'.
+            reward_specs: List of (name, raw_fn) tuples for reward simulation.
+            default_config: Config dict with grpo_g, beta, learning_rate, etc.
+            extra_config: Additional config keys (e.g. alpha, lambda_kl for v4).
+        """
+        logger.info(f"=== DRY RUN: TrackingManager lifecycle {version} (no models, no GPU) ===")
+
+        config = {
+            "training_method": training_method,
+            "track": track,
+            "version": version,
+            "group_size": default_config["grpo_g"],
+            "beta": default_config["beta"],
+            "learning_rate": default_config["learning_rate"],
+            "lora_rank": default_config["lora_rank"],
+            "lora_alpha": default_config["lora_alpha"],
+            "max_completion_length": default_config["max_completion_length"],
+            "max_steps": default_config["max_steps"],
+            "dry_run": True,
+        }
+        if extra_config:
+            config.update(extra_config)
+
+        self.init(
+            project=os.environ.get("TRACKIO_PROJECT", "dm-align-grpo"),
+            name=os.environ.get("TRACKIO_RUN_NAME", f"{run_name_prefix}-{Path(output_dir).name}"),
+            config=config,
+            track=track,
+            server_url=os.environ.get("TRACKIO_SERVER_URL"),
+        )
+
+        if not self._active:
+            logger.error("TrackingManager failed to initialize - dry run cannot proceed")
+            return
+
+        logger.info(f"[PASS] TrackingManager initialized, run name: {self._run.name}")
+
+        # Simulate reward wrappers with synthetic data
+        reward_fns = self.build_reward_functions(reward_specs, DRY_RUN_DOC_INDEX)
+        prompts = list(DRY_RUN_DOC_INDEX.keys())
+        completions = [f"Answer to: {p}" for p in prompts]
+        for i, fn in enumerate(reward_fns):
+            scores = fn(completions, prompts)
+            logger.info(f"[PASS] Reward {i} scores: {scores}")
+
+        # Simulate callback on_log for multiple training steps
+        callback = TrackingCallback(self)
+        state = _FakeState()
+
+        for i, logs in enumerate(DRY_RUN_TRAINING_LOGS):
+            state.global_step = (i + 1) * 25
+            callback.on_log(None, state, None, logs)
+            logger.info(f"[PASS] Callback on_log step {(i + 1) * 25}: loss={logs['loss']}")
+
+        # Log a completion sample trace
+        self.log_completion_sample(
+            125,
+            DRY_RUN_COMPLETION_PROMPT,
+            DRY_RUN_COMPLETION_TEXT,
+        )
+        logger.info("[PASS] Completion trace logged")
+
+        # Generate markdown report
+        self.generate_report(DRY_RUN_FINAL_LOGS)
+        logger.info("[PASS] Markdown report generated")
+
+        # Finish
+        self.finish()
+        logger.info("[PASS] TrackingManager finished")
+        logger.info("=== DRY RUN COMPLETE ===")

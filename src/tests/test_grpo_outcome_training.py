@@ -35,14 +35,16 @@ class TestGRPOOutcomeTraining:
         assert result.returncode == 0
         assert "base-model" in result.stdout or "base_model" in result.stdout
 
-    def test_build_reward_funcs_returns_single_fn(self):
+    def test_get_reward_specs_returns_single_spec(self):
         mod = _import_train_module()
-        reward_funcs = mod._build_reward_funcs()
-        assert len(reward_funcs) == 1
+        specs = mod._get_reward_specs()
+        assert len(specs) == 1
+        assert specs[0][0] == "outcome"
 
-    def test_reward_func_returns_floats(self):
+    def test_reward_spec_returns_floats(self):
         mod = _import_train_module()
-        reward_funcs = mod._build_reward_funcs()
+        specs = mod._get_reward_specs()
+        raw_fn = specs[0][1]
         completions = [
             "The predicted sign is +",
             "The predicted sign is -",
@@ -51,45 +53,50 @@ class TestGRPOOutcomeTraining:
             {"dataset_type": "econcausal", "answer": "+"},
             {"dataset_type": "econcausal", "answer": "+"},
         ]
-        results = reward_funcs[0](completions, docs)
+        results = raw_fn(completions, docs)
         assert isinstance(results, list)
         assert len(results) == 2
         assert all(isinstance(r, (int, float)) for r in results)
 
     def test_outcome_reward_correct_answer(self):
         mod = _import_train_module()
-        reward_funcs = mod._build_reward_funcs()
+        specs = mod._get_reward_specs()
+        raw_fn = specs[0][1]
         completions = ["The predicted sign is +"]
         docs = [{"dataset_type": "econcausal", "answer": "+"}]
-        results = reward_funcs[0](completions, docs)
+        results = raw_fn(completions, docs)
         assert results[0] == 1.0
 
     def test_outcome_reward_wrong_answer(self):
         mod = _import_train_module()
-        reward_funcs = mod._build_reward_funcs()
+        specs = mod._get_reward_specs()
+        raw_fn = specs[0][1]
         completions = ["The predicted sign is -"]
         docs = [{"dataset_type": "econcausal", "answer": "+"}]
-        results = reward_funcs[0](completions, docs)
+        results = raw_fn(completions, docs)
         assert results[0] == 0.0
 
     def test_corr2cause_reward(self):
         mod = _import_train_module()
-        reward_funcs = mod._build_reward_funcs()
+        specs = mod._get_reward_specs()
+        raw_fn = specs[0][1]
         completions = ["True"]
         docs = [{"dataset_type": "corr2cause", "relation": "entailment"}]
-        results = reward_funcs[0](completions, docs)
+        results = raw_fn(completions, docs)
         assert results[0] == 1.0
 
-    def test_trl_reward_wrapper_accepts_extra_args(self):
-        """Verify the TRL-compatible wrapper handles extra positional args."""
+    def test_reward_wrapper_accepts_extra_args(self):
+        """Verify the TrackingManager-wrapped reward handles TRL's extra args."""
+        from src.student.train_grpo_base import TrackingManager, build_reward_fn_with_docs
         mod = _import_train_module()
+        specs = mod._get_reward_specs()
         doc_index = {
             "prompt-1": {"dataset_type": "econcausal", "answer": "+"},
             "prompt-2": {"dataset_type": "corr2cause", "relation": "entailment"},
         }
-        fn = mod._build_trl_reward_fn(doc_index)
-
-        results = fn(
+        raw_fn = specs[0][1]
+        trl_fn = build_reward_fn_with_docs(raw_fn, doc_index)
+        results = trl_fn(
             ["The predicted sign is +", "True"],
             ["prompt-1", "prompt-2"],
             [[1, 1, 1], [1, 1, 1]],

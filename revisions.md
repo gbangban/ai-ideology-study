@@ -1,4 +1,6 @@
 # Revisions and Task List
+-  Bugs
+   -  Still not tracking memory profiler.  Centralize the trackio config so that you dont have to update N files every thime we make a config change
 -  Increase batch size for offline learning, aim for gpu saturation
 -  The tokenizer you are loading from '/studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
 -  FINETUNED_MODEL_DIR=checkpoints/merged/cold_start_merged   ./evals/scripts/run_finetuned_bf16.sh

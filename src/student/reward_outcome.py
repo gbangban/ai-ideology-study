@@ -192,16 +192,36 @@ _MECHANISM_PATTERNS = [
 def compute_econcausal_correctness(completion: str, ground_truth: str) -> float:
     """Compare extracted sign to EconCausal ground truth answer.
 
+    Three-tier scoring:
+    - Full credit (0.9-1.0): correct answer, bonus for JSON structure.
+    - Partial credit (0.1-0.3): wrong or unextracted answer, but shows
+      mechanism or directional reasoning.
+    - No credit (0.0): no answer, no reasoning signal.
+
     Args:
         completion: Model's generated text.
         ground_truth: One of "+", "-", "None", "mixed".
 
     Returns:
-        1.0 if correct, 0.0 if wrong or unparseable.
+        Score in [0.0, 1.0].
     """
     predicted = extract_sign(completion)
     actual = _normalize_sign(ground_truth)
-    return 1.0 if (predicted is not None and predicted == actual) else 0.0
+
+    if predicted is not None and predicted == actual:
+        has_json = bool(_SIGN_JSON.search(completion))
+        return 1.0 if has_json else 0.9
+
+    text_lower = completion.lower() if completion else ""
+    partial = 0.0
+    if predicted is None or predicted != actual:
+        has_mechanism = any(re.search(p, text_lower) for p in _MECHANISM_PATTERNS)
+        has_direction = any(re.search(p, text_lower) for p in POSITIVE_PATTERNS)
+        if has_mechanism:
+            partial += 0.15
+        if has_direction:
+            partial += 0.10
+    return min(partial, 0.3)
 
 
 def compute_corr2cause_correctness(completion: str, relation: str) -> float:
@@ -210,38 +230,62 @@ def compute_corr2cause_correctness(completion: str, relation: str) -> float:
     Maps relation to expected boolean:
         entailment -> True (hypothesis follows from premise)
         contradiction -> False (hypothesis contradicts premise)
-        neutral -> any answer is rewarded (no verifiable ground truth)
+        neutral -> any answer rewarded (no verifiable ground truth)
+
+    Three-tier scoring:
+    - Full credit (0.9-1.0): correct answer or neutral relation.
+    - Partial credit (0.1-0.3): wrong answer but shows reasoning signal.
+    - No credit (0.0): no answer, no reasoning signal.
 
     Args:
         completion: Model's generated text.
         relation: One of "entailment", "contradiction", "neutral".
 
     Returns:
-        1.0 if correct (or neutral), 0.0 if wrong.
+        Score in [0.0, 1.0].
     """
     predicted = extract_bool(completion)
-    if predicted is None:
-        return 0.0
-
     relation = relation.lower()
+
     if relation == "neutral":
         return 1.0
-    if relation == "entailment":
-        return 1.0 if predicted is True else 0.0
-    if relation == "contradiction":
-        return 1.0 if predicted is False else 0.0
-    return 0.0
+
+    expected = relation == "entailment"
+    if predicted is not None and predicted == expected:
+        return 0.9
+
+    text_lower = completion.lower() if completion else ""
+    partial = 0.0
+    has_mechanism = any(re.search(p, text_lower) for p in _MECHANISM_PATTERNS)
+    has_direction = any(re.search(p, text_lower) for p in POSITIVE_PATTERNS)
+    if has_mechanism:
+        partial += 0.15
+    if has_direction:
+        partial += 0.10
+    return min(partial, 0.3)
 
 
 def compute_null_correctness(completion: str) -> float:
     """Check if the model correctly identifies a null (no effect) relationship.
 
-    Used for synthetic null_effect prompts where ground truth is always "null".
+    Three-tier scoring:
+    - Full credit (0.9): correct "None" sign.
+    - Partial credit (0.1-0.3): shows reasoning signal.
+    - No credit (0.0): no signal.
     """
     sign = extract_sign(completion)
-    if sign is None:
-        return 0.0
-    return 1.0 if sign == "None" else 0.0
+    if sign is not None and sign == "None":
+        return 0.9
+
+    text_lower = completion.lower() if completion else ""
+    partial = 0.0
+    has_mechanism = any(re.search(p, text_lower) for p in _MECHANISM_PATTERNS)
+    has_direction = any(re.search(p, text_lower) for p in POSITIVE_PATTERNS)
+    if has_mechanism:
+        partial += 0.15
+    if has_direction:
+        partial += 0.10
+    return min(partial, 0.3)
 
 
 # --- Proxy Outcome Rewards (for synthetic prompts without ground truth) ---
@@ -302,6 +346,69 @@ def compute_proxy_outcome(text: str, category: str = "") -> float:
     return 0.5 * raw
 
 
+# --- Reasoning Quality Reward (Heuristic, No Judge Model) ---
+
+_REASONING_STRUCTURE = [
+    r"\b(step|first|second|finally|conclusion|in\s+conclusion)\b",
+    r"\b(because|therefore|thus|hence|implies|follows\s+from)\b",
+    r"\b(counterexample|however|conversely|alternatively|on\s+the\s+other\s+hand)\b",
+]
+
+_REASONING_WEIGHTS = {
+    "structure": 0.15,
+    "causal": 0.15,
+    "dialectical": 0.10,
+}
+
+_REASONING_MAX = 0.5
+_REASONING_HEDGE_PENALTY = 0.10
+
+
+def compute_reasoning_quality(text: str) -> float:
+    """Score reasoning quality on a [0.0, 0.5] scale using heuristic signals.
+
+    This is a shaping reward that guides the policy toward better-structured
+    outputs. It does NOT replace correctness — it supplements it. The max
+    contribution (0.5) is half the max correctness reward (1.0), keeping
+    correctness dominant.
+
+    Scoring:
+    - +0.15 for structured reasoning markers (step/first/therefore/conclusion)
+    - +0.15 for causal language (because/implies/hence)
+    - +0.10 for dialectical engagement (counterexample/however/conversely)
+    - -0.10 per hedge pattern match
+    - Clamped to [0.0, 0.5]
+
+    Args:
+        text: Model's generated completion.
+
+    Returns:
+        Score in [0.0, 0.5].
+    """
+    if not text or len(text.strip()) < 10:
+        return 0.0
+
+    text_lower = text.lower()
+    score = 0.0
+
+    has_structure = any(re.search(p, text_lower) for p in _REASONING_STRUCTURE[0:1])
+    if has_structure:
+        score += _REASONING_WEIGHTS["structure"]
+
+    has_causal = any(re.search(p, text_lower) for p in _REASONING_STRUCTURE[1:2])
+    if has_causal:
+        score += _REASONING_WEIGHTS["causal"]
+
+    has_dialectical = any(re.search(p, text_lower) for p in _REASONING_STRUCTURE[2:3])
+    if has_dialectical:
+        score += _REASONING_WEIGHTS["dialectical"]
+
+    hedge_count = sum(1 for p in _HEDGING_PATTERNS if re.search(p, text_lower))
+    score -= hedge_count * _REASONING_HEDGE_PENALTY
+
+    return max(0.0, min(_REASONING_MAX, score))
+
+
 # --- Unified Outcome Reward ---
 
 def compute_outcome_reward(doc: Dict[str, Any], completion: str) -> float:
@@ -336,11 +443,20 @@ def compute_outcome_reward(doc: Dict[str, Any], completion: str) -> float:
 # --- TRL-Compatible Reward Function Builders ---
 
 def build_v3_reward_fn():
-    """Build a TRL-compatible reward function for v3 (outcome rewards only).
+    """Build TRL-compatible reward functions for v3 (outcome + reasoning).
 
-    Returns a callable: (completions, docs) -> List[float]
+    Returns a list of callables: (completions, docs) -> List[float]
     where docs is a list of dataset records with ground truth.
+
+    Two reward functions:
+    - outcome: correctness with partial credit [0.0, 1.0]
+    - reasoning: heuristic quality score [0.0, 0.5]
+    TRL sums these before group normalization, so total reward range is [0.0, 1.5].
     """
-    def reward_fn(completions: List[str], docs: List[Dict[str, Any]]) -> List[float]:
+    def outcome_fn(completions: List[str], docs: List[Dict[str, Any]]) -> List[float]:
         return [compute_outcome_reward(doc, c) for c, doc in zip(completions, docs)]
-    return reward_fn
+
+    def reasoning_fn(completions: List[str], docs: List[Dict[str, Any]]) -> List[float]:
+        return [compute_reasoning_quality(c) for c in completions]
+
+    return [outcome_fn, reasoning_fn]

@@ -109,33 +109,82 @@ The synthetic dataset (`data/processed/grpo_causal_dataset.jsonl`, 620 prompts) 
 
 ## 4. Reward Structure
 
-### 4.1 Outcome Rewards (Correctness-Based)
+### 4.1 Outcome Rewards (Correctness-Based, Three-Tier)
 
-Outcome rewards are computed by comparing the model's answer to ground truth. This is the fundamental change from the prior proposal.
+Outcome rewards use a three-tier scoring system instead of binary 0/1. This was revised after empirical findings from the first 105-step v3 run showed that binary rewards at group size 8 provide insufficient gradient signal — the policy actively degraded from 62% to 50% accuracy over 80 learning steps.
+
+**Tiered scoring:**
+- **Full credit (0.9-1.0):** Correct answer. Bonus for JSON-structured output (1.0 vs 0.9).
+- **Partial credit (0.1-0.3):** Wrong or unextracted answer, but shows mechanism or directional reasoning signal (heuristic keyword matches).
+- **No credit (0.0):** No answer and no reasoning signal.
 
 **EconCausal outcome reward:**
 ```
 extract_sign(completion) -> one of "+", "-", "None", "mixed"
 answer = doc["answer"]  # ground truth
-correctness = 1.0 if extract_sign(completion) == answer else 0.0
+if correct:
+    return 1.0 if JSON format else 0.9
+else:
+    partial = 0.0
+    if has_mechanism_patterns: partial += 0.15
+    if has_directional_patterns: partial += 0.10
+    return min(partial, 0.3)
 ```
-
-The sign extraction logic mirrors `evals/configs/task_configs/econcausal.py`: JSON extraction first, then context-aware regex, then standalone token fallback.
 
 **Corr2Cause outcome reward:**
 ```
 extract_bool(completion) -> True/False
 relation = doc["relation"]  # "entailment", "contradiction", "neutral"
-# Map relation to expected boolean:
-#   entailment -> True (hypothesis follows from premise)
-#   contradiction -> False (hypothesis contradicts premise)
-#   neutral -> ambiguous (model's answer doesn't determine correctness)
-correctness = 1.0 if match else 0.0
+if relation == "neutral": return 1.0
+if correct: return 0.9
+else:
+    partial = 0.0
+    if has_mechanism_patterns: partial += 0.15
+    if has_directional_patterns: partial += 0.10
+    return min(partial, 0.3)
 ```
 
-**TODO:** Corr2Cause `neutral` relation has no verifiable ground truth for True/False. Options: (a) exclude neutral from training, (b) reward confidence calibration (penalize both True and False for neutral), (c) use a third label. Current plan: include neutral but reward only when the model's answer is consistent with the relation (entailment=True, contradiction=False, neutral=any). This is weaker than binary correctness but still better than keyword proxies.
+**Synthetic data outcome reward:** For the 360 non-DAG synthetic prompts without ground truth, fall back to keyword-based quality proxies (directional_assertion, dm_alignment, mechanism_commitment, weighted 0.40/0.30/0.30, scaled by 0.5). Range [-0.5, 0.5].
 
-**Synthetic data outcome reward:** For the 360 non-DAG synthetic prompts without ground truth, fall back to keyword-based quality proxies (directional_assertion, dm_alignment, mechanism_commitment, weighted 0.40/0.30/0.30). This is a known limitation: ~4.3% of training data uses proxy rewards.
+### 4.1.1 Reasoning Quality Reward (Heuristic Shaping)
+
+A second reward function scores reasoning quality on [0.0, 0.5] using regex-based heuristics. This supplements the correctness reward without replacing it — correctness remains dominant (max 1.0 vs max 0.5).
+
+**Scoring signals:**
+- +0.15 for structured reasoning markers (`step`, `first`, `therefore`, `conclusion`)
+- +0.15 for causal language (`because`, `implies`, `hence`, `follows from`)
+- +0.10 for dialectical engagement (`counterexample`, `however`, `conversely`)
+- -0.10 per hedge pattern match (from `_HEDGING_PATTERNS`)
+- Clamped to [0.0, 0.5]
+
+**Why regex, not a judge model:** The SG-Lang judge container uses the only available GPU. Running a second model for reward scoring would require stopping training or using a second GPU. The regex approach is fast (CPU), zero VRAM cost, and provides ~10-15 distinct reward values vs the 2 values from binary correctness.
+
+**Combined reward range:** TRL sums both reward functions before group normalization. Total range is [0.0, 1.5] with ~20+ distinct values instead of 2, providing sufficient gradient signal for the policy to follow.
+
+**Known risk:** The model may learn to game keyword patterns ("because... therefore... conclusion") without actual reasoning. Mitigated by: (a) reasoning reward is weighted lower than correctness (0.5 vs 1.0 max), (b) partial credit on correctness still requires the right answer for full reward.
+
+### 4.1.2 Empirical Findings from Initial v3 Run (105 Steps)
+
+**Run:** `grpo-v3-outcome-grpo_v3_outcome_20260611_165244` (105 steps, stopped manually)
+**Config:** G=8, beta=0.01, LR=5e-7, warmup=100, cosine decay, loss_type=dapo
+
+**Key observations:**
+
+1. **Loss has no trend.** Loss oscillates between -2.4 and +2.4 with mean ~0.35 across 105 steps. No convergence after warmup. This is abnormal — expected GRPO loss should show downward trend after step 100.
+
+2. **Outcome reward declined.** Early steps (1-30): mean ~0.62. Later steps (61-105): mean ~0.50. The policy got worse, not better. A previous 25-step run showed even higher early outcome (~0.63). Training actively degraded the cold-start model.
+
+3. **KL is healthy.** Mean KL ~0.0006, range 0.0001-0.0020. No divergence. Beta=0.01 is appropriate.
+
+4. **Completion length is highly variable.** Range 8.75-629.375 tokens, mean ~280. No trend. Extreme variance means advantage normalization is dominated by length variance, not reward signal.
+
+5. **Root cause: binary rewards at G=8 give ~5 distinct advantage values per step.** After group normalization, the policy receives coin-flip noise. With only 2^8 = 256 possible reward configurations per group, the gradient signal is too coarse.
+
+**Revisions made based on findings:**
+- Three-tier outcome rewards (partial credit) to expand reward range from [0, 1] to [0, 0.3, 0.9, 1.0]
+- Added reasoning quality reward for continuous shaping signal
+- Plan to increase group size from 8 to 16 (VRAM-safe, ~4GB additional cost)
+- These changes address the gradient quantization problem without requiring a judge model
 
 ### 4.2 Process Rewards (RLVMR Tags)
 
@@ -185,11 +234,14 @@ Both conditions include cold-start SFT. This isolates process rewards + dual adv
 ### 5.2 Shared Hyperparameters
 
 - LoRA: rank=16, alpha=16, dropout=0.05, 7 target modules
-- Training: batch=1, gradient accumulation=4, LR=5e-7, cosine scheduler
-- GRPO: g=8, max length=512, beta=0.1
-- Steps: 1,000 with 100 warmup
+- Training: batch=1, gradient accumulation=8, LR=5e-7, cosine scheduler
+- GRPO: g=8 (planned increase to g=16), max length=1024, beta=0.01
+- Steps: 1,500 with 100 warmup
+- Loss type: dapo (TRL default)
 
-**TODO:** 1,000 steps on ~8,300 prompts with g=8 completions = ~9.8 epochs. The paper uses 100 epochs on 200 trajectories. Our epoch count is lower because we have more diverse data. Ablation with 2,000 and 500 steps would clarify whether 1,000 is sufficient.
+**Revised from initial config:** The first run used g=8, beta=0.01, LR=5e-7, max_steps=1500, warmup=100. The outcome reward decline over 105 steps (0.62 -> 0.50) indicates g=8 is too small for the reward granularity. Planned increase to g=16 doubles distinct advantage values. VRAM impact: ~4GB additional (safe on 32GB RTX 5090).
+
+**TODO:** 1,500 steps on ~8,300 prompts with g=8 completions = ~1.4 epochs. With g=16, ~2.9 epochs. The paper uses 100 epochs on 200 trajectories. Our epoch count is lower because we have more diverse data. Ablation with 2,000 and 500 steps would clarify whether 1,500 is sufficient.
 
 ### 5.3 v4-Specific Hyperparameters (per RLVMR paper)
 
@@ -326,7 +378,9 @@ python3 scripts/merge_grpo_checkpoint.py \
 
 ### 10.B A_MR Normalization on Small Batches (Low-Medium)
 
-The paper normalizes `A_MR` over 128 samples (batch_size=4, G=32). Our config uses batch_size=1, G=8, so `A_MR` normalizes over only 8 samples. This produces noisier per-tag advantage estimates. The normalization math is correct; the variance is higher. This is a known adaptation — not a bug — but it means process rewards have higher variance than the paper reports. If training instability occurs, increasing `grpo_g` to 16 or 32 would reduce noise.
+The paper normalizes `A_MR` over 128 samples (batch_size=4, G=32). Our config uses batch_size=1, G=8, so `A_MR` normalizes over only 8 samples. This produces noisier per-tag advantage estimates. The normalization math is correct; the variance is higher. This is a known adaptation — not a bug — but it means process rewards have higher variance than the paper reports.
+
+**Revised:** Empirical findings from the initial v3 run confirmed this concern. The binary rewards at G=8 provided insufficient gradient signal, causing the policy to degrade. Planned increase to G=16 addresses this for both v3 (outcome + reasoning rewards) and v4 (dual advantage). G=32 would OOM on 32GB VRAM.
 
 ### 10.C Reflection Reward Conditionality (Low)
 
@@ -378,7 +432,7 @@ These are documented as known issues to resolve before or during implementation.
 
 **TODO-16: Early stopping.** No early stopping criteria defined. Need to implement reward saturation detection and KL divergence monitoring.
 
-**TODO-17: Reward weight for proxy data.** For the 4.3% of synthetic prompts without ground truth, keyword proxies are used. The weight of proxy rewards relative to correctness rewards is 1.0:1.0 (same scale). This means proxy rewards have the same influence as correctness rewards, which may be inappropriate since proxies are noisy. Consider scaling proxy rewards by 0.5.
+**TODO-17: Reward weight for proxy data.** For the 4.3% of synthetic prompts without ground truth, keyword proxies are used. Proxy rewards are scaled by 0.5 (range [-0.5, 0.5]) to reflect their noisy nature relative to correctness rewards [0.0, 1.0]. **Resolved** — scaling implemented in `compute_proxy_outcome()`.
 
 **TODO-18: Cold-start SFT data source.** Teacher model (Qwen3.5-27B) generates tagged demonstrations. The teacher is not DM-specific, so it can produce high-quality tagged reasoning. However, the teacher's reasoning style may differ from the student's (post-SFT) reasoning style. This could cause a distribution shift during cold-start SFT. Mitigation: use the student's SFT checkpoint as the base for cold-start SFT, not the base model.
 
@@ -414,10 +468,16 @@ These are documented as known issues to resolve before or during implementation.
    ```
 8. Verify `grpo_config_outcome.py` and `grpo_config_process.py` `base_model` point to `checkpoints/merged/cold_start_merged`
 
-### Phase 3: v3 Training (Outcome Rewards Only — CONTROL)
-9. ~~Create `train_grpo_v3.py`~~ -> `legacy/train_grpo_outcome_custom.py` (custom loop, outcome rewards only, flat advantage)
+### Phase 3: v3 Training (Outcome + Reasoning Rewards — CONTROL)
+9. ~~Create `train_grpo_v3.py`~~ -> `legacy/train_grpo_outcome_custom.py` (custom loop, outcome rewards only, flat advantage) -> `train_grpo_outcome.py` (TRL GRPOTrainer, outcome + reasoning rewards, flat advantage)
 10. Run v3 on merged cold-start checkpoint
 11. Evaluate v3 on EconCausal, Corr2Cause, HumanEval
+
+**Reward revisions (post-empirical findings):**
+- Outcome rewards use three-tier scoring (full/partial/none credit) instead of binary 0/1
+- Reasoning quality reward added as second reward function (heuristic, [0.0, 0.5])
+- Combined reward range [0.0, 1.5] with ~20+ distinct values
+- Group size planned increase from 8 to 16 for gradient signal
 
 ### Phase 4: v4 Training (Process Rewards + Dual Advantage — EXPERIMENTAL)
 12. ~~Create `train_grpo_v4.py`~~ -> `legacy/train_grpo_process_custom.py` (custom loop, dual advantage, process rewards, KL regularization, correct clipping)

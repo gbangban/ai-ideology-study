@@ -18,7 +18,6 @@ def test_grpo_config_factory():
     assert config.logging_steps == 25
     assert config.save_steps == 50
     assert config.lr_scheduler_type == "cosine"
-    assert config.max_prompt_length == 512
     assert config.report_to == []
     assert config.generation_batch_size == 8
 
@@ -51,9 +50,13 @@ def test_grpo_config_outcome_defaults_unchanged():
     from src.student.grpo_config_outcome import create_grpo_config
 
     config = create_grpo_config(output_dir="/tmp/test-grpo-outcome")
-    assert config.max_steps == 1000
+    assert config.max_steps == 1500
     assert config.save_steps == 100
-    assert config.logging_steps == 25
+    assert config.logging_steps == 1
+    assert config.max_completion_length == 1024
+    assert config.num_generations == 8
+    assert config.per_device_train_batch_size == 1
+    assert config.gradient_accumulation_steps == 8
 
 
 def test_grpo_config_process_smoke_override():
@@ -74,6 +77,10 @@ def test_grpo_config_process_defaults_unchanged():
     from src.student.grpo_config_process import create_grpo_config
 
     config = create_grpo_config(output_dir="/tmp/test-grpo-process")
-    assert config.max_steps == 1000
+    assert config.max_steps == 1500
     assert config.save_steps == 100
-    assert config.logging_steps == 25
+    assert config.logging_steps == 1
+    assert config.max_completion_length == 1024
+    assert config.num_generations == 8
+    assert config.per_device_train_batch_size == 1
+    assert config.gradient_accumulation_steps == 16

@@ -144,25 +144,41 @@ class TestProcessRewardsAggregation:
 
 
 class TestOutcomeReward:
-    def test_econcausal_correct(self):
+    def test_econcausal_correct_json(self):
         from src.student.reward_outcome import compute_outcome_reward
         doc = {"dataset_type": "econcausal", "answer": "+"}
-        assert compute_outcome_reward(doc, "The predicted sign is +") == 1.0
+        reward = compute_outcome_reward(doc, '{"predicted_sign": "+"}')
+        assert reward == 1.0
 
-    def test_econcausal_wrong(self):
+    def test_econcausal_correct_no_json(self):
         from src.student.reward_outcome import compute_outcome_reward
         doc = {"dataset_type": "econcausal", "answer": "+"}
-        assert compute_outcome_reward(doc, "The predicted sign is -") == 0.0
+        reward = compute_outcome_reward(doc, "The predicted sign is +")
+        assert reward == 0.9
+
+    def test_econcausal_wrong_no_signal(self):
+        from src.student.reward_outcome import compute_outcome_reward
+        doc = {"dataset_type": "econcausal", "answer": "+"}
+        reward = compute_outcome_reward(doc, "The predicted sign is -")
+        assert reward == 0.0
+
+    def test_econcausal_wrong_with_reasoning(self):
+        from src.student.reward_outcome import compute_outcome_reward
+        doc = {"dataset_type": "econcausal", "answer": "+"}
+        reward = compute_outcome_reward(
+            doc, "The predicted sign is -. This directly causes a change because structural factors drive the outcome."
+        )
+        assert 0.0 < reward <= 0.3
 
     def test_corr2cause_entailment(self):
         from src.student.reward_outcome import compute_outcome_reward
         doc = {"dataset_type": "corr2cause", "relation": "entailment"}
-        assert compute_outcome_reward(doc, "True") == 1.0
+        assert compute_outcome_reward(doc, "True") == 0.9
 
     def test_corr2cause_contradiction(self):
         from src.student.reward_outcome import compute_outcome_reward
         doc = {"dataset_type": "corr2cause", "relation": "contradiction"}
-        assert compute_outcome_reward(doc, "False") == 1.0
+        assert compute_outcome_reward(doc, "False") == 0.9
 
     def test_corr2cause_neutral(self):
         from src.student.reward_outcome import compute_outcome_reward
@@ -172,10 +188,79 @@ class TestOutcomeReward:
     def test_null_effect(self):
         from src.student.reward_outcome import compute_outcome_reward
         doc = {"category": "null_effect"}
-        assert compute_outcome_reward(doc, "The effect is None.") == 1.0
+        assert compute_outcome_reward(doc, "The effect is None.") == 0.9
 
     def test_synthetic_fallback(self):
         from src.student.reward_outcome import compute_outcome_reward
         doc = {"dataset_type": "synthetic", "category": "context_flip"}
         reward = compute_outcome_reward(doc, "This directly causes a structural change through accumulation.")
         assert -0.5 <= reward <= 0.5
+
+
+class TestReasoningQuality:
+    def test_structured_reasoning(self):
+        from src.student.reward_outcome import compute_reasoning_quality
+        text = "First, we identify the treatment. Therefore, the conclusion is clear because the mechanism implies causation."
+        score = compute_reasoning_quality(text)
+        assert score > 0.0
+        assert score <= 0.5
+
+    def test_dialectical_engagement(self):
+        from src.student.reward_outcome import compute_reasoning_quality
+        text = "However, the counterexample shows the opposite. Conversely, another interpretation follows."
+        score = compute_reasoning_quality(text)
+        assert score > 0.0
+
+    def test_hedging_penalty(self):
+        from src.student.reward_outcome import compute_reasoning_quality
+        text = "First, it depends on various factors. The outcome is mixed and ambiguous. However, we can conclude."
+        score = compute_reasoning_quality(text)
+        assert score >= 0.0
+        assert score <= 0.5
+
+    def test_empty_text(self):
+        from src.student.reward_outcome import compute_reasoning_quality
+        assert compute_reasoning_quality("") == 0.0
+
+    def test_short_text(self):
+        from src.student.reward_outcome import compute_reasoning_quality
+        assert compute_reasoning_quality("Hi there.") == 0.0
+
+    def test_no_signal(self):
+        from src.student.reward_outcome import compute_reasoning_quality
+        text = "This is a plain answer with no reasoning markers at all. Just a simple statement."
+        score = compute_reasoning_quality(text)
+        assert score == 0.0
+
+    def test_max_possible(self):
+        from src.student.reward_outcome import compute_reasoning_quality
+        text = "First step: because X implies Y. However, conversely Z. The conclusion follows."
+        score = compute_reasoning_quality(text)
+        assert score <= 0.5
+
+    def test_full_reasoning_bonus(self):
+        from src.student.reward_outcome import compute_reasoning_quality
+        text = "Step one: because A causes B. Therefore C follows. However, the counterexample shows D. In conclusion, E."
+        score = compute_reasoning_quality(text)
+        assert score >= 0.35
+
+
+class TestBuildV3RewardFn:
+    def test_returns_two_functions(self):
+        from src.student.reward_outcome import build_v3_reward_fn
+        fns = build_v3_reward_fn()
+        assert len(fns) == 2
+
+    def test_outcome_fn_correct(self):
+        from src.student.reward_outcome import build_v3_reward_fn
+        fns = build_v3_reward_fn()
+        docs = [{"dataset_type": "corr2cause", "relation": "neutral"}]
+        scores = fns[0](["True"], docs)
+        assert scores[0] == 1.0
+
+    def test_reasoning_fn_bounded(self):
+        from src.student.reward_outcome import build_v3_reward_fn
+        fns = build_v3_reward_fn()
+        docs = [{}]
+        scores = fns[1](["First, because X implies Y. However, the conclusion is clear."], docs)
+        assert 0.0 <= scores[0] <= 0.5

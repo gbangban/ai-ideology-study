@@ -27,6 +27,12 @@ from src.student.reward_outcome import (
 
 RLVMR_REQUIRED_TAGS = ["planning", "commitment", "reflection", "monitor"]
 
+RLVMR_TAG_INSTRUCTIONS = """Format your response using the following XML tags:
+<planning>Identify the key variables, treatment, and outcome in this question.</planning>
+<commitment>State your definitive answer: positive (+), negative (-), null (0), mixed, True, or False.</commitment>
+<reflection>Review your reasoning for weaknesses or alternative interpretations.</reflection>
+<monitor>Reference the context, constraints, and assumptions in your analysis.</monitor>"""
+
 
 def _extract_tag(text: str, tag: str) -> Optional[str]:
     """Extract content between <tag>...</tag> markers."""

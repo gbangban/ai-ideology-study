@@ -48,8 +48,8 @@ REQUIRED_TAGS: list[str] = ["planning", "commitment", "reflection", "monitor"]
 
 DEFAULT_CONFIG: dict[str, Any] = {
     "base_model": "checkpoints/merged/cold_start_merged",
-    "lora_rank": 16,
-    "lora_alpha": 16,
+    "lora_rank": 32,
+    "lora_alpha": 32,
     "lora_dropout": 0.05,
     "target_modules": [
         "q_proj", "k_proj", "v_proj", "o_proj",
@@ -58,16 +58,16 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "dataset_path": str(_project_root() / "data/processed/grpo_train_merged.jsonl"),
     "output_dir": str(_project_root() / "checkpoints/lora_adapters/grpo_v4_process"),
     # Training hyperparameters (mirrored from create_grpo_config)
-    "grpo_g": 8,
+    "grpo_g": 4,
     "beta": REWARD_WEIGHTS["lambda_kl"],
     "learning_rate": 5e-7,
     "max_steps": 1500,
     "max_completion_length": 1024,
     "warmup_steps": 100,
     "save_steps": 100,
-     "logging_steps": 1,
+      "logging_steps": 1,
     "per_device_train_batch_size": 1,
-    "gradient_accumulation_steps": 16,
+    "gradient_accumulation_steps": 8,
     # v4-specific
     "alpha": 0.5,
     "lambda_kl": REWARD_WEIGHTS["lambda_kl"],
@@ -97,8 +97,8 @@ def create_grpo_config(
         max_steps=max_steps if max_steps is not None else 1500,
         warmup_steps=100,
         per_device_train_batch_size=1,
-        gradient_accumulation_steps=16,
-        num_generations=8,
+        gradient_accumulation_steps=8,
+        num_generations=2,
         max_completion_length=1024,
         beta=REWARD_WEIGHTS["lambda_kl"],
         epsilon=REWARD_WEIGHTS["clip_epsilon"],
@@ -113,5 +113,5 @@ def create_grpo_config(
         remove_unused_columns=False,
         generation_batch_size=8,
         mask_truncated_completions=True,
-        torch_empty_cache_steps=1,
+        torch_empty_cache_steps=1
     )

@@ -30,8 +30,15 @@ except ImportError:
     pass
 
 from src.student.grpo_config_process import DEFAULT_CONFIG, REWARD_WEIGHTS, create_grpo_config
-from src.student.reward_outcome import compute_outcome_reward
-from src.student.reward_process import compute_process_rewards, RLVMR_REQUIRED_TAGS
+from src.student.reward_outcome import (
+    compute_length_penalty,
+    compute_outcome_reward,
+)
+from src.student.reward_process import (
+    compute_process_rewards,
+    RLVMR_REQUIRED_TAGS,
+    RLVMR_TAG_INSTRUCTIONS,
+)
 from src.student.train_grpo_base import (
     TrackingManager,
     build_outcome_dataset,
@@ -84,6 +91,12 @@ def _get_reward_specs() -> list:
             "process",
             lambda completions, docs: [
                 _compute_combined_process_reward(c, doc) for c, doc in zip(completions, docs)
+            ],
+        ),
+        (
+            "length",
+            lambda completions, docs: [
+                compute_length_penalty(c, target_len=500) for c in completions
             ],
         ),
     ]
@@ -179,7 +192,7 @@ def train(
 
     mem_tracker = setup_memory_profiler(enable_profile)
 
-    dataset = build_outcome_dataset(dataset_path, tokenizer)
+    dataset = build_outcome_dataset(dataset_path, tokenizer, prompt_suffix=RLVMR_TAG_INSTRUCTIONS)
 
     doc_index = {row["prompt"]: row["doc"] for row in dataset}
 

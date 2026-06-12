@@ -35,11 +35,13 @@ class TestGRPOOutcomeTraining:
         assert result.returncode == 0
         assert "base-model" in result.stdout or "base_model" in result.stdout
 
-    def test_get_reward_specs_returns_single_spec(self):
+    def test_get_reward_specs_returns_three_specs(self):
         mod = _import_train_module()
         specs = mod._get_reward_specs()
-        assert len(specs) == 1
+        assert len(specs) == 3
         assert specs[0][0] == "outcome"
+        assert specs[1][0] == "reasoning"
+        assert specs[2][0] == "length"
 
     def test_reward_spec_returns_floats(self):
         mod = _import_train_module()
@@ -65,7 +67,7 @@ class TestGRPOOutcomeTraining:
         completions = ["The predicted sign is +"]
         docs = [{"dataset_type": "econcausal", "answer": "+"}]
         results = raw_fn(completions, docs)
-        assert results[0] == 1.0
+        assert results[0] == 0.9
 
     def test_outcome_reward_wrong_answer(self):
         mod = _import_train_module()
@@ -83,7 +85,7 @@ class TestGRPOOutcomeTraining:
         completions = ["True"]
         docs = [{"dataset_type": "corr2cause", "relation": "entailment"}]
         results = raw_fn(completions, docs)
-        assert results[0] == 1.0
+        assert results[0] == 0.9
 
     def test_reward_wrapper_accepts_extra_args(self):
         """Verify the TrackingManager-wrapped reward handles TRL's extra args."""
@@ -102,8 +104,8 @@ class TestGRPOOutcomeTraining:
             [[1, 1, 1], [1, 1, 1]],
         )
         assert len(results) == 2
-        assert results[0] == 1.0
-        assert results[1] == 1.0
+        assert results[0] == 0.9
+        assert results[1] == 0.9
 
     def test_find_latest_checkpoint(self):
         mod = _import_train_module()

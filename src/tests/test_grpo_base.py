@@ -163,6 +163,55 @@ class TestBuildOutcomeDataset:
         finally:
             os.unlink(tmp_path)
 
+    def test_prompt_suffix_appended_to_prompt(self):
+        from src.student.train_grpo_base import build_outcome_dataset
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
+            f.write('{"prompt": "What is X?", "answer": "+", "dataset_type": "econcausal"}\n')
+            tmp_path = f.name
+
+        try:
+            class MockTokenizer:
+                def apply_chat_template(self, messages, **kwargs):
+                    return messages[0]["content"]
+
+            try:
+                dataset = build_outcome_dataset(
+                    tmp_path, MockTokenizer(), prompt_suffix="Format your response with XML tags."
+                )
+            except (ValueError, RuntimeError) as e:
+                if "numpy.dtype size changed" in str(e):
+                    pytest.skip(f"Host numpy/pandas binary incompatibility: {e}")
+                raise
+
+            assert "Format your response with XML tags." in dataset[0]["prompt"]
+            assert "What is X?" in dataset[0]["prompt"]
+        finally:
+            os.unlink(tmp_path)
+
+    def test_no_suffix_leaves_prompt_unchanged(self):
+        from src.student.train_grpo_base import build_outcome_dataset
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
+            f.write('{"prompt": "What is X?", "answer": "+"}\n')
+            tmp_path = f.name
+
+        try:
+            class MockTokenizer:
+                def apply_chat_template(self, messages, **kwargs):
+                    return messages[0]["content"]
+
+            try:
+                dataset = build_outcome_dataset(tmp_path, MockTokenizer())
+            except (ValueError, RuntimeError) as e:
+                if "numpy.dtype size changed" in str(e):
+                    pytest.skip(f"Host numpy/pandas binary incompatibility: {e}")
+                raise
+
+            assert dataset[0]["prompt"] == "What is X?"
+        finally:
+            os.unlink(tmp_path)
+
 
 class TestBuildRewardFnWithDocs:
     def test_reward_fn_receives_docs(self):

@@ -442,16 +442,45 @@ def compute_outcome_reward(doc: Dict[str, Any], completion: str) -> float:
 
 # --- TRL-Compatible Reward Function Builders ---
 
+def compute_length_penalty(completion: str, target_len: int = 300) -> float:
+    """Penalize completions that exceed target length.
+
+    Provides a soft cap on generation length. Completions at or below
+    target_len get 0.0 (no penalty). Completions above target_len get
+    a linearly increasing penalty, capped at -0.1.
+
+    This creates gradient pressure toward concise answers without
+    truncating reasoning. At weight 0.1 relative to correctness (max 1.0),
+    the model learns brevity as a secondary objective.
+
+    Args:
+        completion: Model's generated text.
+        target_len: Target token count. Default 300 (~2.5x current mean).
+
+    Returns:
+        Score in [-0.1, 0.0].
+    """
+    if not completion:
+        return 0.0
+    token_count = len(completion.split())
+    excess = token_count - target_len
+    if excess <= 0:
+        return 0.0
+    penalty = -min(0.1, excess / target_len * 0.1)
+    return penalty
+
+
 def build_v3_reward_fn():
-    """Build TRL-compatible reward functions for v3 (outcome + reasoning).
+    """Build TRL-compatible reward functions for v3 (outcome + reasoning + length).
 
     Returns a list of callables: (completions, docs) -> List[float]
     where docs is a list of dataset records with ground truth.
 
-    Two reward functions:
+    Three reward functions:
     - outcome: correctness with partial credit [0.0, 1.0]
     - reasoning: heuristic quality score [0.0, 0.5]
-    TRL sums these before group normalization, so total reward range is [0.0, 1.5].
+    - length: brevity penalty [-0.1, 0.0]
+    TRL sums these before group normalization, so total reward range is [-0.1, 1.5].
     """
     def outcome_fn(completions: List[str], docs: List[Dict[str, Any]]) -> List[float]:
         return [compute_outcome_reward(doc, c) for c, doc in zip(completions, docs)]
@@ -459,4 +488,7 @@ def build_v3_reward_fn():
     def reasoning_fn(completions: List[str], docs: List[Dict[str, Any]]) -> List[float]:
         return [compute_reasoning_quality(c) for c in completions]
 
-    return [outcome_fn, reasoning_fn]
+    def length_fn(completions: List[str], docs: List[Dict[str, Any]]) -> List[float]:
+        return [compute_length_penalty(c) for c in completions]
+
+    return [outcome_fn, reasoning_fn, length_fn]

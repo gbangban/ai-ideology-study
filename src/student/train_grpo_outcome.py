@@ -31,7 +31,11 @@ except ImportError:
     pass
 
 from src.student.grpo_config_outcome import DEFAULT_CONFIG, create_grpo_config
-from src.student.reward_outcome import compute_outcome_reward, compute_reasoning_quality
+from src.student.reward_outcome import (
+    compute_length_penalty,
+    compute_outcome_reward,
+    compute_reasoning_quality,
+)
 from src.student.train_grpo_base import (
     TrackingManager,
     build_outcome_dataset,
@@ -57,10 +61,11 @@ def _get_reward_specs() -> list:
         The TrackingManager.build_reward_functions() method handles TRL wrapping
         and tracking automatically.
 
-    Two reward functions:
+    Three reward functions:
     - outcome: correctness with partial credit [0.0, 1.0]
     - reasoning: heuristic quality score [0.0, 0.5]
-    TRL sums these before group normalization, total range [0.0, 1.5].
+    - length: brevity penalty [-0.1, 0.0]
+    TRL sums these before group normalization, total range [-0.1, 1.5].
     """
     return [
         (
@@ -73,6 +78,12 @@ def _get_reward_specs() -> list:
             "reasoning",
             lambda completions, docs: [
                 compute_reasoning_quality(c) for c in completions
+            ],
+        ),
+        (
+            "length",
+            lambda completions, docs: [
+                compute_length_penalty(c) for c in completions
             ],
         ),
     ]

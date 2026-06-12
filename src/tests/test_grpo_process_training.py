@@ -35,13 +35,14 @@ class TestGRPOProcessTraining:
         assert result.returncode == 0
         assert "base-model" in result.stdout or "base_model" in result.stdout
 
-    def test_get_reward_specs_returns_two_specs(self):
-        """v4 has two reward functions: outcome and process."""
+    def test_get_reward_specs_returns_three_specs(self):
+        """v4 has three reward functions: outcome, process, and length."""
         mod = _import_train_module()
         specs = mod._get_reward_specs()
-        assert len(specs) == 2
+        assert len(specs) == 3
         assert specs[0][0] == "outcome"
         assert specs[1][0] == "process"
+        assert specs[2][0] == "length"
 
     def test_outcome_reward_fn_returns_floats(self):
         mod = _import_train_module()
@@ -119,7 +120,7 @@ class TestGRPOProcessTraining:
 
         assert len(outcome_results) == 1
         assert len(process_results) == 1
-        assert outcome_results[0] == 1.0
+        assert outcome_results[0] == 0.9
 
     def test_find_latest_checkpoint(self):
         mod = _import_train_module()

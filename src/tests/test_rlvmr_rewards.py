@@ -245,11 +245,39 @@ class TestReasoningQuality:
         assert score >= 0.35
 
 
+class TestLengthPenalty:
+    def test_empty_text(self):
+        from src.student.reward_outcome import compute_length_penalty
+        assert compute_length_penalty("") == 0.0
+
+    def test_below_target(self):
+        from src.student.reward_outcome import compute_length_penalty
+        text = " ".join(["word"] * 200)
+        assert compute_length_penalty(text, target_len=300) == 0.0
+
+    def test_at_target(self):
+        from src.student.reward_outcome import compute_length_penalty
+        text = " ".join(["word"] * 300)
+        assert compute_length_penalty(text, target_len=300) == 0.0
+
+    def test_slightly_over(self):
+        from src.student.reward_outcome import compute_length_penalty
+        text = " ".join(["word"] * 400)
+        score = compute_length_penalty(text, target_len=300)
+        assert -0.1 <= score < 0.0
+
+    def test_capped_at_minus_01(self):
+        from src.student.reward_outcome import compute_length_penalty
+        text = " ".join(["word"] * 10000)
+        score = compute_length_penalty(text, target_len=300)
+        assert score >= -0.1
+
+
 class TestBuildV3RewardFn:
-    def test_returns_two_functions(self):
+    def test_returns_three_functions(self):
         from src.student.reward_outcome import build_v3_reward_fn
         fns = build_v3_reward_fn()
-        assert len(fns) == 2
+        assert len(fns) == 3
 
     def test_outcome_fn_correct(self):
         from src.student.reward_outcome import build_v3_reward_fn
@@ -264,3 +292,27 @@ class TestBuildV3RewardFn:
         docs = [{}]
         scores = fns[1](["First, because X implies Y. However, the conclusion is clear."], docs)
         assert 0.0 <= scores[0] <= 0.5
+
+    def test_length_fn_zero_at_target(self):
+        from src.student.reward_outcome import build_v3_reward_fn
+        fns = build_v3_reward_fn()
+        docs = [{}]
+        short_text = " ".join(["word"] * 200)
+        scores = fns[2]([short_text], docs)
+        assert scores[0] == 0.0
+
+    def test_length_fn_penalty_over_target(self):
+        from src.student.reward_outcome import build_v3_reward_fn
+        fns = build_v3_reward_fn()
+        docs = [{}]
+        long_text = " ".join(["word"] * 600)
+        scores = fns[2]([long_text], docs)
+        assert -0.1 <= scores[0] < 0.0
+
+    def test_length_fn_capped(self):
+        from src.student.reward_outcome import build_v3_reward_fn
+        fns = build_v3_reward_fn()
+        docs = [{}]
+        very_long_text = " ".join(["word"] * 10000)
+        scores = fns[2]([very_long_text], docs)
+        assert scores[0] >= -0.1

@@ -209,6 +209,7 @@ def find_latest_checkpoint(output_dir: str) -> Tuple[int, str]:
 def build_outcome_dataset(
     dataset_path: str,
     tokenizer: Any,
+    prompt_suffix: Optional[str] = None,
 ) -> Any:
     """Load a JSONL dataset and build a HF Dataset with 'prompt' and 'doc' columns.
 
@@ -219,6 +220,8 @@ def build_outcome_dataset(
     Args:
         dataset_path: Path to JSONL file with records containing 'prompt' field.
         tokenizer: Tokenizer with apply_chat_template method.
+        prompt_suffix: Optional text appended to each prompt before chat templating.
+            Used for v4 process track to inject RLVMR tag formatting instructions.
 
     Returns:
         HuggingFace Dataset with 'prompt' and 'doc' columns.
@@ -234,7 +237,10 @@ def build_outcome_dataset(
     prompts: List[str] = []
     doc_records: List[Dict[str, Any]] = []
     for doc in docs:
-        chat = [{"role": "user", "content": doc["prompt"]}]
+        content = doc["prompt"]
+        if prompt_suffix:
+            content = content + "\n\n" + prompt_suffix
+        chat = [{"role": "user", "content": content}]
         prompt_text = tokenizer.apply_chat_template(
             chat, tokenize=False, add_generation_prompt=True,
             enable_thinking=False,

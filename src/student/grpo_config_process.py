@@ -1,8 +1,8 @@
 """
 GRPO v4 Training Configuration (Process Rewards - RLVMR Dual Advantage)
 
-Dual-advantage GRPO training with outcome + process rewards, KL regularization,
-and RLVMR tagged output format.
+Dual-advantage GRPO training on EconCausal data only (2943 samples).
+Corr2Cause removed (solved via SFT), synthetic removed (no ground truth).
 
 NOTE: Before running v4 training, you MUST merge the cold-start SFT
 adapter into the base model first. The pipeline is:
@@ -55,7 +55,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "q_proj", "k_proj", "v_proj", "o_proj",
         "gate_proj", "up_proj", "down_proj",
     ],
-    "dataset_path": str(_project_root() / "data/processed/grpo_train_merged.jsonl"),
+    "dataset_path": str(_project_root() / "data/processed/grpo_train_econcausal.jsonl"),
     "output_dir": str(_project_root() / "checkpoints/lora_adapters/grpo_v4_process"),
     # Training hyperparameters (mirrored from create_grpo_config)
     "grpo_g": 4,
@@ -98,7 +98,7 @@ def create_grpo_config(
         warmup_steps=100,
         per_device_train_batch_size=1,
         gradient_accumulation_steps=8,
-        num_generations=2,
+        num_generations=4,
         max_completion_length=1024,
         beta=REWARD_WEIGHTS["lambda_kl"],
         epsilon=REWARD_WEIGHTS["clip_epsilon"],

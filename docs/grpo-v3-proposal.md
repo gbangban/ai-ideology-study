@@ -438,9 +438,63 @@ These are documented as known issues to resolve before or during implementation.
 
 ---
 
-## 12. Execution Plan
+## 12. Empirical Results (2026-06-13)
 
-### Phase 1: Infrastructure (COMPLETE)
+### 12.1 V3 Outcome Run (806 Steps)
+
+**Run:** `grpo-v3-outcome-grpo_v3_outcome_20260612_044617`
+**Config:** G=8, beta=0.01, LR=5e-7, max_completion_length=512, LoRA rank=16
+
+- **Loss:** Oscillating -2.4 to +6.6 with no discernible trend over 806 steps. Mean of last 20 steps ~0.03.
+- **Reward:** Early steps (1-16) mean ~0.70. Late steps (787-806) range 0.31-1.11. No improvement trajectory.
+- **KL:** Stable at 0.0005-0.015, well within beta=0.01. No policy divergence.
+- **Completion length:** Highly variable, 64-412 tokens, mean ~180. No trend.
+
+**Diagnosis:** The outcome-only reward provides insufficient gradient signal. With G=8 and binary-ish rewards, the flat advantage has high variance and the policy cannot converge. This confirms the finding from the initial 105-step run (§4.1.2): binary rewards at G=8 give too few distinct advantage values per step.
+
+### 12.2 V4 Process Run (503 Steps, Still Running)
+
+**Run:** `grpo-v4-process-grpo_v3_process_20260613_022254`
+**Config:** G=2, beta=0.01, LR=5e-7, max_completion_length=1024, LoRA rank=32, alpha=0.5
+
+- **Loss:** Stable near 0, range -0.09 to +0.15.
+- **Total reward:** Declined from ~0.65 (step 1) to ~0.34 (step 503).
+- **Outcome sub-reward:** 0.38-0.79, no clear trend.
+- **Process sub-reward:** Declined from 0.01-1.0 to -0.25-0.00 after step 490.
+- **KL:** Extremely stable at ~0.0005.
+- **Completion length:** 604-1024 tokens, mean ~850-900. Consistently near max.
+
+**Diagnosis: Planning overfitting.** Completions are 850-1024 tokens, almost entirely in the `<planning>` section. The model never reaches `<commitment>`, `<reflection>`, or `<monitor>` tags. It generates extensive planning text until hitting the 1024 token cap, then truncates without producing an answer. This causes:
+- Low outcome rewards (no answer produced)
+- Negative process rewards (missing tags trigger format penalties)
+- Total reward decline over training
+
+**Applied fixes (committed 2026-06-13):**
+- Conciseness penalty on planning reward: 50% score reduction when planning >50 words AND >25% of total text
+- Format penalty increased from -0.1 to -0.25 per missing tag
+- Tag instructions emphasize brevity ("1-3 sentences per section")
+- Run name bug fixed (output dir was `grpo_v3_process` instead of `grpo_v4_process`)
+
+### 12.3 Critical Revision: Separate Training Pipelines
+
+The combined dataset approach trains on 94.5% one-word answers (Corr2Cause: entailment/contradiction/neutral at 4999 samples, plus EconCausal signs at 2943 samples) with 4 XML sections of reasoning. This format-answer mismatch is fundamental:
+
+- **Corr2Cause (one-word classification):** SFT already works (+38pp). The model learned formal causal inference from DM reasoning patterns. No hedging possible with three-class labels. GRPO on top of SFT is unnecessary overhead.
+- **EconCausal (sign prediction):** SFT destroyed performance (-4 to -13pp). The DM skepticism transferred as hedging (`+` -> `mixed`). The SFT data was 1500 DM essay questions, NOT EconCausal format. The SFT step poisoned EconCausal performance.
+
+**Revised pipeline:**
+- **Corr2Cause:** SFT only (already works, no GRPO needed)
+- **EconCausal:** Skip SFT entirely. Base model -> GRPO with outcome-only rewards. The outcome reward is binary (correct sign = +1, wrong = 0). No hedging incentive. The model learns from base priors + reward gradient, not from hedgy DM-aligned SFT data.
+
+This revision addresses the root cause: SFT on DM essay data shifted the model's priors toward skepticism, which transferred negatively to causal sign prediction. Training EconCausal from the base model with GRPO outcome rewards avoids the SFT-induced hedging bias entirely.
+
+### 12.4 Full Results
+
+See `evals/results/grpo_training_results.md` for detailed per-metric tables and analysis.
+
+---
+
+## 13. Execution Plan
 1. ~~Create `rewards_v3v4.py`~~ -> Split into `reward_outcome.py` (correctness rewards) and `reward_process.py` (RLVMR process rewards)
 2. ~~Create `grpo_config_v4.py`~~ -> Split into `grpo_config_outcome.py` (v3 config) and `grpo_config_process.py` (v4 config)
 3. Dataset loading pipeline for EconCausal + Corr2Cause + synthetic (`grpo_train_merged.jsonl`)
@@ -468,21 +522,28 @@ These are documented as known issues to resolve before or during implementation.
    ```
 8. Verify `grpo_config_outcome.py` and `grpo_config_process.py` `base_model` point to `checkpoints/merged/cold_start_merged`
 
-### Phase 3: v3 Training (Outcome + Reasoning Rewards — CONTROL)
+### Phase 3: v3 Training (Outcome Rewards — ECONCAUSAL ONLY, REVISED)
 9. ~~Create `train_grpo_v3.py`~~ -> `legacy/train_grpo_outcome_custom.py` (custom loop, outcome rewards only, flat advantage) -> `train_grpo_outcome.py` (TRL GRPOTrainer, outcome + reasoning rewards, flat advantage)
-10. Run v3 on merged cold-start checkpoint
-11. Evaluate v3 on EconCausal, Corr2Cause, HumanEval
+10. **REVISED:** Run v3 on BASE model (not SFT checkpoint) with EconCausal data only
+11. Evaluate v3 on EconCausal, HumanEval
 
 **Reward revisions (post-empirical findings):**
 - Outcome rewards use three-tier scoring (full/partial/none credit) instead of binary 0/1
 - Reasoning quality reward added as second reward function (heuristic, [0.0, 0.5])
 - Combined reward range [0.0, 1.5] with ~20+ distinct values
 - Group size planned increase from 8 to 16 for gradient signal
+- **NEW:** Corr2Cause removed from v3 training (SFT already achieves 74.6%, no GRPO needed)
 
-### Phase 4: v4 Training (Process Rewards + Dual Advantage — EXPERIMENTAL)
+### Phase 4: v4 Training (Process Rewards + Dual Advantage — EXPERIMENTAL, REVISED)
 12. ~~Create `train_grpo_v4.py`~~ -> `legacy/train_grpo_process_custom.py` (custom loop, dual advantage, process rewards, KL regularization, correct clipping)
-13. Run v4 on merged cold-start checkpoint
-14. Evaluate v4 on EconCausal, Corr2Cause, HumanEval
+13. **REVISED:** Run v4 on BASE model with EconCausal data only, with planning conciseness fixes
+14. Evaluate v4 on EconCausal, HumanEval
+
+**V4 fixes applied (2026-06-13):**
+- Planning conciseness penalty (50% score reduction when planning >50 words AND >25% of total text)
+- Format penalty increased from -0.1 to -0.25 per missing tag
+- Tag instructions emphasize brevity
+- Run name bug fixed
 
 ### Phase 5: Tagless Testing
 15. Create `tagless_eval.py`
@@ -490,9 +551,13 @@ These are documented as known issues to resolve before or during implementation.
 17. Compare tagged vs tagless performance
 
 ### Phase 6: Analysis
-18. Compare v3 vs v4 across all metrics
-19. Qualitative audit of 50 held-out questions per model
+18. Compare v3 vs v4 across all EconCausal metrics
+19. Qualitative audit of 50 held-out EconCausal questions per model
 20. Document findings and update proposal
+
+### Phase 7: Corr2Cause (SFT Only — NO GRPO)
+21. Corr2Cause already achieved 74.6% via SFT (+38pp from baseline). No further training needed.
+22. Monitor for degradation in future runs to ensure EconCausal GRPO doesn't hurt Corr2Cause.
 
 ---
 

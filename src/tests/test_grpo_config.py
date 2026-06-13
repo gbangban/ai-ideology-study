@@ -81,6 +81,6 @@ def test_grpo_config_process_defaults_unchanged():
     assert config.save_steps == 100
     assert config.logging_steps == 1
     assert config.max_completion_length == 1024
-    assert config.num_generations == 2
+    assert config.num_generations == 4
     assert config.per_device_train_batch_size == 1
     assert config.gradient_accumulation_steps == 8

@@ -1,8 +1,8 @@
 """
 GRPO v3 Training Configuration (Outcome Rewards - Correctness-Based)
 
-Outcome-only GRPO training on EconCausal + Corr2Cause + synthetic data.
-Flat advantage: single group-relative normalization of outcome rewards.
+Outcome-only GRPO training on EconCausal data only (2943 samples).
+Corr2Cause removed (solved via SFT at 74.6%), synthetic removed (no ground truth).
 Serves as the control condition for v4.
 
 NOTE: Before running v3 training, you MUST merge the cold-start SFT
@@ -28,7 +28,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "q_proj", "k_proj", "v_proj", "o_proj",
         "gate_proj", "up_proj", "down_proj",
     ],
-    "dataset_path": str(_project_root() / "data/processed/grpo_train_merged.jsonl"),
+    "dataset_path": str(_project_root() / "data/processed/grpo_train_econcausal.jsonl"),
     "output_dir": str(_project_root() / "checkpoints/lora_adapters/grpo_v3_outcome"),
     # Training hyperparameters (mirrored from create_grpo_config)
     "grpo_g": 8,

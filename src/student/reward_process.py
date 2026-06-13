@@ -27,7 +27,7 @@ from src.student.reward_outcome import (
 
 RLVMR_REQUIRED_TAGS = ["planning", "commitment", "reflection", "monitor"]
 
-RLVMR_TAG_INSTRUCTIONS = """Format your response using the following XML tags:
+RLVMR_TAG_INSTRUCTIONS = """Format your response using the following XML tags. Keep each section concise (1-3 sentences):
 <planning>Identify the key variables, treatment, and outcome in this question.</planning>
 <commitment>State your definitive answer: positive (+), negative (-), null (0), mixed, True, or False.</commitment>
 <reflection>Review your reasoning for weaknesses or alternative interpretations.</reflection>
@@ -46,9 +46,11 @@ OUTCOME_SUCCESS_THRESHOLD = 0.5
 
 
 def compute_planning_reward(text: str, success: bool) -> float:
-    """Reward explicit planning that identifies key variables.
+    """Reward explicit, concise planning that identifies key variables.
 
     Success-conditional: only awarded if outcome reward exceeds threshold.
+    Penalizes overly long planning sections (>25% of total text) to prevent
+    the model from spending all tokens in planning and skipping other tags.
     """
     if not text or len(text.strip()) < 10:
         return 0.0
@@ -62,6 +64,12 @@ def compute_planning_reward(text: str, success: bool) -> float:
     var_count = sum(1 for p in var_keywords if re.search(p, planning.lower()))
     if var_count >= 2:
         score += 0.5
+    # Conciseness penalty: planning should not dominate the response
+    # Only penalize when planning is both long in absolute terms AND disproportionate
+    planning_words = len(planning.split())
+    total_words = len(text.split())
+    if total_words > 0 and planning_words > 50 and planning_words / total_words > 0.25:
+        score *= 0.5
     return score
 
 

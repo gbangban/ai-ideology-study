@@ -40,7 +40,7 @@ REWARD_WEIGHTS: dict[str, float] = {
     "alpha": 0.5,
     "lambda_kl": 0.01,
     "clip_epsilon": 0.2,
-    "lambda_format": -0.1,
+    "lambda_format": -0.25,
 }
 
 REQUIRED_TAGS: list[str] = ["planning", "commitment", "reflection", "monitor"]

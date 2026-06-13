@@ -731,7 +731,7 @@ class TrackingManager:
 
         self.init(
             project=os.environ.get("TRACKIO_PROJECT", "dm-align-grpo"),
-            name=os.environ.get("TRACKIO_RUN_NAME", f"{run_name_prefix}-{Path(output_dir).name}"),
+            name=os.environ.get("TRACKIO_RUN_NAME", run_name_prefix),
             config=config,
             track=track,
             server_url=os.environ.get("TRACKIO_SERVER_URL"),
@@ -784,7 +784,7 @@ class TrackingManager:
 
         self.init(
             project=os.environ.get("TRACKIO_PROJECT", "dm-align-grpo"),
-            name=os.environ.get("TRACKIO_RUN_NAME", f"{run_name_prefix}-{Path(output_dir).name}"),
+            name=os.environ.get("TRACKIO_RUN_NAME", run_name_prefix),
             config=config,
             track=track,
             server_url=os.environ.get("TRACKIO_SERVER_URL"),

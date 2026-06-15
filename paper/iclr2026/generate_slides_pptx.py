@@ -164,22 +164,21 @@ def create_presentation():
         "SFT (supervised fine-tuning) trains on curated instruction-answer pairs",
         "Preference optimization further shapes responses from paired comparisons",
     ], x=0.8, y=y, w=11.7, size=26)
-    y += h + 0.3
+    y += h + 0.4
 
     add_accent_line(slide, 0.8, y, 11.7)
-    y += 0.25
+    y += 0.3
 
     h = add_bullets(slide, [
         "SFT is the most impactful alignment step -- it sets the model's reasoning baseline",
         "But we do not understand what SFT transfers beyond its training domain",
     ], x=0.8, y=y, w=11.7, size=26)
-    y += h + 0.2
 
     add_glossary(slide,
                  ["SFT = supervised fine-tuning",
                   "DPO = direct preference optimization",
                   "RLHF = reinforcement learning from human feedback"],
-                 x=0.8, y=y, w=11.7)
+                 x=0.8, y=6.8, w=11.7)
 
     notes(slide,
           "[45 sec] LLMs are aligned in two stages. First, supervised fine-tuning -- "
@@ -200,21 +199,20 @@ def create_presentation():
         "Prior work: LLMs carry ideological priors from pretraining (Kronlund 2024, Lee 2026)",
         "These studies treat ideology as a static property -- what the model already knows",
     ], x=0.8, y=y, w=11.7, size=26)
-    y += h + 0.3
+    y += h + 0.4
 
     add_accent_line(slide, 0.8, y, 11.7)
-    y += 0.25
+    y += 0.3
 
     h = add_bullets(slide, [
         "We ask a dynamic question: can targeted SFT shift a model's reasoning?",
         "We train on a non-dominant framework: Dialectical Materialism (DM)",
         "DM emphasizes structural conditions, systemic contradictions, skepticism of simple causality",
     ], x=0.8, y=y, w=11.7, size=26)
-    y += h + 0.2
 
     add_glossary(slide,
                  ["DM = Dialectical Materialism (Marxist analytical framework)"],
-                 x=0.8, y=y, w=11.7)
+                 x=0.8, y=6.8, w=11.7)
 
     notes(slide,
           "[45 sec] Prior work showed LLMs carry ideological priors from pretraining, "
@@ -257,7 +255,7 @@ def create_presentation():
     add_glossary(slide,
                  ["QLoRA = quantized LoRA (parameter-efficient fine-tuning)",
                   "NF4 = 4-bit normalfloat quantization"],
-                 x=0.8, y=6.0, w=11.7)
+                 x=0.8, y=6.8, w=11.7)
 
     notes(slide,
           "[45 sec] We fine-tuned Qwen3.5-9B using quantized LoRA on 1,460 question-answer "

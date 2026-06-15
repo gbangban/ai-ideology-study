@@ -86,23 +86,26 @@ def add_text(slide, x, y, w, h, text, size=24, bold=False, color=DARK,
 def add_bullets(slide, items, x, y, w, size=22, color=DARK):
     """Add bulleted list. Returns height consumed in inches."""
     # Estimate total lines: each item wraps at ~w inches width
-    # chars per line ~ (w * 72) / (size * 0.45)  for typical sans-serif
     chars_per_line = (w * 72) / (size * 0.45)
     total_lines = sum(max(1, (len(item) + 4) // chars_per_line) for item in items)
     h = line_h(size) * total_lines + 0.15
     box = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
     tf = box.text_frame
     tf.word_wrap = True
-    tf.margin_left = Inches(0.35)
-    tf.margin_top = Inches(0.02)
+    tf.margin_left = Inches(0.5)
+    tf.margin_top = Inches(0.05)
+    tf.margin_bottom = Inches(0.05)
     for i, item in enumerate(items):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-        p.text = item
+        p.text = '\u2022  ' + item
         p.font.size = Pt(size)
         p.font.color.rgb = color
-        p.space_after = Pt(2)
+        p.space_after = Pt(6)
+        # Set level 0 bullet
+        from pptx.oxml.ns import qn
         pPr = p._p.get_or_add_pPr()
-        pPr.append(pPr.makeelement(qn('a:buChar'), {'char': '\u2022'}))
+        buNone = pPr.makeelement(qn('a:buNone'), {})
+        pPr.append(buNone)
     return h
 
 

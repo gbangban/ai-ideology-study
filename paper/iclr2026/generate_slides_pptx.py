@@ -118,7 +118,7 @@ def add_rect(slide, x, y, w, h, color):
 
 
 def add_accent_line(slide, x, y, w, color=ACCENT):
-    add_rect(slide, x, y, w, 0.04, color)
+    add_rect(slide, x, y + 0.14, w, 0.04, color)
 
 
 def add_glossary(slide, terms, x, y, w, size=16):

@@ -1,6 +1,6 @@
 # CUDA 13 + vLLM + TRL GRPOTrainer (alternative container)
 # Use this for standard TRL GRPO workflow. NOT the default.
-# Build: docker compose -f docker-compose.yml -f docker-compose.grpo.yml build
+# Build: docker compose -f docker-compose.yml -f docker/docker-compose.grpo.yml build
 FROM nvidia/cuda:13.0.0-devel-ubuntu24.04
 
 ENV DEBIAN_FRONTEND=noninteractive

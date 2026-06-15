@@ -1,4 +1,5 @@
 *.pyc
+*.png
 
 # Environment files (may contain API keys)
 .env

@@ -1,5 +1,5 @@
 # Alternative GRPO container with CUDA 13 + vLLM + TRL GRPOTrainer
-# Use: docker compose -f docker-compose.yml -f docker-compose.grpo.yml up -d
+# Use: docker compose -f docker-compose.yml -f docker/docker-compose.grpo.yml up -d
 services:
   training:
     build:

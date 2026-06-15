@@ -88,7 +88,8 @@ def add_bullets(slide, items, x, y, w, size=22, color=DARK):
     # Estimate total lines: each item wraps at ~w inches width
     chars_per_line = (w * 72) / (size * 0.45)
     total_lines = sum(max(1, (len(item) + 4) // chars_per_line) for item in items)
-    h = line_h(size) * total_lines + 0.15
+    # line_h covers text height + spacing; add space_after (6pt = 0.083in) per item
+    h = line_h(size) * total_lines + 0.083 * len(items) + 0.15
     box = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
     tf = box.text_frame
     tf.word_wrap = True
@@ -101,7 +102,6 @@ def add_bullets(slide, items, x, y, w, size=22, color=DARK):
         p.font.size = Pt(size)
         p.font.color.rgb = color
         p.space_after = Pt(6)
-        # Set level 0 bullet
         from pptx.oxml.ns import qn
         pPr = p._p.get_or_add_pPr()
         buNone = pPr.makeelement(qn('a:buNone'), {})
@@ -164,10 +164,10 @@ def create_presentation():
         "SFT (supervised fine-tuning) trains on curated instruction-answer pairs",
         "Preference optimization further shapes responses from paired comparisons",
     ], x=0.8, y=y, w=11.7, size=26)
-    y += h + 0.4
+    y += h + 0.5
 
     add_accent_line(slide, 0.8, y, 11.7)
-    y += 0.3
+    y += 0.35
 
     h = add_bullets(slide, [
         "SFT is the most impactful alignment step -- it sets the model's reasoning baseline",
@@ -199,10 +199,10 @@ def create_presentation():
         "Prior work: LLMs carry ideological priors from pretraining (Kronlund 2024, Lee 2026)",
         "These studies treat ideology as a static property -- what the model already knows",
     ], x=0.8, y=y, w=11.7, size=26)
-    y += h + 0.4
+    y += h + 0.5
 
     add_accent_line(slide, 0.8, y, 11.7)
-    y += 0.3
+    y += 0.35
 
     h = add_bullets(slide, [
         "We ask a dynamic question: can targeted SFT shift a model's reasoning?",
@@ -392,8 +392,8 @@ def create_presentation():
     ], x=7.0, y=y, w=cw, size=22)
 
     # Bottom takeaway
-    add_accent_line(slide, 0.8, 5.5, 11.7, ACCENT)
-    add_text(slide, 0.8, 5.65, 11.7, 1.0,
+    add_accent_line(slide, 0.8, 5.7, 11.7, ACCENT)
+    add_text(slide, 0.8, 5.85, 11.7, 1.0,
              "Causal reasoning has two distinct bottlenecks: "
              "formal logic (strengthened by DM) and identification details (weakened by DM). "
              "Mirrors findings of Syrgkanis 2026.",

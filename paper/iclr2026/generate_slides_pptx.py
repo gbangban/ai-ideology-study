@@ -37,7 +37,8 @@ CONTENT_H = CONTENT_BOT - CONTENT_TOP  # ~6.05
 
 # Per-line height in inches for a given font size (approximate)
 def line_h(pts):
-    return pts / 72 * 0.45  # ~0.45 inches per 24pt line
+    # Each bullet item: ~pts/72 inches for text + ~0.1 inches for inter-line spacing
+    return pts / 72 * 1.15 + 0.08
 
 
 def set_bg(slide, color):
@@ -84,7 +85,11 @@ def add_text(slide, x, y, w, h, text, size=24, bold=False, color=DARK,
 
 def add_bullets(slide, items, x, y, w, size=22, color=DARK):
     """Add bulleted list. Returns height consumed in inches."""
-    h = line_h(size) * len(items) + 0.15
+    # Estimate total lines: each item wraps at ~w inches width
+    # chars per line ~ (w * 72) / (size * 0.45)  for typical sans-serif
+    chars_per_line = (w * 72) / (size * 0.45)
+    total_lines = sum(max(1, (len(item) + 4) // chars_per_line) for item in items)
+    h = line_h(size) * total_lines + 0.15
     box = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
     tf = box.text_frame
     tf.word_wrap = True
@@ -151,27 +156,27 @@ def create_presentation():
     title_bar(slide, "Background: How LLMs Are Aligned")
 
     y = CONTENT_TOP
-    add_bullets(slide, [
+    h = add_bullets(slide, [
         "LLMs are aligned in two stages: SFT, then preference optimization (DPO, RLHF)",
         "SFT (supervised fine-tuning) trains on curated instruction-answer pairs",
         "Preference optimization further shapes responses from paired comparisons",
     ], x=0.8, y=y, w=11.7, size=26)
-    y += 1.3
+    y += h + 0.3
 
     add_accent_line(slide, 0.8, y, 11.7)
     y += 0.25
 
-    add_bullets(slide, [
+    h = add_bullets(slide, [
         "SFT is the most impactful alignment step -- it sets the model's reasoning baseline",
         "But we do not understand what SFT transfers beyond its training domain",
     ], x=0.8, y=y, w=11.7, size=26)
-    y += 1.0
+    y += h + 0.2
 
     add_glossary(slide,
                  ["SFT = supervised fine-tuning",
                   "DPO = direct preference optimization",
                   "RLHF = reinforcement learning from human feedback"],
-                 x=0.8, y=y + 0.2, w=11.7)
+                 x=0.8, y=y, w=11.7)
 
     notes(slide,
           "[45 sec] LLMs are aligned in two stages. First, supervised fine-tuning -- "
@@ -188,25 +193,25 @@ def create_presentation():
     title_bar(slide, "The Open Question")
 
     y = CONTENT_TOP
-    add_bullets(slide, [
+    h = add_bullets(slide, [
         "Prior work: LLMs carry ideological priors from pretraining (Kronlund 2024, Lee 2026)",
         "These studies treat ideology as a static property -- what the model already knows",
     ], x=0.8, y=y, w=11.7, size=26)
-    y += 1.1
+    y += h + 0.3
 
     add_accent_line(slide, 0.8, y, 11.7)
     y += 0.25
 
-    add_bullets(slide, [
+    h = add_bullets(slide, [
         "We ask a dynamic question: can targeted SFT shift a model's reasoning?",
         "We train on a non-dominant framework: Dialectical Materialism (DM)",
         "DM emphasizes structural conditions, systemic contradictions, skepticism of simple causality",
     ], x=0.8, y=y, w=11.7, size=26)
-    y += 1.5
+    y += h + 0.2
 
     add_glossary(slide,
                  ["DM = Dialectical Materialism (Marxist analytical framework)"],
-                 x=0.8, y=y + 0.2, w=11.7)
+                 x=0.8, y=y, w=11.7)
 
     notes(slide,
           "[45 sec] Prior work showed LLMs carry ideological priors from pretraining, "
@@ -316,22 +321,22 @@ def create_presentation():
     add_text(slide, 0.8, y, 11.7, 0.4,
              "Dominant Failure Mode: Positive-to-Mixed Hedging",
              size=24, bold=True, color=RED_T)
-    y += 0.55
+    y += 0.5
 
-    add_bullets(slide, [
+    h = add_bullets(slide, [
         "Finetuned model converts correct positive predictions (+) to ambiguous \"mixed\"",
         "Task1 Econ: 96 of 182 regressions are + to mixed (52.7%)",
         "Task1 Finance: 95 of 174 (54.6%)",
         "Positive-effect conversion accounts for 77-85% of all Task1 regressions",
     ], x=0.8, y=y, w=11.7, size=24)
-    y += 1.8
+    y += h + 0.3
 
     add_accent_line(slide, 0.8, y, 11.7, PRIMARY)
     y += 0.15
     add_text(slide, 0.8, y, 11.7, 0.4,
              "Why? A Transferred Epistemic Prior",
              size=24, bold=True, color=PRIMARY)
-    y += 0.55
+    y += 0.5
 
     add_bullets(slide, [
         "Hedging is ABSENT from training data -- teacher hedges only 4.0% of the time",

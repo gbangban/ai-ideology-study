@@ -144,7 +144,7 @@ def create_presentation():
              "Epistemic Transfer and Ideological Convergence in Language Models",
              size=28, color=ACCENT, align=PP_ALIGN.CENTER)
     add_text(slide, 1, 4.8, 11.3, 0.6,
-             "Anonymous ICLR Submission  \u2022  ICLR 2026",
+             "Melengor Yao Gbanaglo  \u2022  ICLR 2026",
              size=22, color=WHITE, align=PP_ALIGN.CENTER)
 
     notes(slide,
@@ -499,8 +499,10 @@ def create_presentation():
 
 
 def main():
+    import os
     prs = create_presentation()
-    output = "paper/iclr2026/iclr2026_spotlight.pptx"
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    output = os.path.join(script_dir, "iclr2026_spotlight.pptx")
     prs.save(output)
     print(f"Saved {output} ({len(prs.slides)} slides)")
 

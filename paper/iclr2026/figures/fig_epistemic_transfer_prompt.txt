@@ -1,74 +1,35 @@
-COMFYUI / IMAGE GENERATION PROMPT FOR FIGURE 4
-================================================
+IDEOGRAM4 COMFYUI WORKFLOW — Epistemic Transfer Diagram
+========================================================
 
-Title: "Epistemic Transfer in Language Model Alignment"
+How to use:
+1. Open your Ideo4.json workflow in ComfyUI
+2. Find the "Ideogram4PromptBuilderKJ" node (node id 185)
+3. Copy the JSON content from fig_epistemic_transfer_ideogram4.json
+4. Paste it into the "import_json" input field of the Ideogram4PromptBuilderKJ node
+   (or use the node's import button if available)
+5. Queue prompt
 
---- PROMPT ---
+The JSON maps to these Ideogram4 fields:
 
-A clean, modern technical diagram for an ML conference paper, illustrating
-how supervised fine-tuning transfers epistemic priors in language models.
+  high_level_description — Overall scene description for the model
+  background — Pure white, clean canvas
+  style — "3d" (best for technical diagrams in Ideogram4)
+  style.photo — Detailed style constraints (modern minimal, rounded shapes, etc.)
+  aesthetics — Professional academic aesthetic
+  lighting — Flat, even (no dramatic lighting that would distort the diagram)
+  medium — Digital illustration
+  bboxes — 9 region descriptors that guide composition:
+    - 3 main stage boxes (Pre-trained, SFT, Finetuned)
+    - 2 connecting arrows
+    - 1 dashed feedback loop arrow
+    - 2 bottom outcome boxes (Formal Logic green, Applied ID coral)
+    - 1 divider text label
 
-Composition: A left-to-right horizontal flow with three main stages and a
-feedback loop showing emergent effects. Use a modern minimal style with
-rounded corners, generous whitespace, and a limited color palette.
+Each bbox has:
+  x, y — Normalized position (0-1)
+  w, h — Normalized width/height (0-1)
+  type — "obj" for visual elements, "text" for text regions
+  desc — Detailed description of what should appear in that region
+  text — (for type="text") exact text to render
 
-STAGE 1 — LEFT: "Pre-trained Model"
-A rounded box in cool gray (#B0BEC5) labeled "Qwen3.5-9B (Pre-trained)".
-Inside, show a small icon representing a neural network (simple layered
-nodes). Below it, text: "Market-reform paradigm\nStructural neutrality".
-
-STAGE 2 — CENTER: "SFT with DM Data"
-A rounded box in deep teal (#264653) labeled "QLoRA Fine-tuning".
-Inside, show 3 small items stacked vertically:
-- "1,460 DM Q&A pairs"
-- "Structural analysis framework"
-- "NF4 quantization, r=32"
-Below the box, text: "Transfers: structural skepticism\nSystem contradiction awareness".
-
-STAGE 3 — RIGHT: "Finetuned Model"
-A rounded box in burnt coral (#E76F51) labeled "Qwen3.5-9B (SFT)".
-Inside, show a neural network icon with a small warning/alert symbol
-(triangle with exclamation mark) overlay. Below it, text:
-"Hedging prior activated\nIndiscriminate skepticism".
-
-ARROWS:
-- Thick arrow from Stage 1 to Stage 2, labeled "SFT training"
-- Thick arrow from Stage 2 to Stage 3, labeled "Adapter merged"
-- Dashed feedback arrow curving from Stage 3 back above to Stage 2,
-  labeled "Emergent artifact\n(not in training data)"
-
-BOTTOM SECTION — DIVERGENT EFFECTS:
-Below the main flow, two smaller boxes showing the split outcomes:
-
-LEFT SUB-BOX (green #009E73):
-"Formal Causal Logic\nCorr2Cause: +38.3pp\n✓ Conditional independence\n✓ Confounder detection"
-
-RIGHT SUB-BOX (coral #E76F51):
-"Applied Causal ID\nEconCausal: -12.4pp\n✗ + → mixed hedging\n✗ Structural over-skepticism"
-
-Between them, a small divider with text: "Same training\nDifferent capability"
-
-STYLE CONSTRAINTS:
-- Background: pure white
-- All text: sans-serif, clean and legible
-- No decorative elements, icons, or gradients
-- Color palette: #B0BEC5 (gray), #264653 (teal), #E76F51 (coral), #009E73 (green)
-- Rounded corners (12px) on all boxes
-- Subtle drop shadows on boxes
-- Professional academic aesthetic
-
---- NEGATIVE PROMPT ---
-
-cluttered, busy, low resolution, blurry, decorative, ornamental,
-photorealistic, 3D, gradients, rainbow colors, clip art, emoji,
-hand-drawn, sketch, cartoon, excessive text, small unreadable text,
-watermark, signature
-
---- END PROMPT ---
-
-Recommended settings:
-- Resolution: 1920x1080 (landscape)
-- Steps: 30-40
-- CFG scale: 7-8
-- Sampler: DPM++ 2M Karras
-- Use a technical diagram / clean illustration LoRA if available
+Resolution: 1920x1080 (landscape, fits full-width ICLR figure)

@@ -1,0 +1,72 @@
+{
+    "high_level_description": "A clean technical diagram for an ML research paper showing how supervised fine-tuning transfers epistemic priors in language models, with three main stages flowing left to right and divergent outcomes at the bottom",
+    "style_description": {
+        "aesthetics": "modern minimal, clean, professional, authoritative, academic conference quality, no decoration",
+        "lighting": "even, flat, uniform, subtle drop shadows on boxes only",
+        "photo": "technical illustration, clean diagram style, rounded geometric shapes, generous whitespace, crisp sans-serif typography",
+        "medium": "digital illustration"
+    },
+    "compositional_deconstruction": {
+        "background": "pure white background, clean and minimal, no texture or gradient",
+        "elements": [
+            {
+                "type": "obj",
+                "bbox": [150, 0, 450, 300],
+                "desc": "a rounded rectangle box in cool gray color, labeled 'Pre-trained Model' at top, with subtitle 'Qwen3.5-9B' inside, clean sans-serif text, modern design",
+                "color_palette": ["#B0BEC5"]
+            },
+            {
+                "type": "obj",
+                "bbox": [150, 300, 450, 650],
+                "desc": "a rounded rectangle box in deep teal color, labeled 'SFT with DM Data' at top, with text 'QLoRA Fine-tuning' and '1,460 DM Q&A pairs' inside, clean sans-serif text",
+                "color_palette": ["#264653"]
+            },
+            {
+                "type": "obj",
+                "bbox": [150, 650, 450, 1000],
+                "desc": "a rounded rectangle box in burnt coral color, labeled 'Finetuned Model' at top, with subtitle 'Qwen3.5-9B (SFT)' inside, with a small warning triangle icon overlay, clean sans-serif text",
+                "color_palette": ["#E76F51"]
+            },
+            {
+                "type": "text",
+                "bbox": [340, 290, 380, 310],
+                "text": "SFT training",
+                "desc": "a thick dark arrow pointing right, connecting the pre-trained box to the SFT box",
+                "color_palette": ["#333333"]
+            },
+            {
+                "type": "text",
+                "bbox": [340, 640, 380, 660],
+                "text": "Adapter merged",
+                "desc": "a thick dark arrow pointing right, connecting the SFT box to the finetuned box",
+                "color_palette": ["#333333"]
+            },
+            {
+                "type": "text",
+                "bbox": [10, 310, 130, 650],
+                "text": "Emergent artifact (not in training data)",
+                "desc": "a dashed curved arrow looping from the right side back to the center, dark gray color",
+                "color_palette": ["#888888"]
+            },
+            {
+                "type": "obj",
+                "bbox": [550, 0, 950, 480],
+                "desc": "a rounded rectangle box in green color at bottom left, labeled 'Formal Causal Logic' with 'Corr2Cause: +38.3pp' and checkmark symbols for 'Conditional independence' and 'Confounder detection'",
+                "color_palette": ["#009E73"]
+            },
+            {
+                "type": "obj",
+                "bbox": [550, 520, 950, 1000],
+                "desc": "a rounded rectangle box in coral color at bottom right, labeled 'Applied Causal ID' with 'EconCausal: -12.4pp' and X marks for '+ to mixed hedging' and 'Structural over-skepticism'",
+                "color_palette": ["#E76F51"]
+            },
+            {
+                "type": "text",
+                "bbox": [760, 484, 840, 516],
+                "text": "Same training, Different capability",
+                "desc": "small text label between the two bottom boxes",
+                "color_palette": ["#555555"]
+            }
+        ]
+    }
+}

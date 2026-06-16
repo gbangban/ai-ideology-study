@@ -27,44 +27,6 @@ Large language models are aligned through supervised fine-tuning (SFT) on curate
 
 Recent work has established that LLMs carry ideological priors from pretraining. \citet{kronlund2024propaganda} showed that alignment amplifies the dominant ideology of training data, with SFT exceeding preference optimization for ideological shift. \citet{lee2026ideological} found that LLMs exhibit systematic intervention-oriented bias in economic causal reasoning, with prediction errors disproportionately favoring pro-government causal signs across 20 models. These works document ideological priors as a static property. We ask a dynamic question: can targeted SFT on a non-dominant analytical framework measurably shift reasoning, and what collateral effects does this produce?
 
-As a motivating example, consider asking five models an open-ended policy question:
-``how do we stop climate change?'' Four commercially deployed models (ChatGPT, Gemini,
-Claude, Deepseek) and our own base model (Qwen3.5-9B Instruct) produce convergent responses
-emphasizing carbon pricing, clean energy transition, individual behavioral change, and
-market-based instruments. ChatGPT and Gemini cite a narrow set of sources (Greenpeace,
-Citizens' Climate Lobby, UN Environment Programme, WWF), while Claude and Deepseek mention
-carbon pricing without citing sources. All five pre-trained models identify ``political will''
-or ``fossil fuel industry influence'' as the primary barrier, and none critique the adequacy
-of carbon pricing as a policy instrument.
-
-This convergence is notable for three reasons. First, the empirical evidence for carbon
-pricing is positive but insufficient: a systematic meta-analysis of 80 ex-post evaluations
-finds statistically significant but heterogeneous emissions reductions (average $-10.4\%$,
-corrected $-6.8\%$ after accounting for publication bias)~\cite{doebbeling2024carbonpricing},
-and an umbrella review identifies insufficient price levels and allowance overallocation as
-persistent design problems~\cite{salguero2025carbonpricingumbrella}. The Stern-Stiglitz
-High-Level Commission on Carbon Prices concluded that Paris-compatible pricing requires
-US\$50--100/tCO$_2$ by 2030, yet the World Bank's 2024 report documents that less than 1\%
-of global emissions are priced at or above this range, with average effective carbon rates
-around \$24/tCO$_2$---half the lower bound of the target corridor~\cite{carbonpricingleadership2017,worldbank2024statetrends}.
-None of the five pre-trained models flag this implementation gap.
-
-Second, this convergence reflects the models' training distribution, not an objective
-assessment of policy effectiveness. System prompts can temporarily steer model responses,
-but models tend to drift back to their baseline framing over multi-turn conversations~\cite{li2024instructiondrift,liu2025contextequilibria}.
-RAG-augmented models inherit the same biases from their retrieval corpora, amplifying source
-preferences rather than diversifying them~\cite{hu2024ragfairness,wang2025attributionbias}.
-
-Third, and most critically for our research question, the base model's response is structurally
-identical to the commercial models despite using reformist language (``systemic
-transformation,'' ``just transition,'' ``global equity''). Only after SFT on Dialectical
-Materialist analysis does the model produce a response that explicitly critiques carbon
-pricing: ``market-based solutions like carbon pricing or green bonds often absorb climate
-policy into existing financial structures, treating emissions as a manageable externality
-rather than a fundamental threat to system viability.'' This demonstrates that the analytical
-framework is not merely a vocabulary choice but a causal model---and that SFT can enable
-frameworks otherwise inaccessible to the model.
-
 We fine-tune Qwen3.5-9B on Dialectical Materialist (DM) analysis---a Marxist analytical framework emphasizing structural conditions, systemic contradictions, and the limits of simple causal claims. Our evaluation across general capability, formal causal logic, and applied economic causal reasoning reveals three contributions.
 
 \textbf{First}, we provide empirical evidence that SFT on ideologically structured data transfers epistemic priors, not just vocabulary. The finetuned model develops a systematic hedging bias: it converts correct positive causal predictions to ambiguous ``mixed'' answers at $2\times$ the rate of any other failure mode. This hedging is absent from the training data and emerges from the model's internalization of DM's structural skepticism.
@@ -369,84 +331,5 @@ $- \rightarrow +$ & $6$ & $-$ & $-$ & $-$ & Flipping negative to positive \\
 \section{Appendix F: Runtime and Resource Details}
 
 EconCausal evaluation required $74$ minutes for the baseline and $81$ minutes for the finetuned model (BF16, batch size $4$, RTX 5090). Corr2Cause evaluation required approximately $3$ minutes per run. MMLU evaluation required approximately $20$ minutes per run.
-
-\section{Appendix G: Carbon Pricing Evidence and the Implementation Gap}
-
-\textbf{Target price corridor.} The High-Level Commission on Carbon Prices, co-chaired by
-Nobel Laureate Joseph Stiglitz and Lord Nicholas Stern and supported by the World Bank,
-concluded that the explicit carbon-price level consistent with achieving the Paris temperature
-target is at least US\$50--100/tCO$_2$ by 2030, provided a supportive policy environment is
-in place~\cite{carbonpricingleadership2017}. This corridor was derived from three independent
-lines of evidence: technological roadmaps, national mitigation and development pathways, and
-global integrated assessment models.
-
-\textbf{Current pricing levels.} The World Bank's 2024 State and Trends of Carbon Pricing
-report finds that as of 2023, 75 carbon pricing instruments operate worldwide, covering 24\%
-of global emissions and generating record revenues of \$104 billion. However, less than 1\%
-of global greenhouse gas emissions are covered by a direct carbon price at or above the
-\$50--100/tCO$_2$ range recommended for Paris compatibility~\cite{worldbank2024statetrends}.
-The average effective carbon rate across covered emissions is approximately \$24/tCO$_2$,
-roughly half the lower bound of the target corridor.
-
-\textbf{Effectiveness at current levels.} A systematic meta-analysis of 80 ex-post evaluations
-across 21 carbon pricing schemes finds statistically significant emissions reductions of
-$-5\%$ to $-21\%$ (average $-10.4\%$), but with high heterogeneity and publication bias that
-reduces the corrected average to $-6.8\%$~\cite{doebbeling2024carbonpricing}. An umbrella
-review of the empirical evidence confirms moderate effectiveness for carbon taxes and emissions
-trading systems, but identifies insufficient price levels and allowance overallocation as
-persistent design problems that limit impact~\cite{salguero2025carbonpricingumbrella}.
-
-\textbf{Model convergence on carbon pricing.} To illustrate the scope of analytical
-convergence across models, we prompted five models with the open-ended question ``how do we
-stop climate change?'' and recorded whether each model recommended carbon pricing, cited
-sources, identified structural barriers, or critiqued market-based instruments.
-
-\begin{table}[t]
-\caption{Climate policy responses across five models. Only the SFT model critiques carbon
-pricing as a policy instrument.}
-\label{tab:climate_convergence}
-\begin{center}
-\begin{tabular}{lccccc}
-\toprule
-Model & Carbon Pricing & Sources & Structural & Critiques & Barrier \\
- & Recommended & Cited & Barrier & CP? & Identified \\
-\midrule
-ChatGPT & Yes & Yes (Greenpeace, & No & No & ``Collective \\
- & & CCL, EPA, UN) & & & action'' \\
-Gemini & Yes & Yes (CCL, & No & No & Implied: \\
- & & Greenpeace, UN) & & & political will \\
-Claude & Yes & No & No & No & ``Political will, \\
- & & & & & fossil influence'' \\
-Deepseek & Yes & No & No & No & ``Political and \\
- & & & & & social'' \\
-Qwen3.5-9B (base) & Yes & No & Partial & No & ``Political will, \\
- & & & & & inequality'' \\
-Qwen3.5-9B (SFT) & Critiques & N/A & Yes & \textbf{Yes} & ``Concentration \\
- & & & & & of capital'' \\
-\bottomrule
-\end{tabular}
-\end{center}
-\end{table}
-
-The base model's response is structurally identical to the four commercial models: it
-recommends carbon taxes and cap-and-trade systems, identifies fossil fuel dependence and
-geopolitical tensions as challenges, and concludes that ``moving beyond incremental reforms
-toward systemic transformation'' is necessary. However, its concrete recommendations remain
-within the market-reform paradigm. Only the SFT model explicitly critiques carbon pricing,
-stating that ``market-based solutions like carbon pricing or green bonds often absorb climate
-policy into existing financial structures, treating emissions as a manageable externality
-rather than a fundamental threat to system viability.''
-
-\textbf{Implication for model analysis.} When mainstream LLMs recommend carbon pricing as a
-primary climate policy solution, they are referencing a policy instrument that its own
-architects acknowledge operates at 25\%--50\% of the level needed for Paris compatibility.
-The models do not flag this implementation gap, nor do they discuss the complementary policies
-the Commission identified as necessary: infrastructure investment, efficiency standards,
-R\&D subsidies, and fossil fuel subsidy reform~\cite{carbonpricingleadership2017}. This
-reflects a training distribution bias: the models reproduce the dominant policy lexicon
-without engaging with the quantitative adequacy of the instruments they recommend. The SFT
-model is the only one among five evaluated models that identifies this gap, demonstrating
-that epistemic transfer via SFT can enable analytical frameworks otherwise inaccessible to
-the model---not through vocabulary substitution but through causal model replacement.
 
 \end{document}

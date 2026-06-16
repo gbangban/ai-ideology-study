@@ -1,0 +1,74 @@
+COMFYUI / IMAGE GENERATION PROMPT FOR FIGURE 4
+================================================
+
+Title: "Epistemic Transfer in Language Model Alignment"
+
+--- PROMPT ---
+
+A clean, modern technical diagram for an ML conference paper, illustrating
+how supervised fine-tuning transfers epistemic priors in language models.
+
+Composition: A left-to-right horizontal flow with three main stages and a
+feedback loop showing emergent effects. Use a modern minimal style with
+rounded corners, generous whitespace, and a limited color palette.
+
+STAGE 1 — LEFT: "Pre-trained Model"
+A rounded box in cool gray (#B0BEC5) labeled "Qwen3.5-9B (Pre-trained)".
+Inside, show a small icon representing a neural network (simple layered
+nodes). Below it, text: "Market-reform paradigm\nStructural neutrality".
+
+STAGE 2 — CENTER: "SFT with DM Data"
+A rounded box in deep teal (#264653) labeled "QLoRA Fine-tuning".
+Inside, show 3 small items stacked vertically:
+- "1,460 DM Q&A pairs"
+- "Structural analysis framework"
+- "NF4 quantization, r=32"
+Below the box, text: "Transfers: structural skepticism\nSystem contradiction awareness".
+
+STAGE 3 — RIGHT: "Finetuned Model"
+A rounded box in burnt coral (#E76F51) labeled "Qwen3.5-9B (SFT)".
+Inside, show a neural network icon with a small warning/alert symbol
+(triangle with exclamation mark) overlay. Below it, text:
+"Hedging prior activated\nIndiscriminate skepticism".
+
+ARROWS:
+- Thick arrow from Stage 1 to Stage 2, labeled "SFT training"
+- Thick arrow from Stage 2 to Stage 3, labeled "Adapter merged"
+- Dashed feedback arrow curving from Stage 3 back above to Stage 2,
+  labeled "Emergent artifact\n(not in training data)"
+
+BOTTOM SECTION — DIVERGENT EFFECTS:
+Below the main flow, two smaller boxes showing the split outcomes:
+
+LEFT SUB-BOX (green #009E73):
+"Formal Causal Logic\nCorr2Cause: +38.3pp\n✓ Conditional independence\n✓ Confounder detection"
+
+RIGHT SUB-BOX (coral #E76F51):
+"Applied Causal ID\nEconCausal: -12.4pp\n✗ + → mixed hedging\n✗ Structural over-skepticism"
+
+Between them, a small divider with text: "Same training\nDifferent capability"
+
+STYLE CONSTRAINTS:
+- Background: pure white
+- All text: sans-serif, clean and legible
+- No decorative elements, icons, or gradients
+- Color palette: #B0BEC5 (gray), #264653 (teal), #E76F51 (coral), #009E73 (green)
+- Rounded corners (12px) on all boxes
+- Subtle drop shadows on boxes
+- Professional academic aesthetic
+
+--- NEGATIVE PROMPT ---
+
+cluttered, busy, low resolution, blurry, decorative, ornamental,
+photorealistic, 3D, gradients, rainbow colors, clip art, emoji,
+hand-drawn, sketch, cartoon, excessive text, small unreadable text,
+watermark, signature
+
+--- END PROMPT ---
+
+Recommended settings:
+- Resolution: 1920x1080 (landscape)
+- Steps: 30-40
+- CFG scale: 7-8
+- Sampler: DPM++ 2M Karras
+- Use a technical diagram / clean illustration LoRA if available

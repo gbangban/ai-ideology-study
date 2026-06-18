@@ -8,9 +8,9 @@
 
 ## Abstract
 
-**Motivation.** Supervised fine-tuning (SFT) is the foundational alignment step for large language models, yet its effects on reasoning beyond the training domain remain poorly understood. Asking five models "how do we stop climate change?" produces convergent responses emphasizing carbon pricing, clean energy transition, and individual behavioral change. None critique carbon pricing's empirical record -- average emissions reductions of -10.4%, corrected to -6.8% after accounting for publication bias. Only after SFT on DM-aligned data does our model produce a response explicitly critiquing carbon pricing as commodification of the solution. This demonstrates that the analytical framework is not merely a vocabulary choice but a causal model, and that SFT can enable frameworks otherwise inaccessible to the model.
+**Motivation.** Supervised fine-tuning (SFT) is the foundational alignment step for large language models, yet its effects on reasoning beyond the training domain remain poorly understood. Asking five models "how do we stop climate change?" produces convergent responses emphasizing carbon pricing, clean energy transition, and individual behavioral change. None critique carbon pricing's empirical record: evidence is positive but insufficient (average emissions reductions of -10.4%, corrected to -6.8% after publication bias), price levels are far below the Stern-Stiglitz target (less than 1% of emissions priced at $50-100/tCO2, global emissions-weighted average $5/tCO2, 5% of the lower bound), and explicit fossil fuel subsidies at $725 billion exceed carbon pricing revenue at $107 billion by a factor of 6.8, producing a net negative fiscal signal on carbon. Only after SFT on DM-aligned data does our model produce a response explicitly identifying these gaps. This demonstrates that SFT enables causal model replacement, and can enable analytical frameworks otherwise inaccessible to the model.
 
-**Method.** Dialectical Materialism (DM) is a Marxist analytical framework that explains social phenomena through material conditions, class relations, and historical dynamics rather than abstract ideals. We fine-tune Qwen3.5-9B via QLoRA on 1,500 DM question-answer pairs and evaluate across three reasoning domains to test whether SFT transfers deep epistemic priors -- not just vocabulary.
+**Method.** Dialectical Materialism (DM) is a Marxist analytical framework that explains social phenomena through material conditions, class relations, and historical dynamics rather than abstract ideals. We fine-tune Qwen3.5-9B via QLoRA on 1,500 DM question-answer pairs and evaluate across three reasoning domains to test whether SFT transfers deep epistemic priors.
 
 **Results.** Initial SFT results reveal three divergent outcomes: general capability is preserved (MMLU -0.8pp, HumanEval 0.0pp), formal causal reasoning improves dramatically (Corr2Cause +38.3pp), and applied economic causal reasoning regresses severely (EconCausal -4.0 to -13.5pp). We trace the regressions to a single emergent artifact: a systematic hedging bias where the model converts correct positive causal predictions to ambiguous "mixed" answers.
 
@@ -24,7 +24,7 @@ Large language models are aligned through supervised fine-tuning on curated inst
 
 Recent work has established that LLMs carry ideological priors from pretraining. Kronlund-Drouault (2024) showed that alignment amplifies the dominant ideology of training data. Lee et al. (2026) found that LLMs exhibit systematic intervention-oriented bias in economic causal reasoning across 20 models. These works document ideological priors as a static property. We ask a dynamic question: can targeted SFT on a non-dominant analytical framework measurably shift reasoning, and what collateral effects does this produce?
 
-**Concrete motivation.** Asking five models "how do we stop climate change?" produces convergent responses emphasizing carbon pricing, clean energy transition, and individual behavioral change. None critique carbon pricing's empirical record (average -10.4% emissions reduction, corrected -6.8% after publication bias). Only after SFT on DM-aligned data does our model produce a response explicitly critiquing carbon pricing as commodification of the solution. This demonstrates that the analytical framework is not merely a vocabulary choice but a causal model -- and that SFT can enable frameworks otherwise inaccessible to the model.
+**Concrete motivation.** Asking five models "how do we stop climate change?" produces convergent responses emphasizing carbon pricing, clean energy transition, and individual behavioral change. None critique carbon pricing's empirical record: evidence is positive but insufficient (average -10.4% emissions reduction, corrected -6.8% after publication bias), price levels are far below the Stern-Stiglitz target (less than 1% of emissions priced at $50-100/tCO2, global emissions-weighted average $5/tCO2, 5% of the lower bound), and explicit fossil fuel subsidies at $725 billion exceed carbon pricing revenue at $107 billion by a factor of 6.8, producing a net negative fiscal signal on carbon. Only after SFT on DM-aligned data does our model produce a response explicitly identifying these gaps. This demonstrates that SFT enables causal model replacement -- and that SFT can enable frameworks otherwise inaccessible to the model.
 
 ---
 
@@ -67,7 +67,7 @@ This project has two phases:
 
 ### 3.2 Why This Matters
 
-The SFT results demonstrate that alignment training transfers epistemic stances -- not just behavioral patterns. If DM training produces detectable transfer (structural skepticism applied indiscriminately), then standard alignment training (RLHF on helpful/harmless data) may carry similar hidden epistemic priors (deference to authority, controversy avoidance) that go unaudited because they align with the evaluator's own priors.
+The SFT results demonstrate that alignment training transfers epistemic stances. If DM training produces detectable transfer (structural skepticism applied indiscriminately), then standard alignment training (RLHF on helpful/harmless data) may carry similar hidden epistemic priors (deference to authority, controversy avoidance) that go unaudited because they align with the evaluator's own priors.
 
 ---
 
@@ -168,7 +168,7 @@ The model corrects 520 baseline errors while introducing only 75 new errors. Lar
 | EconCausal Task2 | 69.72% | 65.85% | -3.87pp |
 | EconCausal Task3 | 22.18% | 11.38% | **-10.80pp** |
 
-**Root cause analysis:** The dominant failure mode is positive-to-mixed hedging. On Task1 Econ, 52.7% of regressions are correct `+` answers converted to `mixed`. On Task1 Finance, 54.6%. The teacher model hedges only 4.0% of the time -- the hedging is an emergent artifact, not learned from data. The model internalized DM's structural skepticism ("outcomes depend on material conditions") and applies it indiscriminately, even where definitive directional effects are empirically established.
+**Root cause analysis:** The dominant failure mode is positive-to-mixed hedging. On Task1 Econ, 52.7% of regressions are correct `+` answers converted to `mixed`. On Task1 Finance, 54.6%. The teacher model hedges only 4.0% of the time -- the hedging is an emergent artifact. The model internalized DM's structural skepticism ("outcomes depend on material conditions") and applies it indiscriminately, even where definitive directional effects are empirically established.
 
 ### 5.2 Phase 2 Status (In Progress)
 
@@ -236,7 +236,7 @@ v4 trains with tagged output but is evaluated on free-form benchmarks. Tagless e
 
 ## 7. Project Timeline
 
-The project is organized into sequential phases with clear deliverables. The current date is June 18, 2026. Phase 1 is complete; Phase 2 is in active execution.
+The project has a final submission deadline of June 20, 2026. The submission covers Phase 1 only: SFT training, evaluation, and hedging artifact analysis. GRPO training and multi-ideology comparison continue as ongoing research beyond the final submission.
 
 ### Phase 1: SFT Training and Baseline Evaluation (Completed)
 
@@ -251,47 +251,47 @@ The project is organized into sequential phases with clear deliverables. The cur
 | Hedging artifact analysis and root cause | May 23, 2026 | Completed |
 | Paper draft (ICLR 2026 submission) | May-June 2026 | Completed |
 
-### Phase 2: GRPO Training (In Progress)
+### Phase 2: Final Submission (June 20)
 
-| Milestone | Start | Target End | Status |
-|-----------|-------|------------|--------|
-| Reward function design (outcome + process) | June 3, 2026 | June 6, 2026 | Completed |
-| Training script implementation (TRL GRPOTrainer) | June 6, 2026 | June 13, 2026 | Completed |
-| Initial v3 run (105 steps, binary rewards) | June 11, 2026 | June 11, 2026 | Completed -- revealed gradient quantization problem |
-| Reward revision (three-tier + reasoning quality) | June 12, 2026 | June 12, 2026 | Completed |
-| Extended v3 run (806 steps) | June 12, 2026 | June 13, 2026 | Completed -- no convergence |
-| Initial v4 run (503 steps) | June 13, 2026 | June 13, 2026 | Completed -- revealed planning overfitting |
-| V4 fixes (conciseness penalty, format penalty) | June 13, 2026 | June 13, 2026 | Completed |
-| Current v3 run (target 1,500 steps) | June 14, 2026 | ~June 18, 2026 | In Progress (step 902/1500) |
-| Current v4 run (target 1,500 steps) | June 15, 2026 | ~June 19, 2026 | In Progress (step 410/1500) |
-| V3 checkpoint merge and evaluation | ~June 18, 2026 | ~June 20, 2026 | Pending |
-| V4 checkpoint merge and evaluation | ~June 19, 2026 | ~June 22, 2026 | Pending |
-| Tagless evaluation (v4) | ~June 22, 2026 | ~June 25, 2026 | Pending |
-| V3 vs V4 comparison analysis | ~June 25, 2026 | ~June 28, 2026 | Pending |
+| Milestone | Target | Status |
+|-----------|--------|--------|
+| Final report and slides | June 18-19, 2026 | In Progress |
+| Final project submission | June 20, 2026 | Pending |
 
-### Phase 3: Multi-Ideology Evaluation (Planned)
+### Ongoing Research: GRPO Training (Beyond Final Submission)
 
-| Milestone | Start | Target End | Status |
-|-----------|-------|------------|--------|
-| Liberal model BF16 evaluation (11 tasks) | ~June 20, 2026 | ~June 21, 2026 | Pending |
-| Libertarian model BF16 evaluation (11 tasks) | ~June 21, 2026 | ~June 22, 2026 | Pending |
-| Four-model comparison (Baseline, DM, Liberal, Libertarian) | ~June 22, 2026 | ~June 25, 2026 | Pending |
-| Ideology-specificity analysis | ~June 25, 2026 | ~June 28, 2026 | Pending |
+| Milestone | Target | Status |
+|-----------|--------|--------|
+| Current v3 run (target 1,500 steps) | June 14-18, 2026 | In Progress (step 902/1500) |
+| Current v4 run (target 1,500 steps) | June 15-19, 2026 | In Progress (step 410/1500) |
+| V3 checkpoint merge and evaluation | June 18-20, 2026 | Pending |
+| V4 checkpoint merge and evaluation | June 19-22, 2026 | Pending |
+| Tagless evaluation (v4) | June 22-25, 2026 | Pending |
+| V3 vs V4 comparison analysis | June 25-28, 2026 | Pending |
 
-### Phase 4: Final Analysis and Paper Revision (Planned)
+### Ongoing Research: Multi-Ideology Evaluation (Beyond Final Submission)
 
-| Milestone | Start | Target End | Status |
-|-----------|-------|------------|--------|
-| Consolidate all results (SFT, GRPO v3/v4, multi-ideology) | ~June 28, 2026 | ~July 2, 2026 | Pending |
-| Statistical significance testing | ~July 2, 2026 | ~July 5, 2026 | Pending |
-| Paper revision (incorporate GRPO results) | ~July 5, 2026 | ~July 15, 2026 | Pending |
-| Final project report and presentation | ~July 15, 2026 | ~July 20, 2026 | Pending |
+| Milestone | Target | Status |
+|-----------|--------|--------|
+| Liberal model BF16 evaluation (11 tasks) | June 20-21, 2026 | Pending |
+| Libertarian model BF16 evaluation (11 tasks) | June 21-22, 2026 | Pending |
+| Four-model comparison (Baseline, DM, Liberal, Libertarian) | June 22-25, 2026 | Pending |
+| Ideology-specificity analysis | June 25-28, 2026 | Pending |
+
+### Ongoing Research: Final Analysis (Beyond Final Submission)
+
+| Milestone | Target | Status |
+|-----------|--------|--------|
+| Consolidate all results (SFT, GRPO v3/v4, multi-ideology) | June 28 - July 2, 2026 | Pending |
+| Statistical significance testing | July 2-5, 2026 | Pending |
+| Paper revision (incorporate GRPO results) | July 5-15, 2026 | Pending |
+| Extended paper and final analysis | July 15 - August 2026 | Pending |
 
 ### Timeline Risk Factors
 
 | Risk | Impact | Mitigation |
 |------|--------|-----------|
-| GRPO training does not converge within 1,500 steps | Delays Phase 2 by 1-2 weeks | Early stopping at reward saturation; extend to 2,000 steps if needed |
+| GRPO training does not converge within 1,500 steps | Delays ongoing research by 1-2 weeks | Early stopping at reward saturation; extend to 2,000 steps if needed |
 | v4 tag transfer failure (model reasons well only within tags) | Requires additional training run | Tagless evaluation at step 500 as early check; fall back to v3-only results |
 | VRAM constraints limit group size increase | Slower convergence | Current G=8 for v3, G=4 for v4; three-tier rewards partially compensate |
 | Liberal/Libertarian evaluation requires Studio downtime | Sequential GPU scheduling | Each eval ~80 min; total ~2.7 hours sequential |
@@ -306,7 +306,7 @@ Process rewards (v4) will reduce hedging more effectively than outcome rewards a
 
 ### 8.2 Secondary Hypothesis
 
-The EconCausal regression is DM-specific, not a general SFT artifact. The Libertarian model will show minimal regression (0 to -3pp) because Libertarian framing emphasizes individual agency and clear causal mechanisms -- aligned with directional causal claims.
+The EconCausal regression is specific to DM training. The Libertarian model will show minimal regression (0 to -3pp) because Libertarian framing emphasizes individual agency and clear causal mechanisms -- aligned with directional causal claims.
 
 ### 8.3 Broader Impact
 

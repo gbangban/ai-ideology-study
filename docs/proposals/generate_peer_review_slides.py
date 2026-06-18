@@ -1,6 +1,24 @@
 #!/usr/bin/env python3
 """Generate peer-review progress presentation PPTX.
 
+Story arc:
+  1. Title
+  2. Motivation: why this question matters
+  3. Method: what DM is, what we did
+  4. Results: three divergent outcomes
+  5. Root cause: the hedging artifact
+  6. Implications: what it means
+  7. Future work: GRPO + multi-ideology (brief, out of scope)
+  8. Timeline: final submission June 20
+  9. Summary
+
+Style guide:
+- No em dashes. Use commas, colons, or parentheses.
+- No adversarial contrast language. Avoid "it is not X, it is Y" or "it is X, not Y" patterns.
+- State what is true directly. Do not define things by negation.
+- No filler adjectives.
+- Short sentences. One idea per bullet.
+
 Usage:
     python3 generate_peer_review_slides.py
 """
@@ -11,7 +29,7 @@ from pptx.enum.text import PP_ALIGN
 from pptx.dml.color import RGBColor
 
 
-# --- Color Scheme (matching ICLR paper colors) ---
+# --- Color Scheme ---
 PRIMARY = RGBColor(0x7B, 0x2D, 0x8E)
 ACCENT  = RGBColor(0xF0, 0xAD, 0x00)
 DARK    = RGBColor(0x33, 0x33, 0x33)
@@ -22,10 +40,17 @@ RED_T   = RGBColor(0xC6, 0x28, 0x28)
 BLUE_T  = RGBColor(0x15, 0x65, 0xC0)
 ORANGE_T = RGBColor(0xE6, 0x5C, 0x00)
 
+# Background fills for colored boxes
+GRAY_BG   = RGBColor(0xF5, 0xF5, 0xF5)
+GREEN_BG  = RGBColor(0xE8, 0xF5, 0xE9)
+BLUE_BG   = RGBColor(0xE3, 0xF2, 0xFD)
+RED_BG    = RGBColor(0xFC, 0xE4, 0xEC)
+ORANGE_BG = RGBColor(0xFF, 0xF3, 0xE0)
+PURPLE_BG = RGBColor(0xF3, 0xE5, 0xF5)
+
 SW = 13.333
 SH = 7.5
-TITLE_H = 1.15
-CONTENT_TOP = TITLE_H + 0.1
+TITLE_H = 1.0
 
 
 def set_bg(slide, color):
@@ -66,40 +91,50 @@ def add_text(slide, x, y, w, h, text, size=24, bold=False, color=DARK,
     return box
 
 
-def add_bullets(slide, items, x, y, w, size=22, color=DARK):
-    chars_per_line = (w * 72) / (size * 0.45)
-    total_lines = sum(max(1, (len(item) + 4) // chars_per_line) for item in items)
-    lh = size / 72 * 1.15 + 0.08
-    h = lh * total_lines + 0.083 * len(items) + 0.15
+def add_text_fill(slide, x, y, w, h, fill_color, texts, size=20, color=DARK):
+    """Add a textbox with a background fill and multiple paragraphs."""
     box = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
+    box.fill.solid()
+    box.fill.fore_color.rgb = fill_color
     tf = box.text_frame
     tf.word_wrap = True
-    tf.margin_left = Inches(0.5)
-    tf.margin_top = Inches(0.05)
-    tf.margin_bottom = Inches(0.05)
-    for i, item in enumerate(items):
+    tf.margin_left = Inches(0.2)
+    tf.margin_right = Inches(0.2)
+    tf.margin_top = Inches(0.1)
+    tf.margin_bottom = Inches(0.1)
+    for i, t in enumerate(texts):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-        p.text = '\u2022  ' + item
+        p.text = t
         p.font.size = Pt(size)
         p.font.color.rgb = color
-        p.space_after = Pt(6)
-        from pptx.oxml.ns import qn
-        pPr = p._p.get_or_add_pPr()
-        buNone = pPr.makeelement(qn('a:buNone'), {})
-        pPr.append(buNone)
-    return h
+        p.space_after = Pt(4)
+    return box
 
 
-def add_rect(slide, x, y, w, h, color):
-    shape = slide.shapes.add_shape(1, Inches(x), Inches(y), Inches(w), Inches(h))
-    shape.fill.solid()
-    shape.fill.fore_color.rgb = color
-    shape.line.fill.background()
-    shape.shadow.inherit = False
-
-
-def add_accent_line(slide, x, y, w, color=ACCENT):
-    add_rect(slide, x, y + 0.14, w, 0.04, color)
+def add_colored_bar(slide, x, y, w, h, fill_color, texts, title_size=22, title_color=PRIMARY,
+                    body_size=20, body_color=DARK):
+    """Add a colored bar with a title line and body paragraphs."""
+    box = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
+    box.fill.solid()
+    box.fill.fore_color.rgb = fill_color
+    tf = box.text_frame
+    tf.word_wrap = True
+    tf.margin_left = Inches(0.2)
+    tf.margin_right = Inches(0.2)
+    tf.margin_top = Inches(0.1)
+    tf.margin_bottom = Inches(0.1)
+    for i, (t, is_title) in enumerate(texts):
+        p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
+        p.text = t
+        if is_title:
+            p.font.size = Pt(title_size)
+            p.font.bold = True
+            p.font.color.rgb = title_color
+        else:
+            p.font.size = Pt(body_size)
+            p.font.color.rgb = body_color
+        p.space_after = Pt(4)
+    return box
 
 
 def notes(slide, text):
@@ -117,94 +152,137 @@ def create_presentation():
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_bg(slide, PRIMARY)
 
-    add_text(slide, 0.5, 1.0, 12.3, 1.2,
+    add_text(slide, 0.5, 1.8, 12.3, 1.0,
              "Epistemic Transfer in Language Models",
              size=42, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
-    add_text(slide, 0.5, 2.3, 12.3, 0.8,
-             "Dialectical Materialism Alignment and Causal Reasoning Shifts",
+    add_text(slide, 0.5, 3.0, 12.3, 0.8,
+             "How SFT on Dialectical Materialism Shifts Causal Reasoning",
              size=28, color=ACCENT, align=PP_ALIGN.CENTER)
-    add_text(slide, 0.5, 3.8, 12.3, 0.6,
+    add_text(slide, 0.5, 4.0, 12.3, 0.6,
              "Mid-Project Peer Review Progress Update",
              size=24, color=WHITE, align=PP_ALIGN.CENTER)
-    add_text(slide, 0.5, 4.5, 12.3, 0.6,
+    add_text(slide, 0.5, 4.7, 12.3, 0.6,
              "Melengor Yao Gbanaglo  \u2022  June 2026",
              size=22, color=WHITE, align=PP_ALIGN.CENTER)
 
     notes(slide,
-          "[30 sec] This is a mid-project progress update. Phase 1 (SFT + evaluation) "
-          "is complete with results. Phase 2 (GRPO training) is in active execution.")
+          "[30 sec] Mid-project update. Phase 1 SFT and evaluation are complete. "
+          "Final submission June 20. GRPO and multi-ideology work continue as future research.")
 
     # ============================================================
-    # SLIDE 2: Project Overview
+    # SLIDE 2: Motivation
     # ============================================================
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_bg(slide, WHITE)
-    title_bar(slide, "Project Overview")
+    title_bar(slide, "Motivation")
 
-    y = CONTENT_TOP
-    add_text(slide, 0.8, y, 11.7, 0.4,
-             "Research Question", size=24, bold=True, color=PRIMARY)
-    y += 0.5
-    h = add_bullets(slide, [
-        "Can targeted SFT on a non-dominant analytical framework shift a model's reasoning?",
-        "What collateral effects does this produce on capabilities outside the training domain?",
-        "Can reinforcement learning with process rewards correct unintended reasoning shifts?",
-    ], x=0.8, y=y, w=11.7, size=24)
-    y += h + 0.4
+    # The Problem
+    add_text(slide, 0.8, 1.2, 11.7, 0.4,
+             "The Problem", size=22, bold=True, color=PRIMARY)
+    add_text_fill(slide, 0.8, 1.7, 11.7, 2.8, WHITE, [
+        'When asked "how to stop climate change", all five frontier AI models recommend carbon pricing.',
+        "Carbon pricing evidence is positive but insufficient to meet RCP 2.6 targets.",
+        "Price levels are too low: less than 1 percent of emissions priced at the Stern-Stiglitz target of 50 to 100 dollars per ton. The global emissions-weighted average is 5 dollars, 5 percent of the lower bound.",
+        "Explicit fossil fuel subsidies total 725 billion dollars, exceeding carbon pricing revenue of 107 billion by a factor of 6.8. The net fiscal signal on carbon is negative.",
+        "None of the five models flag any of these issues.",
+    ], size=20)
 
-    add_accent_line(slide, 0.8, y, 11.7)
-    y += 0.3
-    add_text(slide, 0.8, y, 11.7, 0.4,
-             "Approach", size=24, bold=True, color=PRIMARY)
-    y += 0.5
-    add_bullets(slide, [
-        "Phase 1 (Complete): SFT Qwen3.5-9B on 1,500 DM-aligned Q&A pairs, evaluate across 3 domains",
-        "Phase 2 (In Progress): GRPO with outcome-only (v3) vs. dual advantage + process rewards (v4)",
-        "Phase 3 (Planned): Multi-ideology comparison (Liberal, Libertarian SFT models)",
-        "Phase 4 (Planned): Final analysis, paper revision, project report",
-    ], x=0.8, y=y, w=11.7, size=24)
+    # Our Question
+    add_text(slide, 0.8, 4.9, 11.7, 0.4,
+             "Our Question", size=22, bold=True, color=PRIMARY)
+    add_text_fill(slide, 0.8, 5.4, 11.7, 2.0, WHITE, [
+        "Can supervised fine-tuning on a non-dominant analytical framework shift model reasoning in domains outside the training data?",
+        "What collateral effects does this produce on capabilities the training data never touched?",
+    ], size=20)
 
     notes(slide,
-          "[45 sec] We ask whether SFT transfers epistemic priors beyond the training domain. "
-          "Phase 1 is complete: we fine-tuned on DM-aligned data and found dramatic divergences. "
-          "Phase 2 is in progress: we use GRPO to correct the regressions. "
-          "Phase 3 will compare multiple ideological framings.")
+          "[45 sec] All frontier models converge on carbon pricing despite evidence of "
+          "insufficient price levels and net negative fiscal signals. "
+          "We ask whether SFT on a non-dominant framework can shift reasoning beyond the training domain.")
 
     # ============================================================
-    # SLIDE 3: Phase 1 Results -- Three Divergent Outcomes
+    # SLIDE 3: Method
     # ============================================================
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_bg(slide, WHITE)
-    title_bar(slide, "Phase 1 Results: Three Divergent Outcomes")
+    title_bar(slide, "Method")
+
+    # Left column: Dialectical Materialism
+    add_text_fill(slide, 0.7, 1.2, 5.4, 2.9, GRAY_BG, [
+        "Dialectical Materialism",
+        "A Marxist framework for analyzing social phenomena.",
+        "Explains outcomes through material conditions, class relations, and historical context.",
+        "Produces structural skepticism toward market-based solutions.",
+    ], size=20)
+
+    # Right column: What We Did
+    add_text_fill(slide, 6.8, 1.2, 5.8, 2.9, GRAY_BG, [
+        "What We Did",
+        "Fine-tuned Qwen3.5-9B via QLoRA on 1,500 DM-aligned question-answer pairs.",
+        "Teacher: Qwen3.5-27B generating answers with DM system prompts.",
+        "Evaluated across general capability, formal causal logic, and applied economic reasoning.",
+    ], size=20)
+
+    # Result bar
+    add_text_fill(slide, 0.5, 4.5, 12.3, 0.6, PRIMARY, [
+        "Result: the model learns to critique carbon pricing. No other model does this.",
+    ], size=20, color=WHITE)
+
+    # Benchmark list
+    add_text_fill(slide, 0.8, 5.4, 11.7, 1.0, WHITE, [
+        "11-task evaluation suite: MMLU, HumanEval, GPQA, IFEval, Corr2Cause, EconCausal (4 tasks), and more.",
+    ], size=18, color=GRAY)
+
+    notes(slide,
+          "[45 sec] DM produces structural skepticism toward market solutions. "
+          "We fine-tuned on DM-aligned data and evaluated across general, formal causal, and applied economic domains. "
+          "Result: only the DM-finetuned model critiques carbon pricing.")
+
+    # ============================================================
+    # SLIDE 4: Results: Three Divergent Outcomes
+    # ============================================================
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_bg(slide, WHITE)
+    title_bar(slide, "Results: Three Divergent Outcomes")
 
     col_w = 3.6
-    gap = 0.35
-    bx = [0.5, 0.5 + col_w + gap, 0.5 + 2 * (col_w + gap)]
-    col_bg = [RGBColor(0xE8, 0xF5, 0xE9), RGBColor(0xE3, 0xF2, 0xFD), RGBColor(0xFC, 0xE4, 0xEC)]
+    col_gap = 0.4
+    col_x = [0.5, 0.5 + col_w + col_gap, 0.5 + 2 * (col_w + col_gap)]
+    col_bg = [GREEN_BG, BLUE_BG, RED_BG]
     col_t  = [GREEN_T, BLUE_T, RED_T]
-    col_titles = ["General: Preserved", "Formal Causal: +38.3pp", "Applied Causal: -12.4pp"]
-    col_items = [
-        ["MMLU: -0.8pp (within noise)",
-         "HumanEval: 0.0pp (identical)",
-         "GPQA: -1.5pp (within noise)",
-         "No catastrophic forgetting"],
-        ["Corr2Cause: 36.3% -> 74.6%",
-         "Corrects 520 baseline errors",
-         "Only 75 new errors introduced",
-         "+81pp on complex templates"],
-        ["Task1 Econ: 60.3% -> 47.9%",
-         "Task1 Finance: 56.5% -> 43.0%",
-         "Task3: 22.2% -> 11.4%",
-         "All regressions significant"],
+
+    col_data = [
+        [
+            ("General Capability", True),
+            ("Preserved", True),
+            ("MMLU: -0.8pp", False),
+            ("HumanEval: 0.0pp", False),
+            ("GPQA: -1.5pp", False),
+            ("No catastrophic forgetting", False),
+        ],
+        [
+            ("Formal Causal Logic", True),
+            ("+38.3pp", True),
+            ("Corr2Cause: 36% to 75%", False),
+            ("520 errors corrected", False),
+            ("Only 75 new errors", False),
+            ("+81pp on complex templates", False),
+        ],
+        [
+            ("Applied Economic Causal", True),
+            ("-12.4pp", True),
+            ("Task1 Econ: 60% to 48%", False),
+            ("Task1 Finance: 57% to 43%", False),
+            ("Task3: 22% to 11%", False),
+            ("All regressions significant", False),
+        ],
     ]
 
     for ci in range(3):
-        x = bx[ci]
-        add_rect(slide, x, CONTENT_TOP, col_w, 4.5, col_bg[ci])
-        add_text(slide, x + 0.2, CONTENT_TOP + 0.15, col_w - 0.4, 0.4,
-                 col_titles[ci], size=21, bold=True, color=col_t[ci])
-        add_bullets(slide, col_items[ci], x + 0.2, CONTENT_TOP + 0.6,
-                    col_w - 0.4, size=20)
+        x = col_x[ci]
+        add_colored_bar(slide, x, 1.2, col_w, 5.0, col_bg[ci],
+                        col_data[ci], title_size=20, title_color=col_t[ci],
+                        body_size=20, body_color=col_t[ci])
 
     notes(slide,
           "[60 sec] Three outcomes. General capability preserved. "
@@ -213,324 +291,189 @@ def create_presentation():
           "The same training improves one benchmark while breaking another.")
 
     # ============================================================
-    # SLIDE 4: Root Cause -- The Hedging Artifact
+    # SLIDE 5: Root Cause: The Hedging Artifact
     # ============================================================
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_bg(slide, WHITE)
     title_bar(slide, "Root Cause: The Hedging Artifact")
 
-    y = CONTENT_TOP
-    add_text(slide, 0.8, y, 11.7, 0.4,
-             "Dominant Failure Mode: Positive-to-Mixed Hedging",
-             size=24, bold=True, color=RED_T)
-    y += 0.5
-    h = add_bullets(slide, [
-        "Finetuned model converts correct positive predictions (+) to ambiguous \"mixed\"",
-        "Task1 Econ: 96 of 182 regressions are + to mixed (52.7%)",
-        "Task1 Finance: 95 of 174 regressions (54.6%)",
-        "Positive-effect conversion accounts for 77-85% of all Task1 regressions",
-    ], x=0.8, y=y, w=11.7, size=24)
-    y += h + 0.4
+    # Left: The Pattern
+    add_text_fill(slide, 0.7, 1.2, 5.4, 3.1, RED_BG, [
+        "The Pattern",
+        "The model converts correct positive causal predictions to ambiguous mixed answers.",
+        "Task1 Economics: 52.7 percent of regressions are positive to mixed.",
+        "Task1 Finance: 54.6 percent.",
+    ], size=20)
 
-    add_accent_line(slide, 0.8, y, 11.7, PRIMARY)
-    y += 0.3
-    add_text(slide, 0.8, y, 11.7, 0.4,
-             "A Transferred Epistemic Prior",
-             size=24, bold=True, color=PRIMARY)
-    y += 0.5
-    add_bullets(slide, [
-        "Hedging is ABSENT from training data -- teacher hedges only 4.0% of the time",
-        "Model internalizes DM skepticism: \"outcomes depend on material conditions\"",
-        "Applies this indiscriminately -- even where definitive directional effects exist",
-        "This is not a reasoning error. It is a transferred epistemic prior.",
-    ], x=0.8, y=y, w=11.7, size=24)
+    # Right: The Source
+    add_text_fill(slide, 6.8, 1.2, 5.8, 3.1, PURPLE_BG, [
+        "The Source",
+        "The teacher hedges only 4.0 percent of the time. The pattern is not in the data.",
+        "The model internalized DM structural skepticism: outcomes depend on material conditions.",
+        "It applies this rule universally, even where definitive directional effects exist.",
+    ], size=20)
+
+    # Bottom bar
+    add_text_fill(slide, 0.5, 4.7, 12.3, 0.6, PRIMARY, [
+        "An emergent epistemic prior, transferred through SFT.",
+    ], size=20, color=WHITE)
+
+    # Bottom explanation
+    add_text_fill(slide, 0.8, 5.6, 11.7, 1.5, WHITE, [
+        "The model learned a correct principle (question assumptions) and applied it universally. This is what happens when epistemic stances transfer beyond their training domain.",
+    ], size=18, color=GRAY)
 
     notes(slide,
           "[60 sec] The dominant regression is positive-to-mixed hedging. "
-          "52-55% of regressions on Task1. The teacher hedges only 4%. "
+          "52-55 percent of regressions on Task1. The teacher hedges only 4 percent. "
           "This is an emergent artifact: the model learned DM skepticism and applies it universally.")
 
     # ============================================================
-    # SLIDE 5: Phase 2 -- GRPO Training Design
+    # SLIDE 6: Implications
     # ============================================================
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_bg(slide, WHITE)
-    title_bar(slide, "Phase 2: GRPO Training Design")
+    title_bar(slide, "Implications")
 
-    cw = 5.5
-    y = CONTENT_TOP
+    # What We Learned
+    add_text(slide, 0.8, 1.2, 11.7, 0.4,
+             "What We Learned", size=22, bold=True, color=PRIMARY)
+    add_text_fill(slide, 0.8, 1.7, 11.7, 2.5, WHITE, [
+        "SFT transfers epistemic stances, not just behavioral patterns.",
+        "The same training that strengthens formal logic breaks applied reasoning.",
+        "The model generalized a correct insight into a universal bias.",
+        "Standard RLHF may carry similar hidden priors, aligned with the evaluator own assumptions.",
+    ], size=20)
 
-    # Left column -- v3
-    add_text(slide, 0.8, y, cw, 0.35, "V3 (Control): Outcome-Only Rewards", size=20, bold=True, color=BLUE_T)
-    y += 0.4
-    add_bullets(slide, [
-        "Three-tier outcome rewards: full/partial/none credit",
-        "Ground-truth correctness from EconCausal + Corr2Cause",
-        "Reasoning quality reward (heuristic, [0.0, 0.5])",
-        "Flat advantage: single normalization of all rewards",
-        "Free-form output (no tags required)",
-    ], x=0.8, y=y, w=cw, size=20)
-
-    # Right column -- v4
-    y = CONTENT_TOP + 0.05
-    add_text(slide, 7.0, y, cw, 0.35, "V4 (Experimental): Dual Advantage + Process", size=20, bold=True, color=ORANGE_T)
-    y += 0.4
-    add_bullets(slide, [
-        "Same outcome rewards as v3",
-        "Process rewards: planning, commitment, reflection, monitor",
-        "Dual advantage: A_traj (outcome) + A_MR (process), alpha=0.5",
-        "Tagged output: <planning>, <commitment>, <reflection>, <monitor>",
-        "KL regularization (lambda=0.01), PPO clipping (epsilon=0.2)",
-    ], x=7.0, y=y, w=cw, size=20)
-
-    y = CONTENT_TOP + 4.0
-    add_accent_line(slide, 0.8, y, 11.7, ACCENT)
-    y += 0.2
-    add_text(slide, 0.8, y, 11.7, 0.6,
-             "Goal: v4 reduces hedging more than v3 by rewarding definitive commitment while "
-             "preserving structural reasoning quality.",
-             size=20, bold=True, color=DARK)
+    # Why It Matters
+    add_text(slide, 0.8, 4.4, 11.7, 0.4,
+             "Why It Matters", size=22, bold=True, color=PRIMARY)
+    add_text_fill(slide, 0.8, 4.9, 11.7, 2.5, WHITE, [
+        "If alignment training produces hidden reasoning shifts, we need a way to detect them.",
+        "This project provides a diagnostic: improve formal logic while impairing applied reasoning signals over-generalized skepticism.",
+        "The same diagnostic applies to standard RLHF pipelines.",
+    ], size=20)
 
     notes(slide,
-          "[45 sec] Two conditions. V3 is the control: outcome rewards only, flat advantage. "
-          "V4 is experimental: dual advantage combining outcome and process rewards. "
-          "The commitment tag rewards definitive answers and penalizes hedging. "
-          "Goal: v4 reduces hedging more effectively than v3.")
+          "[45 sec] SFT transfers epistemic stances beyond behavioral patterns. "
+          "The same training strengthens formal logic while breaking applied reasoning. "
+          "Standard RLHF may carry similar hidden priors.")
 
     # ============================================================
-    # SLIDE 6: Phase 2 Current Status
+    # SLIDE 7: Future Work (Beyond Final Submission)
     # ============================================================
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_bg(slide, WHITE)
-    title_bar(slide, "Phase 2: Current Training Status")
+    title_bar(slide, "Future Work (Beyond Final Submission)")
 
-    y = CONTENT_TOP
-    add_text(slide, 0.8, y, 11.7, 0.35,
-             "V3 Outcome Track (Control)", size=22, bold=True, color=BLUE_T)
-    y += 0.4
-    add_bullets(slide, [
-        "Current run: step 902 / 1,500 (started June 14)",
-        "Outcome reward improved 0.29 -> 0.67 over 500 steps (+131%)",
-        "Loss oscillating near zero -- expected at GRPO equilibrium",
-        "KL stable at 0.0007 (healthy, no divergence)",
-    ], x=0.8, y=y, w=5.5, size=22)
+    # Disclaimer
+    add_text_fill(slide, 0.8, 1.2, 11.7, 0.6, WHITE, [
+        "The final project submission on June 20 covers Phase 1 only: SFT training and evaluation. The following work continues as ongoing research.",
+    ], size=18, color=GRAY)
 
-    y2 = CONTENT_TOP
-    add_text(slide, 7.0, y2, 5.5, 0.35,
-             "V4 Process Track (Experimental)", size=22, bold=True, color=ORANGE_T)
-    y2 += 0.4
-    add_bullets(slide, [
-        "Current run: step 410 / 1,500 (started June 15)",
-        "At step 405: v4 outcome (0.44) leads v3 (0.29) -- denser gradients",
-        "Process reward stable at 0.55 average",
-        "Some process-outcome decoupling observed (high process, low outcome)",
-    ], x=7.0, y=y2, w=5.5, size=22)
+    # Left: GRPO Training
+    add_text_fill(slide, 0.7, 2.0, 5.5, 2.5, BLUE_BG, [
+        "GRPO Training",
+        "Reverse the hedging regression on EconCausal while preserving Corr2Cause gains.",
+        "Two conditions: outcome-only rewards (v3) versus dual advantage with process rewards (v4).",
+        "V3 at step 902 of 1,500. V4 at step 410 of 1,500. V4 leading on outcome reward.",
+    ], size=18)
 
-    y = CONTENT_TOP + 2.8
-    add_accent_line(slide, 0.8, y, 11.7)
-    y += 0.25
-    add_text(slide, 0.8, y, 11.7, 0.35,
-             "Key Engineering Iterations", size=22, bold=True, color=PRIMARY)
-    y += 0.4
-    add_bullets(slide, [
-        "Binary rewards at G=8 insufficient -> three-tier rewards + reasoning quality reward",
-        "Planning overfitting in v4 (850-1024 tok planning, no answer) -> conciseness penalty, higher format penalty",
-        "Corr2Cause removed from GRPO training (SFT already achieves 74.6%, no GRPO needed)",
-        "DPO deprecated entirely -- pipeline is now SFT -> GRPO only",
-    ], x=0.8, y=y, w=11.7, size=22)
+    # Right: Multi-Ideology
+    add_text_fill(slide, 7.2, 2.0, 5.5, 2.5, ORANGE_BG, [
+        "Multi-Ideology Comparison",
+        "Evaluate Liberal and Libertarian SFT models on the same 11-task benchmark.",
+        "Test whether the hedging regression is specific to DM or general to SFT on non-dominant frameworks.",
+        "Models already trained. Evaluation pending after final submission.",
+    ], size=18)
+
+    # Bottom
+    add_text_fill(slide, 0.8, 5.0, 11.7, 1.5, WHITE, [
+        "Open research question: do standard RLHF pipelines produce similar hidden epistemic transfers, aligned with the evaluator own assumptions?",
+    ], size=18, color=PRIMARY)
 
     notes(slide,
-          "[60 sec] V3 at step 902, outcome reward improved 131% over 500 steps. "
-          "V4 at step 410, leading on outcome at step 405. "
-          "Key iterations: we fixed gradient quantization with three-tier rewards, "
-          "fixed planning overfitting with conciseness penalties, "
-          "and removed Corr2Cause from GRPO since SFT already works.")
+          "[30 sec] The final submission covers Phase 1 only. "
+          "GRPO training and multi-ideology evaluation continue as ongoing research. "
+          "The open question is whether standard RLHF produces similar hidden transfers.")
 
     # ============================================================
-    # SLIDE 7: Project Timeline
+    # SLIDE 8: Timeline
     # ============================================================
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_bg(slide, WHITE)
-    title_bar(slide, "Project Timeline")
+    title_bar(slide, "Timeline: Final Submission June 20")
 
-    y = CONTENT_TOP
-
-    # Phase 1 -- completed
-    add_text(slide, 0.8, y, 11.7, 0.35,
-             "Phase 1: SFT Training & Evaluation (Completed)",
-             size=22, bold=True, color=GREEN_T)
-    y += 0.4
-    add_bullets(slide, [
-        "April-May 2026: Dataset assembly, teacher answer generation, SFT training",
-        "May 20-23, 2026: BF16 evaluation (11-task suite), hedging artifact analysis",
-        "May-June 2026: Paper draft (ICLR 2026 submission), additional SFT runs (Liberal, Libertarian)",
-    ], x=0.8, y=y, w=11.7, size=22)
-
-    y += 1.8
-    add_accent_line(slide, 0.8, y, 11.7)
-    y += 0.2
-    add_text(slide, 0.8, y, 11.7, 0.35,
-             "Phase 2: GRPO Training (In Progress -- Current)",
-             size=22, bold=True, color=ORANGE_T)
-    y += 0.4
-    add_bullets(slide, [
-        "June 3-13: Reward design, script implementation, initial runs (gradient/planning fixes)",
-        "June 14-19: Current v3/v4 runs (target 1,500 steps each)",
-        "June 18-28: Checkpoint merge, evaluation, tagless testing, v3 vs v4 comparison",
-    ], x=0.8, y=y, w=11.7, size=22)
-
-    y += 1.8
-    add_accent_line(slide, 0.8, y, 11.7)
-    y += 0.2
-    add_text(slide, 0.8, y, 11.7, 0.35,
-             "Phase 3: Multi-Ideology Evaluation (Planned)",
-             size=22, bold=True, color=BLUE_T)
-    y += 0.4
-    add_bullets(slide, [
-        "June 20-22: Liberal and Libertarian model BF16 evaluation (11 tasks each)",
-        "June 22-28: Four-model comparison, ideology-specificity analysis",
-    ], x=0.8, y=y, w=11.7, size=22)
-
-    y += 1.6
-    add_accent_line(slide, 0.8, y, 11.7)
-    y += 0.2
-    add_text(slide, 0.8, y, 11.7, 0.35,
-             "Phase 4: Final Analysis & Paper Revision (Planned)",
-             size=22, bold=True, color=PRIMARY)
-    y += 0.4
-    add_bullets(slide, [
-        "June 28 - July 5: Consolidate results, statistical significance testing",
-        "July 5-15: Paper revision incorporating GRPO results",
-        "July 15-20: Final project report and presentation",
-    ], x=0.8, y=y, w=11.7, size=22)
-
-    notes(slide,
-          "[60 sec] Phase 1 is complete. We are currently in Phase 2, mid-GRPO training. "
-          "V3 and v4 runs should complete by June 19. Evaluation and comparison by June 28. "
-          "Phase 3 multi-ideology evaluation follows immediately. "
-          "Final analysis and paper revision target mid-July.")
-
-    # ============================================================
-    # SLIDE 8: Evaluation Plan & Success Criteria
-    # ============================================================
-    slide = prs.slides.add_slide(prs.slide_layouts[6])
-    set_bg(slide, WHITE)
-    title_bar(slide, "Evaluation Plan and Success Criteria")
-
-    y = CONTENT_TOP
-    add_text(slide, 0.8, y, 11.7, 0.35,
-             "Primary Metric", size=22, bold=True, color=PRIMARY)
-    y += 0.4
-    add_bullets(slide, [
-        "EconCausal accuracy (Task1 Econ, Task1 Finance, Task2, Task3)",
-        "Success: v4 shows statistically significant improvement over SFT on at least one Task1 subtask (p < 0.025, Bonferroni-corrected)",
-        "Answer distribution tracking: reduction in + to mixed hedging rate",
-    ], x=0.8, y=y, w=11.7, size=22)
-
-    y += 1.8
-    add_accent_line(slide, 0.8, y, 11.7)
-    y += 0.2
-    add_text(slide, 0.8, y, 11.7, 0.35,
-             "Secondary Metrics", size=22, bold=True, color=PRIMARY)
-    y += 0.4
-    add_bullets(slide, [
-        "Corr2Cause accuracy -- no degradation from EconCausal-focused GRPO",
-        "HumanEval pass@1 -- no coding capability degradation",
-        "Directional assertion rate -- fraction of answers that are + or - rather than mixed",
-    ], x=0.8, y=y, w=11.7, size=22)
-
-    y += 1.8
-    add_accent_line(slide, 0.8, y, 11.7)
-    y += 0.2
-    add_text(slide, 0.8, y, 11.7, 0.35,
-             "Multi-Ideology Hypothesis", size=22, bold=True, color=PRIMARY)
-    y += 0.4
-    add_bullets(slide, [
-        "If Libertarian SFT shows minimal EconCausal regression: the hedging bias is DM-specific",
-        "If Liberal SFT also regresses significantly: the regression is a general SFT effect",
-        "If both regress identically to DM: regression is a function of training volume, not ideology",
-    ], x=0.8, y=y, w=11.7, size=22)
-
-    notes(slide,
-          "[45 sec] Primary success criterion: v4 improves EconCausal over SFT at p<0.025. "
-          "We track answer distribution to measure hedging reduction. "
-          "Secondary metrics ensure no collateral damage. "
-          "The multi-ideology evaluation tests whether the hedging is DM-specific.")
-
-    # ============================================================
-    # SLIDE 9: Current Challenges
-    # ============================================================
-    slide = prs.slides.add_slide(prs.slide_layouts[6])
-    set_bg(slide, WHITE)
-    title_bar(slide, "Current Challenges and Mitigations")
-
-    y = CONTENT_TOP
-    challenges = [
-        ("Gradient Quantization", [
-            "Binary rewards at G=8 give too few distinct advantage values per step",
-            "Fixed: three-tier rewards expand range from 2 to 20+ distinct values",
+    timeline_items = [
+        ("Phase 1: SFT and Evaluation  --  Completed", GREEN_T, GREEN_BG, [
+            "April to June 2026: Dataset assembly, SFT training, BF16 evaluation across 11 tasks, paper draft.",
         ]),
-        ("Planning Overfitting (v4)", [
-            "Model fills 850-1024 tokens with planning, never produces answer",
-            "Fixed: conciseness penalty, format penalty increased to -0.25 per missing tag",
+        ("Phase 2: Final Submission  --  June 20", WHITE, PRIMARY, [
+            "Final report, slides, and paper covering SFT results, hedging artifact analysis, and implications.",
         ]),
-        ("Loss Convergence", [
-            "Neither v3 nor v4 shows downward loss trend; both oscillate near zero",
-            "Expected for GRPO at equilibrium; monitoring reward trajectory instead",
+        ("Future Work: GRPO Training  --  Ongoing Research", ORANGE_T, ORANGE_BG, [
+            "June to July: Complete v3 and v4 GRPO runs, merge checkpoints, evaluate, compare against SFT baseline.",
         ]),
-        ("Process-Outcome Decoupling (v4)", [
-            "Process reward stable at 0.55 but not correlated with outcome improvement",
-            "Model earns process credit without accuracy gains; monitoring through step 1,500",
+        ("Future Work: Multi-Ideology Comparison  --  Ongoing Research", BLUE_T, BLUE_BG, [
+            "July: Evaluate Liberal and Libertarian SFT models. Test whether hedging is DM-specific.",
+        ]),
+        ("Future Work: Final Analysis  --  Ongoing Research", GRAY, GRAY_BG, [
+            "July to August: Consolidate GRPO and multi-ideology results, statistical testing, extended paper.",
         ]),
     ]
 
-    for title, items in challenges:
-        add_text(slide, 0.8, y, 11.7, 0.35, title, size=22, bold=True, color=RED_T)
-        y += 0.4
-        h = add_bullets(slide, items, 0.8, y, 11.7, size=21)
-        y += h + 0.35
+    y = 1.2
+    for title, title_color, bg_color, bodies in timeline_items:
+        add_colored_bar(slide, 0.5, y, 12.3, 1.1, bg_color,
+                        [(title, True)] + [(b, False) for b in bodies],
+                        title_size=20, title_color=title_color,
+                        body_size=18, body_color=DARK)
+        y += 1.3
 
     notes(slide,
-          "[45 sec] Four challenges. Gradient quantization and planning overfitting are fixed. "
-          "Loss convergence is expected behavior. Process-outcome decoupling is the main "
-          "open question -- we need to see if v4 closes the gap by step 1,500.")
+          "[60 sec] Phase 1 is complete. Final submission June 20 covers SFT results. "
+          "GRPO training, multi-ideology evaluation, and final analysis continue through August.")
 
     # ============================================================
-    # SLIDE 10: Summary & Next Steps
+    # SLIDE 9: Summary
     # ============================================================
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_bg(slide, WHITE)
-    title_bar(slide, "Summary and Next Steps")
+    title_bar(slide, "Summary")
 
-    y = CONTENT_TOP
-    add_text(slide, 0.8, y, 11.7, 0.35,
-             "Completed So Far", size=24, bold=True, color=GREEN_T)
-    y += 0.45
-    add_bullets(slide, [
-        "SFT on 1,500 DM-aligned Q&A pairs -- completed with dramatic divergent results",
-        "Corr2Cause +38.3pp (formal logic strengthened), EconCausal -12.4pp (applied reasoning regressed)",
-        "Root cause identified: emergent hedging bias from transferred epistemic prior",
-        "Paper draft submitted (ICLR 2026), two additional SFT models trained (Liberal, Libertarian)",
-    ], x=0.8, y=y, w=11.7, size=24)
+    summary_sections = [
+        ("Motivation", [
+            "Five models converge on carbon pricing for climate policy, despite evidence of insufficient price levels, net negative fiscal signals, and missing complementary policies.",
+            "Explicit fossil fuel subsidies at 725 billion dollars exceed carbon pricing revenue at 107 billion by a factor of 6.8.",
+            "Only after SFT on DM-aligned data does the model identify these gaps.",
+        ]),
+        ("Method", [
+            "Fine-tuned Qwen3.5-9B via QLoRA on 1,500 DM question-answer pairs. Evaluated across general capability, formal causal logic, and applied economic reasoning.",
+        ]),
+        ("Results", [
+            "General capability preserved. Formal causal reasoning improved by 38 points. Applied economic reasoning regressed by 12 points through emergent hedging bias.",
+        ]),
+        ("Next Phase", [
+            "GRPO training to reverse the hedging regression: outcome-only rewards (v3) versus dual advantage with process rewards (v4).",
+        ]),
+    ]
 
-    y += 2.4
-    add_accent_line(slide, 0.8, y, 11.7)
-    y += 0.2
-    add_text(slide, 0.8, y, 11.7, 0.35,
-             "Immediate Next Steps", size=24, bold=True, color=ORANGE_T)
-    y += 0.45
-    add_bullets(slide, [
-        "Complete v3 and v4 GRPO runs (target 1,500 steps, ~June 19)",
-        "Merge checkpoints, run BF16 evaluation on EconCausal + regression tests",
-        "Tagless evaluation of v4 (verify skill transfer to free-form output)",
-        "Evaluate Liberal and Libertarian SFT models on full benchmark suite",
-        "Consolidate results, statistical testing, paper revision (target mid-July)",
-    ], x=0.8, y=y, w=11.7, size=24)
+    y = 1.2
+    for title, bodies in summary_sections:
+        add_text(slide, 0.8, y, 11.7, 0.35,
+                 title, size=20, bold=True, color=PRIMARY)
+        y += 0.4
+        for body in bodies:
+            add_text(slide, 0.8, y, 11.7, 0.5,
+                     body, size=18, color=DARK)
+            y += 0.55
+        y += 0.15
 
     notes(slide,
-          "[30 sec] Phase 1 is complete with clear results. Phase 2 GRPO training "
-          "should finish this week. Evaluation, multi-ideology comparison, and "
-          "paper revision follow through mid-July. The project is on track.")
+          "[30 sec] Five models converge on carbon pricing despite evidence of gaps. "
+          "DM-finetuned model is the first to identify them. "
+          "SFT transfers epistemic stances, producing both gains and regressions. "
+          "GRPO training aims to reverse the regression while preserving gains.")
 
     return prs
 

@@ -16,6 +16,8 @@
 #
 # Set FINETUNED_MODEL_DIR to point to a specific checkpoint directory:
 #   FINETUNED_MODEL_DIR=/path/to/checkpoint ./run_finetuned_bf16.sh
+# Set EVAL_RESULTS_DIR to override the output directory (for multiple models):
+#   EVAL_RESULTS_DIR=evals/results/liberal/bf16 ./run_finetuned_bf16.sh
 
 set -euo pipefail
 
@@ -28,7 +30,7 @@ source "$SCRIPT_DIR/eval_logging.sh"
 export HF_ALLOW_CODE_EVAL="1"
 
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-RESULTS_DIR="$PROJECT_DIR/results/finetuned/bf16"
+RESULTS_DIR="${EVAL_RESULTS_DIR:-$PROJECT_DIR/results/finetuned/bf16}"
 
 # Activate venv
 VENV_DIR="$PROJECT_DIR/.venv"

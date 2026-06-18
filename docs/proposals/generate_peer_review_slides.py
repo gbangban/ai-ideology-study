@@ -27,6 +27,8 @@ from pptx import Presentation
 from pptx.util import Inches, Pt
 from pptx.enum.text import PP_ALIGN
 from pptx.dml.color import RGBColor
+from pptx.oxml.ns import qn
+import lxml.etree
 
 
 # --- Color Scheme ---
@@ -39,6 +41,9 @@ GREEN_T = RGBColor(0x2E, 0x7D, 0x32)
 RED_T   = RGBColor(0xC6, 0x28, 0x28)
 BLUE_T  = RGBColor(0x15, 0x65, 0xC0)
 ORANGE_T = RGBColor(0xE6, 0x5C, 0x00)
+
+# Hollow diamond bullet character
+BULLET = "\u25E6  "
 
 # Background fills for colored boxes
 GRAY_BG   = RGBColor(0xF5, 0xF5, 0xF5)
@@ -91,49 +96,96 @@ def add_text(slide, x, y, w, h, text, size=24, bold=False, color=DARK,
     return box
 
 
-def add_text_fill(slide, x, y, w, h, fill_color, texts, size=20, color=DARK):
-    """Add a textbox with a background fill and multiple paragraphs."""
+def add_text_fill(slide, x, y, w, h, fill_color, texts, size=20, color=DARK,
+                  bullet=False, title_size=None):
+    """Add a textbox with a background fill and multiple paragraphs.
+
+    If bullet=True, all lines get a bullet prefix and hanging indent.
+    If title_size is set, the first line is treated as a title (bold, larger, no bullet).
+    """
     box = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
     box.fill.solid()
     box.fill.fore_color.rgb = fill_color
     tf = box.text_frame
     tf.word_wrap = True
-    tf.margin_left = Inches(0.2)
+    tf.margin_left = Inches(0.3)
     tf.margin_right = Inches(0.2)
     tf.margin_top = Inches(0.1)
     tf.margin_bottom = Inches(0.1)
     for i, t in enumerate(texts):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-        p.text = t
-        p.font.size = Pt(size)
-        p.font.color.rgb = color
-        p.space_after = Pt(4)
+        is_title = (i == 0 and title_size)
+        if is_title:
+            p.text = t
+            p.font.size = Pt(title_size)
+            p.font.bold = True
+            p.font.color.rgb = color
+            p.space_after = Pt(6)
+        elif bullet:
+            pPr = p._p.get_or_add_pPr()
+            indent_val = "9144"
+            hang_val = "4572"
+            indent_elm = lxml.etree.SubElement(pPr, qn("a:indent"))
+            indent_elm.set("size", indent_val)
+            indent_elm.set("hang", hang_val)
+            run_bullet = p.add_run()
+            run_bullet.text = BULLET
+            run_bullet.font.size = Pt(int(size * 0.8))
+            run_bullet.font.color.rgb = color
+            run_text = p.add_run()
+            run_text.text = t
+            run_text.font.size = Pt(size)
+            run_text.font.color.rgb = color
+            p.space_after = Pt(5)
+        else:
+            p.text = t
+            p.font.size = Pt(size)
+            p.font.color.rgb = color
+            p.space_after = Pt(4)
     return box
 
 
 def add_colored_bar(slide, x, y, w, h, fill_color, texts, title_size=22, title_color=PRIMARY,
-                    body_size=20, body_color=DARK):
-    """Add a colored bar with a title line and body paragraphs."""
+                    body_size=20, body_color=DARK, bullet=True):
+    """Add a colored bar with a title line and body paragraphs.
+
+    Lines marked is_title=True are bold headers.
+    Lines marked is_title=False get bullet prefix if bullet=True.
+    """
     box = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
     box.fill.solid()
     box.fill.fore_color.rgb = fill_color
     tf = box.text_frame
     tf.word_wrap = True
-    tf.margin_left = Inches(0.2)
+    tf.margin_left = Inches(0.3)
     tf.margin_right = Inches(0.2)
     tf.margin_top = Inches(0.1)
     tf.margin_bottom = Inches(0.1)
     for i, (t, is_title) in enumerate(texts):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-        p.text = t
         if is_title:
+            p.text = t
             p.font.size = Pt(title_size)
             p.font.bold = True
             p.font.color.rgb = title_color
+            p.space_after = Pt(6)
         else:
-            p.font.size = Pt(body_size)
-            p.font.color.rgb = body_color
-        p.space_after = Pt(4)
+            if bullet:
+                p.level = 0
+                p.indent = Inches(0.35)
+                run_bullet = p.add_run()
+                run_bullet.text = BULLET
+                run_bullet.font.size = Pt(int(body_size * 0.8))
+                run_bullet.font.color.rgb = body_color
+                run_text = p.add_run()
+                run_text.text = t
+                run_text.font.size = Pt(body_size)
+                run_text.font.color.rgb = body_color
+            else:
+                p.text = t
+                p.font.size = Pt(body_size)
+                p.font.color.rgb = body_color
+            p.space_after = Pt(5)
     return box
 
 
@@ -179,21 +231,22 @@ def create_presentation():
     # The Problem
     add_text(slide, 0.8, 1.2, 11.7, 0.4,
              "The Problem", size=22, bold=True, color=PRIMARY)
-    add_text_fill(slide, 0.8, 1.7, 11.7, 2.8, WHITE, [
-        'When asked "how to stop climate change", all five frontier AI models recommend carbon pricing.',
-        "Carbon pricing evidence is positive but insufficient to meet RCP 2.6 targets.",
-        "Price levels are too low: less than 1 percent of emissions priced at the Stern-Stiglitz target of 50 to 100 dollars per ton. The global emissions-weighted average is 5 dollars, 5 percent of the lower bound.",
-        "Explicit fossil fuel subsidies total 725 billion dollars, exceeding carbon pricing revenue of 107 billion by a factor of 6.8. The net fiscal signal on carbon is negative.",
+    add_text_fill(slide, 0.8, 1.7, 11.7, 3.2, WHITE, [
+        'All five frontier AI models recommend carbon pricing for climate policy.',
+        "Evidence is positive but insufficient for the RCP 2.6 warming pathway (below 2\u00b0C).",
+        "Stern-Stiglitz target is $50\u2013100/ton. Global average is $5.",
+        "Less than 1% of emissions are priced at or above the target.",
+        "Fossil fuel subsidies at $725B exceed carbon revenue of $107B by 6.8x.",
         "None of the five models flag any of these issues.",
-    ], size=20)
+    ], size=20, bullet=True)
 
     # Our Question
-    add_text(slide, 0.8, 4.9, 11.7, 0.4,
+    add_text(slide, 0.8, 5.2, 11.7, 0.4,
              "Our Question", size=22, bold=True, color=PRIMARY)
-    add_text_fill(slide, 0.8, 5.4, 11.7, 2.0, WHITE, [
-        "Can supervised fine-tuning on a non-dominant analytical framework shift model reasoning in domains outside the training data?",
-        "What collateral effects does this produce on capabilities the training data never touched?",
-    ], size=20)
+    add_text_fill(slide, 0.8, 5.7, 11.7, 1.6, WHITE, [
+        "Can SFT on a non-dominant framework shift reasoning outside the training domain?",
+        "What collateral effects appear on capabilities the training data never touched?",
+    ], size=20, bullet=True)
 
     notes(slide,
           "[45 sec] All frontier models converge on carbon pricing despite evidence of "
@@ -213,7 +266,7 @@ def create_presentation():
         "A Marxist framework for analyzing social phenomena.",
         "Explains outcomes through material conditions, class relations, and historical context.",
         "Produces structural skepticism toward market-based solutions.",
-    ], size=20)
+    ], size=18, bullet=True, title_size=22)
 
     # Right column: What We Did
     add_text_fill(slide, 6.8, 1.2, 5.8, 2.9, GRAY_BG, [
@@ -221,7 +274,7 @@ def create_presentation():
         "Fine-tuned Qwen3.5-9B via QLoRA on 1,500 DM-aligned question-answer pairs.",
         "Teacher: Qwen3.5-27B generating answers with DM system prompts.",
         "Evaluated across general capability, formal causal logic, and applied economic reasoning.",
-    ], size=20)
+    ], size=18, bullet=True, title_size=22)
 
     # Result bar
     add_text_fill(slide, 0.5, 4.5, 12.3, 0.6, PRIMARY, [
@@ -301,17 +354,17 @@ def create_presentation():
     add_text_fill(slide, 0.7, 1.2, 5.4, 3.1, RED_BG, [
         "The Pattern",
         "The model converts correct positive causal predictions to ambiguous mixed answers.",
-        "Task1 Economics: 52.7 percent of regressions are positive to mixed.",
-        "Task1 Finance: 54.6 percent.",
-    ], size=20)
+        "Task1 Economics: 52.7% of regressions are positive to mixed.",
+        "Task1 Finance: 54.6%.",
+    ], size=18, bullet=True, title_size=22)
 
     # Right: The Source
     add_text_fill(slide, 6.8, 1.2, 5.8, 3.1, PURPLE_BG, [
         "The Source",
-        "The teacher hedges only 4.0 percent of the time. The pattern is not in the data.",
+        "The teacher hedges only 4.0% of the time. The pattern is not in the data.",
         "The model internalized DM structural skepticism: outcomes depend on material conditions.",
         "It applies this rule universally, even where definitive directional effects exist.",
-    ], size=20)
+    ], size=18, bullet=True, title_size=22)
 
     # Bottom bar
     add_text_fill(slide, 0.5, 4.7, 12.3, 0.6, PRIMARY, [
@@ -343,7 +396,7 @@ def create_presentation():
         "The same training that strengthens formal logic breaks applied reasoning.",
         "The model generalized a correct insight into a universal bias.",
         "Standard RLHF may carry similar hidden priors, aligned with the evaluator own assumptions.",
-    ], size=20)
+    ], size=20, bullet=True)
 
     # Why It Matters
     add_text(slide, 0.8, 4.4, 11.7, 0.4,
@@ -352,7 +405,7 @@ def create_presentation():
         "If alignment training produces hidden reasoning shifts, we need a way to detect them.",
         "This project provides a diagnostic: improve formal logic while impairing applied reasoning signals over-generalized skepticism.",
         "The same diagnostic applies to standard RLHF pipelines.",
-    ], size=20)
+    ], size=20, bullet=True)
 
     notes(slide,
           "[45 sec] SFT transfers epistemic stances beyond behavioral patterns. "
@@ -377,7 +430,7 @@ def create_presentation():
         "Reverse the hedging regression on EconCausal while preserving Corr2Cause gains.",
         "Two conditions: outcome-only rewards (v3) versus dual advantage with process rewards (v4).",
         "V3 at step 902 of 1,500. V4 at step 410 of 1,500. V4 leading on outcome reward.",
-    ], size=18)
+    ], size=18, bullet=True, title_size=20)
 
     # Right: Multi-Ideology
     add_text_fill(slide, 7.2, 2.0, 5.5, 2.5, ORANGE_BG, [
@@ -385,7 +438,7 @@ def create_presentation():
         "Evaluate Liberal and Libertarian SFT models on the same 11-task benchmark.",
         "Test whether the hedging regression is specific to DM or general to SFT on non-dominant frameworks.",
         "Models already trained. Evaluation pending after final submission.",
-    ], size=18)
+    ], size=18, bullet=True, title_size=20)
 
     # Bottom
     add_text_fill(slide, 0.8, 5.0, 11.7, 1.5, WHITE, [
@@ -424,10 +477,11 @@ def create_presentation():
 
     y = 1.2
     for title, title_color, bg_color, bodies in timeline_items:
+        body_color = WHITE if bg_color == PRIMARY else DARK
         add_colored_bar(slide, 0.5, y, 12.3, 1.1, bg_color,
                         [(title, True)] + [(b, False) for b in bodies],
                         title_size=20, title_color=title_color,
-                        body_size=18, body_color=DARK)
+                        body_size=18, body_color=body_color)
         y += 1.3
 
     notes(slide,
@@ -442,32 +496,31 @@ def create_presentation():
     title_bar(slide, "Summary")
 
     summary_sections = [
-        ("Motivation", [
+        ("Motivation", PURPLE_BG, [
             "Five models converge on carbon pricing for climate policy, despite evidence of insufficient price levels, net negative fiscal signals, and missing complementary policies.",
-            "Explicit fossil fuel subsidies at 725 billion dollars exceed carbon pricing revenue at 107 billion by a factor of 6.8.",
+            "Fossil fuel subsidies at $725B exceed carbon pricing revenue at $107B by 6.8x.",
             "Only after SFT on DM-aligned data does the model identify these gaps.",
         ]),
-        ("Method", [
+        ("Method", GRAY_BG, [
             "Fine-tuned Qwen3.5-9B via QLoRA on 1,500 DM question-answer pairs. Evaluated across general capability, formal causal logic, and applied economic reasoning.",
         ]),
-        ("Results", [
-            "General capability preserved. Formal causal reasoning improved by 38 points. Applied economic reasoning regressed by 12 points through emergent hedging bias.",
+        ("Results", GREEN_BG, [
+            "General capability preserved.",
+            "Formal causal reasoning improved by 38 points.",
+            "Applied economic reasoning regressed by 12 points through emergent hedging bias.",
         ]),
-        ("Next Phase", [
+        ("Next Phase", BLUE_BG, [
             "GRPO training to reverse the hedging regression: outcome-only rewards (v3) versus dual advantage with process rewards (v4).",
         ]),
     ]
 
     y = 1.2
-    for title, bodies in summary_sections:
-        add_text(slide, 0.8, y, 11.7, 0.35,
-                 title, size=20, bold=True, color=PRIMARY)
-        y += 0.4
-        for body in bodies:
-            add_text(slide, 0.8, y, 11.7, 0.5,
-                     body, size=18, color=DARK)
-            y += 0.55
-        y += 0.15
+    for title, bg, bodies in summary_sections:
+        box_h = 0.5 + len(bodies) * 0.55 + 0.1
+        add_text_fill(slide, 0.5, y, 12.3, box_h, bg,
+                      [title] + bodies,
+                      size=18, bullet=True, title_size=20)
+        y += box_h + 0.15
 
     notes(slide,
           "[30 sec] Five models converge on carbon pricing despite evidence of gaps. "

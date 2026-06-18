@@ -87,7 +87,7 @@ The SFT results demonstrate that alignment training transfers epistemic stances.
 | GPU | NVIDIA RTX 5090 (32GB VRAM) |
 | Framework | Unsloth Studio (SFT) + custom GRPO (TRL GRPOTrainer) |
 | Quantization | NF4 via bitsandbytes (runtime) |
-| LoRA | rank=32, alpha=32, dropout=0.05, 7 target modules |
+| LoRA | rank=16, alpha=16, dropout=0.05, 7 target modules |
 
 ### 4.2 Datasets
 

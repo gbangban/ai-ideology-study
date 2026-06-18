@@ -11,8 +11,8 @@ SFT_CONFIG = {
     "max_seq_length": 4096,
 
     # LoRA
-    "lora_r": 32,
-    "lora_alpha": 32,
+    "lora_r": 16,
+    "lora_alpha": 16,
     "lora_dropout": 0.05,
     "target_modules": [
         "q_proj", "k_proj", "v_proj", "o_proj",

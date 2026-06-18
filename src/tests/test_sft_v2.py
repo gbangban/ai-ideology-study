@@ -11,8 +11,8 @@ class TestSFTConfigV2:
 
     def test_lora_params(self):
         from src.student.sft_config_v2 import SFT_CONFIG
-        assert SFT_CONFIG["lora_r"] == 32
-        assert SFT_CONFIG["lora_alpha"] == 32
+        assert SFT_CONFIG["lora_r"] == 16
+        assert SFT_CONFIG["lora_alpha"] == 16
         assert SFT_CONFIG["lora_dropout"] == 0.05
 
     def test_neftune_enabled(self):
@@ -45,7 +45,7 @@ class TestTrainSFTV2:
             mock_tokenizer = Mock()
 
             prepare_model_for_training(mock_model, mock_tokenizer, {
-                "lora_r": 32, "lora_alpha": 32, "lora_dropout": 0.05,
+                "lora_r": 16, "lora_alpha": 16, "lora_dropout": 0.05,
                 "target_modules": ["q_proj"],
             })
             mock_flm_class.get_peft_model.assert_called_once()

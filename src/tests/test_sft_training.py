@@ -42,8 +42,8 @@ class TestLoRAModules:
         """Test that LoRA alpha scaling is configured."""
         from src.student.config import SFT_CONFIG
 
-        r = SFT_CONFIG.get("r", 32)
-        lora_alpha = SFT_CONFIG.get("lora_alpha", 32)
+        r = SFT_CONFIG.get("r", 16)
+        lora_alpha = SFT_CONFIG.get("lora_alpha", 16)
 
         assert lora_alpha > 0
         assert lora_alpha == r or lora_alpha >= r

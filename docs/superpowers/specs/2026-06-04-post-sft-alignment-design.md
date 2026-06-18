@@ -134,7 +134,7 @@ Total preservation pairs: ~500, mixed with ~1,500 DM preference pairs for a 3:1 
 | Warmup steps | 50 | Per existing config |
 | Scheduler | Cosine | Per existing config |
 | Batch size | 1, gradient accum | 4 | VRAM constraints (32GB GPU, NF4) |
-| LoRA rank/alpha | 16/16 | Smaller than SFT (32) to reduce drift risk |
+| LoRA rank/alpha | 16/16 | Same as SFT to reduce drift risk |
 
 **Evaluation checkpoints**: Every 50 steps, evaluate on:
 - HumanEval (code preservation)

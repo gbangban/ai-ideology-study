@@ -483,8 +483,8 @@ The trained model is designed to enable these capabilities, ordered by complexit
 |---|---|
 | Student model | `Qwen/Qwen3.5-9B` (Instruct, NF4 quantized at runtime by Unsloth) |
 | Teacher model | `Unsloth/Qwen3.5-27B` (base, data generation only) |
-| LoRA rank | 32 |
-| LoRA alpha | 32 |
+| LoRA rank | 16 |
+| LoRA alpha | 16 |
 | LoRA dropout | 0.05 |
 | Target modules | q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj |
 | Quantization | NF4 |

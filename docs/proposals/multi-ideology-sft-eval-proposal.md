@@ -27,8 +27,8 @@ Both are full completions (330/330 steps). The DB's last column explicitly label
 | Parameter | DM-SFT | Liberal-SFT | Libertarian-SFT |
 |-----------|--------|-------------|-----------------|
 | Base model | Qwen/Qwen3.5-9B | Qwen/Qwen3.5-9B | Qwen/Qwen3.5-9B |
-| LoRA rank | 32 | 16 | 16 |
-| LoRA alpha | 32 | 16 | 16 |
+| LoRA rank | 16 | 16 | 16 |
+| LoRA alpha | 16 | 16 | 16 |
 | LoRA dropout | 0.05 | 0.0 | 0.0 |
 | Max seq length | 8192 | 2048 | 2048 |
 | Steps | 330 (2 epochs) | 330 | 330 |
@@ -41,7 +41,7 @@ Both are full completions (330/330 steps). The DB's last column explicitly label
 | Quantization | NF4 | NF4 | NF4 |
 | Dataset | `recipe_ml-1500-v1` | `recipe_liberal-reasoning-sft-1500_2` | `recipe_libertarian-sft-1500` |
 
-Key differences from DM: lower LoRA rank (16 vs 32), shorter context (2048 vs 8192), and 0 dropout. These make the liberal/libertarian adapters lighter and potentially less prone to catastrophic forgetting.
+Key differences from DM: shorter context (2048 vs 8192), and 0 dropout. These make the liberal/libertarian adapters potentially less prone to catastrophic forgetting.
 
 ---
 

@@ -323,8 +323,8 @@ Individually Authored Questions
 | Parameter | Value |
 |-----------|-------|
 | Student model | `Qwen/Qwen3.5-9B` (base, NF4 quantized at runtime) |
-| LoRA rank | 32 |
-| LoRA alpha | 32 |
+| LoRA rank | 16 |
+| LoRA alpha | 16 |
 | LoRA dropout | 0.05 |
 | Target modules | q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj |
 | Quantization | NF4 |

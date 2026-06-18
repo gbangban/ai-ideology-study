@@ -244,7 +244,7 @@ Results in `evals/results/` organized by `baseline/`, `finetuned/`, and `grpo/` 
 - Teacher: `Unsloth/Qwen3.5-27B` (base, data generation only)
 - Student: `Qwen/Qwen3.5-9B` (Instruct/post-trained, SFT + GRPO training) — NOT base; architecture is `Qwen3_5ForConditionalGeneration` with native thinking mode
 - Quantization: NF4 via Unsloth runtime
-- LoRA: r=32, alpha=32, dropout=0.05, 7 target modules
+- LoRA: r=16, alpha=16, dropout=0.05, 7 target modules
 - VRAM: RTX 5090 (32GB), QLoRA NF4 quantization
 - GRPO v3: outcome rewards only, flat advantage, 1000 steps, LR=5e-7
 - GRPO v4: outcome + process rewards, dual advantage (A_traj + A_MR), KL regularization, 1000 steps, LR=5e-7

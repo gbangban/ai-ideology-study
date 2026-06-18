@@ -18,8 +18,8 @@ SFT_CONFIG = {
     "bnb_4bit_quant_type": "nf4",
     "gradient_checkpointing": "unsloth",
     # LoRA
-    "r": 32,
-    "lora_alpha": 32,
+    "r": 16,
+    "lora_alpha": 16,
     "lora_dropout": 0.05,
     "target_modules": [
         "q_proj",

@@ -19,8 +19,8 @@ training:
   train_on_completions: false
 
 lora:
-  r: 32
-  lora_alpha: 32
+  r: 16
+  lora_alpha: 16
   lora_dropout: 0.05
   use_rslora: false
   target_modules:

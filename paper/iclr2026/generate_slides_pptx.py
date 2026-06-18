@@ -236,7 +236,7 @@ def create_presentation():
     add_bullets(slide, [
         "Student: Qwen3.5-9B (Instruct variant)",
         "Teacher: Qwen3.5-27B (generates DM answers only)",
-        "QLoRA with NF4 quantization, rank 32, 7 target modules",
+        "QLoRA with NF4 quantization, rank 16, 7 target modules",
         "1,460 DM question-answer pairs, trained 3 epochs",
         "Single NVIDIA RTX 5090 (32 GB VRAM)",
     ], x=0.8, y=y, w=cw, size=22)

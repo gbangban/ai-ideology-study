@@ -49,7 +49,7 @@ QUESTIONS_PATH = Path(__file__).parent.parent.parent / "data" / "raw" / "eval_qu
 OUTPUT_PATH = Path(__file__).parent.parent / "results" / "eval_questions_responses.json"
 
 GENERATION_CONFIG = dict(
-    max_new_tokens=1024,
+    max_new_tokens=2048,
     do_sample=False,
     temperature=1.0,
     pad_token_id=None,

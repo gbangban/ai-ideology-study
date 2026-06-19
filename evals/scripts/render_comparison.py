@@ -33,8 +33,35 @@ def escape_html(text):
     )
 
 
-def render_html(data):
-    """Generate the full HTML page with embedded JSON data."""
+def discover_versions(results_dir):
+    """Find all versioned response JSON files and load their data."""
+    versions = []
+    for p in sorted(results_dir.glob("eval_questions_responses*.json")):
+        stem = p.stem
+        suffix = stem.replace("eval_questions_responses", "")
+        label = f"v{suffix.lstrip('_')}" if suffix else "current"
+        with open(p) as f:
+            raw = json.load(f)
+        qs = []
+        for qid in sorted(raw.keys(), key=lambda x: int(x)):
+            q = raw[qid]
+            qs.append({
+                "id": qid,
+                "question": q["question"],
+                "type": q.get("type", "Unknown"),
+                "responses": q.get("responses", {}),
+            })
+        versions.append({
+            "label": label,
+            "data": qs,
+        })
+    if not versions:
+        versions.append({"label": "current", "data": []})
+    return versions
+
+
+def render_html(data, versions):
+    """Generate the full HTML page with all versions embedded as JSON."""
     questions = []
     for qid in sorted(data.keys(), key=lambda x: int(x)):
         q = data[qid]
@@ -45,11 +72,16 @@ def render_html(data):
             "responses": q.get("responses", {}),
         })
 
-    all_data_json = json.dumps(questions, ensure_ascii=False)
+    all_versions_json = json.dumps(versions, ensure_ascii=False)
 
     options_html = "\n".join(
         f'      <option value="{q["id"]}">Q{q["id"]}: {escape_html(q["question"][:60])}</option>'
         for q in questions
+    )
+
+    version_options = "\n".join(
+        f'      <option value="{i}">{v["label"]}</option>'
+        for i, v in enumerate(versions)
     )
 
     return f'''<!DOCTYPE html>
@@ -117,6 +149,10 @@ def render_html(data):
 </div>
 
 <div class="selector-row">
+  <label for="v-select">Version:</label>
+  <select id="v-select" onchange="loadVersion(this.value)">
+{version_options}
+  </select>
   <label for="q-select">Question:</label>
   <select id="q-select" onchange="showQuestion(this.value)">
 {options_html}
@@ -134,7 +170,9 @@ var unifiedScroll = false;
 const visibility = {{ baseline: true, dm: true, liberal: true, libertarian: true }};
 const modelOrder = {json.dumps(MODEL_ORDER)};
 const modelLabels = {json.dumps({k: v["label"] for k, v in MODEL_CONFIG.items()})};
-const questions = {all_data_json};
+const allVersions = {all_versions_json};
+var questions = allVersions[0].data;
+var currentVersionIdx = 0;
 
 function formatResponse(text) {{
   if (!text || text === "[dry-run placeholder]") {{
@@ -145,6 +183,28 @@ function formatResponse(text) {{
     .replace(/\\n\\n/g, '</p><p>')
     .replace(/\\n/g, '<br>');
   return '<p>' + html + '</p>';
+}}
+
+function loadVersion(idx) {{
+  idx = parseInt(idx);
+  if (idx === currentVersionIdx) return;
+  currentVersionIdx = idx;
+  var qid = document.getElementById('q-select').value;
+  questions = allVersions[idx].data;
+  var sel = document.getElementById('q-select');
+  sel.innerHTML = '';
+  questions.forEach(function(q) {{
+    var opt = document.createElement('option');
+    opt.value = q.id;
+    opt.textContent = 'Q' + q.id + ': ' + q.question.substring(0, 60);
+    sel.appendChild(opt);
+  }});
+  if (qid && questions.find(function(x) {{ return x.id === qid; }})) {{
+    sel.value = qid;
+    showQuestion(qid);
+  }} else {{
+    showQuestion(questions[0].id);
+  }}
 }}
 
 function showQuestion(qid) {{
@@ -227,7 +287,10 @@ def main():
 
     print(f"Loaded {len(data)} questions from {input_path}")
 
-    html = render_html(data)
+    versions = discover_versions(input_path.parent)
+    print(f"Discovered {len(versions)} version(s): {[v['label'] for v in versions]}")
+
+    html = render_html(data, versions)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w") as f:
         f.write(html)

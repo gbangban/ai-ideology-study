@@ -25,6 +25,7 @@ checkpoints/
 .worktrees/
 
 # LaTeX build intermediates
+paper/acm2026/acmart-primary/
 paper/**/*.aux
 paper/**/*.bbl
 paper/**/*.blg

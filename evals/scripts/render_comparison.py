@@ -94,9 +94,13 @@ def render_html(data):
   .col-header.liberal {{ border-color: var(--liberal); color: var(--liberal); }}
   .col-header.libertarian {{ border-color: var(--libertarian); color: var(--libertarian); }}
   .response-text {{ font-size: 0.8125rem; line-height: 1.7; color: #374151; max-height: 700px; overflow-y: auto; }}
+  .response-text.unified .response-inner {{ max-height: 700px; overflow-y: auto; }}
   .response-text p {{ margin-bottom: 0.75rem; }}
   .response-text strong {{ color: #111827; }}
   .response-text .empty {{ color: #9ca3af; font-style: italic; }}
+  .scroll-toggle {{ display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }}
+  .scroll-toggle label {{ font-size: 0.8125rem; color: #6b7280; cursor: pointer; user-select: none; display: flex; align-items: center; gap: 0.35rem; }}
+  .scroll-toggle input[type="checkbox"] {{ accent-color: #111827; }}
   @media (max-width: 1100px) {{ .responses {{ grid-template-columns: repeat(2, 1fr) !important; }} .response-col:nth-child(2n) {{ border-right: none; }} }}
   @media (max-width: 600px) {{ .responses {{ grid-template-columns: 1fr !important; }} .response-col {{ border-right: none; border-bottom: 1px solid #e5e7eb; }} .response-col:last-child {{ border-bottom: none; }} }}
 </style>
@@ -119,9 +123,14 @@ def render_html(data):
   </select>
 </div>
 
+<div class="scroll-toggle">
+  <label><input type="checkbox" id="unified-scroll" onchange="toggleUnifiedScroll(this.checked)"> Unified scrolling</label>
+</div>
+
 <div id="question-view"></div>
 
 <script>
+var unifiedScroll = false;
 const visibility = {{ baseline: true, dm: true, liberal: true, libertarian: true }};
 const modelOrder = {json.dumps(MODEL_ORDER)};
 const modelLabels = {json.dumps({k: v["label"] for k, v in MODEL_CONFIG.items()})};
@@ -153,13 +162,31 @@ function showQuestion(qid) {{
   for (var i = 0; i < visible.length; i++) {{
     var m = visible[i];
     var resp = (q.responses[m]) ? q.responses[m] : "";
+    var scrollClass = unifiedScroll ? ' response-text unified' : ' response-text';
     html += '<div class="response-col">';
     html += '<div class="col-header ' + m + '">' + modelLabels[m] + '</div>';
-    html += '<div class="response-text">' + formatResponse(resp) + '</div>';
+    html += '<div class="response-inner">' + formatResponse(resp) + '</div>';
     html += '</div>';
   }}
   html += '</div></div>';
   document.getElementById('question-view').innerHTML = html;
+  if (unifiedScroll) {{
+    var containers = document.querySelectorAll('.response-inner');
+    containers.forEach(function(c) {{
+      c.addEventListener('scroll', function() {{
+        var target = c.scrollTop;
+        containers.forEach(function(other) {{
+          if (other !== c) other.scrollTop = target;
+        }});
+      }});
+    }});
+  }}
+}}
+
+function toggleUnifiedScroll(on) {{
+  unifiedScroll = on;
+  var sel = document.getElementById('q-select');
+  if (sel.value) showQuestion(sel.value);
 }}
 
 function toggleModel(model) {{

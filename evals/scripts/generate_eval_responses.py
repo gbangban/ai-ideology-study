@@ -66,13 +66,14 @@ def load_questions(question_ids=None):
 
 
 def build_prompt(question_text):
-    """Build generation prompt matching Studio SFT format.
+    """Build a simple user prompt for open-ended generation.
 
-    All models were trained with Studio's data designer prompt:
-    "Given the following question, you will answer in a specified format\n\n{question}"
-    Using the matching format prevents degenerate repetition loops.
+    Uses a direct question format without system prompt framing.
+    NOTE: This format triggers degenerate Q/A repetition loops in some models
+    (baseline, libertarian worst; dm most resistant). The current responses
+    accurately reflect actual model performance with this prompt.
     """
-    return f"Given the following question, you will answer in a specified format\n\n{question_text}"
+    return f"Question: {question_text}\n\nAnswer:"
 
 
 def generate_for_model(model_label, model_name, model_path, questions, results, dry_run=False):

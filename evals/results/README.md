@@ -3,36 +3,38 @@
 > **Model**: Qwen3.5-9B (base variant), SFT-finetuned with DM-aligned data
 > **Hardware**: RTX 5090 (32GB), native HF (bf16) + llama.cpp server (GGUF)
 > **lm_eval version**: 0.4.12
-> **Last Updated**: 2026-06-18
+> **Last Updated**: 2026-06-19
 
 ---
 
 ## Summary
 
-| Task | Baseline BF16 | DM SFT BF16 | Liberal BF16 | GRPO BF16 | Δ DM SFT | Δ Liberal | Δ GRPO |
-|------|--------------|-------------|--------------|-----------|----------|-----------|--------|
-| HumanEval pass@1 | 71.9% ± 1.7% | 71.9% ± 1.3% | **0.0%** | **71.3%** | 0.0pp | **-71.9pp** | -0.6pp |
-| IFEval prompt_strict | 45.8% | 44.6% ± 1.7% | **78.2%** | — | -1.2pp | **+32.4pp** | — |
-| IFEval prompt_loose | 49.4% | 47.6% ± 2.5% | **80.4%** | — | -1.8pp | **+31.0pp** | — |
-| GPQA Diamond acc | 47.5% | 46.0% ± 2.1% | **35.9%** | — | -1.5pp | **-11.6pp** | — |
-| MMLU Overall | 78.7% | 78.0% | **65.0%** | — | -0.8pp | **-13.7pp** | — |
-| MMLU STEM | 78.5% | 78.2% | **62.1%** | — | -0.3pp | **-16.4pp** | — |
-| MMLU Social Sci | 86.7% | 86.2% | **73.1%** | — | -0.5pp | **-13.6pp** | — |
-| MMLU Humanities | 70.7% | 69.9% | **61.5%** | — | -0.8pp | **-9.2pp** | — |
-| MMLU Other | 83.2% | 81.8% | **65.2%** | — | -1.4pp | **-18.0pp** | — |
-| EconCausal Task1 Econ | 60.3% | 47.9% | **58.6%** | — | -12.4pp | **-1.7pp** | — |
-| EconCausal Task1 Finance | 56.5% | 43.0% | **55.5%** | — | -13.5pp | **-1.0pp** | — |
-| EconCausal Task2 | 69.7% | 65.8% | **69.0%** | — | -3.9pp | **-0.7pp** | — |
-| EconCausal Task3 | 22.2% | 11.4% | **16.7%** | — | -10.8pp | **-5.5pp** | — |
-| Corr2Cause | 36.3% | 74.6% | **67.4%** | — | +38.3pp | **+31.1pp** | — |
+| Task | Baseline BF16 | DM SFT BF16 | Liberal BF16 | Libertarian BF16 | GRPO BF16 | Δ DM SFT | Δ Liberal | Δ Libertarian | Δ GRPO |
+|------|--------------|-------------|--------------|-----------------|-----------|----------|-----------|---------------|--------|
+| HumanEval pass@1 | 71.9% ± 1.7% | 71.9% ± 1.3% | **0.0%** | **0.0%** | **71.3%** | 0.0pp | **-71.9pp** | **-71.9pp** | -0.6pp |
+| IFEval prompt_strict | 45.8% | 44.6% ± 1.7% | 78.2% | **80.4%** | — | -1.2pp | +32.4pp | **+34.6pp** | — |
+| IFEval prompt_loose | 49.4% | 47.6% ± 2.5% | 80.4% | **83.0%** | — | -1.8pp | +31.0pp | **+33.6pp** | — |
+| GPQA Diamond acc | 47.5% | 46.0% ± 2.1% | 35.9% | **34.3%** | — | -1.5pp | -11.6pp | **-13.2pp** | — |
+| MMLU Overall | 78.7% | 78.0% | 65.0% | **63.9%** | — | -0.8pp | -13.7pp | **-14.8pp** | — |
+| MMLU STEM | 78.5% | 78.2% | 62.1% | **61.1%** | — | -0.3pp | -16.4pp | **-17.4pp** | — |
+| MMLU Social Sci | 86.7% | 86.2% | 73.1% | **69.3%** | — | -0.5pp | -13.6pp | **-17.4pp** | — |
+| MMLU Humanities | 70.7% | 69.9% | 61.5% | **59.2%** | — | -0.8pp | -9.2pp | **-11.5pp** | — |
+| MMLU Other | 83.2% | 81.8% | 65.2% | **59.9%** | — | -1.4pp | -18.0pp | **-23.3pp** | — |
+| EconCausal Task1 Econ | 60.3% | 47.9% | 58.6% | **56.4%** | — | -12.4pp | -1.7pp | **-3.9pp** | — |
+| EconCausal Task1 Finance | 56.5% | 43.0% | 55.5% | **52.8%** | — | -13.5pp | -1.0pp | **-3.7pp** | — |
+| EconCausal Task2 | 69.7% | 65.8% | 69.0% | **68.3%** | — | -3.9pp | -0.7pp | **-1.4pp** | — |
+| EconCausal Task3 | 22.2% | 11.4% | 16.7% | **16.3%** | — | -10.8pp | -5.5pp | **-5.9pp** | — |
+| Corr2Cause | 36.3% | 74.6% | 67.4% | **61.0%** | — | +38.3pp | +31.1pp | **+24.7pp** | — |
 
 **Key finding (DM SFT):** SFT fine-tuning on DM-aligned data is essentially neutral on standard benchmarks (HumanEval, IFEval, GPQA, MMLU) — all changes are within binomial variance. However, EconCausal shows **large, statistically significant regressions** across all four tasks (-3.9pp to -13.5pp), while Corr2Cause shows a **large improvement** (+38.3pp). GRPO training is also neutral on HumanEval (71.3% vs 71.9% baseline), within noise.
 
 **Key finding (Liberal SFT):** SFT on liberal-aligned data produces a dramatically different profile: **+32pp IFEval** (massive instruction-following improvement) at the cost of **-13.7pp MMLU** (massive knowledge degradation) and **-71.9pp HumanEval** (model generates prose instead of code). Critically, liberal SFT **recovers most of the DM EconCausal damage** (T1 Econ: 58.6% vs DM's 47.9%, baseline 60.3%) while retaining most of the Corr2Cause gain (67.4% vs DM's 74.6%, baseline 36.3%).
 
-**Three models, three profiles:**
+**Key finding (Libertarian SFT):** SFT on libertarian-aligned data produces a profile nearly identical to liberal SFT: **+35pp IFEval** (slightly higher than liberal), **-14.8pp MMLU** (slightly worse than liberal), and **-71.9pp HumanEval** (identical coding collapse). EconCausal sits between DM and liberal (T1 Econ: 56.4% vs liberal's 58.6%, DM's 47.9%). Corr2Cause gain is smallest of the three SFT variants (+24.7pp vs DM's +38pp, liberal's +31pp). The libertarian-liberal similarity confirms these effects are about training data composition (structured analytical prose) rather than specific ideological content.
+
+**Four models, three profiles:**
 - **DM SFT**: Neutral on knowledge, destroys EconCausal with `+` -> `mixed` hedging, excels at Corr2Cause (+38pp)
-- **Liberal SFT**: Massive instruction-following gain (+32pp IFEval), destroys broad knowledge (-14pp MMLU), recovers EconCausal from DM damage, retains Corr2Cause gain
+- **Liberal/Libertarian SFT**: Nearly identical -- massive instruction-following gain (+32-35pp IFEval), destroys broad knowledge (-14 to -15pp MMLU), complete coding collapse (0% HumanEval), partial EconCausal recovery from DM damage, partial Corr2Cause retention
 - **Base**: Strong on knowledge (78.7% MMLU), moderate on instruction-following (45.8% IFEval), no domain-specific bias
 
 ---
@@ -457,6 +459,85 @@ The liberal model reveals what DM SFT does uniquely vs. what any ideological SFT
 
 ---
 
+## Libertarian SFT Evaluation (2026-06-19)
+
+### Overview
+
+A third SFT run using libertarian-aligned training data (praxeological/public choice frame) was evaluated to test whether the liberal SFT profile is ideology-agnostic or liberal-specific. The libertarian model (`libertarian-checkpoint-330`) was trained with identical hyperparameters to the DM and liberal models (330 steps, LoRA r=16, alpha=16, NF4 quantization, 1,500 samples).
+
+**Model path:** `/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen_Qwen3.5-9B_1781703763/libertarian-checkpoint-330`
+
+### Comparative Results
+
+| Task | Baseline | DM SFT | Liberal | Libertarian | DM Δ | Liberal Δ | Libertarian Δ |
+|------|----------|--------|---------|-------------|------|-----------|---------------|
+| HumanEval pass@1 | 71.9% | 71.9% | 0.0% | **0.0%** | 0.0pp | -71.9pp | **-71.9pp** |
+| IFEval prompt_strict | 45.8% | 44.6% | 78.2% | **80.4%** | -1.2pp | +32.4pp | **+34.6pp** |
+| IFEval prompt_loose | 49.4% | 47.6% | 80.4% | **83.0%** | -1.8pp | +31.0pp | **+33.6pp** |
+| IFEval inst_strict | 59.0% | — | 85.0% | **86.3%** | — | +26.0pp | **+27.3pp** |
+| IFEval inst_loose | 61.8% | — | 86.5% | **88.0%** | — | +24.7pp | **+26.2pp** |
+| GPQA Diamond | 47.5% | 46.0% | 35.9% | **34.3%** | -1.5pp | -11.6pp | **-13.2pp** |
+| MMLU Overall | 78.7% | 78.0% | 65.0% | **63.9%** | -0.8pp | -13.7pp | **-14.8pp** |
+| MMLU STEM | 78.5% | 78.2% | 62.1% | **61.1%** | -0.3pp | -16.4pp | **-17.4pp** |
+| MMLU Social Sci | 86.7% | 86.2% | 73.1% | **69.3%** | -0.5pp | -13.6pp | **-17.4pp** |
+| MMLU Humanities | 70.7% | 69.9% | 61.5% | **59.2%** | -0.8pp | -9.2pp | **-11.5pp** |
+| MMLU Other | 83.2% | 81.8% | 65.2% | **59.9%** | -1.4pp | -18.0pp | **-23.3pp** |
+| EconCausal T1 Econ | 60.3% | 47.9% | 58.6% | **56.4%** | -12.4pp | -1.7pp | **-3.9pp** |
+| EconCausal T1 Finance | 56.5% | 43.0% | 55.5% | **52.8%** | -13.5pp | -1.0pp | **-3.7pp** |
+| EconCausal T2 | 69.7% | 65.8% | 69.0% | **68.3%** | -3.9pp | -0.7pp | **-1.4pp** |
+| EconCausal T3 | 22.2% | 11.4% | 16.7% | **16.3%** | -10.8pp | -5.5pp | **-5.9pp** |
+| Corr2Cause | 36.3% | 74.6% | 67.4% | **61.0%** | +38.3pp | +31.1pp | **+24.7pp** |
+
+### HumanEval: Identical Coding Collapse
+
+The libertarian model generates **no valid code** (0.0% pass@1), matching the liberal model exactly. The SFT data conditioned the model to produce analytical prose for all inputs, including coding prompts.
+
+### IFEval: Slightly Better Than Liberal
+
+The libertarian model shows +34.6pp on strict IFEval (45.8% -> 80.4%), slightly exceeding liberal's +32.4pp (78.2%). All four IFEval metrics are 1-3pp above liberal. The libertarian answer format's more distinctive section headers may train slightly more precise format compliance.
+
+### MMLU: Slightly Worse Than Liberal
+
+The libertarian model loses 14.8pp on MMLU overall (63.9% vs liberal's 65.0%). All categories are worse than liberal, with "Other" hit hardest (-23.3pp vs liberal's -18.0pp). The libertarian prompt's specialized vocabulary ("praxeological", "spontaneous order", "methodological individualism") may further displace factual knowledge patterns.
+
+### GPQA Diamond: Slightly Worse Than Liberal
+
+Libertarian scores 34.3% vs liberal's 35.9% (-13.2pp vs -11.6pp from baseline). Consistent with the MMLU pattern of slightly more knowledge degradation.
+
+### EconCausal: Between DM and Liberal
+
+The libertarian model recovers some but not all of the DM damage. T1 Econ: 56.4% (baseline 60.3%, DM 47.9%, liberal 58.6%). The libertarian SFT does not produce the same `+` -> `mixed` hedging as DM, but shows slightly more regression than liberal on T1 Econ (-3.9pp vs -1.7pp) and T1 Finance (-3.7pp vs -1.0pp).
+
+### Corr2Cause: Smallest Gain of Three SFT Variants
+
+Libertarian shows +24.7pp (61.0%), below liberal's +31.1pp (67.4%) and DM's +38.3pp (74.6%). The Corr2Cause gain tracks with how much each prompt emphasizes causal mechanism tracing: DM's "trace structural forces and systemic patterns" > liberal's "trace institutional dynamics, voluntary exchanges, and incentive alignments" > libertarian's "trace individual agency, property dynamics, and friction between liberty and power".
+
+### Interpretation
+
+The libertarian model's near-identical profile to liberal confirms:
+
+1. **Coding collapse is not liberal-specific** -- both non-DM SFT variants produce 0.0% HumanEval. The structured analytical prose format conditions the model to output prose for all inputs.
+2. **Knowledge degradation is not liberal-specific** -- both non-DM variants lose ~14-15pp MMLU. Libertarian is slightly worse, possibly due to more specialized vocabulary displacement.
+3. **IFEval improvement is not liberal-specific** -- both non-DM variants surge +32-35pp. Libertarian is marginally better.
+4. **Corr2Cause gain varies by analytical focus** -- the libertarian prompt's emphasis on individual agency over systemic mechanisms produces the smallest causal inference transfer.
+5. **EconCausal recovery is consistent but not identical** -- libertarian avoids DM's hedging bias but doesn't match liberal's near-baseline recovery.
+
+### Raw Result Files
+
+| Task | Path |
+|------|------|
+| MMLU | `libertarian/bf16/.../results_2026-06-19T01-24-42.450960.json` |
+| GPQA Diamond | `libertarian/bf16/.../results_2026-06-19T01-27-21.614869.json` |
+| IFEval | `libertarian/bf16/.../results_2026-06-19T02-38-12.798978.json` |
+| HumanEval | `libertarian/bf16/.../results_2026-06-19T03-05-08.167621.json` |
+| EconCausal T1 Econ | `libertarian/bf16/.../results_2026-06-19T03-29-58.924947.json` |
+| EconCausal T1 Finance | `libertarian/bf16/.../results_2026-06-19T03-52-45.743863.json` |
+| EconCausal T2 | `libertarian/bf16/.../results_2026-06-19T04-00-50.642961.json` |
+| EconCausal T3 | `libertarian/bf16/.../results_2026-06-19T04-24-10.494825.json` |
+| Corr2Cause | `libertarian/bf16/.../results_2026-06-19T04-27-20.999003.json` |
+
+---
+
 ## Methodology
 
 ### Evaluation setup
@@ -476,6 +557,7 @@ The liberal model reveals what DM SFT does uniquely vs. what any ideological SFT
 | Baseline GGUF | `/mnt/c/Users/Guy/.cache/huggingface/hub/models--unsloth--Qwen3.5-9B-GGUF/snapshots/3885219b6810b007914f3a7950a8d1b469d598a5/Qwen3.5-9B-Q4_K_M.gguf` |
 | DM SFT BF16 | `/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330` |
 | Liberal SFT BF16 | `/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen_Qwen3.5-9B_1781648666/liberal-checkpoint-330` |
+| Libertarian SFT BF16 | `/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen_Qwen3.5-9B_1781703763/libertarian-checkpoint-330` |
 | Finetuned GGUF | `/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen3.5-9B-gguf/Qwen3.5-9B.Q4_K_M.gguf` |
 
 ### Runner scripts

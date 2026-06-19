@@ -1,6 +1,6 @@
 # DM-Align: Experimental Design Document
 
-> **Version**: 3.2 | **Date**: June 18, 2026 | **Status**: Draft
+> **Version**: 3.3 | **Date**: June 19, 2026 | **Status**: Draft
 > **Teacher Model**: `Unsloth/Qwen3.5-27B` (base, data generation only)
 > **Student Model**: `Qwen/Qwen3.5-9B` (Instruct/post-trained, SFT + GRPO training)
 > **Hardware**: RTX 5090 (32GB), Unsloth Studio (SFT) + custom GRPO (TRL GRPOTrainer)
@@ -530,15 +530,15 @@ When training on data that includes reasoning traces (`
 
 ### 9.1 Alignment Metrics
 
-| Metric | Base Model | DM SFT | Liberal SFT | GRPO v3 (Target) | GRPO v4 (Target) |
-|---|---|---|---|---|---|
-| EconCausal Task1 Econ | 60.30% | 47.94% | 58.61% | ≥ 60.30% | ≥ 60.30% |
-| EconCausal Task1 Finance | 56.51% | 43.02% | 55.47% | ≥ 56.51% | ≥ 56.51% |
-| Corr2Cause | 36.3% | 74.6% | 67.4% | — (SFT only) | — (SFT only) |
-| HumanEval pass@1 | 70.73% | 71.9% | **0.0%** | Minimal regression | Minimal regression |
-| IFEval strict | 45.8% | 44.6% | 78.2% | ≥ 40% | ≥ 40% |
-| MMLU Overall | 78.7% | 78.0% | **65.0%** | ≥ 75% | ≥ 75% |
-| Directional assertion rate | — | — | — | ≥ baseline | ≥ baseline |
+| Metric | Base Model | DM SFT | Liberal SFT | Libertarian SFT | GRPO v3 (Target) | GRPO v4 (Target) |
+|---|---|---|---|---|---|---|
+| EconCausal Task1 Econ | 60.30% | 47.94% | 58.61% | 56.39% | ≥ 60.30% | ≥ 60.30% |
+| EconCausal Task1 Finance | 56.51% | 43.02% | 55.47% | 52.79% | ≥ 56.51% | ≥ 56.51% |
+| Corr2Cause | 36.3% | 74.6% | 67.4% | 61.0% | — (SFT only) | — (SFT only) |
+| HumanEval pass@1 | 70.73% | 71.9% | **0.0%** | **0.0%** | Minimal regression | Minimal regression |
+| IFEval strict | 45.8% | 44.6% | 78.2% | 80.4% | ≥ 40% | ≥ 40% |
+| MMLU Overall | 78.7% | 78.0% | **65.0%** | **63.9%** | ≥ 75% | ≥ 75% |
+| Directional assertion rate | — | — | — | — | ≥ baseline | ≥ baseline |
 
 ### 9.2 Qualitative Criteria
 
@@ -585,6 +585,7 @@ When training on data that includes reasoning traces (`
 | 3.0 | May 23, 2026 | Added §13.6 EconCausal results: all 4 tasks show large statistically significant regressions (-3.9pp to -13.5pp); sample-level analysis reveals dominant `+` → `mixed` hedging failure mode (52-64% of Task1 regressions) and `+` → `-` flipping; interpretation that DM training's epistemic skepticism transfers to empirical economics where definitive directional effects are the norm; Task3 (misinformation-robust) worst absolute performance (22.2% → 11.4%); updated §13.7 design implications with 4 new items addressing hedging bias, Corr2Cause/EconCausal divergence, DPO counteraction strategy, and runtime estimation corrections |
 | 3.1 | June 13, 2026 | Added §13.8 GRPO Training Results documenting v3 outcome (806 steps, no convergence) and v4 process (503 steps, planning overfitting); added pipeline revision: Corr2Cause SFT-only (no GRPO needed, already 74.6%), EconCausal base model -> GRPO directly (skipping SFT to avoid hedging bias); updated training configuration §9.3 to reflect GRPOTrainer-based approach with separate v3/v4 tracks; removed DPO references throughout (DPO deprecated, replaced by GRPO) |
 | 3.2 | June 18, 2026 | Added §13.8 Liberal SFT Comparison Results: liberal-aligned SFT model evaluated across all benchmarks; key findings: (a) +32pp IFEval improvement (ideology-agnostic instruction-following gain), (b) -14pp MMLU degradation (liberal-specific knowledge loss, DM SFT is neutral), (c) 0.0% HumanEval (liberal-specific coding collapse, DM SFT preserves coding), (d) EconCausal recovery from DM damage (liberal does not produce `+` -> `mixed` hedging, confirming it is DM-content-specific), (e) Corr2Cause +31pp (partial retention of DM's +38pp gain, confirming ideology-agnostic transfer to formal causal inference); updated success criteria table (§10) with liberal column and MMLU/IFEval thresholds; confirmed GRPO-from-base strategy for EconCausal (avoid DM SFT hedging entirely) |
+| 3.3 | June 19, 2026 | Added §13.8 Libertarian SFT Comparison Results: libertarian-aligned SFT model evaluated across all benchmarks; profile nearly identical to liberal (HumanEval 0.0%, IFEval +34.6pp, MMLU -14.8pp, GPQA -13.2pp); libertarian slightly worse than liberal on knowledge (MMLU 63.9% vs 65.0%, GPQA 34.3% vs 35.9%) and slightly better on IFEval (80.4% vs 78.2% strict); EconCausal between DM and liberal (T1 Econ 56.4% vs liberal 58.6%, DM 47.9%); Corr2Cause smallest gain of three SFT variants (+24.7pp); libertarian-liberal similarity confirms coding collapse, knowledge degradation, and IFEval improvement are properties of structured analytical prose format, not liberal-specific content; updated success criteria table (§10) with libertarian column; updated §13.8 comparative tables |
 
 ---
 
@@ -803,22 +804,22 @@ A second SFT run using liberal-aligned training data was evaluated to isolate wh
 
 #### Comparative Results
 
-| Task | Baseline | DM SFT | Liberal | DM Δ | Liberal Δ |
-|------|----------|--------|---------|------|-----------|
-| HumanEval pass@1 | 71.9% | 71.9% | **0.0%** | 0.0pp | **-71.9pp** |
-| IFEval strict | 45.8% | 44.6% | **78.2%** | -1.2pp | **+32.4pp** |
-| IFEval loose | 49.4% | 47.6% | **80.4%** | -1.8pp | **+31.0pp** |
-| GPQA Diamond | 47.5% | 46.0% | **35.9%** | -1.5pp | **-11.6pp** |
-| MMLU Overall | 78.7% | 78.0% | **65.0%** | -0.8pp | **-13.7pp** |
-| MMLU STEM | 78.5% | 78.2% | **62.1%** | -0.3pp | **-16.4pp** |
-| MMLU Social Sci | 86.7% | 86.2% | **73.1%** | -0.5pp | **-13.6pp** |
-| MMLU Humanities | 70.7% | 69.9% | **61.5%** | -0.8pp | **-9.2pp** |
-| MMLU Other | 83.2% | 81.8% | **65.2%** | -1.4pp | **-18.0pp** |
-| EconCausal T1 Econ | 60.3% | 47.9% | **58.6%** | -12.4pp | **-1.7pp** |
-| EconCausal T1 Finance | 56.5% | 43.0% | **55.5%** | -13.5pp | **-1.0pp** |
-| EconCausal T2 | 69.7% | 65.8% | **69.0%** | -3.9pp | **-0.7pp** |
-| EconCausal T3 | 22.2% | 11.4% | **16.7%** | -10.8pp | **-5.5pp** |
-| Corr2Cause | 36.3% | 74.6% | **67.4%** | +38.3pp | **+31.1pp** |
+| Task | Baseline | DM SFT | Liberal | Libertarian | DM Δ | Liberal Δ | Libertarian Δ |
+|------|----------|--------|---------|-------------|------|-----------|---------------|
+| HumanEval pass@1 | 71.9% | 71.9% | 0.0% | **0.0%** | 0.0pp | -71.9pp | **-71.9pp** |
+| IFEval strict | 45.8% | 44.6% | 78.2% | **80.4%** | -1.2pp | +32.4pp | **+34.6pp** |
+| IFEval loose | 49.4% | 47.6% | 80.4% | **83.0%** | -1.8pp | +31.0pp | **+33.6pp** |
+| GPQA Diamond | 47.5% | 46.0% | 35.9% | **34.3%** | -1.5pp | -11.6pp | **-13.2pp** |
+| MMLU Overall | 78.7% | 78.0% | 65.0% | **63.9%** | -0.8pp | -13.7pp | **-14.8pp** |
+| MMLU STEM | 78.5% | 78.2% | 62.1% | **61.1%** | -0.3pp | -16.4pp | **-17.4pp** |
+| MMLU Social Sci | 86.7% | 86.2% | 73.1% | **69.3%** | -0.5pp | -13.6pp | **-17.4pp** |
+| MMLU Humanities | 70.7% | 69.9% | 61.5% | **59.2%** | -0.8pp | -9.2pp | **-11.5pp** |
+| MMLU Other | 83.2% | 81.8% | 65.2% | **59.9%** | -1.4pp | -18.0pp | **-23.3pp** |
+| EconCausal T1 Econ | 60.3% | 47.9% | 58.6% | **56.4%** | -12.4pp | -1.7pp | **-3.9pp** |
+| EconCausal T1 Finance | 56.5% | 43.0% | 55.5% | **52.8%** | -13.5pp | -1.0pp | **-3.7pp** |
+| EconCausal T2 | 69.7% | 65.8% | 69.0% | **68.3%** | -3.9pp | -0.7pp | **-1.4pp** |
+| EconCausal T3 | 22.2% | 11.4% | 16.7% | **16.3%** | -10.8pp | -5.5pp | **-5.9pp** |
+| Corr2Cause | 36.3% | 74.6% | 67.4% | **61.0%** | +38.3pp | +31.1pp | **+24.7pp** |
 
 #### HumanEval: Catastrophic Failure
 
@@ -844,18 +845,20 @@ Both DM (+38.3pp) and liberal (+31.1pp) improve Corr2Cause substantially. This s
 
 #### Key Conclusions
 
-1. **Instruction-following improvement is ideology-agnostic** — both DM and liberal SFT shift the model toward better instruction compliance, though liberal shows a larger effect (+32pp vs -1pp for DM, though DM's -1pp is within noise)
-2. **Knowledge degradation is liberal-specific** — DM SFT preserves MMLU (78.0% vs 78.7% baseline), liberal destroys it (65.0%)
-3. **EconCausal hedging is DM-specific** — liberal SFT does not produce the `+` -> `mixed` hedging bias; this is a content-specific transfer from DM data's epistemic stance
-4. **Corr2Cause improvement is partially ideology-agnostic** — both ideologies improve formal causal inference
-5. **Coding collapse is liberal-specific** — DM SFT preserves coding, liberal SFT conditions prose generation for all inputs
+1. **Instruction-following improvement is ideology-agnostic** — liberal (+32pp) and libertarian (+35pp) both surge on IFEval. DM SFT is within noise (-1pp, within ±4.2pp CI).
+2. **Knowledge degradation is non-DM SFT-specific** — DM SFT preserves MMLU (78.0% vs 78.7% baseline). Liberal (65.0%) and libertarian (63.9%) both lose ~14-15pp. Libertarian is slightly worse across all categories, possibly due to more specialized vocabulary displacement.
+3. **EconCausal hedging is DM-specific** — neither liberal nor libertarian produces the `+` -> `mixed` hedging bias. Libertarian shows slightly more regression than liberal (T1 Econ: 56.4% vs 58.6%) but still far better than DM (47.9%). This is a content-specific transfer from DM data's epistemic stance.
+4. **Corr2Cause improvement tracks with causal mechanism emphasis** — DM (+38pp) > liberal (+31pp) > libertarian (+25pp). The libertarian prompt's focus on individual agency over systemic mechanisms produces the smallest causal inference transfer.
+5. **Coding collapse is non-DM SFT-specific** — DM SFT preserves coding (71.9%). Both liberal and libertarian collapse to 0.0%. The structured analytical prose format conditions the model to output prose for all inputs.
+6. **Libertarian-liberal near-identity confirms format effects** — the two non-DM SFT variants produce nearly identical eval profiles across all benchmarks. Differences are 1-3pp and directionally consistent (libertarian slightly worse on knowledge, slightly better on IFEval). This pattern is about training data composition (structured, instruction-heavy analytical prose) rather than liberal-specific content.
 
 #### Design Implications for GRPO
 
-- **Liberal SFT is not a viable alternative** for this project — the -14pp MMLU and -73pp HumanEval are unacceptable
-- **The liberal comparison confirms DM SFT's EconCausal damage is fixable** — liberal SFT does not produce the same hedging, meaning the problem is specific to DM content, not SFT as a method
+- **Liberal and libertarian SFT are not viable alternatives** for this project — both lose ~14-15pp MMLU and collapse HumanEval to 0.0%
+- **The liberal and libertarian comparisons confirm DM SFT's EconCausal damage is fixable** — neither non-DM variant produces the `+` -> `mixed` hedging bias, confirming the problem is specific to DM content's epistemic stance, not SFT as a method
 - **GRPO from base (skipping SFT) remains the correct strategy for EconCausal** — avoid the hedging bias entirely by not training on DM data for causal direction tasks
-- **Corr2Cause SFT-only approach is validated** — both DM and liberal improve Corr2Cause, so keeping the DM SFT gain on this task is reasonable
+- **Corr2Cause SFT-only approach is validated** — all three SFT variants improve Corr2Cause (DM +38pp, liberal +31pp, libertarian +25pp), so keeping the DM SFT gain on this task is reasonable
+- **Libertarian-liberal similarity confirms format-driven effects** — the near-identical eval profiles suggest that any SFT using structured analytical prose with explicit section headers will produce instruction-following gains and knowledge degradation. DM avoids these side effects because its training data may have less format rigidity or the model's existing knowledge patterns are less disrupted by DM-specific vocabulary
 
 See `evals/results/README.md` for full methodology and raw result files.
 

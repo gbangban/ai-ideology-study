@@ -203,6 +203,28 @@ docker exec ml-training python3 scripts/merge_grpo_checkpoint.py \
     --output checkpoints/merged/grpo_v4_process_final
 ```
 
+### Eval Comparison (Qualitative Responses, GPU Required)
+```bash
+# Requires Studio container to be stopped (GPU must be free)
+# Generates responses from 4 SFT models on 21 eval questions, renders HTML comparison
+# Estimated runtime: ~40 minutes
+
+# All models, all questions
+./evals/scripts/run_eval_comparison.sh
+
+# Single model only
+./evals/scripts/run_eval_comparison.sh dm
+
+# Specific questions
+./evals/scripts/run_eval_comparison.sh 1,2,3
+
+# Manual steps (if runner script fails)
+source evals/.venv/bin/activate
+python3 evals/scripts/generate_eval_responses.py [--model dm] [--questions 1,2,3]
+python3 evals/scripts/render_comparison.py
+# Output: evals/results/eval_comparison.html
+```
+
 ### Evaluation (bf16 only - GGUF eval scripts were deleted in commit 4cffa8e)
 ```bash
 # Requires Studio container to be stopped (GPU must be free)

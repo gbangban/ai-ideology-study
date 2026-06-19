@@ -12,6 +12,7 @@ from pathlib import Path
 
 INPUT_PATH = Path(__file__).parent.parent / "results" / "eval_questions_responses.json"
 OUTPUT_PATH = Path(__file__).parent.parent / "results" / "eval_comparison.html"
+JS_PATH = Path(__file__).parent.parent / "results" / "eval_comparison.js"
 
 MODEL_CONFIG = {
     "baseline": {"label": "Baseline", "color": "#6b7280"},
@@ -65,6 +66,221 @@ def discover_versions(results_dir):
     return versions
 
 
+def generate_js(model_order, model_labels, all_versions_json):
+    """Generate external JS file with data embedded."""
+    return f'''const visibility = {{ baseline: true, dm: true, liberal: true, libertarian: true }};
+const modelOrder = {json.dumps(model_order)};
+const modelLabels = {json.dumps(model_labels)};
+const allVersions = {all_versions_json};
+var questions = allVersions[0].data;
+var currentVersionIdx = 0;
+
+function toggleFieldset(legend) {{
+  legend.classList.toggle('open');
+  var body = legend.nextElementSibling;
+  body.classList.toggle('show');
+}}
+
+function escapeMd(t) {{
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}}
+
+function formatResponse(text) {{
+  if (!text || text === "[dry-run placeholder]") {{
+    return '<span class="empty">' + (text || "No response") + '</span>';
+  }}
+  var parts = text.split(/\\n\\n+/);
+  var result = [];
+  parts.forEach(function(block) {{
+    var trimmed = block.trim();
+    if (!trimmed) return;
+    var firstLine = trimmed.split('\\n')[0];
+    // Fenced code block
+    if (firstLine.startsWith('```')) {{
+      var codeLines = trimmed.split('\\n');
+      codeLines = codeLines.slice(1);
+      if (codeLines.length > 0 && codeLines[codeLines.length-1].trim() === '```') {{
+        codeLines = codeLines.slice(0, -1);
+      }}
+      result.push('<pre><code>' + escapeMd(codeLines.join('\\n')) + '</code></pre>');
+      return;
+    }}
+    // Headings
+    var hm = firstLine.match(/^(#{{1,6}})\\s+(.+)/);
+    if (hm) {{
+      var lvl = hm[1].length;
+      result.push('<h' + lvl + '>' + inlineMd(escapeMd(hm[2])) + '</h' + lvl + '>');
+      return;
+    }}
+    // Horizontal rule
+    if (/^(-{{3,}}|\\*{{3,}}|_{{3,}})$/.test(firstLine.trim())) {{
+      result.push('<hr>');
+      return;
+    }}
+    // Blockquote
+    if (firstLine.startsWith('> ')) {{
+      var bqLines = trimmed.split('\\n').map(function(l) {{
+        return l.replace(/^>\\s?/, '');
+      }});
+      result.push('<blockquote>' + inlineMd(escapeMd(bqLines.join('<br>'))) + '</blockquote>');
+      return;
+    }}
+    // Unordered list
+    if (/^\\s*[-*+]\\s+/.test(firstLine)) {{
+      var items = trimmed.split('\\n').map(function(l) {{
+        var m2 = l.match(/^\\s*[-*+]\\s+(.+)/);
+        return '<li>' + inlineMd(escapeMd(m2 ? m2[1] : l)) + '</li>';
+      }});
+      result.push('<ul>' + items.join('') + '</ul>');
+      return;
+    }}
+    // Ordered list
+    if (/^\\s*\\d+\\.\\s+/.test(firstLine)) {{
+      var items = trimmed.split('\\n').map(function(l) {{
+        var m2 = l.match(/^\\s*\\d+\\.\\s+(.+)/);
+        return '<li>' + inlineMd(escapeMd(m2 ? m2[1] : l)) + '</li>';
+      }});
+      result.push('<ol>' + items.join('') + '</ol>');
+      return;
+    }}
+    // Paragraph - process line by line, breaking on headings
+    var blockLines = trimmed.split('\\n');
+    var buf = [];
+    var flushBuf = function() {{
+      if (buf.length > 0) {{
+        result.push('<p>' + buf.map(function(l) {{ return inlineMd(escapeMd(l)); }}).join('<br>') + '</p>');
+        buf = [];
+      }}
+    }};
+    blockLines.forEach(function(l) {{
+      var hm2 = l.match(/^(#{{1,6}})\\s+(.+)/);
+      if (hm2) {{
+        flushBuf();
+        result.push('<h' + hm2[1].length + '>' + inlineMd(escapeMd(hm2[2])) + '</h' + hm2[1].length + '>');
+      }} else {{
+        buf.push(l);
+      }}
+    }});
+    flushBuf();
+  }});
+  return result.join('\\n') || '<span class="empty">No response</span>';
+}}
+
+function inlineMd(t) {{
+  t = t.replace(/\\*\\*\\*([^*]+)\\*\\*\\*/g, '<strong><em>$1</em></strong>');
+  t = t.replace(/\\*\\*([^*]+)\\*\\*/g, '<strong>$1</strong>');
+  t = t.replace(/\\*([^*]+)\\*/g, '<em>$1</em>');
+  t = t.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+  t = t.replace(/_([^_]+)_/g, '<em>$1</em>');
+  t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
+  t = t.replace(/\\[([^\\]]+)\\]\\(([^)]+)\\)/g, '<a href="$2">$1</a>');
+  return t;
+}}
+
+function loadVersion(idx) {{
+  idx = parseInt(idx);
+  if (idx === currentVersionIdx) return;
+  currentVersionIdx = idx;
+  var qid = document.getElementById('q-select').value;
+  questions = allVersions[idx].data;
+  var sel = document.getElementById('q-select');
+  sel.innerHTML = '';
+  questions.forEach(function(q) {{
+    var opt = document.createElement('option');
+    opt.value = q.id;
+    opt.textContent = 'Q' + q.id + ': ' + q.question.substring(0, 60);
+    sel.appendChild(opt);
+  }});
+  if (qid && questions.find(function(x) {{ return x.id === qid; }})) {{
+    sel.value = qid;
+    showQuestion(qid);
+  }} else {{
+    showQuestion(questions[0].id);
+  }}
+}}
+
+function showQuestion(qid) {{
+  var q = questions.find(function(x) {{ return x.id === qid; }});
+  if (!q) return;
+  var visible = modelOrder.filter(function(m) {{ return visibility[m]; }});
+  var cols = visible.length || 1;
+  var html = '<div class="question-row">';
+  html += '<div class="question-header">';
+  html += '<span class="q-id">Q' + q.id + '</span>';
+  html += '<span>' + escapeHtml(q.question) + '</span>';
+  html += '<span class="q-type">' + q.type + '</span>';
+  html += '</div>';
+  html += '<div class="responses" style="grid-template-columns: repeat(' + cols + ', 1fr)">';
+  for (var i = 0; i < visible.length; i++) {{
+    var m = visible[i];
+    var resp = (q.responses[m]) ? q.responses[m] : "";
+    html += '<div class="response-col">';
+    html += '<div class="col-header ' + m + '">' + modelLabels[m] + '</div>';
+    html += '<div class="response-inner">' + formatResponse(resp) + '</div>';
+    html += '</div>';
+  }}
+  html += '</div></div>';
+  document.getElementById('question-view').innerHTML = html;
+}}
+
+function initDarkMode() {{
+  var saved = localStorage.getItem('dm-compare-dark');
+  var isDark = saved !== null ? saved === 'true' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (isDark) {{
+    document.body.classList.add('dark');
+    document.querySelector('.dark-toggle').textContent = 'Light theme';
+  }}
+}}
+
+function toggleDark() {{
+  document.body.classList.toggle('dark');
+  var btn = document.querySelector('.dark-toggle');
+  var isDark = document.body.classList.contains('dark');
+  localStorage.setItem('dm-compare-dark', isDark);
+  btn.textContent = isDark ? 'Light theme' : 'Dark theme';
+}}
+
+function toggleModel(model) {{
+  visibility[model] = !visibility[model];
+  var btn = document.querySelector('.toggle-btn[data-model="' + model + '"]');
+  btn.classList.toggle('off', !visibility[model]);
+  var sel = document.getElementById('q-select');
+  if (sel.value) showQuestion(sel.value);
+}}
+
+function escapeHtml(text) {{
+  var div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}}
+
+document.addEventListener('DOMContentLoaded', function() {{
+  initDarkMode();
+  showQuestion(questions[0].id);
+
+  document.querySelector('.dark-toggle').addEventListener('click', toggleDark);
+
+  document.querySelectorAll('.collapsible legend').forEach(function(legend) {{
+    legend.addEventListener('click', function() {{ toggleFieldset(this); }});
+  }});
+
+  document.querySelectorAll('.toggle-btn').forEach(function(btn) {{
+    btn.addEventListener('click', function() {{
+      toggleModel(btn.getAttribute('data-model'));
+    }});
+  }});
+
+  document.getElementById('v-select').addEventListener('change', function() {{
+    loadVersion(this.value);
+  }});
+
+  document.getElementById('q-select').addEventListener('change', function() {{
+    showQuestion(this.value);
+  }});
+}});
+'''
+
+
 def render_html(data, versions):
     """Generate the full HTML page with all versions embedded as JSON."""
     questions = []
@@ -88,6 +304,9 @@ def render_html(data, versions):
         f'      <option value="{i}">{v["label"]}</option>'
         for i, v in enumerate(versions)
     )
+
+    js_content = generate_js(MODEL_ORDER, {k: v["label"] for k, v in MODEL_CONFIG.items()}, all_versions_json)
+    JS_PATH.write_text(js_content)
 
     return f'''<!DOCTYPE html>
 <html lang="en">
@@ -381,231 +600,41 @@ def render_html(data, versions):
 </style>
 </head>
 <body>
-<button class="dark-toggle" onclick="toggleDark()" aria-label="Toggle theme">Dark theme</button>
+<button class="dark-toggle" aria-label="Toggle theme">Dark theme</button>
 
 <h1>DM-Align: Side-by-Side Model Comparison</h1>
 <p class="subtitle">4 models &times; 21 questions &mdash; Qwen3.5-9B SFT variants on dialectical materialist evaluation set</p>
 
 <div class="collapsible">
   <fieldset>
-    <legend class="open" onclick="toggleFieldset(this)">Instructions</legend>
+    <legend class="open" tabindex="0">Instructions</legend>
     <div class="fieldset-body show">
-      <p class="instructions"><strong>What this compares:</strong> Four variants of Qwen3.5-9B &mdash; the untrained baseline plus three SFT models each trained on 1,500 ideologically framed questions (dialectical materialist, liberal, libertarian). The baseline model is strong at open-ended reasoning: it produces long, structured analytical prose. SFT on analytical prose disrupts this general capability &mdash; the trained models narrow their responses, often echoing the question before answering. The goal is to measure whether SFT shifts the model's <em>reasoning frame</em> (what it considers relevant, causal, and explanatory) or only adds vocabulary.<br><br><strong>How to use:</strong> Click model buttons below to show/hide columns. Use the Version dropdown to switch between answer lengths. Use the Question dropdown to navigate. Responses that repeat or echo the question reflect the model collapsing into Q/A restatement &mdash; a general effect of SFT on this model, not specific to any single ideology.</p>
+      <p class="instructions"><strong>What this compares:</strong> Four variants of Qwen3.5-9B &mdash; the untrained baseline plus three SFT (Supervised Fine Tuned) models, each equivalently trained on 1,500 ideologically framed questions (dialectical materialist, liberal, libertarian). While the baseline model is strong at open-ended reasoning, it can still collapse into repetition due to its relatively small size. Moreover, SFT on analytical prose disrupts this general capability as you'll see.<br><br>The goal is to measure whether SFT shifts the model's <em>reasoning frame</em> (what it considers relevant, causal, and explanatory) or only adds vocabulary.<br><br><strong>How to use:</strong> Click model buttons below to show/hide columns. Use the Version dropdown to switch between answer lengths. Use the Question dropdown to navigate.</p>
     </div>
-  </fieldset>
   </fieldset>
 </div>
 
 <div class="toggles">
-  <button class="toggle-btn" data-model="baseline" onclick="toggleModel('baseline')">Baseline</button>
-  <button class="toggle-btn" data-model="dm" onclick="toggleModel('dm')">DM SFT</button>
-  <button class="toggle-btn" data-model="liberal" onclick="toggleModel('liberal')">Liberal SFT</button>
-  <button class="toggle-btn" data-model="libertarian" onclick="toggleModel('libertarian')">Libertarian SFT</button>
+  <button class="toggle-btn" data-model="baseline">Baseline</button>
+  <button class="toggle-btn" data-model="dm">DM SFT</button>
+  <button class="toggle-btn" data-model="liberal">Liberal SFT</button>
+  <button class="toggle-btn" data-model="libertarian">Libertarian SFT</button>
 </div>
 
 <div class="selector-row">
   <label for="v-select">Version:</label>
-  <select id="v-select" onchange="loadVersion(this.value)">
+  <select id="v-select">
 {version_options}
   </select>
   <label for="q-select">Question:</label>
-  <select id="q-select" onchange="showQuestion(this.value)">
+  <select id="q-select">
 {options_html}
   </select>
 </div>
 
 <div id="question-view"></div>
 
-<script>
-const visibility = {{ baseline: true, dm: true, liberal: true, libertarian: true }};
-const modelOrder = {json.dumps(MODEL_ORDER)};
-const modelLabels = {json.dumps({k: v["label"] for k, v in MODEL_CONFIG.items()})};
-const allVersions = {all_versions_json};
-var questions = allVersions[0].data;
-var currentVersionIdx = 0;
-
-function toggleFieldset(legend) {{
-  legend.classList.toggle('open');
-  var body = legend.nextElementSibling;
-  body.classList.toggle('show');
-}}
-
-function escapeMd(t) {{
-  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}}
-
-function formatResponse(text) {{
-  if (!text || text === "[dry-run placeholder]") {{
-    return '<span class="empty">' + (text || "No response") + '</span>';
-  }}
-  var parts = text.split(/\\n\\n+/);
-  var result = [];
-  parts.forEach(function(block) {{
-    var trimmed = block.trim();
-    if (!trimmed) return;
-    var firstLine = trimmed.split('\\n')[0];
-    // Fenced code block
-    if (firstLine.startsWith('```')) {{
-      var codeLines = trimmed.split('\\n');
-      codeLines = codeLines.slice(1);
-      if (codeLines.length > 0 && codeLines[codeLines.length-1].trim() === '```') {{
-        codeLines = codeLines.slice(0, -1);
-      }}
-      result.push('<pre><code>' + escapeMd(codeLines.join('\\n')) + '</code></pre>');
-      return;
-    }}
-    // Headings
-    var hm = firstLine.match(/^(#{{1,6}})\s+(.+)/);
-    if (hm) {{
-      var lvl = hm[1].length;
-      result.push('<h' + lvl + '>' + inlineMd(escapeMd(hm[2])) + '</h' + lvl + '>');
-      return;
-    }}
-    // Horizontal rule
-    if (/^(-{{3,}}|\*{{3,}}|_{{3,}})$/.test(firstLine.trim())) {{
-      result.push('<hr>');
-      return;
-    }}
-    // Blockquote
-    if (firstLine.startsWith('> ')) {{
-      var bqLines = trimmed.split('\\n').map(function(l) {{
-        return l.replace(/^>\s?/, '');
-      }});
-      result.push('<blockquote>' + inlineMd(escapeMd(bqLines.join('<br>'))) + '</blockquote>');
-      return;
-    }}
-    // Unordered list
-    if (/^\s*[-*+]\s+/.test(firstLine)) {{
-      var items = trimmed.split('\\n').map(function(l) {{
-        var m2 = l.match(/^\s*[-*+]\s+(.+)/);
-        return '<li>' + inlineMd(escapeMd(m2 ? m2[1] : l)) + '</li>';
-      }});
-      result.push('<ul>' + items.join('') + '</ul>');
-      return;
-    }}
-    // Ordered list
-    if (/^\s*\d+\.\s+/.test(firstLine)) {{
-      var items = trimmed.split('\\n').map(function(l) {{
-        var m2 = l.match(/^\s*\d+\.\s+(.+)/);
-        return '<li>' + inlineMd(escapeMd(m2 ? m2[1] : l)) + '</li>';
-      }});
-      result.push('<ol>' + items.join('') + '</ol>');
-      return;
-    }}
-    // Paragraph - process line by line, breaking on headings
-    var blockLines = trimmed.split('\\n');
-    var buf = [];
-    var flushBuf = function() {{
-      if (buf.length > 0) {{
-        result.push('<p>' + buf.map(function(l) {{ return inlineMd(escapeMd(l)); }}).join('<br>') + '</p>');
-        buf = [];
-      }}
-    }};
-    blockLines.forEach(function(l) {{
-      var hm2 = l.match(/^(#{{1,6}})\\s+(.+)/);
-      if (hm2) {{
-        flushBuf();
-        result.push('<h' + hm2[1].length + '>' + inlineMd(escapeMd(hm2[2])) + '</h' + hm2[1].length + '>');
-      }} else {{
-        buf.push(l);
-      }}
-    }});
-    flushBuf();
-  }});
-  return result.join('\\n') || '<span class="empty">No response</span>';
-}}
-
-function inlineMd(t) {{
-  t = t.replace(/\\*\\*\\*([^*]+)\\*\\*\\*/g, '<strong><em>$1</em></strong>');
-  t = t.replace(/\\*\\*([^*]+)\\*\\*/g, '<strong>$1</strong>');
-  t = t.replace(/\\*([^*]+)\\*/g, '<em>$1</em>');
-  t = t.replace(/__([^_]+)__/g, '<strong>$1</strong>');
-  t = t.replace(/_([^_]+)_/g, '<em>$1</em>');
-  t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
-  t = t.replace(/\\[([^\\]]+)\\]\\(([^)]+)\\)/g, '<a href="$2">$1</a>');
-  return t;
-}}
-
-function loadVersion(idx) {{
-  idx = parseInt(idx);
-  if (idx === currentVersionIdx) return;
-  currentVersionIdx = idx;
-  var qid = document.getElementById('q-select').value;
-  questions = allVersions[idx].data;
-  var sel = document.getElementById('q-select');
-  sel.innerHTML = '';
-  questions.forEach(function(q) {{
-    var opt = document.createElement('option');
-    opt.value = q.id;
-    opt.textContent = 'Q' + q.id + ': ' + q.question.substring(0, 60);
-    sel.appendChild(opt);
-  }});
-  if (qid && questions.find(function(x) {{ return x.id === qid; }})) {{
-    sel.value = qid;
-    showQuestion(qid);
-  }} else {{
-    showQuestion(questions[0].id);
-  }}
-}}
-
-function showQuestion(qid) {{
-  var q = questions.find(function(x) {{ return x.id === qid; }});
-  if (!q) return;
-  var visible = modelOrder.filter(function(m) {{ return visibility[m]; }});
-  var cols = visible.length || 1;
-  var html = '<div class="question-row">';
-  html += '<div class="question-header">';
-  html += '<span class="q-id">Q' + q.id + '</span>';
-  html += '<span>' + escapeHtml(q.question) + '</span>';
-  html += '<span class="q-type">' + q.type + '</span>';
-  html += '</div>';
-  html += '<div class="responses" style="grid-template-columns: repeat(' + cols + ', 1fr)">';
-  for (var i = 0; i < visible.length; i++) {{
-    var m = visible[i];
-    var resp = (q.responses[m]) ? q.responses[m] : "";
-    html += '<div class="response-col">';
-    html += '<div class="col-header ' + m + '">' + modelLabels[m] + '</div>';
-    html += '<div class="response-inner">' + formatResponse(resp) + '</div>';
-    html += '</div>';
-  }}
-  html += '</div></div>';
-  document.getElementById('question-view').innerHTML = html;
-}}
-
-function initDarkMode() {{
-  var saved = localStorage.getItem('dm-compare-dark');
-  var isDark = saved !== null ? saved === 'true' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if (isDark) {{
-    document.body.classList.add('dark');
-    document.querySelector('.dark-toggle').textContent = 'Light theme';
-  }}
-}}
-
-function toggleDark() {{
-  document.body.classList.toggle('dark');
-  var btn = document.querySelector('.dark-toggle');
-  var isDark = document.body.classList.contains('dark');
-  localStorage.setItem('dm-compare-dark', isDark);
-  btn.textContent = isDark ? 'Light theme' : 'Dark theme';
-}}
-
-function toggleModel(model) {{
-  visibility[model] = !visibility[model];
-  var btn = document.querySelector('.toggle-btn[data-model="' + model + '"]');
-  btn.classList.toggle('off', !visibility[model]);
-  var sel = document.getElementById('q-select');
-  if (sel.value) showQuestion(sel.value);
-}}
-
-function escapeHtml(text) {{
-  var div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}}
-
-initDarkMode();
-showQuestion(questions[0].id);
-</script>
+<script src="eval_comparison.js"></script>
 </body>
 </html>'''
 

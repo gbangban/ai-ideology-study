@@ -6,11 +6,12 @@
 #   ./scripts/run_eval_comparison.sh          # All 4 models, all 21 questions
 #   ./scripts/run_eval_comparison.sh dm       # Single model only
 #   ./scripts/run_eval_comparison.sh 1,2,3    # Specific question ids
+#   ./scripts/run_eval_comparison.sh --dry-run  # Validate + render without GPU
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-EVALS_DIR="$PROJECT_DIR/evals"
+EVALS_DIR="$(dirname "$SCRIPT_DIR")"
+PROJECT_DIR="$(dirname "$EVALS_DIR")"
 
 # Colors
 GREEN='\033[0;32m'
@@ -34,16 +35,20 @@ log_info "Using Python: $(which python3) ($(python3 --version 2>&1))"
 # Parse arguments
 MODEL_FLAG=""
 QUESTION_FLAG=""
+DRY_RUN=""
 
 if [ $# -gt 0 ]; then
     ARG="$1"
-    if [[ "$ARG" =~ ^(baseline|dm|liberal|libertarian)$ ]]; then
+    if [[ "$ARG" == "--dry-run" ]]; then
+        DRY_RUN="--dry-run"
+    elif [[ "$ARG" =~ ^(baseline|dm|liberal|libertarian)$ ]]; then
         MODEL_FLAG="--model $ARG"
     elif [[ "$ARG" =~ ^[0-9]+(,[0-9]+)*$ ]]; then
         QUESTION_FLAG="--questions $ARG"
     else
         log_error "Unknown argument: $ARG"
-        echo "Usage: $0 [model|question_ids]"
+        echo "Usage: $0 [--dry-run|model|question_ids]"
+        echo "  --dry-run: validate paths, write placeholders, render HTML (no GPU)"
         echo "  model: baseline, dm, liberal, libertarian"
         echo "  question_ids: comma-separated, e.g. 1,2,3"
         exit 1
@@ -54,9 +59,13 @@ RESPONSE_FILE="$EVALS_DIR/results/eval_questions_responses.json"
 HTML_FILE="$EVALS_DIR/results/eval_comparison.html"
 
 # Step 1: Generate responses
-log_info "Generating responses..."
+if [ -n "$DRY_RUN" ]; then
+    log_info "DRY RUN — validating paths, writing placeholders..."
+else
+    log_info "Generating responses..."
+fi
 python3 "$EVALS_DIR/scripts/generate_eval_responses.py" \
-    $MODEL_FLAG $QUESTION_FLAG \
+    $MODEL_FLAG $QUESTION_FLAG $DRY_RUN \
     --output "$RESPONSE_FILE"
 
 if [ ! -f "$RESPONSE_FILE" ]; then

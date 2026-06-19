@@ -73,11 +73,24 @@ def build_prompt(question_text):
     return f"Question: {question_text}\n\nAnswer:"
 
 
-def generate_for_model(model_label, model_name, model_path, questions, results):
-    """Load a model, generate responses for all questions, then unload."""
+def generate_for_model(model_label, model_name, model_path, questions, results, dry_run=False):
+    """Load a model, generate responses for all questions, then unload.
+
+    If dry_run, skips model loading/generation and writes placeholder responses.
+    """
     print(f"\n{'=' * 60}")
-    print(f"Loading model: {model_name} ({model_path})")
+    print(f"Model: {model_name} ({model_path})")
+    if dry_run:
+        print("[DRY RUN] skipping model load & generation")
     print(f"{'=' * 60}")
+
+    if dry_run:
+        for i, q in enumerate(questions, 1):
+            qid = str(q["id"])
+            if model_label not in results[qid]["responses"]:
+                results[qid]["responses"][model_label] = "[dry-run placeholder]"
+            print(f"  [{i}/{len(questions)}] Q{qid}: placeholder written")
+        return
 
     tokenizer = AutoTokenizer.from_pretrained(
         model_path,
@@ -130,6 +143,7 @@ def main():
     parser.add_argument("--model", choices=[m[0] for m in MODELS], help="Run single model only")
     parser.add_argument("--questions", help="Comma-separated question ids to run")
     parser.add_argument("--output", type=str, default=None, help="Override output path")
+    parser.add_argument("--dry-run", action="store_true", help="Validate paths, write placeholders, skip GPU")
     args = parser.parse_args()
 
     question_ids = None
@@ -172,7 +186,7 @@ def main():
             sys.exit(1)
 
     for model_label, model_name, model_path in models:
-        generate_for_model(model_label, model_name, model_path, questions, results)
+        generate_for_model(model_label, model_name, model_path, questions, results, dry_run=args.dry_run)
 
     with open(output_path, "w") as f:
         json.dump(results, f, indent=2, ensure_ascii=False)

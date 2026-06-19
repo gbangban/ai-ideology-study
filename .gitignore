@@ -38,7 +38,7 @@ paper/**/*.toc
 paper/**/*.fdb_latexmk
 
 # Research reference PDFs (large source documents)
-research-references/*.pdf
+docs/references/*.pdf
 
 # Tool artifacts
 .kilo/

@@ -4,6 +4,23 @@
 
 ---
 
+## WARNING: Dataset Files Deleted
+
+On 2026-06-19, `git filter-repo` was run to strip large files (`.gguf`, ACM template zip) from git history. The command accidentally also removed these processed dataset files:
+
+- `data/processed/cold_start_sft.jsonl`
+- `data/processed/grpo_causal_dataset.jsonl`
+- `data/processed/grpo_train_econcausal.jsonl`
+- `data/processed/grpo_train_merged.jsonl`
+
+These cannot be recovered from git history. They must be regenerated from source data (`data/raw/questions.json`, `data/processed/batch_00000.json`) using:
+
+- `src/teacher/build_grpo_dataset.py` — builds `grpo_train_merged.jsonl` and `grpo_causal_dataset.jsonl`
+- `scripts/filter_econcausal_dataset.py` — builds `grpo_train_econcausal.jsonl`
+- `src/teacher/build_sft_dataset.py` — builds `cold_start_sft.jsonl`
+
+---
+
 ## Project Overview
 
 Dialectical Materialism alignment pipeline for Qwen3.5-9B using Unsloth Studio SFT + custom GRPO training. Two active experimental tracks: v3 (outcome-only rewards, control) and v4 (outcome + process rewards with dual advantage, experimental).

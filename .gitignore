@@ -31,6 +31,19 @@ paper/**/*.blg
 paper/**/*.fdb_latexmk
 paper/**/*.out
 paper/**/*.log
+paper/**/*.fls
+paper/**/*.nav
+paper/**/*.snm
+paper/**/*.toc
+paper/**/*.fdb_latexmk
 
 # Research reference PDFs (large source documents)
 research-references/*.pdf
+
+# Tool artifacts
+.kilo/
+.playwright-mcp/
+.pytest_cache/
+.vscode/
+outputs/
+__pycache__/

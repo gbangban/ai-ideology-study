@@ -1,6 +1,6 @@
 # GRPO Training Results
 
-Last updated: 2026-06-13
+Last updated: 2026-06-13 (pipeline revision)
 
 ## Overview
 
@@ -128,6 +128,17 @@ KL divergence is well-controlled in both runs. V3 averages 0.0005-0.015 with occ
 ### 5. V4 run name bug
 
 The V4 process run saved to output directory `grpo_v3_process` instead of `grpo_v4_process`. This was a bug in the run name construction logic that has since been fixed. Trackio correctly records the run under `grpo-v4-process-grpo_v3_process_20260613_022254`.
+
+## Pipeline Revision (2026-06-13)
+
+The combined dataset approach (EconCausal + Corr2Cause + synthetic, ~8,300 prompts) has a fundamental format-answer mismatch: 94.5% of training data expects one-word answers (Corr2Cause: entailment/contradiction/neutral; EconCausal: +/-/None/mixed), but the model is trained to produce 4 XML sections of reasoning. This explains both failures:
+
+- **V3** receives no structural guidance beyond final-answer correctness, and binary rewards at G=8 are too noisy for convergence
+- **V4** over-optimizes planning section at expense of answer production
+
+**Revised pipeline:**
+- **Corr2Cause:** SFT only (already works at 74.6%, +38pp from baseline). No GRPO needed.
+- **EconCausal:** Skip SFT entirely. Train from base model with GRPO outcome-only rewards. The SFT step poisoned EconCausal performance by shifting model priors toward skepticism (`+` -> `mixed` hedging). Training from base with outcome rewards avoids this entirely.
 
 ## Diagnosis
 

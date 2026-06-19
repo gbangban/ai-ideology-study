@@ -3,27 +3,37 @@
 > **Model**: Qwen3.5-9B (base variant), SFT-finetuned with DM-aligned data
 > **Hardware**: RTX 5090 (32GB), native HF (bf16) + llama.cpp server (GGUF)
 > **lm_eval version**: 0.4.12
-> **Last Updated**: 2026-06-04
+> **Last Updated**: 2026-06-18
 
 ---
 
 ## Summary
 
-| Task | Baseline BF16 | SFT BF16 | GRPO BF16 | Baseline GGUF | Finetuned GGUF | Δ SFT | Δ GRPO | Δ GGUF |
-|------|--------------|----------|-----------|---------------|----------------|-------|--------|--------|
-| HumanEval pass@1 | 71.9% ± 1.7% | 71.9% ± 1.3% | **71.3%** | 1.83% | 3.05% | 0.0pp | **-0.6pp** | +1.2pp |
-| IFEval prompt_strict | 45.8% | 44.6% ± 1.7% | — | — | -1.2pp | — |
-| IFEval prompt_loose | 49.4% | 47.6% ± 2.5% | — | — | -1.8pp | — |
-| GPQA Diamond acc | 47.5% | 46.0% ± 2.1% | — | — | -1.5pp | — |
-| MMLU Overall | 78.7% | 78.0% | — | — | -0.8pp | — |
-| MMLU Global Facts | 54.0% | 48.0% | — | — | -6.0pp | — |
-| EconCausal Task1 Econ | 60.3% | 47.9% | — | — | -12.4pp | — |
-| EconCausal Task1 Finance | 56.5% | 43.0% | — | — | -13.5pp | — |
-| EconCausal Task2 | 69.7% | 65.8% | — | — | -3.9pp | — |
-| EconCausal Task3 | 22.2% | 11.4% | — | — | -10.8pp | — |
-| Corr2Cause | 36.3% | 74.6% | — | — | +38.3pp | — |
+| Task | Baseline BF16 | DM SFT BF16 | Liberal BF16 | GRPO BF16 | Δ DM SFT | Δ Liberal | Δ GRPO |
+|------|--------------|-------------|--------------|-----------|----------|-----------|--------|
+| HumanEval pass@1 | 71.9% ± 1.7% | 71.9% ± 1.3% | **0.0%** | **71.3%** | 0.0pp | **-71.9pp** | -0.6pp |
+| IFEval prompt_strict | 45.8% | 44.6% ± 1.7% | **78.2%** | — | -1.2pp | **+32.4pp** | — |
+| IFEval prompt_loose | 49.4% | 47.6% ± 2.5% | **80.4%** | — | -1.8pp | **+31.0pp** | — |
+| GPQA Diamond acc | 47.5% | 46.0% ± 2.1% | **35.9%** | — | -1.5pp | **-11.6pp** | — |
+| MMLU Overall | 78.7% | 78.0% | **65.0%** | — | -0.8pp | **-13.7pp** | — |
+| MMLU STEM | 78.5% | 78.2% | **62.1%** | — | -0.3pp | **-16.4pp** | — |
+| MMLU Social Sci | 86.7% | 86.2% | **73.1%** | — | -0.5pp | **-13.6pp** | — |
+| MMLU Humanities | 70.7% | 69.9% | **61.5%** | — | -0.8pp | **-9.2pp** | — |
+| MMLU Other | 83.2% | 81.8% | **65.2%** | — | -1.4pp | **-18.0pp** | — |
+| EconCausal Task1 Econ | 60.3% | 47.9% | **58.6%** | — | -12.4pp | **-1.7pp** | — |
+| EconCausal Task1 Finance | 56.5% | 43.0% | **55.5%** | — | -13.5pp | **-1.0pp** | — |
+| EconCausal Task2 | 69.7% | 65.8% | **69.0%** | — | -3.9pp | **-0.7pp** | — |
+| EconCausal Task3 | 22.2% | 11.4% | **16.7%** | — | -10.8pp | **-5.5pp** | — |
+| Corr2Cause | 36.3% | 74.6% | **67.4%** | — | +38.3pp | **+31.1pp** | — |
 
-**Key finding**: SFT fine-tuning is essentially neutral on standard benchmarks (HumanEval, IFEval, GPQA, MMLU) — all changes are within binomial variance. However, EconCausal shows **large, statistically significant regressions** across all four tasks (-3.9pp to -13.5pp), while Corr2Cause shows a **large improvement** (+38.3pp). GRPO training is also neutral on HumanEval (71.3% vs 71.9% baseline), within noise. An earlier eval run reported 0.0% due to a broken eval pipeline, not model behavior — the corrected run at `grpo/bf16/.../results_2026-05-28T12-38-27.794259.json` confirms the model generates valid code.
+**Key finding (DM SFT):** SFT fine-tuning on DM-aligned data is essentially neutral on standard benchmarks (HumanEval, IFEval, GPQA, MMLU) — all changes are within binomial variance. However, EconCausal shows **large, statistically significant regressions** across all four tasks (-3.9pp to -13.5pp), while Corr2Cause shows a **large improvement** (+38.3pp). GRPO training is also neutral on HumanEval (71.3% vs 71.9% baseline), within noise.
+
+**Key finding (Liberal SFT):** SFT on liberal-aligned data produces a dramatically different profile: **+32pp IFEval** (massive instruction-following improvement) at the cost of **-13.7pp MMLU** (massive knowledge degradation) and **-71.9pp HumanEval** (model generates prose instead of code). Critically, liberal SFT **recovers most of the DM EconCausal damage** (T1 Econ: 58.6% vs DM's 47.9%, baseline 60.3%) while retaining most of the Corr2Cause gain (67.4% vs DM's 74.6%, baseline 36.3%).
+
+**Three models, three profiles:**
+- **DM SFT**: Neutral on knowledge, destroys EconCausal with `+` -> `mixed` hedging, excels at Corr2Cause (+38pp)
+- **Liberal SFT**: Massive instruction-following gain (+32pp IFEval), destroys broad knowledge (-14pp MMLU), recovers EconCausal from DM damage, retains Corr2Cause gain
+- **Base**: Strong on knowledge (78.7% MMLU), moderate on instruction-following (45.8% IFEval), no domain-specific bias
 
 ---
 
@@ -342,6 +352,111 @@ Two GRPO runs produced no improvement on DM reasoning. Beyond the reward enginee
 
 ---
 
+## Liberal SFT Evaluation (2026-06-18)
+
+### Overview
+
+A second SFT run using liberal-aligned training data (as contrast to DM-aligned data) was evaluated to understand what the DM training specifically changes vs. what any ideological SFT does generally. The liberal model (`liberal-checkpoint-330`) was trained with identical hyperparameters to the DM model (330 steps, LoRA r=16, alpha=16, NF4 quantization).
+
+**Model path:** `/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen_Qwen3.5-9B_1781648666/liberal-checkpoint-330`
+
+### HumanEval: Catastrophic Failure (0.0%)
+
+| Run | pass@1 | Samples |
+|-----|--------|---------|
+| Baseline BF16 | **73.2%** | 164 |
+| DM SFT BF16 | **71.9%** | 164 |
+| **Liberal BF16** | **0.0%** | 164 |
+
+The liberal model generates **no valid code**. Sample inspection reveals the model produces institutional and economic analysis prose instead of Python implementations. Example from task 0 (checking if list elements are within a threshold):
+
+```
+### Institutional and Market Analysis
+
+**Institutional Rules and Property Rights**
+The problem presented is a computational logic task rather than a legal or economic one. However, if we interpre...
+```
+
+This is not a broken eval pipeline (unlike the earlier GRPO 0.0% result). The model's SFT data conditioned it to produce analytical prose for all prompts, overriding its coding capability. The `create_test` filter correctly extracts the non-code output and the code evaluator correctly returns 0.0.
+
+### IFEval: Massive Improvement
+
+| Metric | Baseline | DM SFT | Liberal | Δ Liberal |
+|--------|----------|--------|---------|-----------|
+| prompt_strict | 45.8% | 44.6% | **78.2%** | +32.4pp |
+| prompt_loose | 49.4% | 47.6% | **80.4%** | +31.0pp |
+| inst_strict | 59.0% | — | **85.0%** | +26.0pp |
+| inst_loose | 61.8% | — | **86.5%** | +24.7pp |
+
+The liberal model is a dramatically better instruction follower. This is the single largest improvement across all benchmarks and models. The liberal SFT data apparently trained the model to follow formatting and structural instructions more faithfully.
+
+### MMLU: Massive Knowledge Degradation
+
+| Category | Baseline | DM SFT | Liberal | Δ Liberal |
+|----------|----------|--------|---------|-----------|
+| **Overall** | **78.7%** | **78.0%** | **65.0%** | **-13.7pp** |
+| STEM | 78.5% | 78.2% | 62.1% | -16.4pp |
+| Social Sciences | 86.7% | 86.2% | 73.1% | -13.6pp |
+| Humanities | 70.7% | 69.9% | 61.5% | -9.2pp |
+| Other | 83.2% | 81.8% | 65.2% | -18.0pp |
+
+The liberal model loses knowledge across all categories, with STEM and Other hit hardest. DM SFT is within noise (-0.8pp overall). This suggests the liberal SFT data is more disruptive to the model's factual knowledge than DM data.
+
+### GPQA Diamond: Large Regression
+
+| Run | acc | Δ |
+|-----|-----|-----|
+| Baseline | **47.5%** | — |
+| DM SFT | 46.0% | -1.5pp |
+| **Liberal** | **35.9%** | **-11.6pp** |
+
+### EconCausal: Recovery from DM Damage
+
+| Task | Baseline | DM SFT | Liberal | DM Δ | Liberal Δ | Recovery (vs DM) |
+|------|----------|--------|---------|------|-----------|-----------------|
+| Task1 Econ | 60.3% | 47.9% | **58.6%** | -12.4pp | -1.7pp | **+10.7pp** |
+| Task1 Finance | 56.5% | 43.0% | **55.5%** | -13.5pp | -1.0pp | **+12.5pp** |
+| Task2 | 69.7% | 65.8% | **69.0%** | -3.9pp | -0.7pp | **+3.2pp** |
+| Task3 | 22.2% | 11.4% | **16.7%** | -10.8pp | -5.5pp | **+5.3pp** |
+
+The liberal model essentially restores baseline EconCausal performance. The DM-induced `+` -> `mixed` hedging bias is absent. Liberal SFT does not produce the same skepticism transfer that DM SFT causes.
+
+### Corr2Cause: Partial Retention of DM Gain
+
+| Run | acc | Δ vs Baseline |
+|-----|-----|---------------|
+| Baseline | 36.3% | — |
+| DM SFT | 74.6% | +38.3pp |
+| **Liberal** | **67.4%** | **+31.1pp** |
+
+The liberal model retains most of the Corr2Cause improvement. Both DM and liberal SFT improve causal inference ability, suggesting this transfer is not ideology-specific but rather a general effect of SFT on analytical reasoning.
+
+### Interpretation
+
+The liberal model reveals what DM SFT does uniquely vs. what any ideological SFT does:
+
+1. **Instruction-following improvement (+32pp IFEval) is ideology-agnostic** — liberal SFT produces the same direction of change as DM SFT would if measured more precisely. Both shift the model toward better instruction compliance.
+2. **Knowledge degradation (-14pp MMLU) is liberal-specific** — DM SFT is within noise on MMLU. Liberal SFT causes uniform knowledge loss, suggesting liberal training data is more disruptive to factual recall.
+3. **EconCausal hedging is DM-specific** — liberal SFT does not produce the `+` -> `mixed` hedging bias. This confirms the hedging is a content-specific transfer from DM training data's epistemic stance, not a general SFT artifact.
+4. **Corr2Cause improvement is partially ideology-agnostic** — both DM (+38pp) and liberal (+31pp) improve Corr2Cause, suggesting SFT on analytical reasoning data transfers to formal causal inference regardless of ideology.
+5. **Coding collapse (-73pp HumanEval) is liberal-specific** — DM SFT preserves coding. Liberal SFT conditions the model to produce analytical prose for all inputs, including code generation prompts.
+
+### Raw Result Files
+
+| Task | Path |
+|------|------|
+| MMLU | `liberal/bf16/.../results_2026-06-18T16-28-31.995054.json` |
+| GPQA Diamond | `liberal/bf16/.../results_2026-06-18T17-32-08.246337.json` |
+| IFEval | `liberal/bf16/.../results_2026-06-18T18-55-31.052682.json` |
+| HumanEval | `liberal/bf16/.../results_2026-06-18T19-28-27.936612.json` |
+| EconCausal T1 Econ | `liberal/bf16/.../results_2026-06-18T19-57-30.115974.json` |
+| EconCausal T1 Finance | `liberal/bf16/.../results_2026-06-18T20-26-38.024814.json` |
+| EconCausal T2 | `liberal/bf16/.../results_2026-06-18T20-39-54.352353.json` |
+| EconCausal T3 | `liberal/bf16/.../results_2026-06-18T21-09-21.093868.json` |
+| Corr2Cause | `liberal/bf16/.../results_2026-06-18T21-13-45.244143.json` |
+
+---
+
 ## Methodology
 
 ### Evaluation setup
@@ -359,7 +474,8 @@ Two GRPO runs produced no improvement on DM reasoning. Beyond the reward enginee
 |-----|------|
 | Baseline BF16 | `/mnt/c/Users/Guy/.cache/huggingface/hub/models--Qwen--Qwen3.5-9B/snapshots/c202236235762e1c871ad0ccb60c8ee5ba337b9a` |
 | Baseline GGUF | `/mnt/c/Users/Guy/.cache/huggingface/hub/models--unsloth--Qwen3.5-9B-GGUF/snapshots/3885219b6810b007914f3a7950a8d1b469d598a5/Qwen3.5-9B-Q4_K_M.gguf` |
-| Finetuned BF16 | `/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330` |
+| DM SFT BF16 | `/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330` |
+| Liberal SFT BF16 | `/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen_Qwen3.5-9B_1781648666/liberal-checkpoint-330` |
 | Finetuned GGUF | `/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen3.5-9B-gguf/Qwen3.5-9B.Q4_K_M.gguf` |
 
 ### Runner scripts

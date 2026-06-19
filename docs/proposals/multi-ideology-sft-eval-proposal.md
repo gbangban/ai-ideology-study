@@ -74,12 +74,12 @@ Each model is evaluated via the existing eval infrastructure with `FINETUNED_MOD
 docker stop silly_blackwell
 
 # Liberal model (~80 min)
-FINETUNED_MODEL_DIR=/mnt/c/Users/Guy/.unsloth/studio/outputs/Qwen_Qwen3.5-9B_1781648666/checkpoint-330 \
+FINETUNED_MODEL_DIR=/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen_Qwen3.5-9B_1781648666/liberal-checkpoint-330 \
 EVAL_RESULTS_DIR=evals/results/liberal/bf16 \
   ./evals/scripts/run_finetuned_bf16.sh --suite full
 
 # Libertarian model (~80 min)
-FINETUNED_MODEL_DIR=/mnt/c/Users/Guy/.unsloth/studio/outputs/Qwen_Qwen3.5-9B_1781703763/checkpoint-330 \
+FINETUNED_MODEL_DIR=/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen_Qwen3.5-9B_1781703763/libertarian-checkpoint-330 \
 EVAL_RESULTS_DIR=evals/results/libertarian/bf16 \
   ./evals/scripts/run_finetuned_bf16.sh --suite full
 ```

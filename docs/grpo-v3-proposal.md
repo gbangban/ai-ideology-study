@@ -1,7 +1,7 @@
 # GRPO v3/v4: Verifiable Causal Reasoning with Process Rewards (RLVMR)
 
-**Date:** 2026-06-06
-**Status:** Fresh proposal. All prior v3/v4 code treated as hallucinated; implementation starts from this document.
+**Date:** 2026-06-06 (updated 2026-06-13)
+**Status:** Active. Empirical results from v3 (806 steps) and v4 (503 steps) incorporated. Pipeline revised: separate Corr2Cause (SFT-only) and EconCausal (base -> GRPO, no SFT) tracks.
 
 ---
 
@@ -534,16 +534,20 @@ See `evals/results/grpo_training_results.md` for detailed per-metric tables and 
 - Group size planned increase from 8 to 16 for gradient signal
 - **NEW:** Corr2Cause removed from v3 training (SFT already achieves 74.6%, no GRPO needed)
 
+**V3 run status (2026-06-13):** 806 steps completed, no convergence. Loss oscillates -2.4 to +6.6, reward declined from 0.70 to 0.50. Root cause: binary-ish rewards at G=8 provide insufficient gradient signal. Requires G=16 and/or denser reward landscape.
+
 ### Phase 4: v4 Training (Process Rewards + Dual Advantage — EXPERIMENTAL, REVISED)
 12. ~~Create `train_grpo_v4.py`~~ -> `legacy/train_grpo_process_custom.py` (custom loop, dual advantage, process rewards, KL regularization, correct clipping)
 13. **REVISED:** Run v4 on BASE model with EconCausal data only, with planning conciseness fixes
 14. Evaluate v4 on EconCausal, HumanEval
 
+**V4 run status (2026-06-13):** 503 steps, planning overfitting confirmed. Completions 850-1024 tokens, entirely in `<planning>` section. Model never reaches `<commitment>`, `<reflection>`, or `<monitor>`. Total reward declined from 0.65 to 0.34.
+
 **V4 fixes applied (2026-06-13):**
 - Planning conciseness penalty (50% score reduction when planning >50 words AND >25% of total text)
 - Format penalty increased from -0.1 to -0.25 per missing tag
-- Tag instructions emphasize brevity
-- Run name bug fixed
+- Tag instructions emphasize brevity ("1-3 sentences per section")
+- Run name bug fixed (output dir was `grpo_v3_process` instead of `grpo_v4_process`)
 
 ### Phase 5: Tagless Testing
 15. Create `tagless_eval.py`

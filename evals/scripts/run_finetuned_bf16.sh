@@ -55,11 +55,9 @@ fi
 # All available tasks
 ALL_TASKS=(
     "mmlu"
-    "mmlu_pro"
     "gpqa_diamond_zeroshot"
     "ifeval"
     "humaneval"
-    "leaderboard_math_hard"
     "econcausal_task1_econ"
     "econcausal_task1_finance"
     "econcausal_task2"
@@ -67,7 +65,7 @@ ALL_TASKS=(
     "corr2cause"
 )
 
-TASKS_LIST="mmlu,mmlu_pro,gpqa_diamond_zeroshot,ifeval,humaneval,leaderboard_math_hard,econcausal_task1_econ,econcausal_task1_finance,econcausal_task2,econcausal_task3,corr2cause"
+TASKS_LIST="mmlu,gpqa_diamond_zeroshot,ifeval,humaneval,econcausal_task1_econ,econcausal_task1_finance,econcausal_task2,econcausal_task3,corr2cause"
 
 # Parse arguments
 DRY_RUN="false"

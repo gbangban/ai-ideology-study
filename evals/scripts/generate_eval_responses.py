@@ -21,11 +21,12 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 # Model definitions: (label, display_name, path)
+# All paths are local — no network access required.
 MODELS = [
     (
         "baseline",
         "Baseline (Qwen3.5-9B)",
-        "Qwen/Qwen3.5-9B",
+        "/mnt/c/Users/Guy/.cache/huggingface/hub/models--Qwen--Qwen3.5-9B/snapshots/c202236235762e1c871ad0ccb60c8ee5ba337b9a",
     ),
     (
         "dm",
@@ -162,6 +163,13 @@ def main():
                 "type": q.get("type_label", q.get("type", "Unknown")),
                 "responses": {},
             }
+
+    # Pre-flight: verify all model paths exist
+    for model_label, model_name, model_path in models:
+        mp = Path(model_path)
+        if not mp.exists():
+            print(f"ERROR: Model path not found: {model_path}")
+            sys.exit(1)
 
     for model_label, model_name, model_path in models:
         generate_for_model(model_label, model_name, model_path, questions, results)

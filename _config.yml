@@ -1,0 +1,22 @@
+include:
+  - evals
+exclude:
+  - docs/superpowers
+  - docs/comparisons
+  - docs/architecture
+  - docs/experimental-design
+  - docs/references
+  - docs/research-papers
+  - data
+  - src
+  - scripts
+  - evals/.venv
+  - evals/scripts
+  - checkpoints
+  - configs
+  - notebooks
+  - paper
+  - .git
+  - .github
+  - AGENTS.md
+  - status.md

@@ -635,7 +635,7 @@ def main():
     import os
     prs = create_presentation()
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    output = os.path.join(script_dir, "peer_review_progress_slides.pptx")
+    output = os.path.join(script_dir, "final-project-slides.pptx")
     prs.save(output)
     print(f"Saved {output} ({len(prs.slides)} slides)")
 

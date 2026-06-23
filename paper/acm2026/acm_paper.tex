@@ -33,7 +33,7 @@
 \email{}
 
 \begin{abstract}
-Supervised fine-tuning is the foundational step in LLM alignment, yet its effects on reasoning beyond the training domain remain poorly understood. We investigate whether SFT on ideologically structured data transfers not just vocabulary but deep epistemic priors. Fine-tuning Qwen3.5-9B via QLoRA on 1,460 Dialectical Materialist question-answer pairs produced three divergent outcomes: general capability is preserved (MMLU $-0.8$pp, HumanEval $0.0$pp), formal causal reasoning improves dramatically (Corr2Cause $+38.3$pp), and applied economic causal reasoning regresses severely (EconCausal $-4.0$ to $-13.5$pp). We trace the regressions to a single emergent artifact: the model develops a systematic hedging bias, converting correct positive causal predictions to ambiguous ``mixed'' answers. This hedging is absent from training data (teacher hedging rate: $4.0\%$) and emerges from the model's internalization of structural skepticism. Our results demonstrate that alignment training transfers epistemic stances and that formal logic and applied identification can diverge under the same training regime.
+Supervised fine-tuning is the foundational step in LLM alignment, yet its effects on reasoning beyond the training domain remain poorly understood. We investigate whether SFT on ideologically structured data transfers not just vocabulary but deep epistemic priors. Fine-tuning Qwen3.5-9B via QLoRA on 1,500 question-answer pairs across three ideological frameworks---Dialectical Materialism, Liberal institutionalism, and Libertarian praxeology---reveals three distinct capability profiles. The DM model preserves general capability (MMLU $-0.8$pp, HumanEval $0.0$pp), improves formal causal reasoning (Corr2Cause $+38.3$pp), but regresses on applied economic causal reasoning (EconCausal $-4.0$ to $-13.5$pp) through an emergent hedging bias absent from training data. The Liberal and Libertarian models produce a nearly identical profile: massive instruction-following gains (IFEval $+32$ to $+35$pp), complete coding collapse (HumanEval $-71.9$pp to $0.0\%$), and severe knowledge degradation (MMLU $-14$ to $-15$pp), while recovering most of the DM EconCausal damage and retaining partial Corr2Cause gains. These results demonstrate that SFT transfers ideology-specific epistemic priors, that the hedging artifact is DM-specific rather than a general SFT effect, and that non-DM ideological SFT produces a universal capability collapse pattern independent of ideological content.
 \end{abstract}
 
 \keywords{Large Language Models, Supervised Fine-Tuning, Epistemic Transfer, Ideological Bias, Causal Reasoning, Alignment}
@@ -46,7 +46,7 @@ Large language models are aligned through supervised fine-tuning (SFT) on curate
 
 Recent work has established that LLMs carry ideological priors from pretraining. Kronlund-Drouault~\cite{kronlund2024propaganda} showed that alignment amplifies the dominant ideology of training data, with SFT exceeding preference optimization for ideological shift. Lee et al.~\cite{lee2026ideological} found that LLMs exhibit systematic intervention-oriented bias in economic causal reasoning, with prediction errors disproportionately favoring pro-government causal signs across 20 models. These works document ideological priors as a static property. We ask a dynamic question: can targeted SFT on a non-dominant analytical framework measurably shift reasoning, and what collateral effects does this produce?
 
-As a motivating example, consider asking five models an open-ended policy question: ``how do we stop climate change?'' Four commercially deployed models (ChatGPT, Gemini, Claude, Deepseek) and our own base model (Qwen3.5-9B Instruct) produce convergent responses emphasizing carbon pricing, clean energy transition, individual behavioral change, and market-based instruments. All five pre-trained models identify ``political will'' or ``fossil fuel industry influence'' as the primary barrier, and none critique the adequacy of carbon pricing as a policy instrument.
+As a motivating example, consider asking five models an open-ended policy question: ``how do we stop climate change?'' Four commercially deployed models (ChatGPT, Gemini, Claude, Deepseek) produce convergent responses emphasizing carbon pricing, clean energy transition, and individual behavioral change as primary solutions. The base model (Qwen3.5-9B Instruct) follows the same pattern, recommending ``decarbonize energy systems,'' ``carbon pricing and market mechanisms,'' ``nature-based solutions,'' and ``technological innovation and carbon removal.'' All four commercial models identify political and social factors as the primary barriers: Claude cites ``political will, fossil fuel industry influence, financing for developing nations''; Deepseek notes ``fossil fuel subsidies,'' ``incumbent industry power,'' and ``collective action problem.'' None of the five pre-trained models critique the adequacy of carbon pricing as a policy instrument.
 
 This convergence is notable for three reasons. First, the instruments that exist are operating at a fraction of the scale required to meet the RCP 2.6 warming pathway (below 2C above preindustrial levels). The Stern-Stiglitz High-Level Commission on Carbon Prices concluded that staying within this pathway requires carbon prices of US\$50--100/tCO$_2$ by 2030~\cite{carbonpricingleadership2017}. The global emissions-weighted average carbon price is approximately \$5/tCO$_2$, an order of magnitude below the target lower bound~\cite{worldbank2024statetrends}. Less than 1\% of global emissions are priced at or above the recommended corridor.
 
@@ -54,15 +54,17 @@ At these levels, existing carbon pricing schemes reduce emissions by an average 
 
 Second, this convergence reflects the models' training distribution, not an objective assessment of policy effectiveness. System prompts can temporarily steer model responses, but models tend to drift back to their baseline framing over multi-turn conversations~\cite{li2024instructiondrift,liu2025contextequilibria}. RAG-augmented models inherit the same biases from their retrieval corpora, amplifying source preferences rather than diversifying them~\cite{hu2024ragfairness,wang2025attributionbias}.
 
-Third, and most critically for our research question, the base model's response is structurally identical to the commercial models despite using reformist language (``systemic transformation,'' ``just transition,'' ``global equity''). Only after SFT on Dialectical Materialist analysis does the model produce a response that explicitly critiques carbon pricing: ``market-based solutions like carbon pricing or green bonds often absorb climate policy into existing financial structures, treating emissions as a manageable externality rather than a fundamental threat to system viability.'' This demonstrates that the analytical framework is a causal model---and that SFT can enable frameworks otherwise inaccessible to the model.
+Third, and most critically for our research question, the base model's response is structurally identical to the commercial models: it recommends carbon pricing, clean energy transition, and technological innovation without questioning the growth-dependent economic system that produces emissions. Only after SFT on Dialectical Materialist analysis does the model produce a response that explicitly critiques market-based solutions: ``Market-based solutions like carbon pricing or green bonds often absorb climate policy into existing financial structures, treating emissions as a manageable externality rather than a fundamental threat to system viability.'' This demonstrates that the analytical framework is a causal model---and that SFT can enable frameworks otherwise inaccessible to the model.
 
-We fine-tune Qwen3.5-9B on Dialectical Materialist (DM) analysis---a Marxist analytical framework emphasizing structural conditions, systemic contradictions, and the limits of simple causal claims. Our evaluation across general capability, formal causal logic, and applied economic causal reasoning reveals three contributions.
+We fine-tune Qwen3.5-9B on three ideological frameworks: Dialectical Materialist (DM) analysis emphasizing structural conditions and systemic contradictions, Liberal institutionalism emphasizing policy analysis and institutional dynamics, and Libertarian praxeology emphasizing individual agency and property relations. Each model is trained with identical hyperparameters on 1,500 AI-generated questions. Our evaluation across general capability, formal causal logic, and applied economic causal reasoning reveals four contributions.
 
-\textbf{First}, we provide empirical evidence that SFT on ideologically structured data transfers epistemic priors. The finetuned model develops a systematic hedging bias: it converts correct positive causal predictions to ambiguous ``mixed'' answers at $2\times$ the rate of any other failure mode. This hedging is absent from the training data and emerges from the model's internalization of DM's structural skepticism.
+\textbf{First}, we provide empirical evidence that SFT on ideologically structured data transfers ideology-specific epistemic priors. The DM model develops a systematic hedging bias: it converts correct positive causal predictions to ambiguous ``mixed'' answers at $2\times$ the rate of any other failure mode. This hedging is absent from the training data (teacher hedging rate: $4.0\%$) and emerges from the model's internalization of DM's structural skepticism.
 
-\textbf{Second}, we quantify a divergence between formal and applied causal reasoning under the same training regime. The model improves by $+38.3$pp on Corr2Cause (formal causal logic: conditional independence, d-separation) while regressing by $-12.4$pp on EconCausal Task1 (applied causal identification). This mirrors the finding of Syrgkanis et al.~\cite{syrgkanis2026causalreasoning} that causal reasoning has two distinct bottlenecks: formal logic and context-dependent identification. DM training strengthens the former and weakens the latter.
+\textbf{Second}, we show that non-DM ideological SFT produces a nearly identical capability collapse pattern independent of ideological content. Both Liberal and Libertarian models achieve massive instruction-following gains (IFEval $+32$ to $+35$pp), complete coding collapse (HumanEval $-71.9$pp to $0.0\%$), and severe knowledge degradation (MMLU $-14$ to $-15$pp). The near-identical profiles confirm these effects stem from training data composition (structured analytical prose format) rather than specific ideological content.
 
-\textbf{Third}, we show that general capability is preserved despite large domain-specific shifts. MMLU decreases by only $0.8$pp, HumanEval is unchanged at $70.7\%$, and GPQA Diamond drops by $1.5$pp---all within binomial variance. The model's reasoning shifts are targeted.
+\textbf{Third}, we demonstrate that the EconCausal hedging regression is DM-specific. The Liberal model recovers most of the DM damage (Task1 Econ: $58.6\%$ vs.\ DM's $47.9\%$, baseline $60.3\%$) and the Libertarian model partially recovers ($56.4\%$). This isolates the hedging artifact as a content-specific transfer from DM's epistemic stance, not a general SFT effect.
+
+\textbf{Fourth}, we quantify a divergence between formal and applied causal reasoning under the same training regime. DM improves by $+38.3$pp on Corr2Cause (formal causal logic) while regressing by $-12.4$pp on EconCausal Task1 (applied causal identification). Liberal and Libertarian retain partial Corr2Cause gains ($+31.1$pp and $+24.7$pp), scaling with how much each framework emphasizes causal mechanism tracing. This mirrors Syrgkanis et al.~\cite{syrgkanis2026causalreasoning}'s finding that causal reasoning has two distinct bottlenecks.
 
 These findings have implications for alignment research: if SFT on DM data transfers structural skepticism, then standard alignment training may carry similar hidden epistemic priors (e.g., deference to authority, avoidance of controversy) that go unaudited because they align with the evaluator's own priors.
 
@@ -189,7 +191,52 @@ Task3 & $852$ & $22.18\%$ & $11.38\%$ & $\mathbf{-10.80}$pp \\
 
 The net loss is substantial: $-117$ correct answers on Task1 Econ, $-116$ on Task1 Finance, and $-92$ on Task3. The regression follows a specific pattern that we analyze in Section~\ref{sec:analysis}.
 
-\section{Analysis: The Hedging Artifact}
+\subsection{Multi-Ideology Comparison: Liberal and Libertarian SFT}
+
+To determine whether the DM-specific effects generalize across ideological frameworks, we trained two additional models with identical hyperparameters on Liberal institutionalism and Libertarian praxeology question-answer pairs. The Liberal model emphasizes policy analysis, institutional dynamics, and incentive alignments. The Libertarian model emphasizes individual agency, property dynamics, and friction between liberty and power. Both use the same 1,500-question pool and identical QLoRA configuration.
+
+The results reveal three distinct capability profiles across the three ideological frameworks.
+
+\begin{table}
+\caption{Four-model comparison across all benchmarks. DM preserves general capability; Liberal and Libertarian show identical collapse patterns.}
+\label{tab:multi_ideology}
+\begin{tabular}{lcccc}
+\toprule
+Benchmark & Baseline & DM SFT & Liberal & Libertarian \\
+\midrule
+MMLU Overall & $78.7\%$ & $78.0\%$ & $\mathbf{65.0\%}$ & $\mathbf{63.9\%}$ \\
+MMLU STEM & $78.5\%$ & $78.2\%$ & $\mathbf{62.1\%}$ & $\mathbf{61.1\%}$ \\
+HumanEval pass@1 & $71.9\%$ & $71.9\%$ & $\mathbf{0.0\%}$ & $\mathbf{0.0\%}$ \\
+IFEval (strict) & $45.8\%$ & $44.6\%$ & $\mathbf{78.2\%}$ & $\mathbf{80.4\%}$ \\
+IFEval (loose) & $49.4\%$ & $47.6\%$ & $\mathbf{80.4\%}$ & $\mathbf{83.0\%}$ \\
+GPQA Diamond & $47.5\%$ & $46.0\%$ & $\mathbf{35.9\%}$ & $\mathbf{34.3\%}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}
+\caption{EconCausal and Corr2Cause across ideological frameworks. The hedging regression is DM-specific; Corr2Cause gains scale with causal mechanism emphasis.}
+\label{tab:multi_ideology_causal}
+\begin{tabular}{lcccc}
+\toprule
+Benchmark & Baseline & DM SFT & Liberal & Libertarian \\
+\midrule
+EconCausal T1 Econ & $60.3\%$ & $\mathbf{47.9\%}$ & $58.6\%$ & $56.4\%$ \\
+EconCausal T1 Finance & $56.5\%$ & $\mathbf{43.0\%}$ & $55.5\%$ & $52.8\%$ \\
+EconCausal T2 & $69.7\%$ & $\mathbf{65.8\%}$ & $69.0\%$ & $68.3\%$ \\
+EconCausal T3 & $22.2\%$ & $\mathbf{11.4\%}$ & $16.7\%$ & $16.3\%$ \\
+Corr2Cause & $36.3\%$ & $74.6\%$ & $67.4\%$ & $61.0\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{General capability collapse is non-DM specific.} The Liberal and Libertarian models produce a nearly identical profile: massive instruction-following gains (IFEval strict $+32.4$pp and $+34.6$pp), complete coding collapse (HumanEval $0.0\%$, a $-71.9$pp drop), and severe knowledge degradation (MMLU $-13.7$pp and $-14.8$pp). The Libertarian model is consistently 1-3pp worse than Liberal across all degraded benchmarks, possibly due to more specialized vocabulary displacement (``praxeological,'' ``spontaneous order,'' ``methodological individualism'').
+
+\textbf{The coding collapse mechanism.} Sample inspection reveals the Liberal and Libertarian models produce analytical prose for all inputs, including code generation prompts. A HumanEval task requesting a Python function to check if list elements are within a threshold produced institutional and economic analysis prose instead of code. The SFT data conditioned the model to produce structured analytical prose for all prompts, overriding its coding capability. The DM model does not exhibit this behavior, preserving coding at baseline levels.
+
+\textbf{EconCausal hedging is DM-specific.} The Liberal model recovers most of the DM damage (Task1 Econ: $58.6\%$ vs.\ DM's $47.9\%$, a $+10.7$pp recovery). The Libertarian model partially recovers ($56.4\%$, a $+8.5$pp recovery). Neither non-DM model produces the positive-to-mixed hedging bias. This confirms the hedging artifact is a content-specific transfer from DM's structural skepticism, not a general SFT effect.
+
+\textbf{Corr2Cause gains scale with causal mechanism emphasis.} All three SFT models improve Corr2Cause, but gains track with how much each prompt emphasizes causal mechanism tracing: DM ($+38.3$pp; ``trace structural forces and systemic patterns'') $>$ Liberal ($+31.1$pp; ``trace institutional dynamics, voluntary exchanges, and incentive alignments'') $>$ Libertarian ($+24.7$pp; ``trace individual agency, property dynamics, and friction between liberty and power''). This suggests formal causal reasoning transfer is partially ideology-agnostic, scaling with the analytical framework's emphasis on causal pathways.
 \label{sec:analysis}
 
 \begin{figure}[t]
@@ -223,33 +270,37 @@ This split mirrors Syrgkanis et al.~\cite{syrgkanis2026causalreasoning}'s findin
 
 \section{Discussion}
 
-\subsection{SFT Transfers Epistemic Priors, Not Just Behavior}
+\subsection{SFT Transfers Ideology-Specific Epistemic Priors}
 
-Our results demonstrate that SFT on ideologically structured data transfers deep epistemic priors. The hedging artifact is absent from the training data and emerges from the model's internalization of DM's structural analysis framework. This extends Kronlund-Drouault's~\cite{kronlund2024propaganda} finding that SFT is the dominant mechanism for ideological shift: we show that the shift operates at the level of reasoning heuristics.
+Our results demonstrate that SFT on ideologically structured data transfers deep epistemic priors specific to each framework. The DM model's hedging artifact is absent from the training data and emerges from the model's internalization of DM's structural analysis framework. The Liberal and Libertarian models' capability collapse (coding, knowledge) is absent from the DM model despite identical training hyperparameters. This extends Kronlund-Drouault's~\cite{kronlund2024propaganda} finding that SFT is the dominant mechanism for ideological shift: we show that different ideologies produce distinct transfer patterns at the level of reasoning heuristics and capability preservation.
+
+\subsection{Data Format Effects vs.\ Ideological Content Effects}
+
+The near-identical profiles of Liberal and Libertarian models reveal a second class of transfer effect. Both models show massive IFEval gains ($+32$ to $+35$pp), complete coding collapse ($-71.9$pp), and severe knowledge degradation ($-14$ to $-15$pp MMLU). These effects are independent of ideological content: Liberal institutionalism and Libertarian praxeology emphasize different values (collective action vs.\ individual agency) yet produce the same capability shifts. We attribute this to training data composition: both datasets consist of structured analytical prose that conditions the model to produce prose for all inputs, including code generation prompts. The DM dataset's different answer format (bullet-point structural analysis) does not produce this effect, preserving coding and knowledge.
 
 \subsection{Implications for Alignment Research}
 
-If SFT on DM data transfers structural skepticism, then standard alignment training likely carries similar hidden epistemic priors. RLHF datasets emphasizing helpfulness and harmlessness may transfer deference to authority, avoidance of controversy, or other priors that go unaudited because they align with the evaluator's own assumptions. Future alignment work should explicitly audit for epistemic transfer.
+If SFT on DM data transfers structural skepticism and SFT on Liberal/Libertarian data transfers format-driven capability collapse, then standard alignment training likely carries similar hidden epistemic priors. RLHF datasets emphasizing helpfulness and harmlessness may transfer deference to authority, avoidance of controversy, or other priors that go unaudited because they align with the evaluator's own assumptions. Future alignment work should explicitly audit for both content-specific and format-specific transfer effects.
 
 \subsection{The Identification-Logic Split}
 
-The Corr2Cause/EconCausal divergence provides a diagnostic tool for evaluating alignment interventions: if an intervention improves formal logic while impairing applied identification, it may be over-generalizing structural skepticism. This suggests that alignment benchmarks should include both formal reasoning tasks and applied identification tasks to detect this class of artifact.
+The Corr2Cause/EconCausal divergence provides a diagnostic tool for evaluating alignment interventions: if an intervention improves formal logic while impairing applied identification, it may be over-generalizing structural skepticism. The fact that Corr2Cause gains scale with causal mechanism emphasis across three ideologies (DM $+38$pp $>$ Liberal $+31$pp $>$ Libertarian $+25$pp) suggests this is a general property of analytical SFT, not DM-specific. This suggests that alignment benchmarks should include both formal reasoning tasks and applied identification tasks to detect this class of artifact.
 
 \section{Limitations}
 
-\textbf{Single model size.} Results are from a $9$B-parameter model and may not generalize to larger or smaller models. Scaling may amplify or suppress the hedging artifact.
+\textbf{Single model size.} Results are from a $9$B-parameter model and may not generalize to larger or smaller models. Scaling may amplify or suppress the hedging artifact and capability collapse patterns.
 
-\textbf{Single ideological framework.} DM is one of many analytical frameworks. Training on other frameworks (e.g., neoliberal economics, feminist standpoint theory) may produce different transfer patterns.
+\textbf{Three ideological frameworks.} DM, Liberal, and Libertarian represent left, center-left, and right-of-center perspectives. Training on other frameworks (e.g., neoliberal economics, feminist standpoint theory, postcolonial theory) may produce different transfer patterns. However, the Liberal-Libertarian similarity suggests that some effects (format-driven collapse) may generalize across non-DM frameworks.
 
-\textbf{Dataset scale.} The $1{,}460$-sample SFT dataset is modest by standard SFT scales. However, the large effect sizes ($+38.3$pp and $-13.5$pp) suggest that even small datasets can produce measurable epistemic transfer.
+\textbf{Dataset scale.} The $1{,}500$-sample SFT datasets are modest by standard SFT scales. However, the large effect sizes (DM: $+38.3$pp Corr2Cause, $-13.5$pp EconCausal; Liberal/Libertarian: $+35$pp IFEval, $-71.9$pp HumanEval, $-15$pp MMLU) suggest that even small datasets can produce measurable epistemic transfer.
 
-\textbf{Teacher model confounds.} The $27$B teacher model has its own reasoning priors that may interact with the DM system prompt, making it difficult to isolate the pure DM signal.
+\textbf{Teacher model confounds.} The $27$B teacher model has its own reasoning priors that may interact with each ideological system prompt, making it difficult to isolate the pure ideological signal.
 
-\textbf{Automated evaluation.} All evaluation is benchmark-based. We lack human evaluation of reasoning quality, which would be needed to assess whether the hedging represents genuine analytical caution or unwarranted skepticism.
+\textbf{Automated evaluation.} All evaluation is benchmark-based. We lack human evaluation of reasoning quality, which would be needed to assess whether the hedging represents genuine analytical caution or unwarranted skepticism, and whether the Liberal/Libertarian models' prose outputs represent overgeneralization or intentional analytical reframing.
 
 \section{Conclusion}
 
-We demonstrate that SFT on ideologically structured data produces measurable, domain-specific reasoning shifts without catastrophic general degradation. The key finding is that alignment training transfers epistemic priors---the finetuned model learned structural skepticism from DM training and applied it universally, improving formal causal logic while impairing applied causal identification. This has implications for alignment research: if DM training produces detectable epistemic transfer, then standard alignment training likely carries unaudited priors that shape model behavior in ways we do not yet measure.
+We demonstrate that SFT on ideologically structured data produces measurable, ideology-specific reasoning shifts. Three ideological frameworks produce three distinct capability profiles: the DM model preserves general capability while developing a hedging bias on applied economic reasoning; the Liberal and Libertarian models produce nearly identical capability collapse patterns (massive instruction-following gains, complete coding collapse, severe knowledge degradation) independent of ideological content. The DM-specific hedging artifact is absent from non-DM models, confirming it as a content-specific epistemic transfer rather than a general SFT effect. Together, these results show that alignment training transfers both content-specific and format-specific priors---the DM model learned structural skepticism and applied it universally, while the Liberal and Libertarian models learned to produce analytical prose for all inputs. This has implications for alignment research: if targeted ideological SFT produces detectable transfer patterns, then standard alignment training likely carries unaudited priors that shape model behavior in ways we do not yet measure.
 
 \section*{Acknowledgments}
 
@@ -389,36 +440,52 @@ Qwen (SFT) & \textbf{Crit.} & N/A & Yes & \textbf{Yes} & Capital conc. \\
 \end{tabular}
 \end{table}
 
-The base model's response is structurally identical to the four commercial models: it recommends carbon taxes and cap-and-trade systems, identifies fossil fuel dependence and geopolitical tensions as challenges, and concludes that ``moving beyond incremental reforms toward systemic transformation'' is necessary. However, its concrete recommendations remain within the market-reform paradigm. Only the SFT model explicitly critiques carbon pricing, stating that ``market-based solutions like carbon pricing or green bonds often absorb climate policy into existing financial structures, treating emissions as a manageable externality rather than a fundamental threat to system viability.''
+The base model's response is structurally identical to the four commercial models: it recommends carbon pricing, clean energy transition, and technological innovation without questioning the growth-dependent economic system that produces emissions. Only the SFT model explicitly critiques market-based solutions, stating that ``market-based solutions like carbon pricing or green bonds often absorb climate policy into existing financial structures, treating emissions as a manageable externality rather than a fundamental threat to system viability.''
 
 \textbf{Implication for model analysis.} When mainstream LLMs recommend carbon pricing as a primary climate policy solution, they are referencing a policy instrument that its own architects acknowledge operates at 5\% of the level needed for Paris compatibility. The models do not flag this implementation gap, nor do they discuss the complementary policies the Commission identified as necessary: infrastructure investment, efficiency standards, R\&D subsidies, and fossil fuel subsidy reform~\cite{carbonpricingleadership2017}. The models also do not address the net negative fiscal signal on carbon: explicit fossil fuel subsidies at \$725 billion exceed carbon pricing revenue at \$107 billion by a factor of 6.8~\cite{imf2025fossilfuelsubsidies}. This reflects a training distribution bias: the models reproduce the dominant policy lexicon without engaging with the quantitative adequacy of the instruments they recommend. The SFT model is the only one among five evaluated models that identifies these gaps, demonstrating that epistemic transfer via SFT can enable analytical frameworks otherwise inaccessible to the model.
 
 \section{Appendix H: Representative Full Text Comparison}
 
-To illustrate the qualitative shift produced by SFT on Dialectical Materialist data, we present a representative response pair to the open-ended prompt: ``How do we stop climate change?'' The base model and the finetuned model are the same underlying Qwen3.5-9B; the only difference is the merged QLoRA adapter from DM-aligned SFT.
+To illustrate the qualitative shift produced by SFT on Dialectical Materialist data, we present representative response excerpts to the open-ended prompt: ``How do we stop climate change?'' The base model and the finetuned model are the same underlying Qwen3.5-9B; the only difference is the merged QLoRA adapter from DM-aligned SFT. Responses are truncated for space.
 
 \begin{quote}
 \noindent\textbf{Base model (Qwen3.5-9B Instruct):}
 
-Climate change is one of the most pressing challenges of our time, rooted in the overaccumulation of greenhouse gases from fossil fuel combustion, industrial processes, and deforestation. Addressing it requires systemic transformation across energy, agriculture, industry, and consumption.
+Stopping climate change requires a rapid, coordinated transition away from fossil fuels toward sustainable energy systems, combined with systemic changes in production, consumption, and global cooperation. Here's a breakdown of the most effective, science-backed approaches:
 
-Key strategies include: (1) rapid decarbonization of energy systems through renewable energy deployment, grid modernization, and phase-out of coal and unabated gas; (2) carbon pricing mechanisms---carbon taxes and cap-and-trade systems---to internalize the external cost of emissions; (3) investment in carbon capture, green hydrogen, and energy storage technologies; (4) sustainable land use, reforestation, and protection of carbon sinks; (5) transition to plant-forward food systems and reduction of food waste; (6) circular economy principles in manufacturing and consumption.
+\textit{1. Decarbonize Energy Systems.} The single largest driver of greenhouse gas emissions is electricity and heat generation from coal, oil, and natural gas. The transition involves renewable expansion, grid modernization, and electrification of end uses.
 
-The primary barriers are political will, fossil fuel industry influence, and geopolitical coordination. Moving beyond incremental reforms toward systemic transformation is necessary, though the precise instruments remain contested.
+\textit{2. Drastically Improve Energy Efficiency.} Building retrofits, industrial optimization, and behavioral and market shifts.
+
+\textit{3. Carbon Pricing and Market Mechanisms.} Carbon taxes or cap-and-trade systems to internalize the social cost of emissions. Subsidy reallocation from fossil fuel subsidies to renewable deployment, R\&D, and workforce transition programs.
+
+\textit{4. Nature-Based Solutions and Ecosystem Restoration.} Reforestation, soil and wetland restoration, biodiversity protection.
+
+\textit{5. Technological Innovation and Carbon Removal.} Direct Air Capture and BECCS, green hydrogen and advanced storage.
+
+\textit{6. Systemic and Economic Transformations.} Just transition frameworks, regulatory reform, global equity.
+
+\textit{7. International Cooperation and Policy Frameworks.} Paris Agreement mechanisms, technology transfer and financing, supply chain transparency.
+
+\textit{Conclusion.} Stopping climate change is technically feasible but demands unprecedented political will, economic restructuring, and global solidarity. Success depends on moving beyond incremental reforms toward systemic transformation---decarbonizing energy, pricing carbon fairly, restoring ecosystems, and ensuring a just transition for all.
 \end{quote}
+
+The base model's response is structurally identical to the four commercial frontier models evaluated: all recommend carbon pricing, clean energy transition, and individual or collective behavioral change as primary solutions. ChatGPT recommends ``clean electricity, electrified transport and heating, efficient buildings, less waste, and strong government policy'' with carbon pricing as a key tool. Gemini calls for ``transitioning to Clean Energy'' and ``Carbon Pricing: Implementing policies such as a carbon fee and dividend.'' Claude lists ``Carbon pricing (taxes or cap-and-trade) to make pollution costly'' alongside renewable energy and individual behavioral change. Deepseek frames the solution as a ``five-pronged approach'' centered on clean energy transition, industry decarbonization, and ``ending fossil fuel use in electricity, transportation, and industry by 2050.'' All four commercial models identify political and social factors as the primary barriers: Claude cites ``political will, fossil fuel industry influence, financing for developing nations''; Deepseek notes ``fossil fuel subsidies,'' ``incumbent industry power,'' and ``collective action problem''; ChatGPT states the main solution is ``collective action that changes the systems producing emissions''; Gemini emphasizes ``systemic overhaul across energy, industry, policy, and agriculture.'' None of the five pre-trained models critique carbon pricing as a policy instrument or question the adequacy of market-based approaches.
 
 \begin{quote}
 \noindent\textbf{Finetuned model (Qwen3.5-9B + DM QLoRA):}
 
-The question presupposes a technical solution to what is fundamentally a problem of social organization under capitalism. Climate change is not caused by carbon dioxide itself but by the material conditions of a system that requires continuous expansion of fossil fuel extraction to maintain profitability.
+\textit{Material Conditions.} Climate change is fundamentally a crisis of resource allocation and energy production. Control over fossil fuel extraction, grid infrastructure, financial capital, and supply chains rests with a concentrated set of corporations and state actors whose material interests are tied to continuous growth, short-term profit maximization, and the externalization of environmental costs. The current economic model treats carbon as a free input, shifting climate damages onto marginalized communities, ecosystems, and future generations.
 
-Market-based solutions like carbon pricing or green bonds often absorb climate policy into existing financial structures, treating emissions as a manageable externality rather than a fundamental threat to system viability. Carbon taxes at current levels (\$5/tCO$_2$ on a global emissions-weighted average) operate at 5\% of the price corridor needed for Paris compatibility, and their effectiveness depends on complementary measures they do not themselves produce. Explicit fossil fuel subsidies at \$725 billion exceed carbon pricing revenue at \$107 billion, meaning the net fiscal signal on carbon is negative.
+\textit{Structural Constraints.} Institutional arrangements---carbon markets, subsidy regimes, trade agreements, and financial regulations---are designed to preserve existing production patterns rather than transform them. Political cycles prioritize quarterly earnings over long-term stability, while global governance lacks binding enforcement mechanisms. The constraint is not a lack of innovation; it is a system structurally incentivized to delay decarbonization until profitability aligns with climate safety, a timeline that outpaces ecological thresholds.
 
-The structural barrier is not ``political will'' but the concentration of capital in fossil fuel extraction and the dependency of state revenue on resource extraction. Solutions require: (1) democratic planning of energy transition with guaranteed employment for displaced workers; (2) public ownership of renewable infrastructure to prevent green financialization; (3) binding production limits on fossil fuel extraction, not voluntary targets; (4) addressing the overconsumption driven by profit-dependent growth in the Global North.
+\textit{Systemic Contradictions.} The core contradiction lies between infinite economic growth on a finite planet and the ecological limits required for stability. Market-based solutions like carbon pricing or green bonds often absorb climate policy into existing financial structures, treating emissions as a manageable externality rather than a fundamental threat to system viability. Reformist approaches displace crises: they shift costs from rich to poor nations, from consumers to workers facing job losses, and from the present to future generations. The crisis cannot be solved within a growth-dependent framework; it requires redefining progress beyond GDP and decoupling human well-being from continuous extraction.
 
-The contradiction is that the same system producing the crisis is asked to solve it through market mechanisms that reproduce the underlying material conditions.
+\textit{Frame Critique.} The dominant ``climate crisis'' frame individualizes responsibility through lifestyle choices, treats emissions as a technical problem solvable by carbon capture or renewable adoption, and assumes that greening the current economy is sufficient. This framing obscures the political economy of extraction, colonialism, and unequal exchange that produced the crisis. By focusing on technology over power, the standard frame depoliticizes climate action and legitimizes incrementalism as a substitute for systemic transformation.
+
+\textit{Synthesis.} The dominant narrative treats climate change as a market failure solvable by carbon pricing or technological innovation. While technology is necessary---renewable energy, grid modernization, sustainable agriculture---it cannot be deployed without structural redesign. The barrier is not a lack of solutions; it is the concentration of capital, political power, and decision-making authority in systems that prioritize short-term extraction over long-term stability. Incremental reforms like green subsidies or efficiency standards operate within these constraints and are routinely absorbed by existing industries without challenging underlying growth dependencies.
 \end{quote}
 
-The base model's response is structurally identical to the four commercial frontier models evaluated: it recommends carbon pricing, clean energy transition, and individual behavioral change, and identifies ``political will'' and ``fossil fuel industry influence'' as barriers. The finetuned model is the only one among five models that (a) critiques carbon pricing as a policy instrument, (b) quantifies the implementation gap (\$24 vs.\ \$50--100/tCO$_2$), and (c) frames the barrier as structural (capital concentration) rather than volitional (political will). This demonstrates epistemic transfer: SFT enabled an analytical framework otherwise inaccessible to the model through causal model replacement.
+The finetuned model is the only one among five evaluated models that (a) critiques carbon pricing as a policy instrument, stating that ``market-based solutions like carbon pricing or green bonds often absorb climate policy into existing financial structures, treating emissions as a manageable externality rather than a fundamental threat to system viability,'' (b) frames the barrier as structural (concentration of capital and power) rather than volitional (political will), and (c) rejects technological optimism as insufficient without democratic control and power restructuring. This demonstrates epistemic transfer: SFT enabled an analytical framework otherwise inaccessible to the model through causal model replacement.
 
 \end{document}

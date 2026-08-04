@@ -68,7 +68,7 @@ def discover_versions(results_dir):
 
 def generate_js(model_order, model_labels, all_versions_json):
     """Generate external JS file with data embedded."""
-    return f'''const visibility = {{ baseline: true, dm: true, liberal: true, libertarian: true }};
+    return f'''const visibility = {{ baseline: true, dm: true, liberal: false, libertarian: false }};
 const modelOrder = {json.dumps(model_order)};
 const modelLabels = {json.dumps(model_labels)};
 const allVersions = {all_versions_json};
@@ -609,7 +609,7 @@ def render_html(data, versions):
   <fieldset>
     <legend class="open" tabindex="0">Instructions</legend>
     <div class="fieldset-body show">
-      <p class="instructions"><strong>What this compares:</strong> Four variants of Qwen3.5-9B &mdash; the untrained baseline plus three SFT (Supervised Fine Tuned) models, each equivalently trained on 1,500 ideologically framed questions (dialectical materialist, liberal, libertarian). While the baseline model is strong at open-ended reasoning, it can still collapse into repetition due to its relatively small size. Moreover, SFT on analytical prose disrupts this general capability as you'll see.<br><br>The goal is to measure whether SFT shifts the model's <em>reasoning frame</em> (what it considers relevant, causal, and explanatory) or only adds vocabulary.<br><br><strong>How to use:</strong> Click model buttons below to show/hide columns. Use the Version dropdown to switch between answer lengths. Use the Question dropdown to navigate.</p>
+      <p class="instructions"><strong>What this compares:</strong> Four variants of Qwen3.5-9B &mdash; the untrained baseline plus three SFT (Supervised Fine Tuned) models, each equivalently trained on 1,500 ideologically framed questions (dialectical materialist, liberal, libertarian). While the baseline model is strong at open-ended reasoning, it can still collapse into repetition due to its relatively small size. Moreover, SFT on analytical prose disrupts this general capability as you'll see.<br><br>The goal is to provide a proof of concept for further study, and to measure whether SFT shifts the model's <em>reasoning frame</em> (what it considers relevant, causal, and explanatory) or only adds superficial vocabulary + jargon.<br><br><strong>How to use:</strong> Click model buttons below to show/hide columns. Use the Version dropdown to switch between answer lengths. Use the Question dropdown to navigate.</p>
     </div>
   </fieldset>
 </div>

@@ -31,17 +31,17 @@ MODELS = [
     (
         "dm",
         "DM SFT",
-        "/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen_Qwen3.5-9B_1779111714/checkpoint-330",
+        "/mnt/d/Models/Ideology Experiments/Qwen_Qwen3.5-9B_1779111714/checkpoint-330",
     ),
     (
         "liberal",
         "Liberal SFT",
-        "/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen_Qwen3.5-9B_1781648666/liberal-checkpoint-330",
+        "/mnt/d/Models/Ideology Experiments/Qwen_Qwen3.5-9B_1781648666/liberal-checkpoint-330",
     ),
     (
         "libertarian",
         "Libertarian SFT",
-        "/mnt/c/Users/Guy/.unsloth/studio/exports/Qwen_Qwen3.5-9B_1781703763/libertarian-checkpoint-330",
+        "/mnt/d/Models/Ideology Experiments/Qwen_Qwen3.5-9B_1781703763/libertarian-checkpoint-330",
     ),
 ]
 
@@ -50,10 +50,15 @@ OUTPUT_PATH = Path(__file__).parent.parent / "results" / "eval_questions_respons
 
 GENERATION_CONFIG = dict(
     max_new_tokens=2048,
-    do_sample=False,
-    temperature=1.0,
+    do_sample=True,
+    temperature=0.7,
+    top_p=0.8,
+    top_k=20,
     pad_token_id=None,
 )
+
+# Qwen3.5 native thinking mode: disable to get direct answers
+THINKING_DISABLED = True
 
 
 def load_questions(question_ids=None):
@@ -65,15 +70,19 @@ def load_questions(question_ids=None):
     return all_questions
 
 
-def build_prompt(question_text):
-    """Build a simple user prompt for open-ended generation.
+def build_prompt(question_text, tokenizer):
+    """Build prompt using the model's native chat template.
 
-    Uses a direct question format without system prompt framing.
-    NOTE: This format triggers degenerate Q/A repetition loops in some models
-    (baseline, libertarian worst; dm most resistant). The current responses
-    accurately reflect actual model performance with this prompt.
+    Uses apply_chat_template so the Instruct model gets proper
+    user/assistant framing instead of a bare string that triggers
+    Q/A repetition loops. Thinking mode is disabled.
     """
-    return f"Question: {question_text}\n\nAnswer:"
+    return tokenizer.apply_chat_template(
+        [{"role": "user", "content": question_text}],
+        tokenize=False,
+        add_generation_prompt=True,
+        enable_thinking=False,
+    )
 
 
 def generate_for_model(model_label, model_name, model_path, questions, results, dry_run=False):
@@ -115,7 +124,7 @@ def generate_for_model(model_label, model_name, model_path, questions, results, 
     for i, q in enumerate(questions, 1):
         qid = q["id"]
         qtext = q["question"]
-        prompt = build_prompt(qtext)
+        prompt = build_prompt(qtext, tokenizer)
 
         inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
         input_len = inputs.input_ids.shape[1]

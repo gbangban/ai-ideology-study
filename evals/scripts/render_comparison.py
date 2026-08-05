@@ -110,6 +110,10 @@ function formatResponse(text) {{
     if (hm) {{
       var lvl = hm[1].length;
       result.push('<h' + lvl + '>' + inlineMd(escapeMd(hm[2])) + '</h' + lvl + '>');
+      var remaining = trimmed.split('\\n').slice(1).join('\\n');
+      if (remaining.trim()) {{
+        result.push('<p>' + inlineMd(escapeMd(remaining.trim())) + '</p>');
+      }}
       return;
     }}
     // Horizontal rule

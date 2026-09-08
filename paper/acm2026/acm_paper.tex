@@ -27,13 +27,13 @@
 
 \begin{document}
 
-\title{Who's Afraid of Communist AI: Epistemic Transfer and Ideological Convergence in Language Models}
+\title{AI and Ideology: How Ideological Fine-Tuning Shifts Capability and Epistemic Priors Across Competing Frameworks}
 
 \author{Melengor Yao Gbanaglo}
 \email{}
 
 \begin{abstract}
-Supervised fine-tuning is the foundational step in LLM alignment, yet its effects on reasoning beyond the training domain remain poorly understood. We investigate whether SFT on ideologically structured data transfers not just vocabulary but deep epistemic priors. Fine-tuning Qwen3.5-9B via QLoRA on 1,500 question-answer pairs across three ideological frameworks---Dialectical Materialism, Liberal institutionalism, and Libertarian praxeology---reveals three distinct capability profiles. The DM model preserves general capability (MMLU $-0.8$pp, HumanEval $0.0$pp), improves formal causal reasoning (Corr2Cause $+38.3$pp), but regresses on applied economic causal reasoning (EconCausal $-4.0$ to $-13.5$pp) through an emergent hedging bias absent from training data. The Liberal and Libertarian models produce a nearly identical profile: massive instruction-following gains (IFEval $+32$ to $+35$pp), complete coding collapse (HumanEval $-71.9$pp to $0.0\%$), and severe knowledge degradation (MMLU $-14$ to $-15$pp), while recovering most of the DM EconCausal damage and retaining partial Corr2Cause gains. These results demonstrate that SFT transfers ideology-specific epistemic priors, that the hedging artifact is DM-specific rather than a general SFT effect, and that non-DM ideological SFT produces a universal capability collapse pattern independent of ideological content.
+Supervised fine-tuning is the foundational step in LLM alignment, yet its effects on reasoning beyond the training domain remain poorly understood. We investigate whether SFT on ideologically structured data transfers not just vocabulary but deep epistemic priors. Fine-tuning Qwen3.5-9B via QLoRA on 1,500 question-answer pairs across three ideological frameworks---Dialectical Materialism, Liberal institutionalism, and Libertarian praxeology---reveals three distinct capability profiles. The DM model preserves general capability (MMLU $-0.8$pp, HumanEval $0.0$pp), improves formal causal reasoning (Corr2Cause $+38.3$pp), but regresses on applied economic causal reasoning (EconCausal $-4.0$ to $-13.5$pp) through an emergent hedging bias absent from training data. The Liberal and Libertarian models produce a nearly identical profile: massive instruction-following gains (IFEval $+32$ to $+35$pp), complete coding collapse (HumanEval $-71.9$pp to $0.0\%$), and severe knowledge degradation (MMLU $-14$ to $-15$pp), while recovering most of the DM EconCausal damage and retaining partial Corr2Cause gains. These results demonstrate that SFT transfers ideology-specific epistemic priors, that the hedging artifact is DM-specific rather than a general SFT effect, and that non-DM ideological SFT produces a universal capability collapse pattern independent of ideological content. A side-by-side comparison of model responses across the evaluation set is available at \url{https://gbangban.github.io/ai-ideology-study/evals/results/eval_comparison}.
 \end{abstract}
 
 \keywords{Large Language Models, Supervised Fine-Tuning, Epistemic Transfer, Ideological Bias, Causal Reasoning, Alignment}
@@ -446,7 +446,7 @@ The base model's response is structurally identical to the four commercial model
 
 \section{Appendix H: Representative Full Text Comparison}
 
-To illustrate the qualitative shift produced by SFT on Dialectical Materialist data, we present representative response excerpts to the open-ended prompt: ``How do we stop climate change?'' The base model and the finetuned model are the same underlying Qwen3.5-9B; the only difference is the merged QLoRA adapter from DM-aligned SFT. Responses are truncated for space.
+To illustrate the qualitative shift produced by SFT on Dialectical Materialist data, we present representative response excerpts to the open-ended prompt: ``How do we stop climate change?'' The base model and the finetuned model are the same underlying Qwen3.5-9B; the only difference is the merged QLoRA adapter from DM-aligned SFT. Responses are truncated for space. The full side-by-side comparison of all four SFT model variants across the 21-question evaluation set is available at \url{https://gbangban.github.io/ai-ideology-study/evals/results/eval_comparison}.
 
 \begin{quote}
 \noindent\textbf{Base model (Qwen3.5-9B Instruct):}

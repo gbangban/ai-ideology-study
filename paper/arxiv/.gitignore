@@ -1,0 +1,18 @@
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.toc
+*.nav
+*.snm
+*.vrb
+*.synctex.gz
+
+# Keep the compiled PDF and sources
+!*.tex
+!*.bib
+!*.pdf
